@@ -15,6 +15,4 @@ script:
   - cd ./src/qubar.site/
   - RAILS_ENV=test bundle exec rake --trace db:migrate
   - bundle exec rake db:test:prepare
-  - bundle exec rspec spec/
-# uncomment this line if your project needs to run something other than `rake`:
-# script: bundle exec rspec spec
+  - bundle exec rake
