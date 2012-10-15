@@ -11,6 +11,6 @@ branches:
   only:
     - 'master'
 gemfile: src/qubar.site/Gemfile
-script: sh -c 'cd src/qubar.site' && bundle exec rake db:drop db:create db:migrate test
+script: bundle exec rake -f src/qubar.site/rakefile
 # uncomment this line if your project needs to run something other than `rake`:
 # script: bundle exec rspec spec
