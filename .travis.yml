@@ -10,9 +10,9 @@ rvm:
 branches:
   only:
     - 'master'
-gemfile: src/qubar.site/Gemfile
+gemfile: Gemfile
 script: 
-  - cd ./src/qubar.site/
+  #- cd ./src/qubar.site/
   - RAILS_ENV=test bundle exec rake --trace db:migrate
   - bundle exec rake db:test:prepare
   - bundle exec rake
