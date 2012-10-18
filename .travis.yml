@@ -12,7 +12,8 @@ branches:
     - 'master'
 gemfile:
   - Gemfile
-script: 
+script:
+  - ls -la
   - RAILS_ENV=test bundle exec rake --trace db:migrate
   - bundle exec rake --trace db:test:prepare
   - bundle exec rake --trace
