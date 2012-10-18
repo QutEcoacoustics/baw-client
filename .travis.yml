@@ -12,7 +12,7 @@ branches:
     - 'master'
 # gemfile: Gemfile
 script: 
-  # - cd ./src/qubar.site/
+  - cd ./
   - RAILS_ENV=test bundle exec rake --trace db:migrate
   - bundle exec rake db:test:prepare
   - bundle exec rake
