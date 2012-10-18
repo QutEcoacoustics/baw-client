@@ -10,9 +10,9 @@ rvm:
 branches:
   only:
     - 'master'
-# gemfile: Gemfile
-script: 
-  - cd ./
-  - RAILS_ENV=test bundle exec rake --trace db:migrate
-  - bundle exec rake db:test:prepare
-  - bundle exec rake
+#gemfile:
+#  - Gemfile
+# script: 
+#  - RAILS_ENV=test bundle exec rake --trace db:migrate
+#  - bundle exec rake db:test:prepare
+#  - bundle exec rake
