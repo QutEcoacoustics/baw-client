@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Uri:</b>
+  <%= @photo.uri %>
+</p>
+
+<p>
+  <b>Copyright:</b>
+  <%= @photo.copyright %>
+</p>
+
+
+<%= link_to 'Edit', edit_photo_path(@photo) %> |
+<%= link_to 'Back', photos_path %>
