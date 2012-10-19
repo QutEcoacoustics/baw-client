@@ -10,6 +10,15 @@
   <%= @photo.copyright %>
 </p>
 
+<p>
+  <b>Description:</b>
+  <%= @photo.description %>
+</p>
+
+<p>
+  <b>Parent:</b>
+  <%= @photo.imageable %>
+</p>
 
 <%= link_to 'Edit', edit_photo_path(@photo) %> |
 <%= link_to 'Back', photos_path %>
