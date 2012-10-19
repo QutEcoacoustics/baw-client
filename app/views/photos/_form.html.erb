@@ -10,15 +10,30 @@
       </ul>
     </div>
   <% end %>
-
   <div class="field">
     <%= f.label :uri %><br />
     <%= f.text_field :uri %>
   </div>
   <div class="field">
     <%= f.label :copyright %><br />
-    <%= f.text_area :copyright %>
+    <%= f.text_field :copyright %>
   </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <% @all_sites.each do |site| %>
+    <input id="photo_site_id_<%= site.id %>" name="photo[imageable_id]" type="radio" value="<%= site.id %>" <%= (@photo.imageable_id == site.id && @photo.imageable_type == 'Site') ? 'checked' : '' %>>
+	<label for="photo_site_id_<%= site.id %>"><%= site.name %></label>
+	<input id="photo_site_type_<%= site.id %>" name="photo[imageable_type]" type="radio" value="Site" <%= (@photo.imageable_id == site.id && @photo.imageable_type == 'Site') ? 'checked' : '' %>>
+	<label for="photo_site_type_<%= site.id %>">Site</label><br>
+  <% end %>
+  <% @all_projects.each do |project| %>
+    <input id="photo_project_id_<%= project.id %>" name="photo[imageable_id]" type="radio" value="<%= project.id %>" <%= (@photo.imageable_id == project.id && @photo.imageable_type == 'Project') ? 'checked' : '' %>>
+	<label for="photo_project_id_<%= project.id %>"><%= project.name %></label>
+	<input id="photo_project_type_<%= project.id %>" name="photo[imageable_type]" type="radio" value="Project" <%= (@photo.imageable_id == project.id && @photo.imageable_type == 'Project') ? 'checked' : '' %>>
+	<label for="photo_project_type_<%= project.id %>">project</label><br>
+  <% end %>
   <div class="actions">
     <%= f.submit %>
   </div>
