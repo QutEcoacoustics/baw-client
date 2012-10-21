@@ -17,3 +17,10 @@ script:
   - RAILS_ENV=test bundle exec rake --trace db:migrate
   - bundle exec rake --trace db:test:prepare
   - bundle exec rake --trace
+notifications:
+  webhooks:
+    urls:
+      # other organisations may put build notifications here
+      - http://build.ecosounds.org/build
+    on_success: always
+    on_failure: always
