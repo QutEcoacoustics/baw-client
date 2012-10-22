@@ -20,7 +20,6 @@ script:
 notifications:
   webhooks:
     urls:
-      # other organisations may put build notifications here    
       - http://build.ecosounds.org/build
     on_success: always
     on_failure: always
