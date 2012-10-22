@@ -18,8 +18,4 @@ script:
   - bundle exec rake --trace db:test:prepare
   - bundle exec rake --trace
 notifications:
-  webhooks:
-    urls:
-      - http://build.ecosounds.org/build
-    on_success: always
-    on_failure: always
+  webhooks: http://build.ecosounds.org/build
