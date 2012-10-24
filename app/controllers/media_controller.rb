@@ -1,8 +1,13 @@
 class MediaController < ApplicationController
   include Spectrogram
-  def index
+  def info
     @input_path = './test/fixtures/'
-    @audio = 'TorresianCrow.wav'
+    # not-an-audio-file.wav 
+    # TorresianCrow.wav 
+    # TestAudio1.wv 
+    # sites.yml
+    # this file does not exist.nope
+    @audio = 'TestAudio1.wv'
     @input_audio = @input_path + @audio
     @result = Audio::info(@input_audio)
   end
@@ -16,7 +21,7 @@ class MediaController < ApplicationController
     @input_audio = @input_path + @audio
     @output_audio = @output_path + @modified_audio
     
-    @result = Audio::segment(@input_audio, @output_audio)
+    @result = Audio::modify(@input_audio, @output_audio, [])
   end
   def spectrogram
     @input_path = './test/fixtures/'
