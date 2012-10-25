@@ -1,0 +1,1 @@
+sudo apt-get install ffmpeg=4:0.8.3-0ubuntu0.12.04.1 mp3splt=2.4.1-0ubuntu1 sox=14.3.2-3 wavpack=4.60.1-2

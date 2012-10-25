@@ -7,7 +7,6 @@ module Spectrogram
   @sox_arguments_sample_rate = "rate 22050"
   @sox_arguments_spectrogram = "spectrogram -m -r -l -a -q 249 -w hann -y 257 -X 43.06640625 -z 100"
   @sox_arguments_output = "-o"
-  @my_logger ||= Logger.new("#{Rails.root}/log/my.log")
   
   # Generate a spectrogram image from an audio file.
   # The spectrogram will be 257 pixels high, but the length is not known exactly beforehand.
@@ -18,6 +17,7 @@ module Spectrogram
     
     # check for existing image, and do not overwrite
     if File.exist?(target)
+      Rails.logger.warn  "Target path for spectrogram generation already exists: #{target}."
       return [ "", "", "", source, File.exist?(source), target, File.exist?(target) ]
     end
   
@@ -28,7 +28,7 @@ module Spectrogram
     stdout_str, stderr_str, status = Open3.capture3(command)
     
     # log the command
-    @my_logger.debug(command)
+    Rails.logger.debug "Spectrogram generation return status #{status.exitstatus}. Command: #{command}"
     
     # package up all the available information and return it
     result = [ stdout_str, stderr_str, status, source, File.exist?(source), target, File.exist?(target) ]

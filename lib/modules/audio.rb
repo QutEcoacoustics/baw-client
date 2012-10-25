@@ -1,10 +1,12 @@
+require 'OS'
+
 module Audio
   
-  @ffmpeg_path = "./vendor/bin/ffmpeg/windows/ffmpeg.exe"
-  @ffprobe_path = "./vendor/bin/ffmpeg/windows/ffprobe.exe"
-  @sox_path = "./vendor/bin/sox/windows/sox.exe"
-  @wvunpack_path = "./vendor/bin/wavpack/windows/wvunpack.exe"
-  @mp3splt_path = "./vendor/bin/mp3splt/windows/mp3splt.exe"
+  @ffmpeg_path = if OS.windows? then "./vendor/bin/ffmpeg/windows/ffmpeg.exe" else "ffmpeg" end
+  @ffprobe_path = if OS.windows? then "./vendor/bin/ffmpeg/windows/ffprobe.exe" else "ffprobe" end
+  @sox_path = if OS.windows? then "./vendor/bin/sox/windows/sox.exe" else "sox" end
+  @wvunpack_path = if OS.windows? then "./vendor/bin/wavpack/windows/wvunpack.exe" else "wvunpack" end
+  @mp3splt_path = if OS.windows? then "./vendor/bin/mp3splt/windows/mp3splt.exe" else "mp3splt" end
   
   @@my_logger ||= Logger.new("#{Rails.root}/log/my.log")
   
@@ -28,14 +30,7 @@ module Audio
   # Creates a new audio file from source path in target path, modified according to the
   # parameters in modify_parameters
   def self.modify(source, target, modify_parameters)
-    # sox command to create a spectrogram from an audio file
-    command = "#{@sox_path} #{@sox_arguments_verbose} \"#{source}\" #{@sox_arguments_output_audio} #{@sox_arguments_sample_rate} #{@sox_arguments_spectrogram} #{@sox_arguments_output} \"#{target}\""
-    
-    # run the command and wait for the result
-    stdout_str, stderr_str, status = Open3.capture3(command)
-    
-    # package up all the available information and return it
-    result = [ stdout_str, stderr_str, status, File.exist?(source), File.exist?(target) ]
+    wvunpack(source, target, modify_parameters)
   end
   
   # private methods
@@ -51,6 +46,7 @@ module Audio
       sox_stdout_str.strip.split(/\r?\n|\r/).each { |line| info.push [ 'SOX ' + line[0,line.index(':')].strip, line[line.index(':')+1,line.length].strip ] }
       # sox_stderr_str is empty
     else
+      Rails.logger.debug "Sox info error. Return status #{sox_status.exitstatus}. Command: #{sox_command}"
       error.push ['SOX ERROR',sox_stderr_str]
     end
   end
@@ -59,6 +55,8 @@ module Audio
     ffprobe_arguments_info = "-sexagesimal -print_format default -show_error -show_streams -show_format"
     ffprobe_command = "#{@ffprobe_path} #{ffprobe_arguments_info} \"#{source}\""
     ffprobe_stdout_str, ffprobe_stderr_str, ffprobe_status = Open3.capture3(ffprobe_command)
+    
+    Rails.logger.debug "Ffprobe info return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
     
     if ffprobe_status.exitstatus == 0
       # ffprobe std out contains info (separate on first equals(=))
@@ -76,6 +74,7 @@ module Audio
         end
       end
     else
+      Rails.logger.debug "Ffprobe info error. Return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
       # ffprobe std err contains info (separate on first equals(=))
       ffprobe_current_block_name = ''
       ffprobe_stdout_str.strip.split(/\r?\n|\r/).each do |line| 
@@ -96,7 +95,9 @@ module Audio
     wvunpack_arguments_info = "-s"
     wvunpack_command = "#{@wvunpack_path} #{wvunpack_arguments_info} \"#{source}\"" # commands to get info from audio file
     wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
-  
+    
+    Rails.logger.debug "Wavpack info return status #{wvunpack_status.exitstatus}. Command: #{wvunpack_command}"
+    
     if wvunpack_status.exitstatus == 0
       # wvunpack std out contains info (separate on first colon(:))
       wvunpack_stdout_str.strip.split(/\r?\n|\r/).each do |line|
@@ -109,6 +110,35 @@ module Audio
       # wvunpack_stderr_str contains human-formatted info and errors
     else
       info.push [ 'WVUNPACK ERROR', wvunpack_stderr_str.strip!.split(/\r?\n|\r/).last ]
+    end
+  end
+  
+  # wvunpack converts .wv files to .wav, optionally segmenting them
+  # target should be calculated based on modify_parameters by cache module
+  # modify_parameters can contain start_offset (fractions of seconds from start) and/or end_offset (fractions of seconds from start)
+  def self.wvunpack(source, target, modify_parameters = {})
+    raise ArgumentError, "Source is not a wavpack file: #{File.basename(source)}" unless source.match(/\.wv$/)
+    raise ArgumentError, "Target is not a wav file: : #{File.basename(target)}" unless target.match(/\.wav$/)
+    raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
+    raise ArgumentError, "Target exists: #{File.basename(target)}" unless !File.exists? source
+    
+    # formatted time: hh:mm:ss.ss
+    arguments = '-t -q'
+    if modify_parameters.include? :start_offset
+      start_offset_formatted = Time.at(modify_parameters[:start_offset]).utc.strftime('%H:%M:%S.%2N')
+      arguments += ' --skip=#{start_offset_formatted}'
+    end
+    
+    if modify_parameters.include? :end_offset
+      end_offset_formatted = Time.at(modify_parameters[:start_offset]).utc.strftime('%H:%M:%S.%2N')
+      arguments += ' --until=#{end_offset_formatted}'
+    end
+    
+    wvunpack_command = "#{@wvunpack_path} #{arguments} \"#{source}\" \"#{target}\"" # commands to get info from audio file
+    wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
+    
+    if wvunpack_status.exitstatus == 0
+      raise "Wvunpack exited with an error: #{wvunpack_stderr_str}"
     end
   end
   
