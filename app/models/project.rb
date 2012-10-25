@@ -7,5 +7,8 @@ class Project < ActiveRecord::Base
   has_many :sites, :through => :project_sites
   accepts_nested_attributes_for :sites
   
+  # userstamp
+  stampable
+  
   validates :name, :presence => true
 end

@@ -5,6 +5,9 @@ class Site < ActiveRecord::Base
   has_many :projects_sites
   has_many :projects, :through => :projects_sites
   
+  # userstamp
+  stampable
+  
   validates :name, :presence => true, :length => { :minimum => 2 }
   validates :latitude, :presence => true, :numericality => true
   validates :longitude, :presence => true, :numericality => true
