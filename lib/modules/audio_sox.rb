@@ -22,7 +22,7 @@ module AudioSox
       error.push ['SOX ERROR',sox_stderr_str]
     end
 
-    [ info, error ]
+    [info, error]
   end
 
   def self.modify_sox(source, target, modify_parameters = {})
