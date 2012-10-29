@@ -1,4 +1,5 @@
 language: ruby
+bundler_args: --without development
 rvm:
   - 1.9.3
 #  - 1.9.2
@@ -17,7 +18,6 @@ before_script:
 script:
   - ls -la
   - RAILS_ENV=test bundle exec rake --trace db:migrate
-  - bundle exec rake --trace db:test:prepare
-  - bundle exec rake --trace
+  - RAILS_ENV=test bundle exec rake --trace
 notifications:
   webhooks: http://build.ecosounds.org/build

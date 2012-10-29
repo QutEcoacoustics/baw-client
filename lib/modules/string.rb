@@ -1,5 +1,5 @@
 class String
-  def trim(replace_chars, substitute_chars)
-    "#{self}".gsub(/^[#{substitute_chars}]+|[#{substitute_chars}]+$/, replace_chars)
+  def trim(chars_to_replace, char_to_insert)
+    "#{self}".gsub(/^[#{chars_to_replace}]+|[#{chars_to_replace}]+$/, char_to_insert)
   end
 end
