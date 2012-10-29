@@ -36,3 +36,6 @@ doc/
 
 
 /.project
+
+# rubymine stuff
+.idea/workspace.xml
