@@ -1,0 +1,65 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @audio_recording.user %>
+</p>
+
+<p>
+  <b>Recorded date:</b>
+  <%= @audio_recording.recorded_date %>
+</p>
+
+<p>
+  <b>Site:</b>
+  <%= @audio_recording.site %>
+</p>
+
+<p>
+  <b>Duration seconds:</b>
+  <%= @audio_recording.duration_seconds %>
+</p>
+
+<p>
+  <b>Sample rate hertz:</b>
+  <%= @audio_recording.sample_rate_hertz %>
+</p>
+
+<p>
+  <b>Channels:</b>
+  <%= @audio_recording.channels %>
+</p>
+
+<p>
+  <b>Bit rate bps:</b>
+  <%= @audio_recording.bit_rate_bps %>
+</p>
+
+<p>
+  <b>Media type:</b>
+  <%= @audio_recording.media_type %>
+</p>
+
+<p>
+  <b>Data length bytes:</b>
+  <%= @audio_recording.data_length_bytes %>
+</p>
+
+<p>
+  <b>Hash:</b>
+  <%= @audio_recording.hash %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @audio_recording.status %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%= @audio_recording.notes %>
+</p>
+
+
+<%= link_to 'Edit', edit_audio_recording_path(@audio_recording) %> |
+<%= link_to 'Back', audio_recordings_path %>

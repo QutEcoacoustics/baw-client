@@ -7,7 +7,8 @@ class Site < ActiveRecord::Base
   
   # userstamp
   stampable
-  
+  belongs_to :user
+
   validates :name, :presence => true, :length => { :minimum => 2 }
   validates :latitude, :presence => true, :numericality => true
   validates :longitude, :presence => true, :numericality => true

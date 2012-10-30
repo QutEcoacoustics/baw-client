@@ -1,0 +1,41 @@
+<%= form_for(@audio_event) do |f| %>
+  <% if @audio_event.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@audio_event.errors.count, "error") %> prohibited this audio_event from being saved:</h2>
+
+      <ul>
+      <% @audio_event.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :audio_recording %><br />
+    <%= f.text_field :audio_recording %>
+  </div>
+  <div class="field">
+    <%= f.label :start_time_seconds %><br />
+    <%= f.text_field :start_time_seconds %>
+  </div>
+  <div class="field">
+    <%= f.label :end_time_seconds %><br />
+    <%= f.text_field :end_time_seconds %>
+  </div>
+  <div class="field">
+    <%= f.label :low_frequency_hertz %><br />
+    <%= f.text_field :low_frequency_hertz %>
+  </div>
+  <div class="field">
+    <%= f.label :high_frequency %><br />
+    <%= f.text_field :high_frequency %>
+  </div>
+  <div class="field">
+    <%= f.label :is_reference %><br />
+    <%= f.text_field :is_reference %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

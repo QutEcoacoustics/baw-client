@@ -5,10 +5,12 @@ class Project < ActiveRecord::Base
   has_many :photos, :as => :imageable
   has_many :project_sites
   has_many :sites, :through => :project_sites
+
   accepts_nested_attributes_for :sites
-  
+
   # userstamp
   stampable
+  belongs_to :user
   
   validates :name, :presence => true
 end
