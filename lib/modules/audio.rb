@@ -26,8 +26,10 @@ module Audio
   end
 
   # Creates a new audio file from source path in target path, modified according to the
-  # parameters in modify_parameters
+  # parameters in modify_parameters. Possible options:
+  # :start_offset :end_offset :channel :sample_rate :format
   def self.modify(source, target, modify_parameters)
+
     modify_wavpack(source, target, modify_parameters)
   end
 

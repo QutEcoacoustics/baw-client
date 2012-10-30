@@ -11,7 +11,7 @@ module AudioWavpack
     error = []
 
     wvunpack_arguments_info = "-s"
-    wvunpack_command = "#{@wvunpack_path.to_s} #{wvunpack_arguments_info} \"#{source}\"" # commands to get info from audio file
+    wvunpack_command = "#@wvunpack_path #{wvunpack_arguments_info} \"#{source}\"" # commands to get info from audio file
     wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
 
     Rails.logger.debug "Wavpack info return status #{wvunpack_status.exitstatus}. Command: #{wvunpack_command}"
@@ -57,7 +57,7 @@ module AudioWavpack
       arguments += " --until=#{end_offset_formatted}"
     end
 
-    wvunpack_command = "#{@wvunpack_path.to_s} #{arguments} \"#{source}\" \"#{target}\"" # commands to get info from audio file
+    wvunpack_command = "#@wvunpack_path #{arguments} \"#{source}\" \"#{target}\"" # commands to get info from audio file
     wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
 
     if wvunpack_status.exitstatus != 0 || !File.exists?(target)

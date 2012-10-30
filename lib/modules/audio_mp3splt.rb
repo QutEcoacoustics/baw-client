@@ -28,7 +28,6 @@ module AudioMp3splt
 
     # WARNING: can't get more than an hour, since minutes only goes to 59.
     # formatted time: mm.ss.ss
-    start_offset = 0
     if modify_parameters.include? :start_offset && modify_parameters[:start_offset] > 0
       start_offset_formatted = Time.at(modify_parameters[:start_offset]).utc.strftime('%M.%S.%2N')
       start_offset = start_offset_formatted
@@ -45,7 +44,7 @@ module AudioMp3splt
       arguments += ' EOF '
     end
 
-    mp3splt_command = "#{@mp3splt_path.to_s} #{arguments}" # commands to get info from audio file
+    mp3splt_command = "#@mp3splt_path #{arguments}" # commands to get info from audio file
     mp3splt_stdout_str, mp3splt_stderr_str, mp3splt_status = Open3.capture3(mp3splt_command) # run the commands and wait for the result
 
     if mp3splt_status.exitstatus != 0 || !File.exists?(target)
