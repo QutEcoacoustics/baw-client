@@ -38,4 +38,4 @@ doc/
 /.project
 
 # rubymine stuff
-.idea/workspace.xml
+/.idea/workspace.xml
