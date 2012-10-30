@@ -14,7 +14,8 @@ module Spectrogram
   # The spectrogram will be created for the entire file. Durations longer than 2 minutes are not recommended.
   # Source is the audio file, target is the image file that will be created.
   # An existing image file will not be overwritten.
-  def self.generate(source, target)
+  # possible parameters: :window :colour :format
+  def self.generate(source, target, modify_parameters)
     
     # check for existing image, and do not overwrite
     if File.exist?(target)
@@ -23,7 +24,7 @@ module Spectrogram
     end
   
     # sox command to create a spectrogram from an audio file
-    command = "#{@sox_path} #{@sox_arguments_verbose} \"#{source}\" #{@sox_arguments_output_audio} #{@sox_arguments_sample_rate} #{@sox_arguments_spectrogram} #{@sox_arguments_output} \"#{target}\""
+    command = "#@sox_path #@sox_arguments_verbose \"#{source}\" #@sox_arguments_output_audio #@sox_arguments_sample_rate #@sox_arguments_spectrogram #@sox_arguments_output \"#{target}\""
     
     # run the command and wait for the result
     stdout_str, stderr_str, status = Open3.capture3(command)
