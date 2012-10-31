@@ -17,7 +17,7 @@ before_script:
   - sh vendor/bin/install_console_audio_tools.sh
 script:
   - ls -la
-  - RAILS_ENV=test bundle exec rake --trace db:migrate
+  - RAILS_ENV=test bundle exec rake db:migrate --trace
   - RAILS_ENV=test bundle exec rake --trace
 notifications:
   webhooks: http://build.ecosounds.org/build
