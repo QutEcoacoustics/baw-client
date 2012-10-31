@@ -16,4 +16,5 @@ class User < ActiveRecord::Base
   # validation
   validates_presence_of :display_name
   validates_uniqueness_of :display_name, :email, :case_sensitive => false
+  has_friendly_id :display_name, :use_slug => true, :strip_non_ascii => true
 end
