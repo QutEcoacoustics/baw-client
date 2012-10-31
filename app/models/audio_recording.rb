@@ -1,3 +1,5 @@
+require 'timeliness'
+
 class AudioRecording < ActiveRecord::Base
   store :notes
   belongs_to :user
