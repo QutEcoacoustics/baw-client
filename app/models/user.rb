@@ -4,4 +4,12 @@ class User < ActiveRecord::Base
   # user stamp
   model_stamper
   stampable
+
+
+  # other associations
+  has_many :projects
+  has_many :sites
+  has_many :audio_recordings
+  has_many :audio_events
+
 end
