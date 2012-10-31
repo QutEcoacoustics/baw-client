@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Audio recording:</b>
+  <%= @audio_event.audio_recording %>
+</p>
+
+<p>
+  <b>Start time seconds:</b>
+  <%= @audio_event.start_time_seconds %>
+</p>
+
+<p>
+  <b>End time seconds:</b>
+  <%= @audio_event.end_time_seconds %>
+</p>
+
+<p>
+  <b>Low frequency hertz:</b>
+  <%= @audio_event.low_frequency_hertz %>
+</p>
+
+<p>
+  <b>High frequency:</b>
+  <%= @audio_event.high_frequency %>
+</p>
+
+<p>
+  <b>Is reference:</b>
+  <%= @audio_event.is_reference %>
+</p>
+
+
+<%= link_to 'Edit', edit_audio_event_path(@audio_event) %> |
+<%= link_to 'Back', audio_events_path %>

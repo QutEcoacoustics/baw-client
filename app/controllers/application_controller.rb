@@ -7,7 +7,8 @@ class ApplicationController < ActionController::Base
   private 
   
   def set_stamper
-    # current_user is from devise
-    User.stamper =  self.current_user #User.first()
+    # BUG: I expect this to fail
+    # TODO: hack while we have no authentication
+    User.stamper =  User.first() #self.current_user
   end
 end
