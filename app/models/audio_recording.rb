@@ -12,8 +12,9 @@ class AudioRecording < ActiveRecord::Base
   # validation
   validates :uuid, :presence => true, :length =>  {:is => 36}
   validates :user, :presence => true
+  
 
-  validates :recorded_date, :presence => true, :on_or_before => :today
+  validates :recorded_date, :presence => true, :timeliness => {:on_or_before => lambda { Date.current }, :type => :date }
   validates :site, :presence => true
   validates :duration_seconds, :presence => true, :numericality => { :greater_than_or_equal_to  => 0 }
 
