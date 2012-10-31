@@ -1,3 +1,5 @@
+require 'timeliness'
+
 class AudioRecording < ActiveRecord::Base
   store :notes
   belongs_to :user
@@ -13,7 +15,7 @@ class AudioRecording < ActiveRecord::Base
   validates :uuid, :presence => true, :length =>  {:is => 36}
   validates :user, :presence => true
 
-  validates :recorded_date, :presence => true, :on_or_before => :today
+  validates :recorded_date, :presence => true, :on_or_before => :now
   validates :site, :presence => true
   validates :duration_seconds, :presence => true, :numericality => { :greater_than_or_equal_to  => 0 }
 
