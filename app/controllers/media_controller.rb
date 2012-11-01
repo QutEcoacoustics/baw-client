@@ -1,6 +1,8 @@
 class MediaController < ApplicationController
   include Cache, Spectrogram, Audio
-  
+
+  respond_to :xml, :json, :html, :png
+
   def index
     # index page for media files
     @testing = QubarSite::Application.config.media_file_config
@@ -10,20 +12,50 @@ class MediaController < ApplicationController
     # page for an individual media file
     # use params to get query string or parsed route parameters
     
-    # get the path for the file matching the request
-    file_name = Cache::cached_spectrogram_file(params)
-    #file_name = Cache::cached_audio_file(params)
-    #file_name = Cache::original_audio_file({ :id => '21EC2020-3AEA-1069-A2DD-08002B30309D', :date => '20121026', :time => '132600', :format => 'wav'})
-    
-    #@file_path = Cache::possible_paths(file_name)
-    #@file_path = Cache::existing_paths(Cache::cached_spectrogram_storage_paths,file_name)
-    #@file_path = QubarSite::Application.config.media_file_config.cached_spectrogram_paths
-    @file_path = Cache::possible_paths(Cache::cached_spectrogram_storage_paths,file_name)
-    
-    # see if the requested file exists
-
     @avail_params = params
     
+    # see if a file extension was specified.
+    # if none was specified, default to html
+    if !params.include? 'format'
+      params[:format] = 'html'
+    end
+    
+    if params[:format] == 'png'  # if the extension is png, it is a spectrogram request
+      file_name = Cache::cached_spectrogram_file(params)
+      file_paths = Cache::possible_paths(Cache::cached_spectrogram_storage_paths,file_name)
+    
+    elsif ['mp3', 'webm', 'webma', 'ogg', 'oga'].include? params[:format] # if the extension is mp3, webma, ogg, it is an audio request
+      file_name = Cache::cached_audio_file(params)
+      file_paths = Cache::possible_paths(Cache::cached_audio_storage_paths,file_name)
+    else
+      # invalid request, what to do?
+    end
+    
+    @file_paths = file_paths
+    
+    mimeType = Mime::Type.lookup_by_extension(params[:format])
+#=begin
+    # respond to the request
+    respond_with do |format|
+      format.html { render }
+      format.htm { render 'index.html.erb' }
+      format.json { render json: params }
+      format.js { render json: params }
+      format.mp3 { send_file_response @file_paths, mimeType }
+      format.webma { send_file_response @file_paths, mimeType }
+      format.webm { send_file_response @file_paths, mimeType }
+      format.oga { send_file_response @file_paths, mimeType }
+      format.ogg { send_file_response @file_paths, mimeType }
+      format.png { send_file_response @file_paths, mimeType }
+    end
+#=end
+    #render :formats => [:html]
+  end
+  
+private
+
+  def send_file_response (file_paths, mime_type)  
+    send_file file_paths[0], :stream => true, :buffer_size => 4096, :disposition => 'inline', :type => mime_type
   end
   
   def info

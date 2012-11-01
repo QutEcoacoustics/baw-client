@@ -102,7 +102,7 @@ module Cache
     result_name = ''
     
     if modify_parameters.include? parameter
-      result_name = modify_parameters[parameter]
+      result_name = modify_parameters[parameter].to_s
       
       if parameter == :format
         result_name = result_name.trim '.', ''
