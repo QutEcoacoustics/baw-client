@@ -6,7 +6,6 @@ module AudioFfmpeg
   # public methods
   public
 
-
   def self.info_ffmpeg(source)
     info = []
     error = []

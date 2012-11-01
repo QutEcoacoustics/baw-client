@@ -5,7 +5,7 @@ require 'uuidtools'
 module UUIDHelper
   def self.included(base)
     base.class_eval do
-      before_validation_on_create :set_uuid
+      before_validation :set_uuid, :on => :create
 
       def set_uuid
         self.uuid = UUID.timestamp_create.to_s
