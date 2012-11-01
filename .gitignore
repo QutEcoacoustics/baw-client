@@ -38,8 +38,4 @@ doc/
 /.project
 
 # rubymine stuff
-/.idea/workspace.xml
-/.idea/qubar.site.iml
-/.idea/dataSources.xml
-/.idea/dataSources.ids
-/.idea/.rakeTasks
+/.idea

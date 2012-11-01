@@ -18,6 +18,9 @@ class User < ActiveRecord::Base
   has_many :sites
   has_many :audio_recordings
   has_many :audio_events
+  has_many :tags
+  has_many :audio_event_tags
+  has_many :permissions
 
   # validation
   validates_presence_of :display_name

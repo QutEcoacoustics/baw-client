@@ -1,15 +1,26 @@
 class Site < ActiveRecord::Base
+  # flex store
   store :notes
-  attr_accessible :name, :latitude, :longitude, :notes
+
+  # relations
   has_many :photos, :as => :imageable
+
   has_many :projects_sites
   has_many :projects, :through => :projects_sites
-  
+
+  has_many :audio_recordings
+
+  # attr
+  attr_accessible :name, :latitude, :longitude, :notes
+
   # userstamp
   stampable
   belongs_to :user
+  acts_as_paranoid
+  validates_as_paranoid
 
+  # validations
   validates :name, :presence => true, :length => { :minimum => 2 }
-  validates :latitude, :presence => true, :numericality => true
-  validates :longitude, :presence => true, :numericality => true
+  validates :latitude, :numericality => true
+  validates :longitude, :numericality => true
 end
