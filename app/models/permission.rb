@@ -1,3 +1,5 @@
+require 'enumerize'
+
 class Permission < ActiveRecord::Base
   extend Enumerize
 

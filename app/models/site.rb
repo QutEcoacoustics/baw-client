@@ -5,8 +5,8 @@ class Site < ActiveRecord::Base
   # relations
   has_many :photos, :as => :imageable
 
-  has_many :projects_sites
-  has_many :projects, :through => :projects_sites
+  has_many :project_sites
+  has_many :projects, :through => :project_sites
 
   has_many :audio_recordings
 
