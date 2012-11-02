@@ -15,7 +15,8 @@ class Permission < ActiveRecord::Base
   # belongs_to :user
 
   # enumerations
-  enumerize :level, :in => [:owner, :write, :read, :none], :default => :none, predicates: true
+  enumerize :level, :in => [:owner, :writer, :reader, :none], :default => :none, predicates: true
+
 
   # validation
   validates :level, :presence => true
