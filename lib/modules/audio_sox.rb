@@ -1,3 +1,5 @@
+require 'OS'
+
 module AudioSox
   include OS
   @sox_path = if OS.windows? then "./vendor/bin/sox/windows/sox.exe" else "sox" end

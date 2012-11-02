@@ -17,7 +17,6 @@ class Permission < ActiveRecord::Base
   # enumerations
   enumerize :level, :in => [:owner, :writer, :reader, :none], :default => :none, predicates: true
 
-
   # validation
   validates :level, :presence => true
   validate :anonymous_permission_can_only_be_read_or_none

@@ -1,6 +1,3 @@
-require 'OS'
-require 'open3'
-
 module Spectrogram
   @sox_path = if OS.windows? then "./vendor/bin/sox/windows/sox.exe" else "sox" end
   @sox_arguments_verbose = "-V"
@@ -16,13 +13,8 @@ module Spectrogram
   # An existing image file will not be overwritten.
   # possible parameters: :window :colour :format
   def self.generate(source, target, modify_parameters)
-    
-    # check for existing image, and do not overwrite
-    if File.exist?(target)
-      Rails.logger.warn  "Target path for spectrogram generation already exists: #{target}."
-      return [ "", "", "", source, File.exist?(source), target, File.exist?(target) ]
-    end
-  
+    raise ArgumentError, "Target path for spectrogram generation already exists: #{target}." unless !File.exist?(target)
+
     # sox command to create a spectrogram from an audio file
     command = "#@sox_path #@sox_arguments_verbose \"#{source}\" #@sox_arguments_output_audio #@sox_arguments_sample_rate #@sox_arguments_spectrogram #@sox_arguments_output \"#{target}\""
     
@@ -31,7 +23,10 @@ module Spectrogram
     
     # log the command
     Rails.logger.debug "Spectrogram generation return status #{status.exitstatus}. Command: #{command}"
-    
+
+    # check for source file problems
+    raise ArgumentError, "Source file was not a valid audio file: #{source}." if stderr_str.include? 'FAIL formats: can\'t open input file'
+
     # package up all the available information and return it
     result = [ stdout_str, stderr_str, status, source, File.exist?(source), target, File.exist?(target) ]
   end
