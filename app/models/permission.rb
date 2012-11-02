@@ -1,5 +1,5 @@
 class Permission < ActiveRecord::Base
-  extend Enumerize
+  #extend Enumerize
 
   # relations
   belongs_to :user
@@ -13,7 +13,7 @@ class Permission < ActiveRecord::Base
   # belongs_to :user
 
   # enumerations
-  enumerize :level, :in => [:owner, :write, :read, :none], :default => :none, predicates: true
+  #enumerize :level, :in => [:owner, :write, :read, :none], :default => :none, predicates: true
 
   # validation
   validates :level, :presence => true

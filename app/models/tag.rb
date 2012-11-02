@@ -1,5 +1,5 @@
 class Tag < ActiveRecord::Base
-  extend Enumerize
+  #extend Enumerize
 
   # relations
   has_many :audio_event_tags
@@ -15,8 +15,8 @@ class Tag < ActiveRecord::Base
   validates_as_paranoid
 
   # enums
-  enumerize :class, :in => [:looks_like, :sounds_like], predicates: true
-  enumerize :type_of_tag, :in => [:common_name, :species_name], predicates: true
+  #enumerize :class, :in => [:looks_like, :sounds_like], predicates: true
+  #enumerize :type_of_tag, :in => [:common_name, :species_name], predicates: true
 
   # validation
   validates :is_taxanomic, :presence => true
