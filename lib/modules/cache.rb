@@ -1,5 +1,3 @@
-require 'String'
-
 # Determines file names for cached and original files.
 module Cache
   
@@ -104,9 +102,9 @@ module Cache
     if modify_parameters.include? parameter
       result_name = modify_parameters[parameter].to_s
       
-      if parameter == :format
-        result_name = result_name.trim '.', ''
-      end
+      #if parameter == :format
+        #result_name = result_name.trim '.', ''
+      #end
       
       if include_separator
         result_name = @parameter_file_name_separator+result_name

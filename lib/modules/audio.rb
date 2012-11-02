@@ -1,5 +1,3 @@
-require 'audio_sox'
-
 module Audio
   include AudioSox, AudioMp3splt, AudioWavpack, AudioFfmpeg
 
