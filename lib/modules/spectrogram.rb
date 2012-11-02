@@ -5,7 +5,15 @@ module Spectrogram
   @sox_arguments_sample_rate = "rate 22050"
   @sox_arguments_spectrogram = "spectrogram -m -r -l -a -q 249 -w hann -y 257 -X 43.06640625 -z 100"
   @sox_arguments_output = "-o"
-  
+
+  def self.colour_options()
+    { :g => :greyscale }
+  end
+
+  def self.window_options()
+    [ 128, 256, 512, 1024, 2048, 4096 ]
+  end
+
   # Generate a spectrogram image from an audio file.
   # The spectrogram will be 257 pixels high, but the length is not known exactly beforehand.
   # The spectrogram will be created for the entire file. Durations longer than 2 minutes are not recommended.
