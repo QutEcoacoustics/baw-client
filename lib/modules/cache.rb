@@ -78,7 +78,7 @@ module Cache
       if param == :id
         file_name += get_parameter(:id, modify_parameters, false)
       elsif param == :format
-        file_name += '.'+get_parameter(:format, modify_parameters, false)
+        file_name += '.'+get_parameter(:format, modify_parameters, false).reverse.chomp('.').reverse
       else 
         file_name += get_parameter(param, modify_parameters)
       end

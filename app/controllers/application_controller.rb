@@ -6,8 +6,8 @@ class ApplicationController < ActionController::Base
   
   private 
   
-  def set_stamper
+  #def set_stamper
     # current_user is provided by devise
-    User.stamper =  self.current_user
-  end
+    #User.stamper =  self.current_user
+  #end
 end

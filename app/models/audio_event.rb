@@ -7,7 +7,7 @@ class AudioEvent < ActiveRecord::Base
   accepts_nested_attributes_for :tags
 
   # attr
-  attr_accessible :end_time_seconds, :high_frequency_hertz, :is_reference,
+  attr_accessible :audio_recording_id, :end_time_seconds, :high_frequency_hertz, :is_reference,
                   :low_frequency_hertz, :start_time_seconds
 
   # userstamp

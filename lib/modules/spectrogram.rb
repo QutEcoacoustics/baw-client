@@ -1,3 +1,5 @@
+require 'open3'
+
 module Spectrogram
   @sox_path = if OS.windows? then "./vendor/bin/sox/windows/sox.exe" else "sox" end
   @sox_arguments_verbose = "-V"
