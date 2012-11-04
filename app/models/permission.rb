@@ -26,7 +26,7 @@ class Permission < ActiveRecord::Base
   def anonymous_permission_can_only_be_read_or_none
     return unless self.user_id.nil?
 
-    return if self.read? || self.none?
+    return if self.reader? || self.none?
 
     errors.add(:level, "The permission level can only be 'read' or 'none' for anonymous permissions")
   end

@@ -10,7 +10,7 @@ class AudioRecording < ActiveRecord::Base
 
   # attr
   attr_accessible :bit_rate_bps, :channels, :data_length_bytes,
-                  :duration_seconds, :hash, :media_type, :notes,
+                  :duration_seconds, :file_hash, :media_type, :notes,
                   :recorded_date, :sample_rate_hertz, :status
 
   # userstamp
@@ -37,7 +37,7 @@ class AudioRecording < ActiveRecord::Base
   validates :media_type, :presence => true
   validates :data_length_bytes, :presence => true, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
 
-  validates :hash, :presence => true
+  validates :file_hash, :presence => true
 
   # uuid stuff
   attr_protected :uuid
