@@ -1,0 +1,20 @@
+<h1>This is a project listing</h1>
+
+<p>{{ProjectName}}</p>
+
+<ul>
+    <li ng-repeat="project in projectList">
+        <div>
+            <h3>{{project.name}}</h3>
+            <p ng-bind="project.description" ></p>
+            <a ng-href="{{project.urn}}">{{project.urn}}</a>
+
+            <pre>{{project.notes}}</pre>
+
+            <small>{{updated_at}}</small>
+
+        </div>
+    </li>
+
+    </ul>
+    <a href="#/" >less fun times</a>
