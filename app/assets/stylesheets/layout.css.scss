@@ -1,0 +1,75 @@
+@import 'base.css.scss';
+
+* {
+    margin: 0;
+    padding: 0;
+}
+html {
+    height: 100%;
+}
+body {
+    background-color: $master-background;
+    font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
+    height: 100%;
+}
+a {
+    color: blue;
+    outline: none;
+    text-decoration: underline;
+}
+a:hover {
+    text-decoration: none;
+}
+p {
+    margin: 0 0 18px
+}
+img {
+    border: none;
+}
+input {
+    vertical-align: middle;
+}
+
+#wrapper {
+    width: 100%;
+    min-width: 768px;
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+}
+
+/* Header
+-----------------------------------------------------------------------------*/
+header {
+    height: 75px;
+    background: nth($master-highlight-2, 2);
+    border-bottom:2px solid $master-highlight;
+    h1 {
+      font-size:2em;
+      padding:15px 0 0 15px;
+    }
+}
+
+/* Middle
+-----------------------------------------------------------------------------*/
+#content {
+    padding: 0 0 70px;
+}
+
+/* Footer
+-----------------------------------------------------------------------------*/
+footer {
+    margin: -70px auto 0;
+    min-width: 768px;
+    height: 70px;
+    background: nth($master-highlight-2, 2);
+    position: relative;
+    border-top:2px solid $master-highlight;
+    ul{
+      list-style-type:none;
+      li {
+        float:left;
+        margin: 0 15px 0 0;
+      }
+    }
+}
