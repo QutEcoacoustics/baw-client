@@ -1,5 +1,5 @@
 module FileCacher
-  include Cache, Spectrogram, Audio
+  include Cache, Spectrogram, Audio, Exceptions
 
   public
 
@@ -10,7 +10,7 @@ module FileCacher
 
     if target_existing_paths.blank?
       # if no cached spectrogram images exist, try to create them from the cached audio
-      source_file = Cache::cached_audio_file(params)
+      source_file = Cache::cached_audio_file modify_parameters
       source_existing_paths = Cache::existing_paths(Cache::cached_audio_storage_paths,source_file)
 
       if source_existing_paths.blank?
@@ -39,7 +39,7 @@ module FileCacher
 
     if target_existing_paths.blank?
       # if no cached audio files exist, try to create them from the original audio
-      source_file = Cache::original_audio_file(params)
+      source_file = Cache::original_audio_file modify_parameters
       source_existing_paths = Cache::existing_paths(Cache::original_audio_storage_paths,source_file)
 
       if source_existing_paths.blank?

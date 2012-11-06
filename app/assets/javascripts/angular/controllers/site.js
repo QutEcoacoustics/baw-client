@@ -1,9 +1,12 @@
-'use strict'
+"use strict";
 
+function SiteCtrl($scope, $resource) {
 
-function SiteCtrl($scope) {
+    var siteResource = $resource('/sites/:siteId', {siteId: '@id'}, {
+        get: { method:'GET', params:{siteId: '@id'}, isArray: false }
+    });
 
-    $scope.name = "farts r us";
-
-
+    $scope.site = siteResource.get({siteId:1});
 }
+
+SiteCtrl.$inject = ['$scope', '$resource'];

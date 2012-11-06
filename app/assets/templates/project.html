@@ -1,20 +1,13 @@
-<h1>This is a project listing</h1>
+<div id="content" data-ng-controller="ProjectCtrl">
+    <h2>Project</h2>
 
-<p>{{ProjectName}}</p>
+    <p>The details for a project.</p>
 
-<ul>
-    <li ng-repeat="project in projectList">
-        <div>
-            <h3>{{project.name}}</h3>
-            <p ng-bind="project.description" ></p>
-            <a ng-href="{{project.urn}}">{{project.urn}}</a>
+    <a href="#/projects">Projects</a>
+    <a href="#/">Home</a>
 
-            <pre>{{project.notes}}</pre>
-
-            <small>{{updated_at}}</small>
-
-        </div>
-    </li>
-
-    </ul>
-    <a href="#/" >less fun times</a>
+    <h3><a ng-href="{{project.urn}}">{{project.name}}</a></h3>
+    <p ng-bind="project.description" ></p>
+    <pre>{{project.notes}}</pre>
+    <small>{{updated_at}}</small>
+</div>

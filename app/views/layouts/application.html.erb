@@ -35,8 +35,15 @@
 
 <%= "" #yield
 %>
-    <div ng-view></div>
 
+<div id="wrapper">
+    <header><h1>Bioacoustic Workbench</h1></header>
+
+    <!-- each view must specify the controller they use -->
+        <div ng-view></div>
+    </div>
+</div>
+<footer></footer>
     <!--<div ng-controller="PhoneListCtrl">-->
       <!--<h1>{{hello}} bitches!</h1>-->
 

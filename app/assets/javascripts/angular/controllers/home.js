@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 //angular.module('home', []).config(function ($routeProvider, $httpProvider) {
 //

@@ -1,15 +1,11 @@
-'use strict'
+"use strict";
+function ProjectCtrl($scope, $resource) {
 
-
-function ProjectCtrl($scope, $http) {
-
-    $http.get('projects.json').success(function(data) {
-        $scope.projectList  = data;
+    var projectResource = $resource('/projects/:projectId', {projectId: '@id'}, {
+        get: { method:'GET', params:{projectId: '@id'}, isArray: false }
     });
 
-
-
-    $scope.ProjectName = "boobs r us";
-
-
+    $scope.project = projectResource.get({projectId:1});
 }
+
+ProjectCtrl.$inject = ['$scope', '$resource'];
