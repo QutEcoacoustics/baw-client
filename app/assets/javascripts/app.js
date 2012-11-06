@@ -2,7 +2,7 @@
 
 /* App Module */
 
-angular.module('baw', ['$routeProvider','$locationProvider'], function($routeProvider, $locationProvider ) {
+angular.module('baw', [], function($routeProvider, $locationProvider ) {
 
     // routes
     $routeProvider.
