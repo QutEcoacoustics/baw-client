@@ -24,14 +24,8 @@ var bawApp = angular.module('baw', ['ngResource'], function($routeProvider, $loc
         otherwise({redirectTo: '/home'});
 
     // location config
-    //$locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true);
 
 
 
 });
-
-bawApp.factory('Todo', ['$resource', function($resource) {
-    return $resource('http://localhost:port/todos.json', {port:":3001"} , {
-        query: {method: 'GET', isArray: true}
-    });
-}]);

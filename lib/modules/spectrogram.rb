@@ -1,6 +1,8 @@
 require 'open3'
 
 module Spectrogram
+  include OS
+
   @sox_path = if OS.windows? then "./vendor/bin/sox/windows/sox.exe" else "sox" end
   @sox_arguments_verbose = "-V"
   @sox_arguments_output_audio = "-n"

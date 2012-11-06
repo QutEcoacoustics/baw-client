@@ -10,12 +10,13 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require angular.js
-//= require angular-resource.js
-//= require angular-ui.js
-//= require angular-ui-ieshiv.js
 //= require jquery
 //= require jquery_ujs
+//= require angular.js
+//= require angular-resource.js
+// require angular-ui.js
+// require angular-ui-ieshiv.js
+//= require app
 //= require_tree .
 
 

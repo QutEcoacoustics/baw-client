@@ -1,4 +1,4 @@
-var bawApp = angular.module('baw', function() {
+bawApp.directive('baw', function() {
     return function(scope, element, attrs) {
         element.css('display', 'none');
         scope.$watch(attrs.ngDsFade, function(value) {
