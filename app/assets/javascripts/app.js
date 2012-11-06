@@ -2,7 +2,7 @@
 
 /* App Module */
 
-var bawModule = angular.module('baw', ['ngResource'], function($routeProvider, $locationProvider ) {
+var bawApp = angular.module('baw', ['ngResource'], function($routeProvider, $locationProvider ) {
 
     // routes
     $routeProvider.
@@ -30,7 +30,7 @@ var bawModule = angular.module('baw', ['ngResource'], function($routeProvider, $
 
 });
 
-bawModule.factory('Todo', ['$resource', function($resource) {
+bawApp.factory('Todo', ['$resource', function($resource) {
     return $resource('http://localhost:port/todos.json', {port:":3001"} , {
         query: {method: 'GET', isArray: true}
     });
