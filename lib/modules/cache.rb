@@ -9,7 +9,7 @@ module Cache
   
   # get the file name for an original audio file
   def self.original_audio_file(modify_parameters = {})
-    file_name = self.build_parameters [ :id, :date, :time, :format ], modify_parameters
+    file_name = self.build_parameters [ :id, :date, :time, :original_format ], modify_parameters
     file_name
   end
   
@@ -47,7 +47,9 @@ module Cache
     
   # get the file name for a cached spectrogram
   def self.cached_spectrogram_file(modify_parameters = {})
-    file_name = self.build_parameters [ :id, :start_offset, :end_offset, :channel, :sample_rate, :window, :colour, :format ], modify_parameters
+    # don't use format here, as we know that spectrograms will be cached in png
+    file_name = self.build_parameters [ :id, :start_offset, :end_offset, :channel, :sample_rate, :window, :colour ], modify_parameters
+    file_name += '.png'
     file_name
   end
   
@@ -59,7 +61,8 @@ module Cache
   
   # get all possible full paths for a file
   def self.possible_paths(storage_paths, file_name)
-    possible_paths = storage_paths.collect { |path| File.join(path,file_name) }
+
+    possible_paths = storage_paths.collect { |path| File.join(path, build_subfolder(file_name), file_name) }
     possible_paths
   end
   
@@ -70,7 +73,12 @@ module Cache
   end
   
   private
-  
+
+  def self.build_subfolder(file_name)
+    # assume that the file name starts with the uuid, get the first two chars as the sub folder
+    file_name[0,2]
+  end
+
   def self.build_parameters(parameter_names = {}, modify_parameters = {})
     file_name = ''
     
@@ -79,6 +87,8 @@ module Cache
         file_name += get_parameter(:id, modify_parameters, false)
       elsif param == :format
         file_name += '.'+get_parameter(:format, modify_parameters, false).reverse.chomp('.').reverse
+      elsif param == :original_format
+        file_name += '.'+get_parameter(:original_format, modify_parameters, false).reverse.chomp('.').reverse
       else 
         file_name += get_parameter(param, modify_parameters)
       end

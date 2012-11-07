@@ -2,11 +2,11 @@ class SitesController < ApplicationController
   # GET /sites
   # GET /sites.json
   def index
-    @sites = Site.all
+    @sites = Site.includes(:audio_recordings)
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @sites }
+      format.json { render json: @sites.to_json(:include => { :audio_recordings => { :only => [ :id ] }}) }
     end
   end
 

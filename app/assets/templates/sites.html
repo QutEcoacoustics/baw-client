@@ -3,16 +3,17 @@
 
     <p>These are the available sites.</p>
 
-    <a href="#/">Home</a>
+    <a href="/">Home</a>
 
     <ul>
         <li data-ng-repeat="site in sites">
             <div>
-                <h3><a data-ng-href="#/site/{{site.id}}">{{site.name}}</a></h3>
+                <h3><a data-ng-href="/sites/{{site.id}}">{{site.name}}</a></h3>
                 <p><span data-ng-bind="site.latitude"></span></p>
                 <p><span data-ng-bind="site.longitude"></span></p>
                 <p>{{site.notes}}</p>
                 <p>{{site.projects}}</p>
+                <p>{{site.audio_recordings.length}}</p>
             </div>
         </li>
 
