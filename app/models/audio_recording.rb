@@ -7,11 +7,12 @@ class AudioRecording < ActiveRecord::Base
   # relations
   belongs_to :site
   has_many :audio_events
+  belongs_to :user, :class_name => 'User', :foreign_key => "uploader_id"
 
   # attr
   attr_accessible :bit_rate_bps, :channels, :data_length_bytes,
                   :duration_seconds, :file_hash, :media_type, :notes,
-                  :recorded_date, :sample_rate_hertz, :status
+                  :recorded_date, :sample_rate_hertz, :status, :uploader_id
 
   # userstamp
   stampable
@@ -21,7 +22,7 @@ class AudioRecording < ActiveRecord::Base
 
   # validation
   validates :uuid, :presence => true, :length =>  {:is => 36}, :uniqueness => { :case_sensitive => false }
-  validates :user, :presence => true
+  validates :uploader_id, :presence => true
   
 
   validates :recorded_date, :presence => true, :timeliness => {:on_or_before => lambda { Date.current }, :type => :date }

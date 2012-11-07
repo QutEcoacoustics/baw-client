@@ -22,7 +22,7 @@ class Project < ActiveRecord::Base
   validates_as_paranoid
 
   # validation
-  validates :name, :presence => true
+  validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
   validates :urn, :presence => true
 
 end
