@@ -1,4 +1,5 @@
-bawApp.directive('baw', function() {
+
+bawApp.directive('nsDsFade', function() {
     return function(scope, element, attrs) {
         element.css('display', 'none');
         scope.$watch(attrs.ngDsFade, function(value) {
