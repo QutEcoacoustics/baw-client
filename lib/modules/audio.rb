@@ -27,8 +27,18 @@ module Audio
   # parameters in modify_parameters. Possible options:
   # :start_offset :end_offset :channel :sample_rate :format
   def self.modify(source, target, modify_parameters)
+    raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
+    raise ArgumentError, "Target exists: #{File.basename(target)}" unless !File.exists? source
+    raise ArgumentError "Source and Target are the same file." unless source != target
 
-    modify_wavpack(source, target, modify_parameters)
+    if source.match(/\.wv$/)
+      # wav pack can only be converted to wav
+
+      target_file = Cache::cached_audio_file modify_parameters
+      target_possible_paths = Cache::possible_paths(Cache::cached_audio_storage_paths,target_file)
+
+      AudioWavpack::modify_wavpack(source, target, modify_parameters)
+    end
   end
 
 end

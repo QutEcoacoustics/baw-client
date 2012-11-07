@@ -5,12 +5,16 @@ module FileCacher
 
   def self.generate_spectrogram(modify_parameters = {})
     # first check if a cached spectrogram matches the request
+
     target_file = Cache::cached_spectrogram_file modify_parameters
     target_existing_paths = Cache::existing_paths(Cache::cached_spectrogram_storage_paths,target_file)
 
     if target_existing_paths.blank?
-      # if no cached spectrogram images exist, try to create them from the cached audio
-      source_file = Cache::cached_audio_file modify_parameters
+      # if no cached spectrogram images exist, try to create them from the cached audio (it must be a wav file)
+      cached_wav_audio_parameters = modify_parameters.clone
+      cached_wav_audio_parameters[:format] = 'wav'
+
+      source_file = Cache::cached_audio_file cached_wav_audio_parameters
       source_existing_paths = Cache::existing_paths(Cache::cached_audio_storage_paths,source_file)
 
       if source_existing_paths.blank?
@@ -41,6 +45,7 @@ module FileCacher
       # if no cached audio files exist, try to create them from the original audio
       source_file = Cache::original_audio_file modify_parameters
       source_existing_paths = Cache::existing_paths(Cache::original_audio_storage_paths,source_file)
+      source_possible_paths = Cache::possible_paths(Cache::original_audio_storage_paths,source_file)
 
       if source_existing_paths.blank?
         # if the original audio files cannot be found, raise an exception

@@ -3,12 +3,13 @@
 
     <p>The details for a site.</p>
 
-    <a href="#/sites">Sites</a>
-    <a href="#/">Home</a>
+    <a href="/sites">Sites</a>
+    <a href="/">Home</a>
 
     <h3>{{site.name}}</h3>
     <p ng-bind="site.latitude" ></p>
     <p ng-bind="site.longitude" ></p>
     <pre>{{site.notes}}</pre>
-    <small>{{updated_at}}</small>
+    <small>{{site.updated_at}}</small>
+    <p>{{site.audio_recordings.length}}</p>
 </div>

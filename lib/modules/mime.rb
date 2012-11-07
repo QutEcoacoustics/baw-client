@@ -1,4 +1,5 @@
- module Mime
+# http://blog.choonkeat.com/weblog/2007/02/retrieving-a-se.html
+module Mime
       class Type
           class << self
               # Lookup, guesstimate if fail, the file extension

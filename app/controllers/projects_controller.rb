@@ -2,22 +2,22 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = Project.includes(:sites)
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @projects }
+      format.json { render :json => @projects.to_json(:include => { :sites => { :only => [ :id, :name ] }}) }
     end
   end
 
   # GET /projects/1
   # GET /projects/1.json
   def show
-    @project = Project.find(params[:id])
+    @project = Project.find(params[:id], :include => :sites)
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @project }
+      format.json { render :json => @project.to_json(:include => :sites) }
     end
   end
 

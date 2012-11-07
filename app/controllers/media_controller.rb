@@ -1,7 +1,7 @@
 class MediaController < ApplicationController
   include FileCacher
 
-  respond_to :xml, :json, :html, :png, :ogg, :oga, :webm, :webma, :mp3
+  #respond_to :xml, :json, :html, :png, :ogg, :oga, :webm, :webma, :mp3
 
   def index
     # index page for media files
@@ -25,14 +25,19 @@ class MediaController < ApplicationController
 
     final_format_requested = requested_media_type
 
-    image_media_types = [ Mime['image/png'] ]
-    audio_media_types = [ Mime['audio/webm'], Mime['audio/webma'],
-                          Mime['audio/ogg'], Mime['audio/oga'],
-                          Mime['audio/mp3'], Mime['audio/mpeg'] ]
-    text_media_types = [ Mime['application/json'], Mime['text/html'],
-                         Mime['application/xhtml+xml'], Mime['application/xml'],
-                         Mime['application/x-javascript'], Mime['text/javascript'],
-                         Mime['text/x-javascript'],Mime['text/x-json'] ]
+    image_media_types = [ Mime::Type.lookup('image/png')
+                        ]
+    audio_media_types = [ Mime::Type.lookup('audio/webm'), Mime::Type.lookup('audio/webma'),
+                          Mime::Type.lookup('audio/ogg'), Mime::Type.lookup('audio/oga'),
+                          Mime::Type.lookup('audio/mp3'), Mime::Type.lookup('audio/mpeg')
+                        ]
+    text_media_types = [ Mime::Type.lookup('application/json'), Mime::Type.lookup('text/html'),
+                         Mime::Type.lookup('application/xhtml+xml'), Mime::Type.lookup('application/xml'),
+                         Mime::Type.lookup('application/x-javascript'), Mime::Type.lookup('text/javascript'),
+                         Mime::Type.lookup('text/x-javascript'), Mime::Type.lookup('text/x-json')
+                       ]
+
+    all_media_types = image_media_types.concat(audio_media_types).concat(text_media_types)
 
     # if the format is a supported image format, locate a cached spectrogram or generate it, then stream it back.
     #if image_media_types.include? final_format_requested
@@ -40,25 +45,41 @@ class MediaController < ApplicationController
     recording = AudioRecording.find_by_uuid(@file_info[:id])
     @file_info[:date] = recording.recorded_date.strftime "%Y%m%d"
     @file_info[:time] = recording.recorded_date.strftime "%H%M%S"
+    @file_info[:original_format] = Mime::Type.file_extension_of recording.media_type
+    @file_info[:requested_media_type] =requested_media_type
+    @file_info[:requested_extension] =requested_extension
 
-    full_path = FileCacher::generate_spectrogram @file_info
-      send_file full_path, :stream => true, :buffer_size => 4096, :disposition => 'inline', :type => final_format_requested, :content_type => final_format_requested
 
+    #full_path = Cache::
 
+    #send_file full_path, :stream => true, :buffer_size => 4096, :disposition => 'inline', :type => final_format_requested, :content_type => final_format_requested
 
-=begin
-    elsif audio_media_types.include? final_format_requested
-      full_path = FileCacher::create_audio_segment @file_info
-      send_file full_path, :stream => true, :buffer_size => 4096, :disposition => 'inline', :type => final_format_requested, :content_type => final_format_requested
-
-    elsif text_media_types.include? final_format_requested
-      respond_with @file_info
-
-    else
-      # respond with a bad request
-      respond_with nil, { :head => :bad_request }
+    if image_media_types.include? final_format_requested
+      full_path = FileCacher::generate_spectrogram @file_info
+      download_file full_path, final_format_requested
     end
-=end
+
+    if audio_media_types.include? final_format_requested
+      full_path = FileCacher::create_audio_segment @file_info
+      download_file full_path, final_format_requested
+    end
+
+    if text_media_types.include? final_format_requested
+      respond_to do |format|
+        format.xml {render :xml =>  @file_info}
+        format.json {render :json =>  @file_info}
+      end
+    end
+
+    unless all_media_types.include? final_format_requested
+      # respond with a bad request
+      head :bad_request
+    end
+
+  end
+
+  def download_file(full_path, media_type)
+    send_file full_path, :stream => true, :buffer_size => 4096, :disposition => 'inline', :type => media_type, :content_type => media_type
   end
 
   def update

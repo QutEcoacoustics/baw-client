@@ -3,11 +3,18 @@
 
     <p>The details for a project.</p>
 
-    <a href="#/projects">Projects</a>
-    <a href="#/">Home</a>
+    <a href="/projects">Projects</a>
+    <a href="/">Home</a>
 
     <h3><a ng-href="{{project.urn}}">{{project.name}}</a></h3>
     <p ng-bind="project.description" ></p>
     <pre>{{project.notes}}</pre>
     <small>{{updated_at}}</small>
+<ul>
+    <li data-ng-repeat="site in project.sites">
+        {{site.id}}
+        {{site.latitude}}
+        {{site.longitude}}
+    </li>
+</ul>
 </div>
