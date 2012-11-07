@@ -4,6 +4,7 @@ module Spectrogram
   include OS
 
   @sox_path = if OS.windows? then "./vendor/bin/sox/windows/sox.exe" else "sox" end
+  @sox_arguments_immutable = '-n '
   @sox_arguments_verbose = "-V"
   @sox_arguments_output_audio = "-n"
   @sox_arguments_sample_rate = "rate 22050"
@@ -26,9 +27,16 @@ module Spectrogram
   # possible parameters: :window :colour :format
   def self.generate(source, target, modify_parameters)
     raise ArgumentError, "Target path for spectrogram generation already exists: #{target}." unless !File.exist?(target)
+    raise ArgumentError, "Window size must be one of ''#{window_options.join(', ')}', given '#{modify_parameters[:window]}'." unless window_options.include? modify_parameters[:window].to_i
+
+    colours_available = colour_options.map { |k, v| "#{k} (#{v})" }.join(', ')
+    raise ArgumentError, "Colour must be one of '#{colours_available}', given '#{modify_parameters[:colour]}'." unless colour_options.include? modify_parameters[:colour]
+
+
+
 
     # sox command to create a spectrogram from an audio file
-    command = "#@sox_path #@sox_arguments_verbose \"#{source}\" #@sox_arguments_output_audio #@sox_arguments_sample_rate #@sox_arguments_spectrogram #@sox_arguments_output \"#{target}\""
+    command = "#@sox_path -V \"#{source}\" -n #@sox_arguments_sample_rate spectrogram -r -l -a #@sox_arguments_output \"#{target}\""
     
     # run the command and wait for the result
     stdout_str, stderr_str, status = Open3.capture3(command)

@@ -22,13 +22,20 @@ module FileCacher
         create_audio_segment modify_parameters
         source_existing_paths = Cache::existing_paths(Cache::cached_audio_storage_paths,source_file)
         # raise an exception if the cached audio files could not be created
-        raise Exceptions::SourceAudioFileNotFoundError, "Could not generate spectrogram." if source_existing_paths.blank?
+        raise Exceptions::AudioFileNotFoundError, "Could not generate spectrogram." if source_existing_paths.blank?
       end
 
       # create the spectrogram image in each of the possible paths
       target_possible_paths = Cache::possible_paths(Cache::cached_spectrogram_storage_paths,target_file)
-      target_possible_paths.each { |path| Spectrogram::generate source_existing_paths.first, path, modify_parameters }
+      target_possible_paths.each { |path|
+        # ensure the subdirectories exist
+        FileUtils.mkpath(File.dirname(path))
+        # generate the spectrogram
+        Spectrogram::generate source_existing_paths.first, path, modify_parameters
+      }
       target_existing_paths = Cache::existing_paths(Cache::cached_spectrogram_storage_paths,target_file)
+
+      raise Exceptions::SpectrogramFileNotFoundError, "Could not find spectrogram." if target_existing_paths.blank?
     end
 
     # the requested spectrogram image should exist in at least one possible path
@@ -49,7 +56,7 @@ module FileCacher
 
       if source_existing_paths.blank?
         # if the original audio files cannot be found, raise an exception
-        raise Exceptions::SourceAudioFileNotFoundError, "Could not find original audio file." if source_existing_paths.blank?
+        raise Exceptions::AudioFileNotFoundError, "Could not find original audio file." if source_existing_paths.blank?
       end
 
       # create the cached audio file in each of the possible paths
