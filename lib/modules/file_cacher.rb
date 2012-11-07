@@ -61,7 +61,12 @@ module FileCacher
 
       # create the cached audio file in each of the possible paths
       target_possible_paths = Cache::possible_paths(Cache::cached_audio_storage_paths,target_file)
-      target_possible_paths.each { |path| Audio::modify source_existing_paths.first, path, modify_parameters }
+      target_possible_paths.each { |path|
+        # ensure the subdirectories exist
+        FileUtils.mkpath(File.dirname(path))
+        # create the audio segment
+        Audio::modify source_existing_paths.first, path, modify_parameters
+      }
       target_existing_paths = Cache::existing_paths(Cache::cached_audio_storage_paths,target_file)
     end
 
