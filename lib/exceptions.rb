@@ -1,3 +1,4 @@
 module Exceptions
-  class SourceAudioFileNotFoundError < IOError; end
+  class AudioFileNotFoundError < IOError; end
+  class SpectrogramFileNotFoundError < IOError; end
 end

@@ -13,31 +13,39 @@ class MediaController < ApplicationController
 
     # construct a hash of information to be returned and used for modify_parameters
     @file_info = params
-    #@file_info.delete 'controller'
-    #@file_info.delete 'action'
+    @file_info.delete 'controller'
+    @file_info.delete 'action'
     #@file_info.delete 'format'
 
     # decide on the format requested. There are at least two ways to get the request format:
     # request.format (created based on accept mime type) and params[:format] (from the file extension in the request)
 
-    requested_media_type = Mime[request.format]
+    # can't use the mime type - not reliable
+    #requested_media_type = Mime::Type.lookup(request.format)
     requested_extension = params[:format]
 
-    final_format_requested = requested_media_type
+    final_format_requested = Mime::Type.lookup_by_extension requested_extension
 
-    image_media_types = [ Mime::Type.lookup('image/png')
-                        ]
-    audio_media_types = [ Mime::Type.lookup('audio/webm'), Mime::Type.lookup('audio/webma'),
-                          Mime::Type.lookup('audio/ogg'), Mime::Type.lookup('audio/oga'),
-                          Mime::Type.lookup('audio/mp3'), Mime::Type.lookup('audio/mpeg')
-                        ]
-    text_media_types = [ Mime::Type.lookup('application/json'), Mime::Type.lookup('text/html'),
-                         Mime::Type.lookup('application/xhtml+xml'), Mime::Type.lookup('application/xml'),
-                         Mime::Type.lookup('application/x-javascript'), Mime::Type.lookup('text/javascript'),
-                         Mime::Type.lookup('text/x-javascript'), Mime::Type.lookup('text/x-json')
-                       ]
+    image_media_types = [
+        Mime::Type.lookup('image/png')
+    ]
 
-    all_media_types = image_media_types.concat(audio_media_types).concat(text_media_types)
+    audio_media_types = [
+        Mime::Type.lookup('audio/webm'), Mime::Type.lookup('audio/webma'),
+        Mime::Type.lookup('audio/ogg'), Mime::Type.lookup('audio/oga'),
+        Mime::Type.lookup('audio/mp3'), Mime::Type.lookup('audio/mpeg'),
+        Mime::Type.lookup('audio/wav'), Mime::Type.lookup('audio/x-wav')
+    ]
+
+    text_media_types = [
+        Mime::Type.lookup('application/json'), Mime::Type.lookup('text/html'),
+        Mime::Type.lookup('application/xhtml+xml'), Mime::Type.lookup('application/xml'),
+        Mime::Type.lookup('application/x-javascript'), Mime::Type.lookup('text/javascript'),
+        Mime::Type.lookup('text/x-javascript'), Mime::Type.lookup('text/x-json')
+    ]
+
+    all_media_types = []
+    all_media_types.concat(image_media_types).concat(audio_media_types).concat(text_media_types)
 
     # if the format is a supported image format, locate a cached spectrogram or generate it, then stream it back.
     #if image_media_types.include? final_format_requested
@@ -46,13 +54,10 @@ class MediaController < ApplicationController
     @file_info[:date] = recording.recorded_date.strftime "%Y%m%d"
     @file_info[:time] = recording.recorded_date.strftime "%H%M%S"
     @file_info[:original_format] = Mime::Type.file_extension_of recording.media_type
-    @file_info[:requested_media_type] =requested_media_type
-    @file_info[:requested_extension] =requested_extension
+    #@file_info[:requested_media_type] = final_format_requested
+    #@file_info[:requested_extension] = requested_extension
+    #@file_info[:types] = text_media_types
 
-
-    #full_path = Cache::
-
-    #send_file full_path, :stream => true, :buffer_size => 4096, :disposition => 'inline', :type => final_format_requested, :content_type => final_format_requested
 
     if image_media_types.include? final_format_requested
       full_path = FileCacher::generate_spectrogram @file_info

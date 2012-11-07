@@ -39,8 +39,12 @@ module AudioWavpack
   def self.modify_wavpack(source, target, modify_parameters = {})
     raise ArgumentError, "Source is not a wavpack file: #{File.basename(source)}" unless source.match(/\.wv$/)
     raise ArgumentError, "Target is not a wav file: : #{File.basename(target)}" unless target.match(/\.wav$/)
+
+    if File.exists? target
+      return [[],[]]
+    end
+
     raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
-    raise ArgumentError, "Target exists: #{File.basename(target)}" unless !File.exists? source
 
     info = []
     error = []
@@ -48,20 +52,25 @@ module AudioWavpack
     # formatted time: hh:mm:ss.ss
     arguments = '-t -q'
     if modify_parameters.include? :start_offset
-      start_offset_formatted = Time.at(modify_parameters[:start_offset]).utc.strftime('%H:%M:%S.%2N')
+      start_offset_formatted = Time.at(modify_parameters[:start_offset].to_f).utc.strftime('%H:%M:%S.%2N')
       arguments += " --skip=#{start_offset_formatted}"
     end
 
     if modify_parameters.include? :end_offset
-      end_offset_formatted = Time.at(modify_parameters[:start_offset]).utc.strftime('%H:%M:%S.%2N')
+      end_offset_formatted = Time.at(modify_parameters[:end_offset].to_f).utc.strftime('%H:%M:%S.%2N')
       arguments += " --until=#{end_offset_formatted}"
     end
 
     wvunpack_command = "#@wvunpack_path #{arguments} \"#{source}\" \"#{target}\"" # commands to get info from audio file
+
+    if OS.windows?
+      wvunpack_command = wvunpack_command.gsub(%r{/}) { "\\" }
+    end
+
     wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
 
     if wvunpack_status.exitstatus != 0 || !File.exists?(target)
-      raise "Wvunpack exited with an error: #{wvunpack_stderr_str}"
+      raise "Wvunpack command #{wvunpack_command} exited with an error: #{wvunpack_stderr_str}"
     end
 
     [info, error]
