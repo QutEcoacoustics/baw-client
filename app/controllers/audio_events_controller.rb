@@ -2,11 +2,29 @@ class AudioEventsController < ApplicationController
   # GET /audio_events
   # GET /audio_events.json
   def index
+    if params[:by_audio_id]
+      return by_audio_id
+    end
+
     @audio_events = AudioEvent.all
 
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @audio_events }
+    end
+  end
+
+  def by_audio_id
+    # TODO: check if quid
+    id = params[:by_audio_id]
+
+    # HACK: inefficient
+
+    @audio_recording  = (AudioRecording.find_by_uuid id)
+    @audio_events = AudioEvent.find_all_by_audio_recording_id  @audio_recording.id
+
+    respond_to do |format|
+      format.json { render json: @audio_events}
     end
   end
 

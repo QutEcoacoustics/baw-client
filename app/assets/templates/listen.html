@@ -7,12 +7,31 @@
     <p>Listen and annotate.</p>
 
     <h3>Spectrogram</h3>
-    <img src="{{}}">
+    <!--<pre ng-bind="print('spectrogram')" ></pre>-->
+
+    <img ng-src="{{spectrogram.url}}">
 
     <h3>Audio Controls</h3>
-    <audio></audio>
+    <!--<pre ng-bind="print('recording')" ></pre>-->
+    <audio id="main-player"  controls>
+        <source ng-src="{{recordingurl}}" >
+        Your browser does not support the audio element.
+    </audio>
 
     <h3>Annotations</h3>
-    <table>a</table>ss
+    <!--<pre ng-bind="print('audio_events')" ></pre>-->
+    <table>
+        <thead>
+            <th ng-repeat="header in event_keys()">{{header}}</th>
+        </thead>
+        <tbody >
+            <tr ng-repeat="event in audio_events">
+                <td ng-repeat="attr in event">{{attr}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href ng-click="showHide= !showHide">Debug info {{showHide}}</a>
+    <pre ui-toggle="showHide" class="ui-hide"  ng-bind="print()"></pre>
 
 </div>

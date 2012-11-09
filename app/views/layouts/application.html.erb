@@ -16,14 +16,14 @@
 <%= "" #yield
 %>
 
-<div id="wrapper">
+<div id="page-wrapper">
     <header>
       <h1>Bioacoustic Workbench</h1>
       <a href="/">Home</a>
     </header>
 
     <!-- each view must specify the controller they use -->
-        <div ng-view></div>
+        <div id="content-wrapper" ng-view></div>
     </div>
 </div>
 <footer></footer>

@@ -2,7 +2,7 @@
 
 /* App Module */
 
-var bawApp = angular.module('baw', ['ngResource'], function($routeProvider, $locationProvider ) {
+var bawApp = angular.module('baw', ['ngResource', 'ui.directives', 'ui.filters'], function($routeProvider, $locationProvider ) {
 
     // routes
     $routeProvider.

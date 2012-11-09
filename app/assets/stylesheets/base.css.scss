@@ -1,7 +1,68 @@
+/**********************************************************
+ *
+ *                  Reusable components
+ *
+ **********************************************************/
+
+
+/*
+ *
+ *  Global variables
+ *
+ */
+
 // https://kuler.adobe.com/#themeID/1080677
 // http://colorschemedesigner.com/
-$master-background: #E9E7C2;
-$master-highlight: #787C39;
-$master-highlight-2: #908221 #D4DEB8;
-$master-dark: #2C2C2A;
-$master-dark-2: #584B28;
+$primary-color:         #E9E7C2 #D4DEB8 #e8e7e4;
+$master-background:     #E9E7C2 #E9EFD8 #e8e7e4;
+$master-highlight:      #7B903C #7A903C #97904A;
+$master-highlight-2:    #D4DEB8 #ADC7A5 #97764A;
+$master-dark:           #2C2C2A #1D1D0E #78787A;
+$master-dark-2:         #212120 #1D1D0E #AEADAC;
+$master-complementary:  #4A2B66 #73305F #34346A;
+
+$standard-padding-horizontal: 0.5em;
+$standard-padding-vertical:   0.25em;
+$standrd-padding:             $standard-padding-vertical $standard-padding-horizontal;
+
+
+/*
+ *
+ *  Functions
+ *
+ */
+
+@mixin vendor-prefix($name, $arguments...) {
+  #{$name}: $arguments;
+  -webkit-#{$name}: $arguments;
+  -ms-#{$name}: $arguments;
+  -moz-#{$name}: $arguments;
+  -o-#{$name}: $arguments;
+}
+
+/*
+ *
+ *  Animations
+ *
+ */
+
+.standard-transition{
+  @include vendor-prefix(transition, all 0.5s ease);
+}
+
+.ui-show {
+  @extend .standard-transition;
+}
+.ui-hide {
+  opacity: 0;
+  @extend .standard-transition;
+
+}
+
+
+/*
+ *
+ *  Styles
+ *  // see layout.css.scss
+ */
+
