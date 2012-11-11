@@ -1,0 +1,37 @@
+<div id="content" data-ng-controller="ListenCtrl">
+    <a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">demo</a>
+    <a href="#" ng-click="refresh()">demo</a>
+
+    <h1>Listen</h1>
+
+    <p>Listen and annotate.</p>
+
+    <h3>Spectrogram</h3>
+    <!--<pre ng-bind="print('spectrogram')" ></pre>-->
+
+    <img ng-src="{{spectrogram.url}}">
+
+    <h3>Audio Controls</h3>
+    <!--<pre ng-bind="print('recording')" ></pre>-->
+    <audio id="main-player"  controls>
+        <source ng-src="{{recordingurl}}" >
+        Your browser does not support the audio element.
+    </audio>
+
+    <h3>Annotations</h3>
+    <!--<pre ng-bind="print('audio_events')" ></pre>-->
+    <table>
+        <thead>
+            <th ng-repeat="header in event_keys()">{{header}}</th>
+        </thead>
+        <tbody >
+            <tr ng-repeat="event in audio_events">
+                <td ng-repeat="attr in event">{{attr}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href ng-click="showHide= !showHide">Debug info {{showHide}}</a>
+    <pre ui-toggle="showHide" class="ui-hide"  ng-bind="print()"></pre>
+
+</div>

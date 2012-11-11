@@ -1,49 +1,111 @@
 @import 'base.css.scss';
 
+/**********************************************************
+ *
+ *                  Default styles
+ *
+ * - elements sorted alphabetically
+ * - classes sorted alphabetically
+ * - properties sorted in logical order
+ * - no magic numbers / colors allowed. this is what SASS is for.
+ **********************************************************/
+
+/*
+ *
+ *  Elements
+ *
+ */
+
 * {
     margin: 0;
     padding: 0;
+    color: nth($master-dark, 1);
 }
+
+a {
+  outline: none;
+  text-decoration: underline;
+  color: nth($master-dark, 1);
+
+  &:visited {
+    color: nth($master-dark-2, 1);;
+  }
+
+  &:hover{
+    text-decoration: none;
+    color: nth($master-highlight, 1);
+  }
+
+  &:active {
+    color: nth($master-complementary, 1)
+  }
+}
+
+body {
+  background-color: nth($master-background, 1);
+  font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
+  height: 100%;
+}
+
+
+input {
+  vertical-align: middle;
+}
+
+img {
+  border: none;
+}
+
 html {
     height: 100%;
 }
-body {
-    background-color: $master-background;
-    font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
-    height: 100%;
-}
-a {
-    color: blue;
-    outline: none;
-    text-decoration: underline;
-}
-a:hover {
-    text-decoration: none;
-}
-p {
-    margin: 0 0 18px
-}
-img {
-    border: none;
-}
-input {
-    vertical-align: middle;
+
+li {
+
+  & ul, & ol {
+    margin:0 1.5em;
+  }
 }
 
-#wrapper {
-    width: 100%;
-    min-width: 768px;
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
+p {
+    margin: 0 0 18px;
 }
+
+pre {
+  font-family: sans-serif;
+  background-color: nth($master-background, 3);
+  color: nth($master-dark, 3);
+
+}
+
+ol {
+  margin:0 1.5em;
+  list-style-type:decimal;
+}
+
+ul {
+  @extend ol;
+  list-style-type:disc;
+
+  & ol{
+    margin:0 1.5em 1.5em 1.5em;
+  }
+}
+
+/*
+ *
+ *  Specific styles
+ *
+ */
+$footer-height: 40px;
+
 
 /* Header
 -----------------------------------------------------------------------------*/
 header {
     height: 75px;
-    background: nth($master-highlight-2, 2);
-    border-bottom:2px solid $master-highlight;
+    background: nth($master-highlight-2, 1);
+    border-bottom:2px solid nth($master-highlight, 1);
     h1 {
       font-size:2em;
       padding:15px 0 0 15px;
@@ -52,16 +114,34 @@ header {
 
 /* Middle
 -----------------------------------------------------------------------------*/
+#page-wrapper {
+  width: 100%;
+  min-width: 768px;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+}
+
+#content-wrapper{
+  margin-top:    5px;
+  margin-right:  15px;
+  margin-left:   15px;
+  margin-bottom: $footer-height;
+
+}
+
+
 #content {
   margin:5px 15px;
 }
+
 
 /* Footer
 -----------------------------------------------------------------------------*/
 footer {
     margin: -70px auto 0;
     min-width: 768px;
-    height: 70px;
+    height: $footer-height;
     background: nth($master-highlight-2, 2);
     position: relative;
     border-top:2px solid $master-highlight;

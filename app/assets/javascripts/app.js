@@ -2,7 +2,7 @@
 
 /* App Module */
 
-var bawApp = angular.module('baw', ['ngResource'], function($routeProvider, $locationProvider ) {
+var bawApp = angular.module('baw', ['ngResource', 'ui.directives', 'ui.filters'], function($routeProvider, $locationProvider ) {
 
     // routes
     $routeProvider.
@@ -19,6 +19,9 @@ var bawApp = angular.module('baw', ['ngResource'], function($routeProvider, $loc
 
         when('/recordings', {templateUrl: '/assets/recordings.html',   controller: RecordingsCtrl }).
         when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: RecordingCtrl }).
+
+        when('/listen', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
+        when('/listen/:recordingId', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
 
         //when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl}).
         otherwise({redirectTo: '/home'});

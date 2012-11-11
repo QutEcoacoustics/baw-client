@@ -14,8 +14,8 @@
 //= require jquery_ujs
 //= require angular.js
 //= require angular-resource.js
-// require angular-ui.js
-// require angular-ui-ieshiv.js
+//= require angular-ui.js
+//= require angular-ui-ieshiv.js
 //= require app
 //= require_tree .
 

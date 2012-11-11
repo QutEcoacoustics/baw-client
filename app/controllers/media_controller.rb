@@ -34,7 +34,8 @@ class MediaController < ApplicationController
         Mime::Type.lookup('audio/webm'), Mime::Type.lookup('audio/webma'),
         Mime::Type.lookup('audio/ogg'), Mime::Type.lookup('audio/oga'),
         Mime::Type.lookup('audio/mp3'), Mime::Type.lookup('audio/mpeg'),
-        Mime::Type.lookup('audio/wav'), Mime::Type.lookup('audio/x-wav')
+        Mime::Type.lookup('audio/wav')
+        #Mime::Type.lookup('audio/x-wav')
     ]
 
     text_media_types = [
@@ -83,6 +84,8 @@ class MediaController < ApplicationController
   end
 
   def download_file(full_path, media_type)
+    raise ArgumentError, "File does not exist on disk" if full_path.blank?
+
     send_file full_path, :stream => true, :buffer_size => 4096, :disposition => 'inline', :type => media_type, :content_type => media_type
   end
 

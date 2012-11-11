@@ -5,14 +5,15 @@
 
     <a href="/">Home</a>
 
-    <ul>
+    <ul id="project-list">
         <li data-ng-repeat="project in projects">
-            <div>
-                <h3><a data-ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
-                <p data-ng-bind="project.description" ></p>
-                <small>{{project.updated_at}}</small>
-                <p ng-bind="project.sites.length" ></p>
-            </div>
+                <div>
+                    <h3><a data-ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
+                    <p data-ng-bind="project.description" ></p>
+                    <small>{{project.updated_at}}</small>
+                    <p ng-bind="project.sites.length" ></p>
+                </div>
+                <img class="thumb-image" ng-src="{{project.photos[0].uri}}" >
         </li>
 
     </ul>

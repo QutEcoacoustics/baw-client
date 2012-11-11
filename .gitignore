@@ -39,3 +39,9 @@ doc/
 
 # rubymine stuff
 /.idea
+
+
+# media folder
+/media/original/*
+/media/cachedimages/*
+/media/cachedaudio/*
