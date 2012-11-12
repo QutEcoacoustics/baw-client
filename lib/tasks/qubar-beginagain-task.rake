@@ -6,5 +6,5 @@ namespace :db do
   end
   
   desc "Drop, create, migrate then seed the development database"
-  task :qubarbeginagain => %w(environment db:development_environment_only db:drop db:create db:migrate db:seed)
+  task :bawbeginagain => %w(environment db:development_environment_only db:drop db:create db:migrate db:seed)
   end
