@@ -23,7 +23,7 @@ $master-complementary:  #4A2B66 #73305F #34346A;
 
 $standard-padding-horizontal: 0.5em;
 $standard-padding-vertical:   0.25em;
-$standrd-padding:             $standard-padding-vertical $standard-padding-horizontal;
+$standard-padding:             $standard-padding-vertical $standard-padding-horizontal;
 
 
 /*
@@ -51,13 +51,16 @@ $standrd-padding:             $standard-padding-vertical $standard-padding-horiz
 }
 
 .ui-show {
-  @extend .standard-transition;
+  //@extend .standard-transition;
+
 }
 .ui-hide {
   opacity: 0;
-  @extend .standard-transition;
+  //@extend .standard-transition;
+  display: none;
 
 }
+
 
 
 /*

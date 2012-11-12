@@ -5,7 +5,7 @@ class MediaController < ApplicationController
 
   def index
     # index page for media files
-    #@testing = QubarSite::Application.config.media_file_config
+    #@testing = BawSite::Application.config.media_file_config
   end
 
   def item
