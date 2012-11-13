@@ -59,7 +59,6 @@ class MediaController < ApplicationController
     #@file_info[:requested_extension] = requested_extension
     #@file_info[:types] = text_media_types
 
-
     if image_media_types.include? final_format_requested
       full_path = FileCacher::generate_spectrogram @file_info
       download_file full_path, final_format_requested
