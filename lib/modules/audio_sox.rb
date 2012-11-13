@@ -6,8 +6,10 @@ module AudioSox
   public
 
   def self.info_sox(source)
-    info = []
-    error = []
+    result = {
+        :info => { :sox => {} },
+        :error => { :sox => {} }
+    }
 
     sox_arguments_info = "--info"
     sox_command = "#@sox_path #{sox_arguments_info} \"#{source}\"" # commands to get info from audio file
@@ -15,14 +17,14 @@ module AudioSox
 
     if sox_status.exitstatus == 0
       # sox std out contains info (separate on first colon(:))
-      sox_stdout_str.strip.split(/\r?\n|\r/).each { |line| info.push [ 'SOX ' + line[0,line.index(':')].strip, line[line.index(':')+1,line.length].strip ] }
+      sox_stdout_str.strip.split(/\r?\n|\r/).each { |line| result[:info][:sox][ line[0,line.index(':')].strip] = line[line.index(':')+1,line.length].strip  }
       # sox_stderr_str is empty
     else
       Rails.logger.debug "Sox info error. Return status #{sox_status.exitstatus}. Command: #{sox_command}"
-      error.push ['SOX ERROR',sox_stderr_str]
+      result[:error][:sox][:stderror] = sox_stderr_str
     end
 
-    [info, error]
+    result
   end
 
   def self.modify_sox(source, target, modify_parameters = {})
@@ -31,8 +33,7 @@ module AudioSox
     raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
     raise ArgumentError, "Target exists: #{File.basename(target)}" unless !File.exists? source
 
-    info = []
-    error = []
+    result = {}
 
     # order matters!
     arguments = ''
@@ -76,7 +77,7 @@ module AudioSox
       raise "Sox exited with an error: #{sox_stderr_str}"
     end
 
-    [info, error]
+    result
   end
 
 end

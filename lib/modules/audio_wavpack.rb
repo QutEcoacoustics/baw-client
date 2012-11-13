@@ -7,8 +7,10 @@ module AudioWavpack
 
   # @return [array] contains info and error arrays
   def self.info_wavpack(source)
-    info = []
-    error = []
+    result = {
+        :info => { :wavpack => {} },
+        :error => { :wavpack => {} }
+    }
 
     wvunpack_arguments_info = "-s"
     wvunpack_command = "#@wvunpack_path #{wvunpack_arguments_info} \"#{source}\"" # commands to get info from audio file
@@ -22,15 +24,15 @@ module AudioWavpack
         line.strip!
         current_key = line[0,line.index(':')].strip
         current_value = line[line.index(':')+1,line.length].strip
-        info.push [ 'WVUNPACK ' + current_key, current_value ]
+        result[:info][:wavpack][current_key] = current_value
       end
 
       # wvunpack_stderr_str contains human-formatted info and errors
     else
-      info.push [ 'WVUNPACK ERROR', wvunpack_stderr_str.strip!.split(/\r?\n|\r/).last ]
+      result[:error][:wavpack][:stderror] = wvunpack_stderr_str.strip!.split(/\r?\n|\r/).last
     end
 
-    [info, error]
+    result
   end
 
   # wvunpack converts .wv files to .wav, optionally segmenting them

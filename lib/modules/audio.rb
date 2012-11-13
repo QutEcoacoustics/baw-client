@@ -4,23 +4,19 @@ module Audio
   # Provides information about an audio file.
   def self.info(source)
 
-    info = []
-    error = []
+    result = {}
 
     sox = AudioSox::info_sox source
-    info.concat sox[0]
-    error.concat sox[1]
+    result.deep_merge! sox
 
     ffmpeg = AudioFfmpeg::info_ffmpeg source
-    info.concat ffmpeg[0]
-    error.concat ffmpeg[1]
+    result.deep_merge!  ffmpeg
 
     wavpack = AudioWavpack::info_wavpack source
-    info.concat wavpack[0]
-    error.concat wavpack[1]
+    result.deep_merge! wavpack
 
     # return the packaged info array
-    [ info, error ]
+    result
   end
 
   # Creates a new audio file from source path in target path, modified according to the
