@@ -1,4 +1,4 @@
-<div id="content" data-ng-controller="ProjectCtrl">
+<div id="content" data-ng-controller="ProjectCtrl" xmlns:baw="">
     <h2>Project</h2>
 
     <p>The details for a project.</p>
@@ -9,7 +9,12 @@
     <h3><a ng-href="{{project.urn}}">{{project.name}}</a></h3>
     <p ng-bind="project.description" ></p>
     <pre>{{project.notes}}</pre>
-    <small>{{updated_at}}</small>
+    <small>{{project.updated_at}}</small>
+    <record-information></record-information>
+    <!--<baw:record-information></baw:record-information>-->
+
+    <!--<div baw:record-information ></div>-->
+    <div record-information ></div>
 <ul>
     <li data-ng-repeat="site in project.sites">
         {{site.id}}
@@ -17,4 +22,6 @@
         {{site.longitude}}
     </li>
 </ul>
+
+    <pre ui-toggle="showOrHideDebugInfo" class="ui-hide"  ng-bind="print()"></pre>
 </div>

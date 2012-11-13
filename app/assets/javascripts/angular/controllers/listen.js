@@ -30,29 +30,9 @@ function ListenCtrl($scope, $resource, $routeParams) {
         return Object.keys($scope.audio_events[0]);
     }
 
-    $scope.refresh = function($event) {
-        //$ngModel.$render();
-    };
 
 
-    $scope.print = function () {
-        var seen = [];
-        var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling", "$$prevSibling", "$root", "this", "$parent"];
-        var str = JSON.stringify($scope,
-            (function (key, val) {
-                if (badKeys.indexOf(key) >= 0) {
-                    return "[Can't do that]";
-                }
-                if (typeof val == "object") {
-                    if (seen.indexOf(val) >= 0) {
-                        return "";
-                    }
-                    seen.push(val);
-                }
-                return val;
-            }), 4);
-        return str;
-    }
+
 
     $scope.showHide = false;
 
