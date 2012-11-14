@@ -43,7 +43,7 @@ var bawApp = angular.module('baw',
             $rootScope.print = function () {
                 var seen = [];
                 var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling", "$$prevSibling", "$root", "this", "$parent"];
-                var str = JSON.stringify($rootScope,
+                var str = JSON.stringify(this,
                     (function (key, val) {
                         if (badKeys.indexOf(key) >= 0) {
                             return "[Can't do that]";

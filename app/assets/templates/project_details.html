@@ -10,11 +10,11 @@
     <p ng-bind="project.description" ></p>
     <pre>{{project.notes}}</pre>
     <small>{{project.updated_at}}</small>
-    <record-information></record-information>
-    <!--<baw:record-information></baw:record-information>-->
+    <baw:record-information></baw:record-information>
+    <!--<record-information></record-information>-->
 
     <!--<div baw:record-information ></div>-->
-    <div record-information ></div>
+    <div baw:record-information ></div>
 <ul>
     <li data-ng-repeat="site in project.sites">
         {{site.id}}
@@ -23,5 +23,6 @@
     </li>
 </ul>
 
-    <pre ui-toggle="showOrHideDebugInfo" class="ui-hide"  ng-bind="print()"></pre>
+    <!--<pre ui-toggle="showOrHideDebugInfo" class="ui-hide"  ng-bind="print()"></pre>-->
+    <baw:debug-info />
 </div>

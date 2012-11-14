@@ -8,7 +8,7 @@
         }
     });
 
-    bads.directive('recordInformation', function(){
+    bads.directive('bawRecordInformation', function(){
         return {
             restrict: 'AE',
             /*scope: false,*/
@@ -16,8 +16,8 @@
             /* controller: ??? */
             /* require: ??? */
             /*template: "<div></div>",*/
-            templateUrl: "/assets/record_information.html"
-            /*replace: false*/
+            templateUrl: "/assets/record_information.html",
+            replace: false
             /*compile: function(tElement, tAttrs, transclude) {
 
             },*/
@@ -25,6 +25,17 @@
 
             }       */
 
+        }
+    });
+
+    bads.directive('bawDebugInfo', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            template: '<div><a href ng-click="showOrHideDebugInfo= !showOrHideDebugInfo">Debug info {{showOrHideDebugInfo}}</a><pre ui-toggle="showOrHideDebugInfo" class="ui-hide"  ng-bind="print()"></pre></div>',
+            link: function(scope, element, attrs) {
+
+            }
         }
     });
 

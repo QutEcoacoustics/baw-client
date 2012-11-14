@@ -1,4 +1,4 @@
-<div id="content" data-ng-controller="ListenCtrl">
+<div id="content" data-ng-controller="ListenCtrl" xmlns:baw="">
     <a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">demo</a>
     <a href="#" ng-click="refresh()">demo</a>
 
@@ -31,7 +31,6 @@
         </tbody>
     </table>
 
-    <a href ng-click="showHide= !showHide">Debug info {{showHide}}</a>
-    <pre ui-toggle="showHide" class="ui-hide"  ng-bind="print()"></pre>
+    <baw:debug-info />
 
 </div>
