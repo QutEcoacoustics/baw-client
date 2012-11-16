@@ -1,34 +1,37 @@
 
 (function() {
-    var bads = angular.module('bawApp.directives', []);
+    var bawds = angular.module('bawApp.directives', []);
 
-    bads.directive('addRedBox', function() {
+    bawds.directive('addRedBox', function() {
         return function(scope, element, attrs){
             element.append("<div style='background-color: red; height: 100px; width: 100px'></div>");
         }
     });
 
-    bads.directive('bawRecordInformation', function(){
+    bawds.directive('bawRecordInformation', function(){
+
         return {
             restrict: 'AE',
-            /*scope: false,*/
+            scope: false,
             /* priority: ???  */
-            /* controller: ??? */
+//            controller: 'RecordInformationCtrl',
             /* require: ??? */
             /*template: "<div></div>",*/
             templateUrl: "/assets/record_information.html",
-            replace: false
+            replace: false,
             /*compile: function(tElement, tAttrs, transclude) {
 
             },*/
-            /*link: function(scope, iElement, iAttrs, controller) {
+            link: function(scope, iElement, iAttrs, controller) {
+                scope.name = scope[iAttrs.ngModel];
 
-            }       */
+
+            }
 
         }
     });
 
-    bads.directive('bawDebugInfo', function() {
+    bawds.directive('bawDebugInfo', function() {
         return {
             restrict: 'AE',
             replace: true,

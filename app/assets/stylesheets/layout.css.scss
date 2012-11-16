@@ -41,6 +41,10 @@ a {
   }
 }
 
+baw-debug-info {
+  margin-top: 2em;
+}
+
 body {
   background-color: nth($master-background, 1);
   font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
@@ -58,6 +62,18 @@ img {
 
 html {
     height: 100%;
+}
+
+label {
+  display: block;
+
+  &>span {
+    display: block;
+  }
+
+  &>span + * {
+    margin-left: 2em;
+  }
 }
 
 li {
@@ -81,6 +97,11 @@ pre {
 ol {
   margin:0 1.5em;
   list-style-type:decimal;
+}
+
+textarea {
+  width: 400px;
+  height: 200px;
 }
 
 ul {

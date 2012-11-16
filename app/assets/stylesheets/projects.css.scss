@@ -22,7 +22,22 @@
 
 }
 
-.thumb-image  {
+.tile-image  {
   max-height: 200px;
   max-width: 200px;
+}
+
+.thumb-image  {
+  max-height: 100px;
+  max-width: 100px;
+}
+
+.large-image {
+  max-height: 300px;
+  max-height: 300px;
+}
+
+.right-column {
+  float: right;
+  width: 50%;
 }

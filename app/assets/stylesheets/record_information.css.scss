@@ -1,3 +1,19 @@
-baw\:record-information {
-  display: block;
+@import "base.css.scss";
+
+baw-record-information {
+  display: inline-block;
+
+  font-family: Consolas, monaco, monospace;
+  font-size: smaller;
+  color: nth($master-dark, 2);
+
+
+  background-color: nth($master-background, 2);
+
+  &>span {
+
+    &>span {
+      color: nth($master-dark-2, 2);
+    }
+  }
 }

@@ -1,21 +1,22 @@
-<div id="content" data-ng-controller="ProjectsManagerCtrl">
+<div id="content" data-ng-controller="ProjectsCtrl">
     <h1>Project List</h1>
 
     <p>These are the available projects.</p>
 
-    <a href="/">Home</a>
+    <a href="/projects/create">Create</a>
 
     <ul id="project-list">
         <li data-ng-repeat="project in projects">
+            <img class="thumb-image" ng-src="{{project.photos[0].uri}}" >
             <div>
                 <h3><a data-ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
                 <p data-ng-bind="project.description" ></p>
-                <small>{{project.updated_at}}</small>
-                <a href="">details</a>&nbsp
-                <a href="">edit</a>&nbsp
-                <a href="">delete</a>&nbsp
+                <a ng-href="{{links('details')}}" >details</a>&nbsp
+                <a ng-href="{{links('edit')}}" >edit</a>&nbsp
+                <a ng-click="delete()" >delete</a>&nbsp
+
             </div>
-            <img class="thumb-image" ng-src="{{project.photos[0].uri}}" >
+            <baw-record-information ng-model="project" ></baw-record-information>
         </li>
 
     </ul>

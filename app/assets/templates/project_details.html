@@ -1,28 +1,66 @@
-<div id="content" data-ng-controller="ProjectCtrl" xmlns:baw="">
-    <h2>Project</h2>
+<div id="content" data-ng-controller="ProjectCtrl" >
+    <a href="/projects">Projects</a>
+    <a href="/projects/manage">Project Manager</a>
+    <a href="/">Home</a>
+
+    <h2>Project {{editing | boolToWords:' editing':'details'}}</h2>
 
     <p>The details for a project.</p>
 
-    <a href="/projects">Projects</a>
-    <a href="/">Home</a>
+    <p>
+     <a ng-show="editing" ng-href="{{links.details}}" >cancel</a>
+     <a ng-hide="editing" ng-href="{{links.edit}}" >edit</a>
+     <a ng-show="editing" href  ng-click="delete()" >delete</a>
+    </p>
 
-    <h3><a ng-href="{{project.urn}}">{{project.name}}</a></h3>
-    <p ng-bind="project.description" ></p>
-    <pre>{{project.notes}}</pre>
-    <small>{{project.updated_at}}</small>
-    <baw:record-information></baw:record-information>
-    <!--<record-information></record-information>-->
+    <div ng-hide="editing" >
+        <h3><a ng-href="{{project.urn}}">{{project.name}}</a></h3>
+        <p ng-bind="project.description" ></p>
+        <pre>{{project.notes}}</pre>
 
-    <!--<div baw:record-information ></div>-->
-    <div baw:record-information ></div>
-<ul>
-    <li data-ng-repeat="site in project.sites">
-        {{site.id}}
-        {{site.latitude}}
-        {{site.longitude}}
-    </li>
-</ul>
+        <h3>Sites</h3>
+        <ul>
+            <li ng-repeat="site in project.sites">
+                <a ng-href="/sites/{{site.id}}">{{site.name}}</a>, located at({{site.latitude}}, {{site.longitude}})
+            </li>
+        </ul>
+    </div>
+    <div ng-show="editing">
+        <form id="project_edit_form">
+
+            <label>
+                <span>Name</span>
+                <input type="text" ng-model="project.name">
+            </label>
+            <label>
+                <span>Urn</span>
+                <span ng-bind="project.urn"></span>
+            </label>
+            <label>
+                <span>Description</span>
+                <textarea spellcheck ng-model="project.description" ></textarea>
+            </label>
+            <label>
+                <span>Notes</span>
+                <textarea ng-model="project.notes"></textarea>
+            </label>
+            <label>
+                <span>Sites</span>
+                <em> -- TO DO -- </em>
+            </label>
+            <button ng-click="reset()">Cancel</button>
+            <button ng-click="update(project)">Save</button>
+        </form>
+    </div>
+
+    <baw-record-information ng-model="project" ></baw-record-information>
+
+    <div ng-hide="editing" class="right-column">
+        <a target="_blank" ng-repeat="photo in project.photos" ng-href="{{photo.uri}}">
+            <img class="large-image" ng-src="{{photo.uri}}" />
+        </a>
+    </div>
 
     <!--<pre ui-toggle="showOrHideDebugInfo" class="ui-hide"  ng-bind="print()"></pre>-->
-    <baw:debug-info />
+    <baw-debug-info />
 </div>

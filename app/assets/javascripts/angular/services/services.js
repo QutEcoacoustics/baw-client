@@ -22,3 +22,18 @@
 //            'update': { method: 'PUT' },
 //            'destroy': { method: 'DELETE' }});
 //});
+
+(function() {
+    var bawss = angular.module("baw.services", []);
+
+//    var projectResource = $resource('/projects/:projectId', {projectId: '@id'}, {
+//        get: { method:'GET', params:{projectId: '@id'}, isArray: false }
+//    });
+//
+//    baws.factory('projects', function(){
+//        var projectsService;
+//
+//        return projectsService;
+//    });
+
+})();
