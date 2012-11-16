@@ -43,7 +43,7 @@ module FileCacher
     target_existing_paths.first
   end
 
-  def self. create_audio_segment(modify_parameters = {})
+  def self.create_audio_segment(modify_parameters = {})
     # first check if a cached audio file matches the request
     target_file = Cache::cached_audio_file modify_parameters
     target_existing_paths = Cache::existing_paths(Cache::cached_audio_storage_paths,target_file)

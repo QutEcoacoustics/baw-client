@@ -12,7 +12,10 @@ class AudioRecording < ActiveRecord::Base
   # attr
   attr_accessible :bit_rate_bps, :channels, :data_length_bytes,
                   :duration_seconds, :file_hash, :media_type, :notes,
-                  :recorded_date, :sample_rate_hertz, :status, :uploader_id
+                  :recorded_date, :sample_rate_hertz, :status, :uploader_id,
+                  :site_id
+
+  accepts_nested_attributes_for :site
 
   # userstamp
   stampable

@@ -13,6 +13,8 @@ class Site < ActiveRecord::Base
   # attr
   attr_accessible :name, :latitude, :longitude, :notes
 
+  accepts_nested_attributes_for :audio_recordings
+
   # userstamp
   stampable
   belongs_to :user

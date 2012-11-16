@@ -1,3 +1,5 @@
+require 'open3'
+
 module Audio
   include AudioSox, AudioMp3splt, AudioWavpack, AudioFfmpeg
 
@@ -7,13 +9,13 @@ module Audio
     result = {}
 
     sox = AudioSox::info_sox source
-    result.deep_merge! sox
+    result = result.deep_merge sox
 
     ffmpeg = AudioFfmpeg::info_ffmpeg source
-    result.deep_merge!  ffmpeg
+    result = result.deep_merge  ffmpeg
 
     wavpack = AudioWavpack::info_wavpack source
-    result.deep_merge! wavpack
+    result = result.deep_merge wavpack
 
     # return the packaged info array
     result
@@ -37,6 +39,7 @@ module Audio
 
       AudioWavpack::modify_wavpack(source, target_possible_paths.first, modify_parameters)
     end
+
   end
 
 end
