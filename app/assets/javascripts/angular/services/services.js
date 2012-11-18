@@ -24,7 +24,19 @@
 //});
 
 (function() {
-    var bawss = angular.module("baw.services", []);
+    function resourcePut($resource, path, paramDefaults, actions) {
+        var a = actions || {};
+        a.update = {method: 'PUT'};
+        return $resource(path, paramDefaults, a);
+    }
+
+    var bawss = angular.module("baw.services", ['ngResource']);
+
+    //function addPut
+
+    bawss.factory('Project', function($resource) {
+        return resourcePut($resource, '/projects/:projectId', {projectId: "@projectId"});
+    });
 
 //    var projectResource = $resource('/projects/:projectId', {projectId: '@id'}, {
 //        get: { method:'GET', params:{projectId: '@id'}, isArray: false }

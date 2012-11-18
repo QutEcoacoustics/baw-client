@@ -1,7 +1,7 @@
 "use strict";
 
 
-function ProjectsCtrl($scope, $resource) {
+function ProjectsCtrl($scope, $resource, Project) {
     $scope.projectsResource = $resource('/projects', {});
     $scope.projects = $scope.projectsResource.query();
 
@@ -21,16 +21,17 @@ ProjectsCtrl.linkList = function (id) {
     };
 };
 
-ProjectsCtrl.$inject = ['$scope', '$resource'];
+ProjectsCtrl.$inject = ['$scope', '$resource', 'Project'];
 
 
-function ProjectCtrl($scope, $resource, $routeParams) {
+function ProjectCtrl($scope, $resource, $routeParams, Project) {
 
-    var projectResource = $resource('/projects/:projectId', {projectId: $routeParams.projectId});
+    var projectResource = Project; //$resource('/projects/:projectId', {projectId: $routeParams.projectId});
+    var routeArgs = {projectId: $routeParams.projectId};
 
     $scope.editing = $routeParams.editing === "edit";
 
-    $scope.project = projectResource.get(function () {
+    $scope.project = projectResource.get(routeArgs, function () {
         $scope.links = ProjectsCtrl.linkList($scope.project.id);
 
         if ($scope.editing) {
@@ -54,10 +55,18 @@ function ProjectCtrl($scope, $resource, $routeParams) {
     };
 
     $scope.update = function updateProject() {
-        projectResource.save();
+        // do not send back the full object for update
+        var p = {};
+        p.name = this.project.name;
+        p.urn = this.project.urn;
+        p.description = this.project.description;
+        p.notes = this.project.notes;
+        p.sites = (this.project.sites || []).map(function(value) {return {id: value.id}});
+
+        projectResource.update(routeArgs, p,  (function() {console.log("success update")}));
     };
 
 }
 
-ProjectCtrl.$inject = ['$scope', '$resource', '$routeParams'];
+ProjectCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Project'];
 
