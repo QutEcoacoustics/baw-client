@@ -1,22 +1,25 @@
 module AudioWavpack
   include OS
+
+  # path to the wvunpack executable for different platforms
   @wvunpack_path = if OS.windows? then "./vendor/bin/wavpack/windows/wvunpack.exe" else "wvunpack" end
 
-  # public methods
   public
 
-  # @return [array] contains info and error arrays
+  # get information about a wav file.
   def self.info_wavpack(source)
     result = {
         :info => { :wavpack => {} },
         :error => { :wavpack => {} }
     }
 
-    wvunpack_arguments_info = "-s"
-    wvunpack_command = "#@wvunpack_path #{wvunpack_arguments_info} \"#{source}\"" # commands to get info from audio file
-    wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
+    # commands to get info from audio file
+    wvunpack_command = "#@wvunpack_path -s \"#{source}\""
 
-    Rails.logger.debug "Wavpack info return status #{wvunpack_status.exitstatus}. Command: #{wvunpack_command}"
+    # run the commands and wait for the result
+    wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command)
+
+    #Rails.logger.debug "Wavpack info return status #{wvunpack_status.exitstatus}."
 
     if wvunpack_status.exitstatus == 0
       # wvunpack std out contains info (separate on first colon(:))
@@ -42,14 +45,16 @@ module AudioWavpack
     raise ArgumentError, "Source is not a wavpack file: #{File.basename(source)}" unless source.match(/\.wv$/)
     raise ArgumentError, "Target is not a wav file: : #{File.basename(target)}" unless target.match(/\.wav$/)
 
+    result = {
+        :info => { :wavpack => {} },
+        :error => { :wavpack => {} }
+    }
+
     if File.exists? target
-      return [[],[]]
+      return result
     end
 
     raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
-
-    info = []
-    error = []
 
     # formatted time: hh:mm:ss.ss
     arguments = '-t -q'
@@ -71,10 +76,13 @@ module AudioWavpack
 
     wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
 
+    #Rails.logger.debug "mp3splt info return status #{wvunpack_status.exitstatus}. Command: #{wvunpack_command}"
+
     if wvunpack_status.exitstatus != 0 || !File.exists?(target)
       raise "Wvunpack command #{wvunpack_command} exited with an error: #{wvunpack_stderr_str}"
     end
 
-    [info, error]
+    result
   end
+
 end

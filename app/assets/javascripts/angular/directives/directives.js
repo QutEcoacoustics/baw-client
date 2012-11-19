@@ -42,6 +42,19 @@
         }
     });
 
+    bawds.directive('bawJsonBinding', function() {
+
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope, element, attr, ngModel) {
+
+                ngModel.$parsers.push(angular.fromJson);
+                ngModel.$formatters.push(angular.toJson)
+            }
+        };
+    });
+
 })();
 
 //bawApp.directive('nsDsFade', function() {

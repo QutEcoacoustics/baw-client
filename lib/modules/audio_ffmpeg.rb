@@ -3,6 +3,20 @@ module AudioFfmpeg
   @ffmpeg_path = if OS.windows? then "./vendor/bin/ffmpeg/windows/ffmpeg.exe" else "ffmpeg" end
   @ffprobe_path = if OS.windows? then "./vendor/bin/ffmpeg/windows/ffprobe.exe" else "ffprobe" end
 
+  # constants
+  CODECS = {
+      :wav => {
+          :codec_name => 'pcm_s16le',
+          :codec_long_name => 'PCM signed 16-bit little-endian',
+          :codec_type => 'audio',
+          :format_long_name => 'WAV / WAVE (Waveform Audio)'
+      },
+      :mp3 => {
+
+      }
+  }
+
+
   # public methods
   public
 
@@ -15,18 +29,19 @@ module AudioFfmpeg
     ffprobe_command = "#@ffprobe_path #{ffprobe_arguments_info} \"#{source}\""
     ffprobe_stdout_str, ffprobe_stderr_str, ffprobe_status = Open3.capture3(ffprobe_command)
 
-    Rails.logger.debug "Ffprobe info return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
+    puts "Ffprobe info return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
+    #Rails.logger.debug "Ffprobe info return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
 
     if ffprobe_status.exitstatus == 0
       result[:info][:ffmpeg] = parse_ffprobe_output(ffprobe_stdout_str)
     else
-      Rails.logger.debug "Ffprobe info error. Return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
+      #Rails.logger.debug "Ffprobe info error. Return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
       result[:error][:ffmpeg] = parse_ffprobe_output(ffprobe_stdout_str)
     end
 
-    if result[:info][:ffmpeg]['FFPROBE STREAM codec_type'] != 'audio'
+    if result[:info][:ffmpeg]['STREAM codec_type'] != 'audio'
       result[:error][:ffmpeg][:file_type] = 'Not an audio file.'
-      Rails.logger.debug "Ffprobe gave info about a non-audio file."
+      #Rails.logger.debug "Ffprobe gave info about a non-audio file."
 
     end
 
@@ -38,6 +53,16 @@ module AudioFfmpeg
     ffprobe_command = "#@ffprobe_path #{ffprobe_arguments_info} \"#{source}\""
     ffprobe_stdout_str, ffprobe_stderr_str, ffprobe_status = Open3.capture3(ffprobe_command)
 
+  end
+
+  # returns the duration in seconds (and fractions if present)
+  def self.parse_duration(duration_string)
+    duration_match = /(?<hour>\d+):(?<minute>\d+):(?<second>[\d+\.]+)/i.match(duration_string)
+    duration = 0
+    if !duration_match.nil? && duration_match.size == 4
+      duration = (duration_match[:hour].to_f * 60 * 60) + (duration_match[:minute].to_f * 60) + duration_match[:second].to_f
+    end
+    duration
   end
 
   private
