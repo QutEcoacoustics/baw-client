@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Saved search:</b>
+  <%= @progress.saved_search %>
+</p>
+
+<p>
+  <b>Activity:</b>
+  <%= @progress.activity %>
+</p>
+
+<p>
+  <b>Bit map:</b>
+  <%= @progress.bit_map %>
+</p>
+
+
+<%= link_to 'Edit', edit_progress_path(@progress) %> |
+<%= link_to 'Back', progresses_path %>

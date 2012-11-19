@@ -15,7 +15,7 @@ class Site < ActiveRecord::Base
 
   # userstamp
   stampable
-  belongs_to :user
+  belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
   acts_as_paranoid
   validates_as_paranoid
 
