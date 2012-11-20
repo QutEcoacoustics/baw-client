@@ -47,6 +47,14 @@ class AudioRecording < ActiveRecord::Base
   attr_protected :uuid
   include UUIDHelper
 
+  # scoped, re-usable queries
+  #scope :recordings_from_projects, lambda { |project_ids| joins(:site) }
+  #scope :filter_by_branch, lambda{|branch_id| includes(:branches).where(:branches => {:id => branch_id})
+
+  def self.recording_projects(project_ids)
+    joins(:site => :projects).where(:projects => { :id => project_ids}).order('audio_recordings.id').select('audio_recordings.id')
+  end
+
   private
 
   # default values

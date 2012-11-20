@@ -25,6 +25,22 @@ class Search
     end
   end
 
+  # execute a query using the state of this Search instance.
+  def execute_query
+    if @body_params.blank?
+      {}
+    else
+      #projects = Project.project_sites(@body_params.project_ids)
+      #sites = projects.collect {|project| project.sites }
+
+      #sites = projects.collect{ |project| project.sites }
+      #sites = Site.find(@body_params.site_ids.merge(.collect { |site| site}))
+      #projects = Site.filter_by_projects(1)
+      #sites = Site.where(:id => @body_params.site_ids)
+      audio_recordings = AudioRecording.recording_projects(@body_params.project_ids)
+    end
+  end
+
   class SearchPre
 
     attr_accessor :created_by_id, :is_temporary
@@ -128,6 +144,34 @@ class Search
   end
 
   class DataSet
+    attr_accessor :search, :items
 
+    def initialize(parameters = {})
+      if parameters.include? :search
+        @search = parameters[:search]
+      end
+
+      if parameters.include? :items
+        @items = parameters[:items]
+      end
+    end
+  end
+
+  class DataSetItem
+    attr_accessor :audio_recording_id, :start_offset_seconds, :end_offset_seconds
+
+    def initialize(parameters = {})
+      if parameters.include? :audio_recording_id
+        @audio_recording_id = parameters[:audio_recording_id]
+      end
+
+      if parameters.include? :start_offset_seconds
+        @start_offset_seconds = parameters[:start_offset_seconds]
+      end
+
+      if parameters.include? :end_offset_seconds
+        @end_offset_seconds = parameters[:end_offset_seconds]
+      end
+    end
   end
 end

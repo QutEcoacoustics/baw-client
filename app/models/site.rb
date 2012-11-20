@@ -25,4 +25,10 @@ class Site < ActiveRecord::Base
   validates :name, :presence => true, :length => { :minimum => 2 }
   validates :latitude, :numericality => true
   validates :longitude, :numericality => true
+
+  # commonly used queries
+  #scope :specified_sites, lambda { |site_ids| where('id in (:ids)', { :ids => site_ids } ) }
+  #scope :sites_in_project, lambda { |project_ids| where(Project.specified_projects, { :ids => project_ids } ) }
+  scope :site_projects, lambda{ |project_ids| includes(:projects).where(:projects => {:id => project_ids} ) }
+
 end

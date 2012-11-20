@@ -6,7 +6,7 @@ class AudioEventTag < ActiveRecord::Base
 
   # userstamp
   stampable
-  bbelongs_to :user, :class_name => 'User', :foreign_key => :creator_id
+  belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
 
   # validations
   validates :audio_event_id, :presence => true
