@@ -25,20 +25,39 @@ class Search
     end
   end
 
-  # execute a query using the state of this Search instance.
-  def execute_query
-    if @body_params.blank?
-      {}
-    else
-      #projects = Project.project_sites(@body_params.project_ids)
-      #sites = projects.collect {|project| project.sites }
+  # create a query using the state of this Search instance.
+  def create_query
 
-      #sites = projects.collect{ |project| project.sites }
-      #sites = Site.find(@body_params.site_ids.merge(.collect { |site| site}))
-      #projects = Site.filter_by_projects(1)
-      #sites = Site.where(:id => @body_params.site_ids)
-      audio_recordings = AudioRecording.recording_projects(@body_params.project_ids)
+    if @body_params.blank?
+      recordings_search = AudioRecording.scoped
+    else
+      recordings_search = AudioRecording.scoped
+
+      recordings_search = recordings_search.recording_projects(@body_params.project_ids) if @body_params.project_ids
+      recordings_search = recordings_search.recording_sites(@body_params.site_ids) if @body_params.site_ids
+      recordings_search = recordings_search.recordings(@body_params.audio_recording_ids) if @body_params.audio_recording_ids
+
+      recordings_search = recordings_search.recording_tags(@body_params.tags) if @body_params.tags
+      recordings_search = recordings_search.recording_time_ranges(@body_params.time_ranges) if @body_params.time_ranges
+
+      if @body_params.date_start && @body_params.date_end
+        recordings_search = recordings_search.recording_within_date(@body_params.date_start, @body_params.date_end)
+      elsif @body_params.date_start
+        recordings_search = recordings_search.recording_within_date(@body_params.date_start,@body_params.date_start)
+      elsif @body_params.date_end
+        recordings_search = recordings_search.recording_within_date(@body_params.date_end,@body_params.date_end)
+      end
+
     end
+
+    recordings_search
+  end
+
+  # execute a query to get the dataset
+  def execute_query
+    the_query = create_query.select('audio_recordings.id').order('audio_recordings.recorded_date')
+    results = the_query.all.collect{ |result| DataSetItem.new({ :audio_recording_id => result.id }) }
+    DataSet.new({ :search => self, :query => the_query, :items => results })
   end
 
   class SearchPre
@@ -144,11 +163,15 @@ class Search
   end
 
   class DataSet
-    attr_accessor :search, :items
+    attr_accessor :search, :query, :items
 
     def initialize(parameters = {})
       if parameters.include? :search
         @search = parameters[:search]
+      end
+
+      if parameters.include? :query
+        @query = parameters[:query]
       end
 
       if parameters.include? :items

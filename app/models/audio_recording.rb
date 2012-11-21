@@ -48,11 +48,53 @@ class AudioRecording < ActiveRecord::Base
   include UUIDHelper
 
   # scoped, re-usable queries
+  # when chaining a lambda scope you must also wrap it with a
+  # lambda or else you will end up with the wrong result
+  # http://www.slashdotdash.net/2010/09/25/rails-3-scopes-with-chaining/
   #scope :recordings_from_projects, lambda { |project_ids| joins(:site) }
   #scope :filter_by_branch, lambda{|branch_id| includes(:branches).where(:branches => {:id => branch_id})
 
+  # these need ot be left outer joins. includes should do this, ut does not.
+  # use joins with the join in sql text :(
+  # http://guides.rubyonrails.org/active_record_querying.html#specifying-conditions-on-eager-loaded-associations
   def self.recording_projects(project_ids)
-    joins(:site => :projects).where(:projects => { :id => project_ids}).order('audio_recordings.id').select('audio_recordings.id')
+    includes(:site => :projects).where(:projects => { :id => project_ids})
+  end
+
+  def self.recording_sites(site_ids)
+    includes(:site).where(:sites => { :id => site_ids })
+  end
+
+  def self.recordings(recording_ids)
+    where(:id => recording_ids)
+  end
+
+  # only one of these can be included.
+  def self.recording_within_date(start_date, end_date)
+    rel_query = scoped
+    if start_date.is_a?(Time)
+      rel_query = rel_query.where('recorded_date + duration_seconds >= :start_date', {:start_date => start_date})
+    end
+
+    if end_date.is_a?(Time)
+      rel_query = rel_query.where('recorded_date <= :end_date', {:end_date => end_date})
+    end
+
+    rel_query
+  end
+
+  def self.recording_tags(tags)
+    rel_query = includes(:audio_events => :tags)
+
+    tags.each do |tag|
+      rel_query = rel_query.where(Tag.arel_table[:text].matches("%#{tag}%"))
+    end
+
+    rel_query
+  end
+
+  def self.recording_time_ranges(time_ranges)
+    scoped
   end
 
   private
