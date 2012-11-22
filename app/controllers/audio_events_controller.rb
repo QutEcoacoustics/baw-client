@@ -18,19 +18,27 @@ class AudioEventsController < ApplicationController
     # TODO: check if quid
     id = params[:by_audio_id]
 
-    # HACK: inefficient
+    @audio_events = AudioEvent.joins(:audio_recording).where(:audio_recordings => { :uuid => id })
 
     #@audio_recording  = (AudioRecording.find_by_uuid id)
     #@audio_events = AudioEvent.find_all_by_audio_recording_id  @audio_recording.id
 
-    @audio_events =
-        (AudioRecording)
-        .select([:id, :uuid])
-        .joins(:@audio_events)
-        .where(:audio_recordings => {:uuid => id})
+    #@audio_events =
+    #    (AudioRecording)
+    #    .select([:id, :uuid])
+    #    .joins(:@audio_events)
+    #    .where(:audio_recordings => {:uuid => id})
+
+    @formatted_events = @audio_events.collect{ |audio_event|
+      {
+          :high_freq => audio_event.high_frequency_hertz,
+          :id => audio_event.audio_recording.id,
+          :site => audio_event.audio_recording.site.name,
+    } }
 
     respond_to do |format|
-      format.json { render json: @audio_events}
+      format.json { render json: @formatted_events }
+      format.xml { render xml: @formatted_events }
     end
   end
 
@@ -103,5 +111,48 @@ class AudioEventsController < ApplicationController
       format.html { redirect_to audio_events_url }
       format.json { head :no_content }
     end
+  end
+
+  def download
+
+    @formatted_annotations = custom_format AudioEvent.includes(:tags).order(:audio_event => :recorded_date).all
+
+    respond_to do |format|
+      format.xml { render :xml => @formatted_annotations  }
+      format.json { render :json => @formatted_annotations }
+      format.csv  {
+        time_now = Time.zone.now
+        render_csv("annotations-#{time_now.strftime("%Y%m%d")}-#{time_now.strftime("%H%M%S")}")
+}
+    end
+  end
+
+  private
+
+  def custom_format(annotations)
+
+    list = []
+
+    annotations.each do |annotation|
+      annotation.tags.each do |tag|
+        list << [
+            tag[:id], tag[:text], tag[:type_of_tag], tag[:is_taxanomic],
+            annotation.audio_recording.uuid,
+            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:start_time_seconds]).strftime('%Y/%m/%d'),
+            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:start_time_seconds]).strftime('%H:%M:%S'),
+            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:end_time_seconds]).strftime('%Y/%m/%d'),
+            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:end_time_seconds]).strftime('%H:%M:%S'),
+            annotation[:high_frequency_hertz], annotation[:low_frequency_hertz],
+            annotation.audio_recording.site.projects.collect{ |project| project.id }.join(' | '),
+            annotation.audio_recording.site.id,
+            nil,
+            nil,
+            annotation.creator_id,
+            'http://localhost:3000/'
+        ]
+      end
+    end
+
+    list
   end
 end

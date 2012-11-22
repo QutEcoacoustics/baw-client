@@ -1,10 +1,10 @@
 class AudioEvent < ActiveRecord::Base
   # relations
   belongs_to :audio_recording
-  has_many :audio_event_tags
+  has_many :audio_event_tags, :inverse_of => :audio_event
   has_many :tags, :through => :audio_event_tags
 
-  accepts_nested_attributes_for :tags
+  accepts_nested_attributes_for :tags, :audio_event_tags
 
   # attr
   attr_accessible :audio_recording_id, :end_time_seconds, :high_frequency_hertz, :is_reference,
@@ -41,4 +41,9 @@ class AudioEvent < ActiveRecord::Base
       errors.add(:start_time_seconds, "must be lower than high frequency")
     end
   end
+
+  def download_format(options)
+    #as_json(:only => )
+  end
+
 end

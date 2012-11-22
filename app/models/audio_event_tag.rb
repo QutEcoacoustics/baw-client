@@ -4,6 +4,9 @@ class AudioEventTag < ActiveRecord::Base
   belongs_to :audio_event
   belongs_to :tag
 
+  # attr
+  attr_accessible :audio_event, :tag
+
   # userstamp
   stampable
   belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
