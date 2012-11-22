@@ -1,0 +1,11 @@
+<div id="content" data-ng-controller="SearchesCtrl">
+    <h2>My searches</h2>
+
+    <h3>Results</h3>
+    <div ng-repeat="n in [] | range:15">
+        <div> A saved search !
+            <a href="/searches/{{n}}">{{n}}</a>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,90 @@
+<div id="content" data-ng-controller="SearchCtrl">
+    <h2>Make a search</h2>
+
+    <div>
+        <h3>Links</h3>
+        <a href="/searches">my searches</a>
+        <a href="/search">new search</a>
+    </div>
+
+    <h3>Search parameters </h3>
+
+    <form name="searchEditForm">
+        <label>
+            <span>Projects</span>
+            <!--<select  ng-model="selectedProjects" ng-options="p.name for p in projects" ></select>-->
+
+            <select ng-multiple="true" multiple ui-select2="{allowClear:true}" ng-model="selectedProjects"  >
+                <option ng-repeat="p in projects" value="{{p.id}}" >{{p.name}}</option>
+            </select>
+
+            <span>
+                <span ng-repeat="sp in selectedProjects">{{sp}},</span>
+            </span>
+        </label>
+        <label>
+            <span>Sites</span>
+            <!--<select ng-multiple="true" multiple ng-model="selectedSites" ng-options="s.name for s in sites" ></select>-->
+
+            <select ng-multiple="true" multiple ui-select2="{allowClear:true}" ng-model="selectedSites"  >
+                <option ng-repeat="s in sites" value="{{s.id}}" >{{s.name}}</option>
+            </select>
+
+            <span>
+                <span ng-repeat="ss in selectedSites">{{ss}},</span>
+            </span>
+        </label>
+        <label>
+            <span>Tags</span>
+            <input type="text" ng-list  ng-model="selectedTags" />
+            tag array: {{selectedTags}}
+        </label>
+        <div>
+            <span>Tag options</span>
+            <fieldset>
+                <legend>Reference annotations</legend>
+                <label><input type="radio" ng-model="referenceAnnotations" value="Include">Include</label>
+                <label><input type="radio" ng-model="referenceAnnotations" value="Exclude">Exclude</label>
+                <label><input type="radio" ng-model="referenceAnnotations" value="Only">Only</label>
+            </fieldset>
+            <fieldset>
+                <legend>Job result tags</legend>
+                 <label><input type="radio" ng-model="jobAnnotations"  value="Include">Include</label>
+                 <label><input type="radio" ng-model="jobAnnotations"  value="Exclude">Exclude</label>
+                 <label><input type="radio" ng-model="jobAnnotations"  value="Only">Only</label>
+            </fieldset>
+
+            refs: {{referenceAnnotations}}, job ones: {{jobAnnotations}}
+        </div>
+        <fieldset>
+            <legend>Date ranges (implicit times for start and end are midnight and just before midnight)</legend>
+            <label>
+                <span>Start date range</span>
+                <input ng-model="startDate" ui-date="dateOptions">
+            </label>
+            <label>
+                <span>End date range</span>
+                <input ng-model="endDate" ui-date="dateOptions">
+            </label>
+
+            {{startDate}} to {{endDate}}
+            <br>
+            <em>
+                -- TODO -- TIME PICKER and TIME ZONES
+            </em>
+        </fieldset>
+        <label>
+            <span>Audio recordings</span>
+
+            <input name="audioRecordingsSelector" type="text" ng-list is-guid  ng-model="selectedAudioRecordings" />
+            <span ng-show="searchEditForm.audioRecordingsSelector.$error.isGuid" >
+                This is not a valid guid list!
+            </span>
+            recording array: {{selectedAudioRecordings}}
+        </label>
+        <button ng-click="reset()">Cancel</button>
+        <button ng-click="update(project)">Save</button>
+
+    </form>
+
+</div>

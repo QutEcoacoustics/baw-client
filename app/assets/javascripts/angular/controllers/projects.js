@@ -61,7 +61,7 @@ function ProjectCtrl($scope, $resource, $routeParams, Project) {
         p.urn = this.project.urn;
         p.description = this.project.description;
         p.notes = this.project.notes;
-        p.sites = (this.project.sites || []).map(function(value) {return {id: value.id}});
+        p.site_ids = (this.project.sites || []).map(function(value) {return {id: value.id}});
 
         projectResource.update(routeArgs, p,  (function() {console.log("success update")}));
     };

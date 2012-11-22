@@ -13,8 +13,8 @@
 
     <h3>Audio Controls</h3>
     <!--<pre ng-bind="print('recording')" ></pre>-->
-    <audio id="main-player"  controls>
-        <source ng-src="{{recordingurl}}" >
+    <audio id="main-player" controls>
+        <source ng-src="{{recordingurl}}">
         Your browser does not support the audio element.
     </audio>
 
@@ -22,15 +22,42 @@
     <!--<pre ng-bind="print('audio_events')" ></pre>-->
     <table>
         <thead>
-            <th ng-repeat="header in event_keys()">{{header}}</th>
-        </thead>
-        <tbody >
-            <tr ng-repeat="event in audio_events">
-                <td ng-repeat="attr in event">{{attr}}</td>
+            <tr>
+                <th>Tag ID</th>
+                <th>Audio Recording</th>
+                <th>Created At</th>
+                <th>Created By</th>
+                <th>Deleted At</th>
+                <th>Deleted By</th>
+                <th>Updated At</th>
+                <th>Updated By</th>
+                <th>Tags</th>
+                <th>Time Range</th>
+                <th>Frequency Range</th>
+                <th>{{header}}</th>
+                <th>{{header}}</th>
             </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="event in audio_events">
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+            <td>{{attr}}</td>
+        </tr>
         </tbody>
     </table>
 
-    <baw:debug-info />
+    <baw:debug-info/>
 
 </div>
