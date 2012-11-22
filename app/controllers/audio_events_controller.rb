@@ -20,8 +20,14 @@ class AudioEventsController < ApplicationController
 
     # HACK: inefficient
 
-    @audio_recording  = (AudioRecording.find_by_uuid id)
-    @audio_events = AudioEvent.find_all_by_audio_recording_id  @audio_recording.id
+    #@audio_recording  = (AudioRecording.find_by_uuid id)
+    #@audio_events = AudioEvent.find_all_by_audio_recording_id  @audio_recording.id
+
+    @audio_events =
+        (AudioRecording)
+        .select([:id, :uuid])
+        .joins(:@audio_events)
+        .where(:audio_recordings => {:uuid => id})
 
     respond_to do |format|
       format.json { render json: @audio_events}
