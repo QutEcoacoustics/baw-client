@@ -55,6 +55,41 @@
         };
     });
 
+    var GUID_REGEXP = /^\{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}?$/i;
+    bawds.directive('isGuid', function() {
+        return {
+
+            require: 'ngModel',
+            link: function(scope, elm, attrs, ctrl) {
+                var isList = typeof attrs.ngList !== "undefined";
+
+                // push rather than unshift... we want to test last
+                ctrl.$parsers.push(function(viewValue) {
+                    var valid = true;
+                    if (isList) {
+                        for(var i = 0; i < viewValue.length && valid; i++) {
+                            valid = GUID_REGEXP.test(viewValue[i]);
+                        }
+                    }
+                    else {
+                        valid = GUID_REGEXP.test(viewValue);
+                    }
+
+                    if (valid) {
+                        // it is valid
+                        ctrl.$setValidity('isGuid', true);
+                        return viewValue;
+                    } else {
+                        // it is invalid, return undefined (no model update)
+                        ctrl.$setValidity('isGuid', false);
+                        return undefined;
+                    }
+                });
+            }
+        };
+    });
+
+
 })();
 
 //bawApp.directive('nsDsFade', function() {

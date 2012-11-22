@@ -12,10 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.ui.datepicker
 //= require angular.js
 //= require angular-resource.js
 //= require angular-ui.js
 //= require angular-ui-ieshiv.js
 //= require_tree .
+//= require_tree ../../../vendor/assets/javascripts/.
 //= require app
 
