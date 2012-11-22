@@ -98,4 +98,15 @@ class AudioEventsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def download
+
+    @annotations = AudioEvent.includes(:tags).all
+
+    respond_to do |format|
+      format.xml { render xml: @annotations  }
+      format.json { render json: @annotations.to_json(:includes => :tags) }
+      format.csv  { render_csv("annotations-#{Time.now.strftime("%Y%m%d")}") }
+    end
+  end
 end

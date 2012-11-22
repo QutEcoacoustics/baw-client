@@ -2,8 +2,10 @@ class Tag < ActiveRecord::Base
   extend Enumerize
 
   # relations
-  has_many :audio_event_tags
+  has_many :audio_event_tags, :inverse_of => :tag
   has_many :audio_events, :through => :audio_event_tags
+
+  accepts_nested_attributes_for :audio_events, :audio_event_tags
 
   # attr
   attr_accessible :is_taxanomic, :text, :type_of_tag

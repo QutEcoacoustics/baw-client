@@ -1,0 +1,6 @@
+"Tag", "Start Date", "Start Time", "End Date", "End Time", "Max Frequency (hz)", "Min Frequency (hz)", "Projects", "Sites", "Sensor Name", "Score", "Tagged by", "Player link"
+<%= CSV.generate do |csv|
+  @annotations.each do |annotation|
+    csv << [ annotation[:audio_recording_id] ]
+  end
+end %>
