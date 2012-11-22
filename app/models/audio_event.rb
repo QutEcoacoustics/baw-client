@@ -41,4 +41,9 @@ class AudioEvent < ActiveRecord::Base
       errors.add(:start_time_seconds, "must be lower than high frequency")
     end
   end
+
+  def download_format(options)
+    #as_json(:only => )
+  end
+
 end
