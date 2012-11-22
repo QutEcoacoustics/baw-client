@@ -25,4 +25,11 @@ class Project < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
   validates :urn, :presence => true
 
+  # commonly used queries (these return
+  # ActiveRecord::Relation object which will allow for
+  # further methods (such as other scopes) to be called on it)
+  #scope :specified_projects, lambda { |project_ids| where('id in (:ids)',{:ids => project_ids}) }
+  #scope :project_sites, lambda { |project_ids| includes(:sites).where('id in (:ids)',{:ids => project_ids}) }
+  scope :project_sites, lambda{|site_ids| includes(:sites).where(:sites => {:id => site_ids}) }
+
 end
