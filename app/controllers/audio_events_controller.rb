@@ -139,23 +139,26 @@ class AudioEventsController < ApplicationController
     list = []
 
     annotations.each do |annotation|
+
+      annotation_items = [
+          annotation[:id],
+          annotation.audio_recording.recorded_date.advance(:seconds => annotation[:start_time_seconds]).strftime('%Y/%m/%d'),
+          annotation.audio_recording.recorded_date.advance(:seconds => annotation[:start_time_seconds]).strftime('%H:%M:%S'),
+          annotation.audio_recording.recorded_date.advance(:seconds => annotation[:end_time_seconds]).strftime('%Y/%m/%d'),
+          annotation.audio_recording.recorded_date.advance(:seconds => annotation[:end_time_seconds]).strftime('%H:%M:%S'),
+          annotation[:high_frequency_hertz], annotation[:low_frequency_hertz],
+          annotation.audio_recording.site.projects.collect{ |project| project.id }.join(' | '),
+          annotation.audio_recording.site.id,
+          annotation.audio_recording.uuid,
+          annotation.creator_id,
+          'http://localhost:3000/'
+      ]
+
       annotation.tags.each do |tag|
-        list << [
-            tag[:id], tag[:text], tag[:type_of_tag], tag[:is_taxanomic],
-            annotation.audio_recording.uuid,
-            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:start_time_seconds]).strftime('%Y/%m/%d'),
-            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:start_time_seconds]).strftime('%H:%M:%S'),
-            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:end_time_seconds]).strftime('%Y/%m/%d'),
-            annotation.audio_recording.recorded_date.advance(:seconds => annotation[:end_time_seconds]).strftime('%H:%M:%S'),
-            annotation[:high_frequency_hertz], annotation[:low_frequency_hertz],
-            annotation.audio_recording.site.projects.collect{ |project| project.id }.join(' | '),
-            annotation.audio_recording.site.id,
-            nil,
-            nil,
-            annotation.creator_id,
-            'http://localhost:3000/'
-        ]
+        annotation_items.push  tag[:id], tag[:text],tag[:type_of_tag], tag[:is_taxanomic]
       end
+
+      list.push annotation_items
     end
 
     list
