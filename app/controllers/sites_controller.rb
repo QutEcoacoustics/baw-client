@@ -13,15 +13,19 @@ class SitesController < ApplicationController
   # GET /sites/1
   # GET /sites/1.json
   def show
+
     @site =
         Site
         .includes(:photos)
         .joins(:projects)
         .find(params[:id])
 
+    #  @site = Site.includes(:photos).find(params[:id])
+
+
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @site }
+      format.json { render json: @site.as_json(:includes => :photos) }
     end
   end
 

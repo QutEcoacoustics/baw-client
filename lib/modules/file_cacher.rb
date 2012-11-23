@@ -18,8 +18,12 @@ module FileCacher
       source_existing_paths = Cache::existing_paths(Cache::cached_audio_storage_paths,source_file)
 
       if source_existing_paths.blank?
+        # change the format to wav, so spectrograms can be created from the audio
+        audio_modify_parameters = modify_parameters.clone
+        audio_modify_parameters[:format] = 'wav'
+
         # if no cached audio files exist, try to create them
-        create_audio_segment modify_parameters
+        create_audio_segment audio_modify_parameters
         source_existing_paths = Cache::existing_paths(Cache::cached_audio_storage_paths,source_file)
         # raise an exception if the cached audio files could not be created
         raise Exceptions::AudioFileNotFoundError, "Could not generate spectrogram." if source_existing_paths.blank?

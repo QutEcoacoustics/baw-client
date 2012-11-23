@@ -31,7 +31,6 @@ class Site < ActiveRecord::Base
   #scope :sites_in_project, lambda { |project_ids| where(Project.specified_projects, { :ids => project_ids } ) }
   scope :site_projects, lambda{ |project_ids| includes(:projects).where(:projects => {:id => project_ids} ) }
 
-
   # json formatting
   def as_json(options={})
     super(
@@ -42,4 +41,5 @@ class Site < ActiveRecord::Base
             ]
     )
   end
+
 end
