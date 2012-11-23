@@ -13,7 +13,11 @@ class SitesController < ApplicationController
   # GET /sites/1
   # GET /sites/1.json
   def show
-    @site = Site.find(params[:id])
+    @site =
+        Site
+        .includes(:photos)
+        .joins(:projects)
+        .find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb

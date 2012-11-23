@@ -34,7 +34,7 @@
           query: { method:'GET', isArray: true }
         };
 
-        var resource = resourcePut($resource, '/audio_events', actions);
+        var resource = resourcePut($resource, '/audio_events/:audioEventId', {audioEventId: '@audioEventId'}, actions);
         resource.csvLink = "/audio_events/download.csv";
         return resource;
     });

@@ -1,7 +1,7 @@
 class AudioEvent < ActiveRecord::Base
   # relations
   belongs_to :audio_recording
-  has_many :audio_event_tags, :inverse_of => :audio_event
+  has_many :audio_event_tags, :inverse_of => :audio_event, :dependent => :destroy
   has_many :tags, :through => :audio_event_tags
 
   accepts_nested_attributes_for :tags, :audio_event_tags
@@ -17,6 +17,8 @@ class AudioEvent < ActiveRecord::Base
   validates_as_paranoid
 
   # validation
+  validates :audio_recording, :presence => true
+
   validates :start_time_seconds, :presence => true, :numericality => { :greater_than_or_equal_to  => 0 }
   validates :end_time_seconds, :numericality => { :greater_than_or_equal_to  => 0 }
   validate :start_time_must_be_lte_end_time
@@ -47,9 +49,8 @@ class AudioEvent < ActiveRecord::Base
     super(
         :include =>
             [
-                :audio_recording => {:only => [:id, :uuid]},
-                :tags => {:only => [:id, :text]},
-                :audio_event_tags => {}
+                :audio_event_tags,
+                :audio_recording  => {:only => [:id, :uuid]}
             ],
         :except => :audio_recording_id
     )

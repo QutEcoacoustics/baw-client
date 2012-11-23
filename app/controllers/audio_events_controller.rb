@@ -20,9 +20,10 @@ class AudioEventsController < ApplicationController
 
     @audio_events =
         AudioEvent
-        .includes(:tags,:audio_recording)
+        .includes(:audio_recording)
         .where(:audio_recordings => { :uuid => id })
 
+    @stuff = @audio_events.map {|m| m}
 
     #@audio_recording  = (AudioRecording.find_by_uuid id)
     #@audio_events = AudioEvent.find_all_by_audio_recording_id  @audio_recording.id

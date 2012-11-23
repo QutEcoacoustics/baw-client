@@ -7,9 +7,17 @@
     <a href="/">Home</a>
 
     <h3>{{site.name}}</h3>
+
+    <p>
+        Projects: <span ng-repeat="p in site.projects"> <a ng-href="/projects/{{p.id}}">{{p.name}}</a>{{!$last | boolToWords:', '}}</span>
+    </p>
+
     <p ng-bind="site.latitude" ></p>
     <p ng-bind="site.longitude" ></p>
+
     <pre>{{site.notes}}</pre>
-    <small>{{site.updated_at}}</small>
+
+    <baw-record-information ng-model="project" ></baw-record-information>
+
     <p>{{site.audio_recordings.length}}</p>
 </div>

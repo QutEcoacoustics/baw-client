@@ -22,9 +22,46 @@
     <h3>
         Tag edit
     </h3>
-    <form>
 
-    </form>
+        <form name="annotationEditForm" ng-model="selectedAnnotation">
+            <label>
+                <span>Tags</span>
+                <em>--TODO: support for proper tagging control--</em><br/>
+                <select ng-multiple="true" tags multiple ui-select2="{allowClear:true}" ng-model="selectedAnnotation.tags"  >
+                    <option ng-repeat="t in tags" value="{{t.id}}" >{{t.text}}<!-- ng-show={{t.type_of_tag}}-->, {{t.type_of_tag}} <!-- --></span></option>
+                </select>
+
+
+            </label>
+
+            <label>
+                <span>Duration (seconds)</span></label>
+                <input type="text" min="{{limits.time_min}}" max="{{limits.time_max}}" required  ng-model="selectedAnnotation.start_time_seconds" />
+                &nbsp;to&nbsp;
+                <input type="text" min="{{limits.time_min}}" max="{{limits.time_max}}" required  ng-model="selectedAnnotation.end_time_seconds" />
+
+            <label>
+                <span>Frequency</span> </label>
+                <input type="text" min="{{limits.freq_min}}" max="{{limits.freq_max}}" required  ng-model="selectedAnnotation.low_frequency_hertz" />
+                &nbsp;to&nbsp;
+                <input type="text" min="{{limits.freq_min}}" max="{{limits.freq_max}}" required  ng-model="selectedAnnotation.high_frequency_hertz" />
+
+
+
+            <fieldset>
+                <legend>Annotation options</legend>
+                    <label>
+                        <input type="checkbox" ng-model="selectedAnnotation.is_reference">&nbsp;Is reference tag?
+                    </label>
+            </fieldset>
+            <p>
+            data for tag: ({{selectedAnnotation.start_time_seconds}}, {{selectedAnnotation.end_time_seconds}}); ({{selectedAnnotation.low_frequency_hertz}}, {{selectedAnnotation.high_frequency_hertz}}); {{selectedAnnotation.is_reference}};
+                <span ng-bind="selectedAnnotation.tags"></span>
+            </p>
+            <button type="button" ng-click="reset()">Clear</button>
+            <button ng-click="addAnnotation()">Add annotation</button>
+
+        </form>
 
     <h3>Annotations</h3>
     <table>
@@ -53,7 +90,7 @@
             <td>{{ae.deleter_id}}</td>
             <td>{{ae.updated_at}}</td>
             <td>{{ae.updater_id}}</td>
-            <td><span ng-repeat="t in ae.tags">{{t.text}},</span></td>
+            <td><span ng-repeat="t in ae.audio_event_tags">{{t.tag_id}},</span></td>
             <td>{{ae.start_time_seconds}} - {{ae.end_time_seconds}}</td>
             <td>{{ae.low_frequency_hertz}} - {{ae.high_frequency_hertz}}</td>
         </tr>
