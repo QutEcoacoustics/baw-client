@@ -1,7 +1,7 @@
 class AudioEvent < ActiveRecord::Base
   # relations
   belongs_to :audio_recording
-  has_many :audio_event_tags, :inverse_of => :audio_event
+  has_many :audio_event_tags
   has_many :tags, :through => :audio_event_tags
 
   accepts_nested_attributes_for :tags, :audio_event_tags

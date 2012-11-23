@@ -12,7 +12,10 @@ module AudioFfmpeg
           :format_long_name => 'WAV / WAVE (Waveform Audio)'
       },
       :mp3 => {
-
+          :codec_name => 'mp3',
+          :codec_long_name => 'MP3 (MPEG audio layer 3)',
+          :codec_type => 'audio',
+          :format_long_name => 'MP2/3 (MPEG audio layer 2/3)'
       }
   }
 
