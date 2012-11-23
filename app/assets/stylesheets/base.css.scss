@@ -25,6 +25,10 @@ $standard-padding-horizontal: 0.5em;
 $standard-padding-vertical:   0.25em;
 $standard-padding:             $standard-padding-vertical $standard-padding-horizontal;
 
+$adjacent-padding: $standard-padding-horizontal / 2;
+
+$border-width: 1px;
+
 
 /*
  *

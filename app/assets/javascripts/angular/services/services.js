@@ -33,7 +33,10 @@
         var actions = {
           query: { method:'GET', isArray: true }
         };
-        return resourcePut($resource, '/audio_events', actions);
+
+        var resource = resourcePut($resource, '/audio_events', actions);
+        resource.csvLink = "/audio_events/download.csv";
+        return resource;
     });
 
 

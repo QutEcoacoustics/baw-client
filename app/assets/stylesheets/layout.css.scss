@@ -99,6 +99,18 @@ ol {
   list-style-type:decimal;
 }
 
+table {
+
+  & td {
+    padding: auto $adjacent-padding;
+    border-right: $border-width single nth($master-highlight, 1);
+  }
+
+  & tr:nth-child(even) {
+    background-color:  nth($master-background, 2);
+  }
+}
+
 textarea {
   width: 400px;
   height: 200px;
@@ -173,4 +185,14 @@ footer {
         margin: 0 15px 0 0;
       }
     }
+}
+
+
+/* General Classes
+-----------------------------------------------------------------------------*/
+.short-guid {
+  width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

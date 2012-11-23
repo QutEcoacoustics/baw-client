@@ -1,25 +1,32 @@
-<div id="content" data-ng-controller="ListenCtrl" xmlns:baw="">
+<div id="content" data-ng-controller="ListenCtrl">
     <a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">demo</a>
     <a href="#" ng-click="refresh()">demo</a>
 
+    <div ng-show="errorState">
+        Something has gone wrong - can't load this page.
+    </div>
+    <div ng-hide="errorState">
     <h1>Listen</h1>
 
     <p>Listen and annotate.</p>
 
     <h3>Spectrogram</h3>
-    <!--<pre ng-bind="print('spectrogram')" ></pre>-->
-
     <img ng-src="{{spectrogram.url}}">
 
     <h3>Audio Controls</h3>
-    <!--<pre ng-bind="print('recording')" ></pre>-->
     <audio id="main-player" controls>
         <source ng-src="{{recordingurl}}">
         Your browser does not support the audio element.
     </audio>
 
+    <h3>
+        Tag edit
+    </h3>
+    <form>
+
+    </form>
+
     <h3>Annotations</h3>
-    <!--<pre ng-bind="print('audio_events')" ></pre>-->
     <table>
         <thead>
             <tr>
@@ -34,30 +41,25 @@
                 <th>Tags</th>
                 <th>Time Range</th>
                 <th>Frequency Range</th>
-                <th>{{header}}</th>
-                <th>{{header}}</th>
             </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="event in audio_events">
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
-            <td>{{attr}}</td>
+        <tr ng-repeat="ae in audio_events">
+            <td>{{ae.id}}</td>
+            <td><a ng-href="/recordings/{{ae.audio_recording.uuid}}" class="short-guid" ></a>{{attr}}</td>
+            <td>{{ae.created_at}}</td>
+            <td>{{ae.creator_id}}</td>
+            <td>{{ae.deleted_at}}</td>
+            <td>{{ae.deleter_id}}</td>
+            <td>{{ae.updated_at}}</td>
+            <td>{{ae.updater_id}}</td>
+            <td><span ng-repeat="t in ae.tags">{{t.text}},</span></td>
+            <td>{{ae.start_time_seconds}} - {{ae.end_time_seconds}}</td>
+            <td>{{ae.low_frequency_hertz}} - {{ae.high_frequency_hertz}}</td>
         </tr>
         </tbody>
     </table>
 
-    <baw:debug-info/>
-
+    <baw-debug-info/>
+    </div>
 </div>

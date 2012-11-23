@@ -42,6 +42,20 @@ class AudioEvent < ActiveRecord::Base
     end
   end
 
+  # json formatting
+  def as_json(options={})
+    super(
+        :include =>
+            [
+                :audio_recording => {:only => [:id, :uuid]},
+                :tags => {:only => [:id, :text]},
+                :audio_event_tags => {}
+            ],
+        :except => :audio_recording_id
+    )
+  end
+
+  # other stuff
   def download_format(options)
     #as_json(:only => )
   end

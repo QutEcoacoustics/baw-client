@@ -18,7 +18,11 @@ class AudioEventsController < ApplicationController
     # TODO: check if quid
     id = params[:by_audio_id]
 
-    @audio_events = AudioEvent.joins(:audio_recording).where(:audio_recordings => { :uuid => id })
+    @audio_events =
+        AudioEvent
+        .includes(:tags,:audio_recording)
+        .where(:audio_recordings => { :uuid => id })
+
 
     #@audio_recording  = (AudioRecording.find_by_uuid id)
     #@audio_events = AudioEvent.find_all_by_audio_recording_id  @audio_recording.id
@@ -29,16 +33,17 @@ class AudioEventsController < ApplicationController
     #    .joins(:@audio_events)
     #    .where(:audio_recordings => {:uuid => id})
 
-    @formatted_events = @audio_events.collect{ |audio_event|
-      {
-          :high_freq => audio_event.high_frequency_hertz,
-          :id => audio_event.audio_recording.id,
-          :site => audio_event.audio_recording.site.name,
-    } }
+    #@formatted_events = @audio_events.collect{ |audio_event|
+    #  {
+    #      :high_freq => audio_event.high_frequency_hertz,
+    #      :id => audio_event.audio_recording.id,
+    #      :site => audio_event.audio_recording.site.name,
+    #} }
 
+    # :include => [{ :sites => { :only => [ :id, :name ] } }
     respond_to do |format|
-      format.json { render json: @formatted_events }
-      format.xml { render xml: @formatted_events }
+      format.json { render json: @audio_events }
+      format.xml { render xml: @audio_events }
     end
   end
 
