@@ -20,14 +20,14 @@
     </audio>
 
     <h3>
-        Tag edit
+        Annotation edit
     </h3>
 
         <form name="annotationEditForm" ng-model="selectedAnnotation">
             <label>
                 <span>Tags</span>
                 <em>--TODO: support for proper tagging control--</em><br/>
-                <select ng-multiple="true" tags multiple ui-select2="{allowClear:true}" ng-model="selectedAnnotation.tags"  >
+                <select ng-multiple="true" tags multiple ui-select2="{allowClear:true}" ng-model="selectedAnnotation.audio_event_tags"  >
                     <option ng-repeat="t in tags" value="{{t.id}}" >{{t.text}}<!-- ng-show={{t.type_of_tag}}-->, {{t.type_of_tag}} <!-- --></span></option>
                 </select>
 
@@ -83,7 +83,7 @@
         <tbody>
         <tr ng-repeat="ae in audio_events">
             <td>{{ae.id}}</td>
-            <td><a ng-href="/recordings/{{ae.audio_recording.uuid}}" class="short-guid" ></a>{{attr}}</td>
+            <td><a ng-href="/recordings/{{ae.audio_recording.uuid}}" class="short-guid" >{{ae.audio_recording.uuid}}</a></td>
             <td>{{ae.created_at}}</td>
             <td>{{ae.creator_id}}</td>
             <td>{{ae.deleted_at}}</td>

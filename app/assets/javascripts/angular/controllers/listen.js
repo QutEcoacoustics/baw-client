@@ -58,7 +58,7 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent)
         };
 
         $scope.selectedAnnotation = {
-            tags: [-1],
+            audio_event_tags: [-1],
             start_time_seconds: 0.05,
             end_time_seconds: 15.23,
             low_frequency_hertz:1000,
@@ -70,7 +70,12 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent)
         }
 
         $scope.addAnnotation = function createAnnotation() {
-            var a = this.selectedAnnotation;
+            var a = angular.copy(this.selectedAnnotation);
+
+            // prep tags
+            a.audio_event_tags_attributes = a.audio_event_tags.map(function (v) {return {tag_id:v};});
+            delete a.audio_event_tags
+
             a.audio_recording_id = recordingId;
 
             AudioEvent.save({audioEventId:null}, a,
@@ -79,6 +84,8 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent)
 
                     // now update tag-list
                     $scope.audio_events.push(response);
+                    $scope.selected_Annotation = response;
+
                 },
                 function createAnnotationFailure(response, getResponseHeaders) {
                     console.error("Annotation creation unsuccessful, response: " + response.status, response.data);

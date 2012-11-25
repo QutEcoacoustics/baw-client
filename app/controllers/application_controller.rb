@@ -25,9 +25,10 @@ class ApplicationController < ActionController::Base
   end
 
   private 
-  
+
+  # temporarily enabled again
   #def set_stamper
-    # current_user is provided by devise
-    #User.stamper =  self.current_user
+  #  current_user is provided by devise
+  #  User.stamper =  self.current_user
   #end
 end

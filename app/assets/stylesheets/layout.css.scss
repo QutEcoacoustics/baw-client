@@ -193,10 +193,11 @@ footer {
 /* General Classes
 -----------------------------------------------------------------------------*/
 .short-guid {
-  width: 50px;
+  width: 70px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: inline-block;
 }
 
 .select2-container {

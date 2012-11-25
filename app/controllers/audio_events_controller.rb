@@ -23,7 +23,6 @@ class AudioEventsController < ApplicationController
         .includes(:audio_recording)
         .where(:audio_recordings => { :uuid => id })
 
-    @stuff = @audio_events.map {|m| m}
 
     #@audio_recording  = (AudioRecording.find_by_uuid id)
     #@audio_events = AudioEvent.find_all_by_audio_recording_id  @audio_recording.id
@@ -51,7 +50,7 @@ class AudioEventsController < ApplicationController
   # GET /audio_events/1
   # GET /audio_events/1.json
   def show
-    @audio_event = AudioEvent.find(params[:id])
+    @audio_event = AudioEvent.includes(:audio_event_tags).find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -72,20 +71,20 @@ class AudioEventsController < ApplicationController
 
   # GET /audio_events/1/edit
   def edit
-    @audio_event = AudioEvent.find(params[:id])
+    @audio_event =
+        AudioEvent.find(params[:id]).includes(:audio_event_tags)
   end
 
   # POST /audio_events
   # POST /audio_events.json
   def create
     @audio_event = AudioEvent.new(params[:audio_event])
+    @audio_event.audio_event_tags.build
 
     respond_to do |format|
       if @audio_event.save
-        format.html { redirect_to @audio_event, notice: 'Audio event was successfully created.' }
         format.json { render json: @audio_event, status: :created, location: @audio_event }
       else
-        format.html { render action: "new" }
         format.json { render json: @audio_event.errors, status: :unprocessable_entity }
       end
     end
@@ -121,7 +120,8 @@ class AudioEventsController < ApplicationController
 
   def download
 
-    @formatted_annotations = custom_format AudioEvent.includes(:tags).order(:audio_event => :recorded_date).all
+    @formatted_annotations =
+        custom_format AudioEvent.includes(:tags).order(:audio_event => :recorded_date).all
 
     respond_to do |format|
       format.xml { render :xml => @formatted_annotations  }
