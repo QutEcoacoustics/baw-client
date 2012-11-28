@@ -1,5 +1,5 @@
 require 'open3'
-require 'string'
+require './lib/modules/string'
 
 module Audio
   include AudioSox, AudioMp3splt, AudioWavpack, AudioFfmpeg

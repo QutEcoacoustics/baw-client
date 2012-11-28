@@ -68,6 +68,9 @@ var bawApp = (function() {
                 whenDefaults("searches", "search", ":searchId", SearchesCtrl, SearchCtrl, true).
                 when('/search', {templateUrl: '/assets/search_details.html', controller: SearchCtrl}).
 
+                when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).
+                when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).
+
                 //when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl}).
                 when('/', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
                 when('/404',{controller : ErrorCtrl}).
@@ -138,6 +141,11 @@ var bawApp = (function() {
                 yearRange: "1800:3000"
 
             };
+
+            // see if authentication can work
+            $rootScope.testAuth = (function(){
+
+            })();
 
         }]);
 

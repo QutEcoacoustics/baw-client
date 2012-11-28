@@ -1,5 +1,7 @@
+require './lib/modules/logger'
+
 module AudioSox
-include OS
+include OS, Logging
   @sox_path = if OS.windows? then "./vendor/bin/sox/windows/sox.exe" else "sox" end
 
   # public methods
@@ -15,17 +17,14 @@ include OS
     sox_command = "#@sox_path #{sox_arguments_info} \"#{source}\"" # commands to get info from audio file
     sox_stdout_str, sox_stderr_str, sox_status = Open3.capture3(sox_command) # run the commands and wait for the result
 
-
-    puts "sox info return status #{sox_status.exitstatus}. Command: #{sox_command}"
-
-    #Rails.logger.debug "mp3splt info return status #{sox_status.exitstatus}. Command: #{sox_command}"
+    Logging::logger.debug  "sox info return status #{sox_status.exitstatus}. Command: #{sox_command}"
 
     if sox_status.exitstatus == 0
       # sox std out contains info (separate on first colon(:))
       sox_stdout_str.strip.split(/\r?\n|\r/).each { |line| result[:info][:sox][ line[0,line.index(':')].strip] = line[line.index(':')+1,line.length].strip  }
       # sox_stderr_str is empty
     else
-      #Rails.logger.debug "Sox info error. Return status #{sox_status.exitstatus}. Command: #{sox_command}"
+      Logging::logger.error "Sox info error. Return status #{sox_status.exitstatus}. Command: #{sox_command}"
       result[:error][:sox][:stderror] = sox_stderr_str
     end
 
@@ -81,7 +80,7 @@ include OS
     puts "Sox command #{sox_command}"
 
     if sox_status.exitstatus != 0 || !File.exists?(target)
-      raise "Sox exited with an error: #{sox_stderr_str}"
+      Logging::logger.error "Sox exited with an error: #{sox_stderr_str}"
     end
 
     result

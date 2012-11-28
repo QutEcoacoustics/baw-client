@@ -1,5 +1,7 @@
+require './lib/modules/logger'
+
 module AudioFfmpeg
-  include OS
+  include OS, Logging
   @ffmpeg_path = if OS.windows? then "./vendor/bin/ffmpeg/windows/ffmpeg.exe" else "ffmpeg" end
   @ffprobe_path = if OS.windows? then "./vendor/bin/ffmpeg/windows/ffprobe.exe" else "ffprobe" end
 
@@ -19,7 +21,6 @@ module AudioFfmpeg
       }
   }
 
-
   # public methods
   public
 
@@ -32,20 +33,18 @@ module AudioFfmpeg
     ffprobe_command = "#@ffprobe_path #{ffprobe_arguments_info} \"#{source}\""
     ffprobe_stdout_str, ffprobe_stderr_str, ffprobe_status = Open3.capture3(ffprobe_command)
 
-    puts "Ffprobe info return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
-    #Rails.logger.debug "Ffprobe info return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
+    Logging::logger.debug "Ffprobe info return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
 
     if ffprobe_status.exitstatus == 0
       result[:info][:ffmpeg] = parse_ffprobe_output(ffprobe_stdout_str)
     else
-      #Rails.logger.debug "Ffprobe info error. Return status #{ffprobe_status.exitstatus}. Command: #{ffprobe_command}"
       result[:error][:ffmpeg] = parse_ffprobe_output(ffprobe_stdout_str)
+      Logging::logger.error "Ffprobe info error. Return status #{ffprobe_status.exitstatus}. Information: #{result[:error][:ffmpeg]}"
     end
 
     if result[:info][:ffmpeg]['STREAM codec_type'] != 'audio'
       result[:error][:ffmpeg][:file_type] = 'Not an audio file.'
-      #Rails.logger.debug "Ffprobe gave info about a non-audio file."
-
+      Logging::logger.warn "Ffprobe gave info about a non-audio file: #{result[:info][:ffmpeg]['STREAM codec_type']}"
     end
 
     result

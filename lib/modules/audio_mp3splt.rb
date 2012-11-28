@@ -1,5 +1,5 @@
 module AudioMp3splt
-  include OS
+  include OS, Logging
   @mp3splt_path = if OS.windows? then "./vendor/bin/mp3splt/windows/mp3splt.exe" else "mp3splt" end
 
   # public methods
@@ -47,10 +47,10 @@ module AudioMp3splt
     mp3splt_command = "#@mp3splt_path #{arguments}" # commands to get info from audio file
     mp3splt_stdout_str, mp3splt_stderr_str, mp3splt_status = Open3.capture3(mp3splt_command) # run the commands and wait for the result
 
-    Rails.logger.debug "mp3splt info return status #{mp3splt_status.exitstatus}. Command: #{mp3splt_command}"
+    Logging::logger.debug"mp3splt info return status #{mp3splt_status.exitstatus}. Command: #{mp3splt_command}"
 
     if mp3splt_status.exitstatus != 0 || !File.exists?(target)
-      raise "Mp3splt exited with an error: #{mp3splt_stderr_str}"
+      Logging::logger.error "Mp3splt exited with an error: #{mp3splt_stderr_str}"
     end
 
     result

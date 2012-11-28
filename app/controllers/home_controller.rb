@@ -1,4 +1,5 @@
 class HomeController < ApplicationController
+  skip_before_filter :authenticate_user!
   def index
     #the_search = Search.new( { :body_params => { :project_ids => [ 4 ],:site_ids => [ ],:audio_recording_ids => [  ] } } )
     #params[:test1] = the_search

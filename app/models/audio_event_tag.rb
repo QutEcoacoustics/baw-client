@@ -4,7 +4,7 @@ class AudioEventTag < ActiveRecord::Base
   belongs_to :audio_event
   belongs_to :tag
 
-  accepts_nested_attributes_for :audio_event
+  #accepts_nested_attributes_for :audio_event
 
   # attr
   attr_accessible :audio_event, :tag,
