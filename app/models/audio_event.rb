@@ -2,11 +2,11 @@ class AudioEvent < ActiveRecord::Base
   # relations
   belongs_to :audio_recording
 
-  has_many :tags, :through => :audio_event_tags
+  has_many :tags, :through => :audio_event_tags, :uniq => true
   #accepts_nested_attributes_for :tags
 
-  has_many :audio_event_tags, :inverse_of => :audio_event, :dependent => :destroy
-  accepts_nested_attributes_for :audio_event_tags, :allow_destroy => true
+  has_many :audio_event_tags
+  accepts_nested_attributes_for :audio_event_tags
 
   # attr
   attr_accessible :audio_recording_id, :end_time_seconds, :high_frequency_hertz, :is_reference,

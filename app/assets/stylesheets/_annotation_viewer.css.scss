@@ -1,0 +1,87 @@
+@import "base";
+@import "_dynamic.css.scss.erb";
+
+baw-annotation-viewer {
+
+  & .tag-preview {
+
+  }
+
+
+  & #scroller{
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+
+  & .annotation-viewer {
+
+    display: inline-block;
+    position: relative;
+    line-height: 0;
+    padding: 0;
+    margin: 0;
+
+
+    & img {
+
+    }
+
+    // overlay
+    & img + div {
+      width: 100%;
+      height : 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      // debug
+      @if $DEBUG { background-color: rgba(255,0,0,0.15) ;}
+
+    }
+  }
+
+  & .controls {
+
+  }
+
+  // general
+
+  & .tagItem {
+
+    border-style: $border-style;
+    border-width: $border-width;
+    border-color: nth($master-highlight, 2);
+    position: absolute;
+
+    &[data-selected="true"] {
+      border-color: nth($master-complementary, 2);
+      @include glow(nth($master-background, 2));
+
+      & .close-icon{
+        visibility: visible;
+      }
+    }
+
+    &:hover .close-icon {
+      visibility: visible;
+    }
+  }
+
+  & .close-icon {
+    position: relative;
+    left: 3px;
+    top: 6px;
+    color: black;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: sans-serif;
+    vertical-align: top;
+    cursor: pointer;
+
+    &:before{
+      content: "x";
+    }
+
+    visibility: hidden;
+  }
+}

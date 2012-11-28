@@ -1,0 +1,16 @@
+<div ng-controller="AnnotationViewerCtrl">
+    <div class="tag-preview">
+
+    </div>
+
+    <div id="scroller">
+        <div class="annotation-viewer" id="annotation-viewer_{{id}}" >
+            <img ng-src="{{model.url}}">
+            <div id="spectrogramAnnotations_{{id}}"></div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <baw-debug-info></baw-debug-info>
+    </div>
+</div>

@@ -15,9 +15,8 @@ class AudioEventTag < ActiveRecord::Base
   belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
 
   # validations
-  validates_presence_of  :audio_event
+  #validates_presence_of  :audio_event
   #validates_presence_of  :tag_id
 
-  #validates_uniqueness_of :audio_event,
-  #                        :scope => [:tag]
+  validates_uniqueness_of :audio_event_id, :scope => :tag_id
 end

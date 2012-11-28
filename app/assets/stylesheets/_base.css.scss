@@ -11,6 +11,7 @@
  *
  */
 
+
 // https://kuler.adobe.com/#themeID/1080677
 // http://colorschemedesigner.com/
 $primary-color:         #E9E7C2 #D4DEB8 #e8e7e4;
@@ -28,7 +29,10 @@ $standard-padding:             $standard-padding-vertical $standard-padding-hori
 $adjacent-padding: $standard-padding-horizontal / 2;
 
 $border-width: 1px;
+$border-style: solid;
+$standard-border: $border-width $border-style;
 
+$standard-glow-alpha: 0.2;
 
 /*
  *
@@ -50,8 +54,15 @@ $border-width: 1px;
  *
  */
 
+@mixin transition($properties:all, $duration:500ms, $function:ease, $delay:0) {
+    @include vendor-prefix(transition, join($properties,(), comma));
+    @include vendor-prefix(transition-duration, join($duration,(), comma));
+    @include vendor-prefix(transition-timing-function, join($function,(), comma));
+    @include vendor-prefix(transition-delay, join($delay, (), comma));
+}
+
 .standard-transition{
-  @include vendor-prefix(transition, all 0.5s ease);
+  @include transition();
 }
 
 .ui-show {
@@ -65,11 +76,17 @@ $border-width: 1px;
 
 }
 
+@mixin glow($color) {
+  $alphaed: rgba($color, $standard-glow-alpha);
+  @include vendor-prefix(box-shadow, 0 0 5px 5px $alphaed);
+  @include transition(box-shadow border-color,  400ms 50ms, linear linear);
+
+}
 
 
 /*
  *
  *  Styles
- *  // see layout.css.scss
+ *  // see ./layout.css.scss
  */
 

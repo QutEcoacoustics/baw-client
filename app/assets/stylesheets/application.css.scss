@@ -12,4 +12,13 @@
  *= require jquery.ui.all
  *= require_tree ../../../vendor/assets/javascripts/.
  *= require_tree .
+ *= depend_on "_base"
  */
+
+
+//@import "base";
+//@import "layout";
+//@import "_dynamic.css.scss.erb";
+//
+//
+//@import "/partials/*";

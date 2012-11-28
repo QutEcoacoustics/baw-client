@@ -37,7 +37,10 @@
             replace: true,
             template: '<div><a href ng-click="showOrHideDebugInfo= !showOrHideDebugInfo">Debug info {{showOrHideDebugInfo}}</a><pre ui-toggle="showOrHideDebugInfo" class="ui-hide"  ng-bind="print()"></pre></div>',
             link: function(scope, element, attrs) {
-
+                if (!scope.print) {
+                    //console.warn("baw-debug-info missing parent scope, no print function");
+                    scope.print = bawApp.print;
+                }
             }
         }
     });
@@ -87,6 +90,33 @@
                 });
             }
         };
+    });
+
+
+    bawds.directive('bawAnnotationViewer', function() {
+        return {
+            restrict: 'AE',
+            scope: {
+                model: '=model'
+            },
+            controller: AnnotationViewerCtrl,
+            require: '', // ngModel?
+            templateUrl: '/assets/annotation_viewer.html',
+//            compile: function(element, attributes, transclude)  {
+//                // transform DOM
+//            },
+            link: function(scope, element, attributes, controller) {
+                var $element =  $(element);
+                // assign a unique id to scope
+                scope.id = Number.Unique();
+                var $canvas = $($element.find(".annotation-viewer img + div")[0]);
+
+
+
+                // init drawabox
+                $canvas.drawabox();
+            }
+        }
     });
 
 

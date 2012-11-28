@@ -4,7 +4,7 @@
     /**
      * Helper method for adding a put request onto the standard angular resource service
      * @param $resource - the stub resource
-     * @param {string} path - the webserver path
+     * @param {string} path - the web server path
      * @param {Object} paramDefaults
      * @param {Object} [actions] a set of actions to also add (extend)
      * @return {*}
@@ -37,6 +37,10 @@
         var resource = resourcePut($resource, '/audio_events/:audioEventId', {audioEventId: '@audioEventId'}, actions);
         resource.csvLink = "/audio_events/download.csv";
         return resource;
+    });
+
+    bawss.factory('Tag', function($resource) {
+        return $resource('/tags/:tagId', {tagId: '@tagId'}, {});
     });
 
 

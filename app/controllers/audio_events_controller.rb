@@ -79,10 +79,13 @@ class AudioEventsController < ApplicationController
   # POST /audio_events.json
   def create
     @audio_event = AudioEvent.new(params[:audio_event])
-    @audio_event.audio_event_tags.build
+    #@audio_event.audio_event_tags.each{ |aet|  aet.build() }
+
+    #@audio_event.audio_event_tags.count.times { @audio_event.audio_event_tags.build }
 
     respond_to do |format|
       if @audio_event.save
+
         format.json { render json: @audio_event, status: :created, location: @audio_event }
       else
         format.json { render json: @audio_event.errors, status: :unprocessable_entity }

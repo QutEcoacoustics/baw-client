@@ -4,6 +4,10 @@
 
 // global definition
 var bawApp = (function() {
+    var exports = {
+
+    };
+
     // Helper function
 
 
@@ -85,7 +89,7 @@ var bawApp = (function() {
         });
 
     app.run(['$rootScope','$location', '$route', function ($rootScope, $location, $route) {
-            $rootScope.print = function () {
+            exports.print = $rootScope.print = function () {
                 var seen = [];
                 var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling", "$$prevSibling", "$root", "this", "$parent"];
                 var str = JSON.stringify(this,
@@ -140,5 +144,7 @@ var bawApp = (function() {
             };
 
         }]);
+
+    return exports;
 
 })();

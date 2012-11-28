@@ -8,12 +8,10 @@
  * @param AudioEvent
  * @constructor
  */
-function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent) {
+function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent, Tag) {
 
 
-    var recordingResource = AudioRecording;
-
-    $scope.errorState = !GUID_REGEXP.test($routeParams.recordingId)
+    $scope.errorState = !GUID_REGEXP.test($routeParams.recordingId);
 
     if ($scope.errorState) {
         console.warn("Invalid guid specified in route... page rendering disabled");
@@ -21,7 +19,7 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent)
     else {
         var recordingId = $scope.recordingId = $routeParams.recordingId;
 
-        $scope.recording = recordingResource.get($routeParams);
+        $scope.recording = AudioRecording.get($routeParams);
 
         // HACK:
         $scope.recordingurl = "/media/" + recordingId + "_0_120_0_11025.mp3";
@@ -43,12 +41,13 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent)
 
         // HACK:
         // this should be treated as readonly
-        $scope.tags = [
-            {text: "HALLO!", type_of_tag: null, is_taxanomic: false, id: -1},
-            {text: "Koala", type_of_tag: "common_name", is_taxanomic: true, id: -2},
-            {text: "Corrus Ovvu", type_of_tag: "species_name", is_taxanomic: true, id: -3},
-            {text: "Cawwing", type_of_tag: "sounds_like", is_taxanomic: false, id: -4}
-        ];
+//        $scope.tags = [
+//            {text: "HALLO!", type_of_tag: null, is_taxanomic: false, id: -1},
+//            {text: "Koala", type_of_tag: "common_name", is_taxanomic: true, id: -2},
+//            {text: "Corrus Ovvu", type_of_tag: "species_name", is_taxanomic: true, id: -3},
+//            {text: "Cawwing", type_of_tag: "sounds_like", is_taxanomic: false, id: -4}
+//        ];
+        $scope.tags = Tag.query();
 
         $scope.limits = {
           time_min: 0.0,
@@ -108,4 +107,4 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent)
     }
 }
 
-ListenCtrl.$inject = ['$scope', '$resource', '$routeParams', 'AudioRecording', 'AudioEvent'];
+ListenCtrl.$inject = ['$scope', '$resource', '$routeParams', 'AudioRecording', 'AudioEvent', 'Tag'];

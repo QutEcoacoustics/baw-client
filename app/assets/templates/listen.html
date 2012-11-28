@@ -1,4 +1,13 @@
 <div id="content" data-ng-controller="ListenCtrl">
+    <script type="text/javascript" id="">
+        // temporary init script - intended fore removal
+
+        $(document).ready(function() {
+
+        });
+
+    </script>
+
     <a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">demo</a>
     <a href="#" ng-click="refresh()">demo</a>
 
@@ -11,7 +20,7 @@
     <p>Listen and annotate.</p>
 
     <h3>Spectrogram</h3>
-    <img ng-src="{{spectrogram.url}}">
+    <baw-annotation-viewer model="spectrogram"></baw-annotation-viewer>
 
     <h3>Audio Controls</h3>
     <audio id="main-player" controls>
@@ -67,7 +76,7 @@
     <table>
         <thead>
             <tr>
-                <th>Tag ID</th>
+                <th>Annotation ID</th>
                 <th>Audio Recording</th>
                 <th>Created At</th>
                 <th>Created By</th>
