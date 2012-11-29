@@ -1,5 +1,5 @@
 module AudioWavpack
-  include OS
+  include OS, Logging
 
   # path to the wvunpack executable for different platforms
   @wvunpack_path = if OS.windows? then "./vendor/bin/wavpack/windows/wvunpack.exe" else "wvunpack" end
@@ -76,10 +76,10 @@ module AudioWavpack
 
     wvunpack_stdout_str, wvunpack_stderr_str, wvunpack_status = Open3.capture3(wvunpack_command) # run the commands and wait for the result
 
-    #Rails.logger.debug "mp3splt info return status #{wvunpack_status.exitstatus}. Command: #{wvunpack_command}"
+    Logging::logger.debug "mp3splt info return status #{wvunpack_status.exitstatus}. Command: #{wvunpack_command}"
 
     if wvunpack_status.exitstatus != 0 || !File.exists?(target)
-      raise "Wvunpack command #{wvunpack_command} exited with an error: #{wvunpack_stderr_str}"
+      Logging::logger.error "Wvunpack command #{wvunpack_command} exited with an error: #{wvunpack_stderr_str}"
     end
 
     result

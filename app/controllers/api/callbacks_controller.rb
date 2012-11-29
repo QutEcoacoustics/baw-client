@@ -1,4 +1,18 @@
-class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+class Api::CallbacksController < Devise::OmniauthCallbacksController
+  # see https://gist.github.com/993566
+  respond_to :json
+
+
+  #def passthru
+  #  render :status => 404, :text => "Not found. Authentication passthru."
+  #end
+
+  #def browser_id
+  #  test = params
+  #  test
+  #end
+
+=begin
 
   require 'uuidtools'
 
@@ -97,5 +111,5 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
     return user
   end
-
+=end
 end

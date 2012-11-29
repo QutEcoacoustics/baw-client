@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html ng-app="baw">
+<html ng-app="baw"  ng-init="current_user = <%= current_user.to_json %>;">
 <head>
-  <title>Baw Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= content_for?(:title) ? yield(:title) : "Baw Site" %></title>
+  <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Baw Site" %>">
 
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
+  <script src="https://login.persona.org/include.js"></script>
   <%= csrf_meta_tags %>
-
-  <script type="text/javascript">
-  </script>
-
+  <%= yield(:head) %>
 </head>
 <body >
 

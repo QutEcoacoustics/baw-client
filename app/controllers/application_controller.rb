@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_filter :authenticate_user!
   protect_from_forgery
   
   # userstamp
@@ -24,7 +25,7 @@ class ApplicationController < ActionController::Base
     render :layout => false
   end
 
-  private 
+  private
 
   # temporarily enabled again
   def set_stamper
