@@ -5,6 +5,12 @@ require 'digest'
 require 'logger'
 require 'trollop'
 
+module BawSite
+  class Application
+
+  end
+end
+
 #=begin
 require './lib/modules/OS'
 require './lib/modules/audio_sox'
@@ -16,6 +22,7 @@ require './lib/modules/logger'
 require './lib/modules/audio'
 require './lib/modules/cache'
 require './lib/exceptions'
+require './config/settings'
 #=end
 
 =begin
@@ -29,8 +36,10 @@ require '../modules/logger'
 require '../modules/audio'
 require '../modules/cache'
 require '../exceptions'
+require '../../config/settings'
 =end
 
+# to cater for configurations
 
 
 module AudioHarvester
@@ -89,7 +98,7 @@ module AudioHarvester
     def directory_list(full_base_directory)
       path = File.join(full_base_directory, '*/')
       dir_path = Dir[path]
-      logger.debug('directory_list') { "Directoryies found: #{dir_path}" }
+      logger.debug('directory_list') { "Directories found: #{dir_path}" }
       dir_path
     end
 
@@ -121,8 +130,8 @@ module AudioHarvester
     # calculate the audio recording start date and time
     def recording_start_datetime(full_path, utc_offset)
       if File.exists? full_path
-        access_time = File.atime full_path
-        change_time = File.ctime full_path
+        #access_time = File.atime full_path
+        #change_time = File.ctime full_path
         modified_time = File.mtime full_path
 
         file_name = File.basename full_path
@@ -133,9 +142,10 @@ module AudioHarvester
         file_name.scan(/.*_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})\..+/) do |year, month, day, hour, min ,sec|
           datetime_from_file = DateTime.new(year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i, utc_offset)
         end
+        datetime_from_file
+      else
+        nil
       end
-
-      datetime_from_file
     end
 
     # constructs the full path that a file will be moved to
@@ -169,13 +179,13 @@ module AudioHarvester
 
       to_send = {
           :audio_recording => {
-            :file_hash => 'SHA256::'+generate_hash(file_path).hexdigest,
-            :sample_rate_hertz => file_info[:info][:ffmpeg]['STREAM sample_rate'],
-            :media_type => media_type,
-            :uploader_id => config_file_object['uploader_id'],
-            :site_id => config_file_object['site_id'],
-            :recorded_date => recording_start
-      }}
+              :file_hash => 'SHA256::'+generate_hash(file_path).hexdigest,
+              :sample_rate_hertz => file_info[:info][:ffmpeg]['STREAM sample_rate'],
+              :media_type => media_type,
+              :uploader_id => config_file_object['uploader_id'],
+              :site_id => config_file_object['site_id'],
+              :recorded_date => recording_start
+          }}
 
       if media_type == 'audio/wavpack'
         to_send[:audio_recording][:bit_rate_bps] = file_info[:info][:wavpack]['ave bitrate']
@@ -192,44 +202,71 @@ module AudioHarvester
       to_send
     end
 
+    def construct_login_request()
+      # set up the login HTTP post
+      login_post =  Net::HTTP::Post.new(@endpoint_login)
+      login_post.body = {:user => {:email => @login_email, :password => @login_password}}.to_json
+      login_post["Content-Type"] = "application/json"
+      logger.debug "Login request: #{login_post.inspect}, Body: #{login_post.body}"
+      login_post
+    end
+
+    def construct_create_request(parameters, auth_token)
+      new_params = parameters.clone
+      new_params[:auth_token] = auth_token
+
+      req = Net::HTTP::Post.new(@endpoint_create)
+      req.body = new_params.to_json
+      req["Content-Type"] = "application/json"
+      logger.debug "Create request: #{req.inspect}, Body: #{req.body}"
+      req
+    end
+
     # get uuid for audio recording from website via REST API
     # If you post to a Ruby on Rails REST API endpoint, then you'll get an
     # InvalidAuthenticityToken exception unless you set a different
     # content type in the request headers, since any post from a form must
     # contain an authenticity token.
     def create_new_audiorecording(post_params)
-
-      # set up the login HTTP post
-      login_post =  Net::HTTP::Post.new(@endpoint_login)
-      login_post.body = {:user => {:email => @login_email, :password => @login_password}}.to_json
-      login_post["Content-Type"] = "application/json"
-      puts "Login request: #{login_post.inspect}, Body: #{login_post.body}"
-
-      res = Net::HTTP.start(@host, @port) do |http|
+      Net::HTTP.start(@host, @port) do |http|
+        login_post = construct_login_request
         login_response = http.request(login_post)
-        puts "Login response: #{login_response.code}, Message: #{login_response.message}, Body: #{login_response.body}"
+        logger.debug "Login response: #{login_response.code}, Message: #{login_response.message}, Body: #{login_response.body}"
 
-        if login_response.code == "200" then
-          puts "logged in"
+        if login_response.code == '200'
+          logger.debug 'Successfully logged in.'
 
           json_resp = JSON.parse(login_response.body)
-          @auth_token = json_resp['auth_token']
-          post_params[:auth_token] = @auth_token
+          auth_token = json_resp['auth_token']
 
-          req = Net::HTTP::Post.new(@endpoint_create)
-          req.body = post_params.to_json
-          req["Content-Type"] = "application/json"
-          puts "Create request: #{req.inspect}, Body: #{req.body}"
+          create_post = construct_create_request(post_params, auth_token)
+          response = http.request(create_post)
+          logger.debug "Create response: #{response.code}, Message: #{response.message}, Body: #{response.body}"
 
-          response = http.request(req)
-          puts "Create response: #{response.code}, Message: #{response.message}, Body: #{response.body}"
-          if response.code == "201" then
-            response.body
+          if response.code == '201'
+            response_json = JSON.parse(response.body)
+            Logging.logger.info 'New audio recording created.'
+            response
+          elsif response.code == '422'
+            'Unprocessable Entity'
+          else
+            Logging.logger.error "Create response was not recognised: code #{response.code}, Message: #{response.message}, Body: #{response.body}"
+            nil
           end
+        else
+          Logging.logger.error "Login response was not 200 OK: #{login_response.code}, Message: #{login_response.message}, Body: #{login_response.body}"
+          nil
         end
+      end
+    end
+
+    #
+    def move_file(create_response)
+      response_json = JSON.parse(create_response)
+
+      if response_json.include? :uuid
 
       end
-
     end
 
     def run_once_dir(top_dir)
@@ -259,9 +296,27 @@ module AudioHarvester
 
       post_result = create_new_audiorecording(to_send)
 
-      puts post_result.inspect
-      #post_result
+      unless post_result.nil?
+        response_json = JSON.parse(post_result.body)
+        puts response_json.inspect
+        recorded_date = DateTime.parse(response_json['recorded_date'])
+
+        file_name_params = {
+            :id => response_json[:uuid],
+            :date => recorded_date.strftime("%Y%m%d"),
+            :time => recorded_date.strftime("%H%M%S"),
+            :original_format => File.extname(file_path)
+        }
+
+        file_name = Cache::original_audio_file file_name_params
+        source_possible_paths = Cache::possible_paths(Cache::original_audio_storage_paths,file_name)
+
+        Logging.logger.debug "Generated move paths: #{source_possible_paths.join(', ')}"
+
+        #result_of_move = move_file(post_result)
+      end
     end
+
   end
 
 end

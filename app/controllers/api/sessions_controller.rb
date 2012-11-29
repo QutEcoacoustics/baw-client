@@ -27,6 +27,15 @@ class Api::SessionsController < Devise::SessionsController
 
   end
 
+  # returns 401 or 200 depending on if a user is signed in or not
+  def ping
+    if user_signed_in?
+      head :ok
+    else
+      head :unauthorized
+    end
+  end
+
 =begin
   before_filter :authenticate_user!, :except => [:create, :destroy]
   before_filter :ensure_params_exist

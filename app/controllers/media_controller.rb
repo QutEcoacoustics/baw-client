@@ -17,6 +17,7 @@ class MediaController < ApplicationController
     @file_info = params
     @file_info.delete 'controller'
     @file_info.delete 'action'
+    @file_info.delete 'auth_token'
     #@file_info.delete 'format'
 
     # decide on the format requested. There are at least two ways to get the request format:
@@ -71,16 +72,45 @@ class MediaController < ApplicationController
       download_file full_path, final_format_requested
     end
 
-    if text_media_types.include? final_format_requested
-      respond_to do |format|
-        format.xml {render :xml =>  @file_info}
-        format.json {render :json =>  @file_info}
-      end
+    # for any other extension (or no extension)
+    # respond with file info in requested format
+
+    file_info_to_send = {
+        :start_offset => @file_info[:start_offset],
+        :end_offset => @file_info[:end_offset],
+        :date => @file_info[:date],
+        :time => @file_info[:time],
+        :id => @file_info[:id],
+        :channel => @file_info[:channel],
+        :sample_rate => @file_info[:sample_rate],
+        :window => @file_info[:window],
+        :colour => @file_info[:colour],
+        :original_format => @file_info[:original_format],
+        :format => final_format_requested,
+        :info_url => "/media/#{@file_info[:id]}"
+    }
+
+    unless file_info_to_send[:start_offset].nil?
+      base_audio_segment_url = "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
+          "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}."
+
+      file_info_to_send[:audio_base_url] = base_audio_segment_url
     end
 
-    unless all_media_types.include? final_format_requested
-      # respond with a bad request
-      head :bad_request
+    unless file_info_to_send[:window].nil?
+      file_info_to_send[:spectrogram_url] =
+          "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
+              "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}_"+
+              "#{file_info_to_send[:window]}_#{file_info_to_send[:colour]}.png"
+
+      file_info_to_send[:color_description] = Spectrogram.colour_options
+
+    end
+
+    respond_to do |format|
+      format.any(:xml, :html) {render :xml =>  file_info_to_send}
+      format.json {render :json =>  file_info_to_send}
+      format.all { head :bad_request }
     end
 
   end
