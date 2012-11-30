@@ -15,7 +15,7 @@ module Cache
   
   # get all the storage paths for original audio
   def self.original_audio_storage_paths()
-    storage_paths = BawSite::Application.config.media_file_config.original_audio_paths
+    storage_paths = SharedSettings.settings[:original_audio_paths]
     storage_paths
   end
   
@@ -29,17 +29,17 @@ module Cache
   
   # get all the storage paths for cached audio
   def self.cached_audio_storage_paths()
-    storage_paths = BawSite::Application.config.media_file_config.cached_audio_paths
+    storage_paths = SharedSettings.settings[:cached_audio_paths]
     storage_paths
   end
   
   def self. cached_audio_defaults()
-    cache_defaults = BawSite::Application.config.media_file_config.cached_audio_defaults
+    cache_defaults = SharedSettings.settings[:cached_audio_defaults]
     cache_defaults
   end
   
    def self. cached_spectrogram_defaults()
-    cache_defaults = BawSite::Application.config.media_file_config.cached_spectrogram_defaults
+    cache_defaults = SharedSettings.settings[:cached_spectrogram_defaults]
     cache_defaults
   end
   
@@ -55,7 +55,7 @@ module Cache
   
   # get all the storage paths for cached spectrograms
   def self.cached_spectrogram_storage_paths()
-    storage_paths = BawSite::Application.config.media_file_config.cached_spectrogram_paths
+    storage_paths = SharedSettings.settings[:cached_spectrogram_paths]
     storage_paths
   end
   

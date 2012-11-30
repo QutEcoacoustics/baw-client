@@ -80,4 +80,19 @@ class AudioRecordingsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # this is called by the harvester once the audio file is in the correct location
+  def upload_complete
+    @audio_recording = AudioRecording.find(params[:id])
+    params_ar = params[:audio_recording]
+    if !@audio_recording.blank? && @audio_recording.file_hash == params_ar[:file_hash] &&
+        @audio_recording.uuid == params_ar[:uuid] && @audio_recording.status == 'new'
+      # update audio recording from 'new' to 'to_check'
+      @audio_recording.status = 'to_check'
+      @audio_recording.save!
+      head :ok
+    else
+      head :bad_request
+    end
+  end
 end
