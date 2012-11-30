@@ -66,7 +66,7 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
 
         $scope.clearSelected = function() {
             $scope.selectedAnnotation = {};
-        }
+        };
 
         $scope.addAnnotation = function createAnnotation() {
             var a = angular.copy(this.selectedAnnotation);
@@ -90,7 +90,7 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
                     console.error("Annotation creation unsuccessful, response: " + response.status, response.data);
                 }
             )
-        }
+        };
 
 
 //        $scope.update = function updateProject() {

@@ -26,11 +26,16 @@ $standard-padding-horizontal: 0.5em;
 $standard-padding-vertical:   0.25em;
 $standard-padding:             $standard-padding-vertical $standard-padding-horizontal;
 
+$standard-margin-horizontal: 0.75em;
+$standard-margin-vertical:   0.5em;
+$standard-margin:             $standard-margin-vertical $standard-margin-horizontal;
+
 $adjacent-padding: $standard-padding-horizontal / 2;
 
 $border-width: 1px;
 $border-style: solid;
 $standard-border: $border-width $border-style;
+$standard-border-radius: 6px;
 
 $standard-glow-alpha: 0.2;
 
@@ -46,6 +51,36 @@ $standard-glow-alpha: 0.2;
   -ms-#{$name}: $arguments;
   -moz-#{$name}: $arguments;
   -o-#{$name}: $arguments;
+}
+
+@mixin vendor-prefix-function($property, $name, $arguments...) {
+  #{$property}: #{$name}unquote('('#{$arguments}')');
+  #{$property}: -webkit-#{$name}unquote('('#{$arguments}')') ;
+  #{$property}: -ms-#{$name}unquote('('#{$arguments}')') ;
+  #{$property}: -moz-#{$name}unquote('('#{$arguments}')') ;
+  #{$property}: -o-#{$name}unquote('('#{$arguments}')') ;
+}
+
+@mixin gradient($type, $to...) {
+  // old browsers
+  background-color: nth($to, 1);
+
+  @if $type == "linear" {
+    @include vendor-prefix-function(background, linear-gradient, $to);
+  }
+  @else {
+    @include vendor-prefix-function(background, radial-gradient, circle, $to);
+  }
+
+}
+
+@mixin rounded-corners($args...) {
+  @include vendor-prefix(border-radius, $args);
+}
+.rounded-corners {
+  border-style: $border-style;
+  border-width: $border-width;
+  @include rounded-corners($standard-border-radius);
 }
 
 /*

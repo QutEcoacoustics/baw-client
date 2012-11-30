@@ -2,6 +2,9 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
   # see https://gist.github.com/993566
   respond_to :json
 
+  def browser_id
+    test = params
+  end
 
   #def passthru
   #  render :status => 404, :text => "Not found. Authentication passthru."

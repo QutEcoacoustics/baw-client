@@ -15,17 +15,47 @@
 
 <%= "" #yield
 %>
+<header>
 
+  <a href="/"><h1>Bioacoustic Workbench</h1></a>
+  <a href ng-click="$reloadView()">refresh</a>
+</header>
 <div id="page-wrapper">
-    <header>
 
-      <a href="/"><h1>Bioacoustic Workbench</h1></a>
-      <a href ng-click="$reloadView()">refresh</a>
-    </header>
+    <navigation ng-controller="NavigationCtrl" ></navigation>
+
+    <div id="login-holder">
+      <div id="loginbox">
+        <div id="login-inner" ng-controller="LoginCtrl">
+
+          <form ng-submit="submit()">
+            <h3>Login or signup with</h3>
+            <ul>
+              <li><a href="#" class="btn-auth btn-facebook">Sign in with facebook</a> </li>
+              <li><a href="#" class="btn-auth btn-github"  >Sign in with GitHub</a> </li>
+              <li><a ng-click="submit('google')" class="btn-auth btn-google"  >Sign in with Google</a> </li>
+              <li><a href="#" class="btn-auth btn-openid"  >Sign in with OpenID</a> </li>
+
+              <li><a ng-click="submit('persona')" class="persona-button"><span >Sign in with Persona</span></a> </li>
+              <li><a href="#" class="btn-auth btn-twitter" >Sign in with Twitter</a> </li>
+              <li><a href="#" class="btn-auth btn-windows" >Sign in with Live ID</a> </li>
+              <li><a href="#" class="btn-auth btn-yahoo"   >Sign in with Yahoo</a> </li>
+            </ul>
+
+            <label>Your email address
+                <input type="text" class="login" ng-model="password"/>
+            </label>
+            <button type="submit">Proceed</button>
+          </form>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+
 
     <!-- each view must specify the controller they use -->
         <div id="content-wrapper" ng-view></div>
-    </div>
+
 </div>
 
 <footer>

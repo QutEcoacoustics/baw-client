@@ -1,0 +1,125 @@
+@import "base";
+
+/* feat: before angular is ready, display loading animation */
+body.waiting-for-angular div#content-outer {
+  display: none;
+}
+body.waiting-for-angular div#initializing-panel {
+  display: block;
+  background: image-url("angular-auth/loading.gif") center center no-repeat;
+  position:absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+}
+
+
+//#content-outer {
+//  background: image-url("angular-auth/content_repeat.jpg") repeat-x;
+//  background-color: white;
+//}
+//#content {
+//  color: #333;
+//  font-family: Arial, Helvetica, sans-serif;
+//  font-size: 12px;
+//  line-height: 18px;
+//  margin: 0 auto 0 auto;
+//  max-width: 1260px;
+//  min-width: 780px;
+//  padding: 35px 0px 30px 0px;
+//}
+//h2 {
+//  color: #393939;
+//  font-size: 16px;
+//  font-weight: bold;
+//  line-height: 20px;
+//  margin-bottom: 10px;
+//}
+//h3 {
+//  color: #92b22c;
+//  font-size: 14px;
+//  font-weight: bold;
+//  line-height: 18px;
+//  margin-bottom: 10px;
+//}
+/*  LOGIN -------------------------------------------------------------------------------- */
+
+#login-holder {
+  @include gradient("radial", nth($master-background,3) , nth($master-background,1));
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  padding-bottom: 5px;
+
+}
+#loginbox {
+  margin: 50px auto 0 auto;
+  background-color: nth($master-background, 2);
+  @extend .rounded-corners;
+  border-color: nth($master-highlight, 2);
+
+  height: 312px;
+  line-height: 12px;
+  padding: $standard-padding;
+  position: relative;
+  width: 508px;
+}
+#login-inner {
+  font-family: Tahoma;
+  font-size: 13px;
+  line-height: 12px;
+  margin: 0 auto;
+  width: 310px;
+  text-align: center;
+
+
+  & ul {
+    margin: 0 0 0 -110px;
+    padding: 0;
+    list-style: none;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    width: 515px;
+
+    & li {
+      padding: 0;
+      margin: $standard-margin-vertical 20px;
+      width: 170px;
+      display: inline-block;
+
+      & a {
+        width: 100%;
+        font-weight: bold;
+
+
+        span {
+          color: white;
+
+        }
+      }
+
+      & .persona-button {
+        width: 200px;
+      }
+    }
+  }
+
+  & label {
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 10px;
+  }
+
+  & input[type="submit"] {
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    padding: auto;
+  }
+}

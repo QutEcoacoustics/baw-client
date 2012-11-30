@@ -152,8 +152,10 @@ header {
   width: 100%;
   min-width: 768px;
   min-height: 100%;
-  height: auto !important;
+  // height: auto !important;
   height: 100%;
+  position: relative;
+  top: -5px;
 }
 
 #content-wrapper{
@@ -173,7 +175,7 @@ header {
 /* Footer
 -----------------------------------------------------------------------------*/
 footer {
-    margin: $standard-padding-vertical auto 0;
+    margin:  0;
     min-width: 768px;
     height: $footer-height;
     background: nth($master-highlight-2, 2);

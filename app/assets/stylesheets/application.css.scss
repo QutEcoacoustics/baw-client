@@ -11,6 +11,7 @@
  *= require_self
  *= require jquery.ui.all
  *= require_tree ../../../vendor/assets/javascripts/.
+ *= require_tree ../images/.
  *= require_tree .
  *= depend_on "_base"
  */
