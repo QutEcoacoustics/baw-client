@@ -4,12 +4,7 @@ require 'json'
 require 'digest'
 require 'logger'
 require 'trollop'
-
-module BawSite
-  class Application
-
-  end
-end
+require 'fileutils'
 
 #=begin
 require './lib/modules/OS'
@@ -47,14 +42,19 @@ module AudioHarvester
   class Harvester
     include Audio, Cache, Exceptions, Logging
 
-    def initialize(host, port, config_file_name, login_email, login_password, endpoint_create, endpoint_login)
+    def initialize(host, port, config_file_name, login_email, login_password, endpoint_create, endpoint_login, endpoint_record_move, base_dir)
       @host = host
       @port = port
       @folder_config = config_file_name
       @login_email = login_email
       @login_password = login_password
       @endpoint_create = endpoint_create
+      @endpoint_record_move = endpoint_record_move
       @endpoint_login = endpoint_login
+
+      SharedSettings.settings[:original_audio_paths] = SharedSettings.settings[:original_audio_paths].collect{ |item| File.join(base_dir, item) }
+      SharedSettings.settings[:cached_spectrogram_paths] = SharedSettings.settings[:cached_spectrogram_paths].collect{ |item| File.join(base_dir, item) }
+      SharedSettings.settings[:cached_audio_paths] = SharedSettings.settings[:cached_audio_paths].collect{ |item| File.join(base_dir, item) }
     end
 
 =begin
@@ -202,24 +202,37 @@ module AudioHarvester
       to_send
     end
 
+    def construct_post(endpoint, body)
+      post_request = Net::HTTP::Post.new(endpoint)
+      post_request["Content-Type"] = "application/json"
+      post_request["Accept"] = "application/json"
+      post_request.body = body.to_json
+      post_request
+    end
+
     def construct_login_request()
       # set up the login HTTP post
-      login_post =  Net::HTTP::Post.new(@endpoint_login)
-      login_post.body = {:user => {:email => @login_email, :password => @login_password}}.to_json
-      login_post["Content-Type"] = "application/json"
+      content = {:user => {:email => @login_email, :password => @login_password}}
+      login_post = construct_post(@endpoint_login, content)
       logger.debug "Login request: #{login_post.inspect}, Body: #{login_post.body}"
       login_post
     end
 
-    def construct_create_request(parameters, auth_token)
-      new_params = parameters.clone
-      new_params[:auth_token] = auth_token
+    # request an auth token
+    def request_login(http)
+      login_post = construct_login_request
+      login_response = http.request(login_post)
+      logger.debug "Login response: #{login_response.code}, Message: #{login_response.message}, Body: #{login_response.body}"
 
-      req = Net::HTTP::Post.new(@endpoint_create)
-      req.body = new_params.to_json
-      req["Content-Type"] = "application/json"
-      logger.debug "Create request: #{req.inspect}, Body: #{req.body}"
-      req
+      if login_response.code == '200'
+        logger.debug 'Successfully logged in.'
+
+        json_resp = JSON.parse(login_response.body)
+        json_resp['auth_token']
+      else
+        logger.debug 'Failed log in.'
+        nil
+      end
     end
 
     # get uuid for audio recording from website via REST API
@@ -229,17 +242,16 @@ module AudioHarvester
     # contain an authenticity token.
     def create_new_audiorecording(post_params)
       Net::HTTP.start(@host, @port) do |http|
-        login_post = construct_login_request
-        login_response = http.request(login_post)
-        logger.debug "Login response: #{login_response.code}, Message: #{login_response.message}, Body: #{login_response.body}"
 
-        if login_response.code == '200'
-          logger.debug 'Successfully logged in.'
+        auth_token = request_login(http)
 
-          json_resp = JSON.parse(login_response.body)
-          auth_token = json_resp['auth_token']
+        if auth_token
+          new_params = post_params.clone
+          new_params[:auth_token] = auth_token
 
-          create_post = construct_create_request(post_params, auth_token)
+          create_post = construct_post(@endpoint_create,new_params)
+          logger.debug "Create request: #{create_post.inspect}, Body: #{create_post.body}"
+
           response = http.request(create_post)
           logger.debug "Create response: #{response.code}, Message: #{response.message}, Body: #{response.body}"
 
@@ -248,24 +260,74 @@ module AudioHarvester
             Logging.logger.info 'New audio recording created.'
             response
           elsif response.code == '422'
-            'Unprocessable Entity'
+            Logging.logger.error "Login request was not valid (Unprocessable Entity): code #{response.code}, Message: #{response.message}, Body: #{response.body}"
           else
             Logging.logger.error "Create response was not recognised: code #{response.code}, Message: #{response.message}, Body: #{response.body}"
             nil
           end
         else
-          Logging.logger.error "Login response was not 200 OK: #{login_response.code}, Message: #{login_response.message}, Body: #{login_response.body}"
+          Logging.logger.error "Login response, expected 200 OK, got #{response.code}, Message: #{response.message}, Body: #{response.body}"
           nil
         end
       end
     end
 
-    #
-    def move_file(create_response)
-      response_json = JSON.parse(create_response)
+    # copy
+    def copy_file(source_path,full_move_paths)
+      unless source_path.nil? || full_move_paths.size < 1
+        success = []
+        fail = []
 
-      if response_json.include? :uuid
+        full_move_paths.each do |path|
+          if File.exists?(path)
+            Logging.logger.debug "File already exists, did not copy '#{source_path}' to '#{path}'."
+          else
+            begin
+              FileUtils.makedirs(File.dirname(path))
+              FileUtils.copy(source_path, path)
+              Logging.logger.debug "Copied '#{source_path}' to '#{path}'."
+              success.push({:source => source_path, :dest => path})
+            rescue Exception => e
+              Logging.logger.error "Error copying '#{source_path}' to '#{path}'. Exception: #{e}."
+              fail.push({:source => source_path, :dest => path, :exception => e})
+            end
+          end
+        end
 
+        { :success => success, :fail => fail }
+      end
+    end
+
+    def record_file_move(create_result_params)
+      Net::HTTP.start(@host, @port) do |http|
+
+        auth_token = request_login(http)
+
+        if auth_token
+          new_params = {
+              :auth_token => auth_token,
+              :audio_recording => {
+                  :file_hash => create_result_params['file_hash'],
+                  :uuid => create_result_params['uuid']
+              }
+          }
+
+          create_post = construct_post(@endpoint_record_move.sub(':id',create_result_params['id'].to_s),new_params)
+          logger.debug "Record move request: #{create_post.inspect}, Body: #{create_post.body}"
+
+          response = http.request(create_post)
+          logger.debug "Record move response: #{response.code}, Message: #{response.message}, Body: #{response.body}"
+
+          if response.code == '200'
+            true
+          else
+            Logging.logger.error "Record move response was not recognised: code #{response.code}, Message: #{response.message}, Body: #{response.body}"
+            false
+          end
+        else
+          Logging.logger.error "Login response, expected 200 OK, got #{response.code}, Message: #{response.message}, Body: #{response.body}"
+          false
+        end
       end
     end
 
@@ -298,22 +360,29 @@ module AudioHarvester
 
       unless post_result.nil?
         response_json = JSON.parse(post_result.body)
-        puts response_json.inspect
+        #puts response_json.inspect
         recorded_date = DateTime.parse(response_json['recorded_date'])
 
         file_name_params = {
-            :id => response_json[:uuid],
+            :id => response_json['uuid'],
             :date => recorded_date.strftime("%Y%m%d"),
             :time => recorded_date.strftime("%H%M%S"),
             :original_format => File.extname(file_path)
         }
+
+        Logging.logger.debug "Parameters for moving file: '#{file_name_params}'."
 
         file_name = Cache::original_audio_file file_name_params
         source_possible_paths = Cache::possible_paths(Cache::original_audio_storage_paths,file_name)
 
         Logging.logger.debug "Generated move paths: #{source_possible_paths.join(', ')}"
 
-        #result_of_move = move_file(post_result)
+        result_of_move = copy_file(file_path, source_possible_paths)
+        Logging.logger.debug "File move results: #{result_of_move.to_json}"
+
+        status_change_result = record_file_move(response_json)
+        Logging.logger.debug "Status change results: #{status_change_result.to_json}"
+
       end
     end
 
@@ -323,21 +392,24 @@ end
 
 # command line arguments
 opts = Trollop::options do
-  opt :file, "A single audio file to harvest", :type => :string
-  opt :config_file, "File name for folder config file.", :type => :string, :default => 'folder_config.yml'
-  opt :dir, "The top-level directory containing subdirectories with audio files and config files.", :type => :string
-  opt :login_email, "Email to login to web service", :type => :string
-  opt :login_password, "Password to login to web service", :type => :string
+  opt :file, 'A single audio file to harvest', :type => :string
+  opt :config_file, 'File name for folder config file.', :type => :string, :default => 'folder_config.yml'
+  opt :dir, 'The top-level directory containing subdirectories with audio files and config files.', :type => :string
+  opt :login_email, 'Email to login to web service', :type => :string
+  opt :login_password, 'Password to login to web service', :type => :string
+  opt :base_dir, 'The directory containing the folders holding the original audio and cached audio and images.', :type => :string
 end
 
-Trollop::die :file, "a file or a directory must be given" if opts[:file].nil? && opts[:dir].nil?
-Trollop::die :login_email, "must be given" if opts[:login_email].nil?
-Trollop::die :login_password, "must be given" if opts[:login_password].nil?
+Trollop::die :file, 'a file or a directory must be given' if opts[:file].nil? && opts[:dir].nil?
+Trollop::die :base_dir, 'must be given' if opts[:base_dir].nil?
+Trollop::die :login_email, 'must be given' if opts[:login_email].nil?
+Trollop::die :login_password, 'must be given' if opts[:login_password].nil?
 
 harvester = AudioHarvester::Harvester.new(
     'localhost', 3000,
     opts[:config_file], opts[:login_email],
-    opts[:login_password], '/audio_recordings.json', '/security/sign_in.json')
+    opts[:login_password], '/audio_recordings', '/security/sign_in','/audio_recordings/:id/upload_complete',
+    opts[:base_dir])
 
 # run the script for a directory
 # TODO

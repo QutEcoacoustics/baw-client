@@ -1,6 +1,7 @@
 require 'timeliness'
 
 class AudioRecording < ActiveRecord::Base
+  before_create :set_create_defaults
   # flex store
   store :notes
 
@@ -102,5 +103,9 @@ class AudioRecording < ActiveRecord::Base
   # default values
   def default_values
     # empty
+  end
+
+  def set_create_defaults
+    self.status ||= 'new'
   end
 end
