@@ -38,7 +38,8 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
             respond_to do |format|
               format.json do
-                render :json => { :response => 'ok', :auth_token => current_user.authentication_token }.to_json, :status => :ok
+                content = Api::SessionsController.login_info(current_user, user, 'browser_id')
+                render :json => content.to_json, :status => :ok
               end
             end
 

@@ -1,5 +1,15 @@
 class Api::SessionsController < Devise::SessionsController
 
+=begin
+  e.g.
+  GET http://localhost:3000/projects
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Token token="TOKEN"
+  Host: localhost:3000
+  Content-Length: 0
+=end
+
   # GET /resource/sign_in
   def new
     resource = build_resource(nil, :unsafe => true)
@@ -9,6 +19,9 @@ class Api::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
+    # turn off session storage for json and xml
+    # http://stackoverflow.com/questions/10717667/prevent-session-creation-on-rails-3-2-2-for-restful-api/10723769#10723769
+    auth_options.deep_merge!({:store => !(request.format.xml? || request.format.json?)})
     resource = warden.authenticate!(auth_options)
     set_flash_message(:notice, :signed_in) if is_navigational_format?
     sign_in(resource_name, resource)
@@ -21,7 +34,7 @@ class Api::SessionsController < Devise::SessionsController
         # http://stackoverflow.com/questions/9641079/token-authentication-with-rails-and-devise
         # http://matteomelani.wordpress.com/2011/10/17/authentication-for-mobile-devices/
         current_user.ensure_authentication_token!
-        render :json => { :response => 'ok', :auth_token => current_user.authentication_token }.to_json, :status => :ok
+        render :json => login_info(current_user,resource, 'default').to_json, :status => :ok
       end
     end
 
@@ -34,6 +47,14 @@ class Api::SessionsController < Devise::SessionsController
     else
       head :unauthorized
     end
+  end
+
+  def self.login_info(current_user, user, provider_id)
+    { :response => 'ok',
+      :auth_token => current_user.authentication_token,
+      :friendly_name => user.display_name,
+      :provider_id => provider_id
+    }
   end
 
   # https://github.com/plataformatec/devise/issues/1357
