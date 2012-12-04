@@ -29,8 +29,6 @@ angular.module('angular-auth', ['http-auth-interceptor', 'content-mocks'])
         }
     });
 
-
-
 function LoginCtrl($scope, $http, authService, PersonaAuthenticator) {
 
 
