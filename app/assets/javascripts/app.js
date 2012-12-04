@@ -41,10 +41,11 @@ var bawApp = (function () {
             'bawApp.directives',        /* our directives.js  */
             'bawApp.filters',           /* our filters.js     */
             'baw.services',             /* our services.js    */
-            'http-auth-interceptor'     /* the auth module    */
+            'http-auth-interceptor',    /* the auth module    */
+            'angular-auth'              /* the auth module    */
         ]);
 
-    app.config(function ($routeProvider, $locationProvider) {
+    app.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider.whenDefaults = whenDefaults;
         $routeProvider.fluidIf = fluidIf;
 
@@ -90,7 +91,9 @@ var bawApp = (function () {
 
         // location config
         $locationProvider.html5Mode(true);
-    });
+
+
+    }]);
 
     app.run(['$rootScope', '$location', '$route', '$http', function ($rootScope, $location, $route, $http) {
         exports.print = $rootScope.print = function () {
@@ -147,6 +150,9 @@ var bawApp = (function () {
             yearRange: "1800:3000"
 
         };
+
+        // storage of auth_token
+        $rootScope.authorisationToken = null;
 
 
     }]);

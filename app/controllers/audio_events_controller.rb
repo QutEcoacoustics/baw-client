@@ -85,7 +85,7 @@ class AudioEventsController < ApplicationController
 
     respond_to do |format|
       if @audio_event.save!
-
+        #@audio_event.audio_event_tags.reload
         format.json { render json: @audio_event, status: :created, location: @audio_event }
       else
         format.json { render json: @audio_event.errors, status: :unprocessable_entity }
