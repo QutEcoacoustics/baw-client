@@ -84,7 +84,7 @@ class AudioEventsController < ApplicationController
     #@audio_event.audio_event_tags.count.times { @audio_event.audio_event_tags.build }
 
     respond_to do |format|
-      if @audio_event.save
+      if @audio_event.save!
 
         format.json { render json: @audio_event, status: :created, location: @audio_event }
       else

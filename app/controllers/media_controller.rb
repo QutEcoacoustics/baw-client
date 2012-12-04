@@ -37,7 +37,7 @@ class MediaController < ApplicationController
         Mime::Type.lookup('audio/ogg'), Mime::Type.lookup('audio/oga'),
         Mime::Type.lookup('audio/mp3'), Mime::Type.lookup('audio/mpeg'),
         Mime::Type.lookup('audio/wav')
-        #Mime::Type.lookup('audio/x-wav')
+    #Mime::Type.lookup('audio/x-wav')
     ]
 
     text_media_types = [
@@ -64,52 +64,51 @@ class MediaController < ApplicationController
     if image_media_types.include? final_format_requested
       full_path = FileCacher::generate_spectrogram @file_info
       download_file full_path, final_format_requested
-    end
-
-    if audio_media_types.include? final_format_requested
+    elsif  audio_media_types.include? final_format_requested
       full_path = FileCacher::create_audio_segment @file_info
       download_file full_path, final_format_requested
-    end
+    else
 
-    # for any other extension (or no extension)
-    # respond with file info in requested format
+      # for any other extension (or no extension)
+      # respond with file info in requested format
 
-    file_info_to_send = {
-        :start_offset => @file_info[:start_offset],
-        :end_offset => @file_info[:end_offset],
-        :date => @file_info[:date],
-        :time => @file_info[:time],
-        :id => @file_info[:id],
-        :channel => @file_info[:channel],
-        :sample_rate => @file_info[:sample_rate],
-        :window => @file_info[:window],
-        :colour => @file_info[:colour],
-        :original_format => @file_info[:original_format],
-        :format => final_format_requested,
-        :info_url => "/media/#{@file_info[:id]}"
-    }
+      file_info_to_send = {
+          :start_offset => @file_info[:start_offset],
+          :end_offset => @file_info[:end_offset],
+          :date => @file_info[:date],
+          :time => @file_info[:time],
+          :id => @file_info[:id],
+          :channel => @file_info[:channel],
+          :sample_rate => @file_info[:sample_rate],
+          :window => @file_info[:window],
+          :colour => @file_info[:colour],
+          :original_format => @file_info[:original_format],
+          :format => final_format_requested,
+          :info_url => "/media/#{@file_info[:id]}"
+      }
 
-    unless file_info_to_send[:start_offset].nil?
-      base_audio_segment_url = "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
-          "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}."
+      unless file_info_to_send[:start_offset].nil?
+        base_audio_segment_url = "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
+            "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}."
 
-      file_info_to_send[:audio_base_url] = base_audio_segment_url
-    end
+        file_info_to_send[:audio_base_url] = base_audio_segment_url
+      end
 
-    unless file_info_to_send[:window].nil?
-      file_info_to_send[:spectrogram_url] =
-          "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
-              "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}_"+
-              "#{file_info_to_send[:window]}_#{file_info_to_send[:colour]}.png"
+      unless file_info_to_send[:window].nil?
+        file_info_to_send[:spectrogram_url] =
+            "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
+                "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}_"+
+                "#{file_info_to_send[:window]}_#{file_info_to_send[:colour]}.png"
 
-      file_info_to_send[:color_description] = Spectrogram.colour_options
+        file_info_to_send[:color_description] = Spectrogram.colour_options
 
-    end
+      end
 
-    respond_to do |format|
-      format.any(:xml, :html) {render :xml =>  file_info_to_send}
-      format.json {render :json =>  file_info_to_send}
-      format.all { head :bad_request }
+      respond_to do |format|
+        format.any(:xml, :html) {render :xml =>  file_info_to_send}
+        format.json {render :json =>  file_info_to_send}
+        format.all { head :bad_request }
+      end
     end
 
   end

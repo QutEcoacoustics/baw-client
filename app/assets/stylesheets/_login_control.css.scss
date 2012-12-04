@@ -48,6 +48,9 @@ body.waiting-for-angular div#initializing-panel {
 #login-holder {
   @include gradient("radial", nth($master-background,3) , nth($master-background,1));
 
+  // login is not needed until requested
+  display: none;
+
   position: absolute;
   top: 0;
   left: 0;
