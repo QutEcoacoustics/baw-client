@@ -29,9 +29,11 @@ class ApplicationController < ActionController::Base
 
 
 
-  def set_stamper
-    #User.stamper = self.current_user
-    # this is incorrect - should be obtained from current_user
-    User.stamper = User.first!
+  #def set_stamper
+  #  User.stamper = current_user if user_signed_in?
+  #end
+
+  def set_stampers
+    User.stamper = self.current_user
   end
 end
