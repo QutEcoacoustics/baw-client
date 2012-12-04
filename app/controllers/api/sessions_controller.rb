@@ -36,6 +36,14 @@ class Api::SessionsController < Devise::SessionsController
     end
   end
 
+  # https://github.com/plataformatec/devise/issues/1357
+  # redirect the user after signing in
+  #def after_sign_in_path_for(resource)
+  #  session_return_to = session[:return_to]
+  #  session[:return_to] = nil
+  #  stored_location_for(resource) || session_return_to || root_path
+  #end
+
 =begin
   before_filter :authenticate_user!, :except => [:create, :destroy]
   before_filter :ensure_params_exist

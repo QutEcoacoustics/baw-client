@@ -47,7 +47,7 @@
 
     // authentication
 
-    bawss.factory('PersonaAuthenticator', function() {
+    bawss.factory('PersonaAuthenticator', ['$rootScope', function($rootScope) {
         navigator.id.watch({
             // TODO: quite obviously optionally wrong
             loggedInUser: null,
@@ -59,7 +59,13 @@
                     type: 'POST',
                     url: '/security/auth/browser_id/callback', // This is a URL on your website.
                     data: {assertion: assertion},
-                    success: function(res, status, xhr) { window.location.reload(); },
+                    success: function(res, status, xhr) {
+                        //window.location.reload();
+                        //
+                        console.log("Login success: " + res);
+                        //$rootScope.$root.$broadcast('event:auth-loginConfirmed')
+                        authService.loginConfirmed();
+                    },
                     error: function(xhr, status, err) { console.error("Login failure: " + err); }
                 });
             },
@@ -71,7 +77,10 @@
                 $.ajax({
                     type: 'POST',
                     url: '/security/auth/browser_id/callback', // This is a URL on your website.
-                    success: function(res, status, xhr) { window.location.reload(); },
+                    success: function(res, status, xhr) {
+                        //window.location.reload();
+                        console.log("Login success: " + res);
+                    },
                     error: function(xhr, status, err) { console.error("Logout failure: " + err); }
                 });
             }
@@ -79,13 +88,17 @@
 
 
         return {
-            login:    function login() { navigator.id.request(); },
+            login:    function login($scope) { navigator.id.request(); },
             logout: function logout() { navigator.id.logout(); }
         }
+    }]);
+
+
+    bawss.factory('GoogleAuthenticator', function() {
+        return {
+
+        }
     });
-
-
-
 
 
 })();
