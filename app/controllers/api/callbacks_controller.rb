@@ -1,19 +1,155 @@
 class Api::CallbacksController < Devise::OmniauthCallbacksController
   # see https://gist.github.com/993566
-  respond_to :json
+
+  # https://github.com/intridea/omniauth/wiki/Managing-Multiple-Providers
+  # Typically authentication systems have a User model which handles most of the
+  # authentication logic but having multiple logins forces you to correctly separate
+  # the concepts of an Identity and a User. An Identity is a particular authentication
+  # method which a user has used to identify themselves with your site whilst a User
+  # manages data which is directly related to your site itself.
+
+  #respond_to :json
 
   def browser_id
-    test = params
+    # https://developer.mozilla.org/en-US/docs/Persona/Remote_Verification_API
+    # this callback will have an assertion included. The assertion should be POST'ed with the
+    # audience to the remote verification API
+
+
+    if params[:assertion].blank?
+
+      head :bad_request
+    else
+
+      base_uri = "#{request.protocol}#{request.host_with_port}"
+      body = { :audience => base_uri, :assertion => params[:assertion]}
+      verify_uri = URI.parse('https://verifier.login.persona.org/verify')
+      post_request = construct_post(verify_uri, body)
+      Net::HTTP.start(verify_uri.host, verify_uri.port,:use_ssl => verify_uri.scheme == 'https') do |http|
+        verify_response = http.request(post_request)
+        Rails.logger.debug "Verify browser_id response: #{verify_response.code}, Message: #{verify_response.message}, Body: #{verify_response.body}"
+        if verify_response.code == '200'
+          verify_response_attr = JSON.parse(verify_response.body, { :symbolize_names => true })
+          if verify_response_attr[:status] == 'okay'
+            user = store_provider_info('browser_id',verify_response_attr, current_user)
+
+            sign_in(user, :event => :authentication)
+            current_user.reset_authentication_token!
+
+            respond_to do |format|
+              format.json do
+                render :json => { :response => 'ok', :auth_token => current_user.authentication_token }.to_json, :status => :ok
+              end
+            end
+
+          end
+        end
+      end
+
+      # success, reset any existing tokens and
+      # return a new token for this session
+      #
+      #head :ok
+
+    end
   end
 
-  #def passthru
-  #  render :status => 404, :text => "Not found. Authentication passthru."
-  #end
+  private
 
-  #def browser_id
-  #  test = params
-  #  test
-  #end
+  def store_provider_info(provider, access_token, resource=nil)
+    user = nil
+    email = nil
+    display_name = nil
+    uid = nil
+    auth_attr = {}
+
+    case provider
+      when 'browser_id'
+        uid = access_token[:email]
+        email = access_token[:email]
+        # using the token field to store the issuer identity
+        # using the secret field to store the expires time
+        auth_attr = { :uid => uid, :token => access_token[:issuer],
+                      :secret => access_token[:expires], :link => 'https://persona.org' }
+
+      else
+        raise "Provider '#{provider}' not handled."
+    end
+
+    if resource.nil?
+      if email
+        user = find_or_create_by_name(display_name, email, resource)
+      elsif uid && name
+        user = find_or_create_by_uid(uid, display_name, email, resource)
+        if user.nil?
+          user = find_or_create_by_display_name(display_name, email, resource)
+        end
+      end
+    else
+      user = resource
+    end
+
+    auth = user.authorizations.find_by_provider(provider)
+    if auth.nil?
+      auth = user.authorizations.build(:provider => provider)
+      user.authorizations << auth
+    end
+
+    auth.update_attributes auth_attr
+
+    user
+  end
+
+  def find_or_create_by_uid(uid, display_name, email, resource=nil)
+    user = Authorization.find_by_uid(uid.to_s)
+    if user.blank?
+      user = User.new(:display_name => display_name, :email => email, :password => Devise.friendly_token[0,20])
+      user.save
+    end
+    user
+  end
+
+  def find_or_create_by_display_name(display_name, email, resource=nil)
+    user = User.find_by_email(email)
+    if user.blank?
+      user = User.new(:display_name => display_name, :email => email, :password => Devise.friendly_token[0,20])
+      user.save
+    end
+    user
+  end
+
+  def find_or_create_by_name(display_name, email, resource=nil)
+    user = User.find_by_display_name(display_name)
+    if user.blank?
+      user = User.new(:display_name => display_name, :email => email, :password => Devise.friendly_token[0,20], )
+      # save(false) will skip validations
+      user.save(:validate => false)
+    end
+    user
+  end
+
+  def construct_post(endpoint_uri, body)
+    post_request = Net::HTTP::Post.new(endpoint_uri.request_uri)
+    post_request["Content-Type"] = "application/json"
+    post_request["Accept"] = "application/json"
+    post_request.body = body.to_json
+    post_request
+  end
+
+  def construct_browser_id_attrs(response_body)
+
+  end
+
+  def find_or_create_user_by_email(email, display_name)
+    user = User.find_by_email(email)
+    if user
+      user
+    else
+      user = User.new(:display_name => display_name, :email => email, :password => Devise.friendly_token[0,20])
+      user.save
+    end
+    user
+  end
 
 =begin
 
@@ -87,32 +223,6 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
     return user
   end
 
-  def find_for_oauth_by_uid(uid, resource=nil)
-    user = nil
-    if auth = Authorization.find_by_uid(uid.to_s)
-      user = auth.user
-    end
-    return user
-  end
 
-  def find_for_oauth_by_email(email, resource=nil)
-    if user = User.find_by_email(email)
-      user
-    else
-      user = User.new(:email => email, :password => Devise.friendly_token[0,20])
-      user.save
-    end
-    return user
-  end
-
-  def find_for_oauth_by_name(name, resource=nil)
-    if user = User.find_by_name(name)
-      user
-    else
-      user = User.new(:name => name, :password => Devise.friendly_token[0,20], :email => "#{UUIDTools::UUID.random_create}@host")
-      user.save false
-    end
-    return user
-  end
 =end
 end

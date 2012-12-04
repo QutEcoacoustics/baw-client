@@ -40,11 +40,14 @@ function LoginCtrl($scope, $http, authService, PersonaAuthenticator) {
             case "persona":
                 PersonaAuthenticator.login();
                 break;
+            case "google":
+                login('/security/auth/google_oauth2', 800,600);
+                break;
             default:
                 throw "Provider not matched";
         }
 
-        console.info(result);
+        //console.info(result);
 
         //$http.post(path).success(function () {
         //    authService.loginConfirmed();
