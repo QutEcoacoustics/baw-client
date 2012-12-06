@@ -1,6 +1,7 @@
 class Api::RegistrationsController < Devise::RegistrationsController
   respond_to :json
   # see C:\Ruby\193\lib\ruby\gems\1.9.1\gems\devise-2.1.2\app\controllers\devise
+  # Not Used - disabled
 
   # GET /resource/sign_up
   def new
