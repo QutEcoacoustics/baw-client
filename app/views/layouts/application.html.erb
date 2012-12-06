@@ -11,7 +11,7 @@
   <%= csrf_meta_tags %>
   <%= yield(:head) %>
 </head>
-<body >
+<body baw-auth class="waiting-for-angular">
 
 <%= "" #yield
 %>
@@ -20,9 +20,7 @@
   <a href="/"><h1>Bioacoustic Workbench</h1></a>
   <a href ng-click="$reloadView()">refresh</a>
 </header>
-<div id="page-wrapper">
-
-    <navigation ng-controller="NavigationCtrl" ></navigation>
+<div id="page-wrapper" >
 
     <div id="login-holder">
       <div id="loginbox">
@@ -52,9 +50,9 @@
       </div>
     </div>
 
-
-    <!-- each view must specify the controller they use -->
-        <div id="content-wrapper" ng-view></div>
+  <navigation ng-controller="NavigationCtrl" ></navigation>
+  <!-- each view must specify the controller they use -->
+  <div id="content-wrapper" ng-view></div>
 
 </div>
 

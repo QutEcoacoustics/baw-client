@@ -1,12 +1,12 @@
-angular.module('angular-auth', ['http-auth-interceptor', 'content-mocks'])
+angular.module('angular-auth', ['http-auth-interceptor'])
 /**
  * This directive will find itself inside HTML as a class,
  * and will remove that class, so CSS will remove loading image and show app content.
  * It is also responsible for showing/hiding login form.
  */
-    .directive('authDemoApplication', function () {
+    .directive('bawAuth', function () {
         return {
-            restrict: 'C',
+            restrict: 'AC',
             link: function (scope, elem, attrs) {
                 //once Angular is started, remove class:
                 elem.removeClass('waiting-for-angular');
@@ -27,29 +27,9 @@ angular.module('angular-auth', ['http-auth-interceptor', 'content-mocks'])
                 });
             }
         }
-    });
+    })
 
-function LoginCtrl($scope, $http, authService, PersonaAuthenticator) {
+;
 
 
-    $scope.submit = function (provider) {
 
-        switch (provider) {
-            case "persona":
-                PersonaAuthenticator.login();
-                break;
-            case "google":
-                login('/security/auth/google_oauth2', 800,600);
-                break;
-            default:
-                throw "Provider not matched";
-        }
-
-        //console.info(result);
-
-        //$http.post(path).success(function () {
-        //    authService.loginConfirmed();
-        //});
-    }
-}
-LoginCtrl.$inject = ['$scope', '$http', 'authService', 'PersonaAuthenticator'];

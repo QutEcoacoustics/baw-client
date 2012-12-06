@@ -31,7 +31,7 @@
 
     bawss.factory('AudioEvent', function($resource) {
         var actions = {
-          query: { method:'GET', isArray: true }
+            query: { method:'GET', isArray: true }
         };
 
         var resource = resourcePut($resource, '/audio_events/:audioEventId', {audioEventId: '@audioEventId'}, actions);
@@ -43,52 +43,66 @@
         return $resource('/tags/:tagId', {tagId: '@tagId'}, {});
     });
 
-
-
     // authentication
+    bawss.factory('Authenticator', ['$rootScope', 'authService', '$http', function($rootScope, authService, $http){
+        return {
+            loginSuccess: function loginSuccess(data, status, headers, config) {
+                // a provider has just logged in
+                // the response arg, is the response from our server (devise)
+                // extract auth_token and set in rootScope
 
-    bawss.factory('PersonaAuthenticator', ['$rootScope', function($rootScope) {
+                if (!data || data.response !== "ok") {
+                    throw "Authenticator.loginSuccess: this function should not be called unless a successful response was received"
+                }
+
+                $rootScope.authorisationToken = data.auth_token;
+                $http.defaults.headers.common["Authorization"] = 'Token token="' +$rootScope.authorisationToken + '"';
+
+                console.log("login successful", data);
+
+                authService.loginConfirmed();
+            },
+            loginFailure:function loginFailure(data, status, headers, config) {
+                $http.defaults.headers.common = null;
+                console.error("Login failure: ", data, status, headers, config);
+            },
+            logoutSuccess:function logoutSuccess(data, status, headers, config) {
+
+                $http.defaults.headers.common = null;
+                $rootScope.authorisationToken = null;
+
+                console.log("login successful", data);
+            },
+            logoutFailure:function logoutFailure(data, status, headers, config) {
+                console.error("Login failure: ", data, status, headers, config);
+            }
+        }
+    }]);
+
+    bawss.factory('PersonaAuthenticator', ['$rootScope', 'authService', '$http', 'Authenticator', function($rootScope, authService, $http, Authenticator) {
+        // Navigator is the persona global object
         navigator.id.watch({
-            // TODO: quite obviously optionally wrong
-            loggedInUser: null,
             onlogin: function(assertion) {
                 // A user has logged in! Here you need to:
                 // 1. Send the assertion to your backend for verification and to create a session.
                 // 2. Update your UI.
-                $.ajax({ /* <-- This example uses jQuery, but you can use whatever you'd like */
-                    type: 'POST',
-                    url: '/security/auth/browser_id/callback', // This is a URL on your website.
-                    data: {assertion: assertion},
-                    success: function(res, status, xhr) {
-                        //window.location.reload();
-                        //
-                        console.log("Login success: " + res);
-                        //$rootScope.$root.$broadcast('event:auth-loginConfirmed')
-                        authService.loginConfirmed();
-                    },
-                    error: function(xhr, status, err) { console.error("Login failure: " + err); }
-                });
+                $http({method:'POST', url:'/security/auth/browser_id/callback', data:{assertion: assertion}})
+                    .success(Authenticator.loginSuccess)
+                    .error(Authenticator.loginFailure);
+
             },
             onlogout: function() {
                 // A user has logged out! Here you need to:
                 // Tear down the user's session by redirecting the user or making a call to your backend.
                 // Also, make sure loggedInUser will get set to null on the next page load.
-                // (That's a literal JavaScript null. Not false, 0, or undefined. null.)
-                $.ajax({
-                    type: 'POST',
-                    url: '/security/auth/browser_id/callback', // This is a URL on your website.
-                    success: function(res, status, xhr) {
-                        //window.location.reload();
-                        console.log("Login success: " + res);
-                    },
-                    error: function(xhr, status, err) { console.error("Logout failure: " + err); }
-                });
+                $http({method:'GET', url:'/security/sign_out'})
+                    .success(Authenticator.logoutSuccess)
+                    .error(Authenticator.logoutFailure);
             }
         });
 
-
         return {
-            login:    function login($scope) { navigator.id.request(); },
+            login:  function login() { navigator.id.request(); },
             logout: function logout() { navigator.id.logout(); }
         }
     }]);
