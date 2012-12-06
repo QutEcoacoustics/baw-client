@@ -40,6 +40,25 @@ class Api::SessionsController < Devise::SessionsController
 
   end
 
+  # DELETE (or GET depending on devise setting) /resource/sign_out
+  def destroy
+    # don't redirect at all
+    #redirect_path = after_sign_out_path_for(resource_name)
+    # still sign out
+    signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
+    #set_flash_message :notice, :signed_out if signed_out
+
+    # We actually need to hardcode this as Rails default responder doesn't
+    # support returning empty response on GET request
+    # only respond with a HEAD 200 OK.
+    respond_to do |format|
+      #format.any(*navigational_formats) { redirect_to redirect_path }
+      format.all do
+        head :ok
+      end
+    end
+  end
+
   # returns 401 or 200 depending on if a user is signed in or not
   def ping
     if user_signed_in?
@@ -51,9 +70,11 @@ class Api::SessionsController < Devise::SessionsController
 
   def self.login_info(current_user, user, provider_id)
     { :response => 'ok',
+      :user_id => user.id,
       :auth_token => current_user.authentication_token,
       :friendly_name => user.display_name,
-      :provider_id => provider_id
+      :provider_id => provider_id,
+      :email => user.email
     }
   end
 
