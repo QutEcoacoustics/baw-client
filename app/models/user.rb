@@ -24,7 +24,8 @@ class User < ActiveRecord::Base
   has_many :permissions
 
   # validation
-  validates_presence_of :display_name
+  #validates_presence_of :display_name
+  validates :display_name, :presence => {:unless => Proc.new { |a| a.email.present? }, :message => "Please provide a display_name, email, or both"}
   validates_uniqueness_of :display_name, :email, :case_sensitive => false
   #friendly_id :display_name, :use_slug => true, :strip_non_ascii => true
 end

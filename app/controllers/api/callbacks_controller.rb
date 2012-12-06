@@ -146,7 +146,9 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
       user = authn.user unless authn.blank?
       user = User.find_by_email(canonical_data[:email]) if !canonical_data[:email].blank? && user.blank?
       user = User.find_by_display_name(canonical_data[:display_name]) if !canonical_data[:display_name].blank? && user.blank?
-      user = User.create!(:display_name => canonical_data[:display_name], :email => canonical_data[:email], :password => Devise.friendly_token[0,20]) if user.blank?
+
+      new_display_name = canonical_data[:display_name]
+      user = User.create!(:display_name => new_display_name.blank? ? '' : new_display_name, :email => canonical_data[:email], :password => Devise.friendly_token[0,20]) if user.blank?
     end
 
     # update display_name if given and it was blank

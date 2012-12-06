@@ -6,7 +6,7 @@ class Bookmark < ActiveRecord::Base
   belongs_to :audio_recording
 
   # attr
-  attr_accessible :name, :notes, :offset
+  attr_accessible :name, :notes, :offset, :audio_recording_id
 
   # userstamp
   stampable
