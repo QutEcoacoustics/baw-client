@@ -11,6 +11,7 @@ baw-annotation-viewer {
   & #scroller{
     overflow-x: scroll;
     overflow-y: hidden;
+    line-height: 0;
   }
 
   & .annotation-viewer {

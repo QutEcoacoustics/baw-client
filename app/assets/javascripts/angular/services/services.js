@@ -58,7 +58,7 @@
                 $rootScope.authorisationToken = data.auth_token;
                 $http.defaults.headers.common["Authorization"] = 'Token token="' +$rootScope.authorisationToken + '"';
 
-                console.log("login successful", data);
+                console.log("Login successful", data);
 
                 authService.loginConfirmed();
             },
@@ -71,15 +71,17 @@
                 $http.defaults.headers.common["Authorization"] = null;
                 $rootScope.authorisationToken = null;
 
-                console.log("logout successful", data);
+                console.log("Logout successful", data);
             },
             logoutFailure:function logoutFailure(data, status, headers, config) {
-                console.error("Login failure: ", data, status, headers, config);
+                console.error("Logout failure: ", data, status, headers, config);
             }
         }
     }]);
 
     bawss.factory('AuthenticationProviders', ['$rootScope', 'authService', '$http', 'Authenticator', function($rootScope, authService, $http, Authenticator) {
+        var signOutPath = '/security/sign_out';
+
         // Navigator is the persona global object
         navigator.id.watch({
             onlogin: function(assertion) {
@@ -95,7 +97,7 @@
                 // A user has logged out! Here you need to:
                 // Tear down the user's session by redirecting the user or making a call to your backend.
                 // Also, make sure loggedInUser will get set to null on the next page load.
-                $http({method:'GET', url:'/security/sign_out'})
+                $http({method:'GET', url:signOutPath})
                     .success(Authenticator.logoutSuccess)
                     .error(Authenticator.logoutFailure);
             }
@@ -117,7 +119,7 @@
             },
             "openid" : {
                 login:  function login(url) {
-                    var popPath = "/security/auth/open_id?openid_url=" + window.fixedEncodeURIComponent(url);
+                    var popPath = "/security/auth/open_id?openid_url=" + angularCopies.fixedEncodeURIComponent(url);
                     popUpWindow(popPath, 700, 500);
 
 

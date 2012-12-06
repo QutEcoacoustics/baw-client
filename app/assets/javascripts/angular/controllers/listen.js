@@ -31,7 +31,14 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
         $scope.spectrogram = spectrogramResource.get($routeParams);
 
         // HACK:
-        $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png";
+        $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
+        $scope.$on('event:auth-loginRequired', function () {
+            $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
+        });
+        $scope.$on('event:auth-loginConfirmed', function () {
+            $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
+        });
+
 
         //    var audioEventResource = $resource('/audio_events?by_audio_id=:recordingId', {recordingId: '@recordingId'}, {
         //        get:

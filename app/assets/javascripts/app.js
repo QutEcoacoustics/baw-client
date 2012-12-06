@@ -154,6 +154,12 @@ var bawApp = (function () {
         // storage of auth_token
         $rootScope.authorisationToken = null;
 
+        $rootScope.authTokenParams = function() {
+            return {
+                auth_token: $rootScope.authorisationToken
+            };
+        }
+
 
     }]);
 
