@@ -78,6 +78,8 @@ class AudioEventsController < ApplicationController
   # POST /audio_events
   # POST /audio_events.json
   def create
+
+
     @audio_event = AudioEvent.new(params[:audio_event])
     #@audio_event.audio_event_tags.each{ |aet|  aet.build() }
 

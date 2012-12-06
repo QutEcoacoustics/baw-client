@@ -9,7 +9,6 @@
 function AnnotationViewerCtrl($scope, $element, $attrs, $transclude) {
 
 
-
 }
 
 AnnotationViewerCtrl.$inject = ['$scope', '$element', '$attrs', '$transclude'];

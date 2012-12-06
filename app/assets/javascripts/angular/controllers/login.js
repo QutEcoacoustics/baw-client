@@ -1,21 +1,41 @@
-function LoginCtrl($scope, $http, authService, PersonaAuthenticator) {
+function LoginCtrl($scope, $http, authService, AuthenticationProviders) {
+
+    $scope.requireMoreInformation = null;
+    $scope.additionalInformation = null;
 
 
     $scope.submit = function (provider) {
 
-        switch (provider) {
-            case "persona":
-                PersonaAuthenticator.login();
-                break;
-            default:
-                throw "Provider not matched";
+       var authProvider = AuthenticationProviders[provider];
+
+        if (!authProvider) {
+            throw "LoginCtrl:submit: Unknown Provider!"
         }
 
-//        console.info(result);
+        if (authProvider.requires) {
 
-        //$http.post(path).success(function () {
-        //    authService.loginConfirmed();
-        //});
+            if (!$scope.additionalInformation || $scope.additionalInformation == "" /*  && validation check */) {
+                $scope.requireMoreInformation = authProvider.requires;
+                $scope.requireMoreInformation.providerId = provider;
+                return;
+            }
+
+
+            authProvider.login($scope.additionalInformation);
+
+            $scope.requireMoreInformation = null;
+            $scope.additionalInformation = undefined;
+        }
+        else {
+            $scope.requireMoreInformation = null;
+
+            authProvider.login();
+        }
+    };
+
+    $scope.logout = function() {
+
     }
 }
-LoginCtrl.$inject = ['$scope', '$http', 'authService', 'PersonaAuthenticator'];
+
+LoginCtrl.$inject = ['$scope', '$http', 'authService', 'AuthenticationProviders'];

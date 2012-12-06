@@ -114,15 +114,10 @@ body.waiting-for-angular div#initializing-panel {
   }
 
   & label {
-    cursor: pointer;
-    font-weight: bold;
-    padding-left: 10px;
   }
 
   & input[type="submit"] {
     cursor: pointer;
     display: block;
-    margin: auto;
-    padding: auto;
   }
 }

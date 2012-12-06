@@ -22,33 +22,62 @@
 </header>
 <div id="page-wrapper" >
 
-    <div id="login-holder">
-      <div id="loginbox">
-        <div id="login-inner" ng-controller="LoginCtrl">
+  <div id="login-holder">
+    <div id="loginbox">
+      <div id="login-inner" ng-controller="LoginCtrl">
 
-          <form ng-submit="submit()">
-            <h3>Login or signup with</h3>
-            <ul>
-              <li><a href="#" class="btn-auth btn-facebook">Sign in with facebook</a> </li>
-              <li><a href="#" class="btn-auth btn-github"  >Sign in with GitHub</a> </li>
-              <li><a ng-click="submit('google')" class="btn-auth btn-google"  >Sign in with Google</a> </li>
-              <li><a href="#" class="btn-auth btn-openid"  >Sign in with OpenID</a> </li>
+        <form method="POST">
+          <h2>Login or signup with</h2>
+          <ul >
+            <li><a href="#" class="btn-auth btn-facebook">Sign in with facebook</a> </li>
+            <li><a href="#" class="btn-auth btn-github"  >Sign in with GitHub</a> </li>
+            <li><a ng-click="submit('google')" class="btn-auth btn-google"  >Sign in with Google</a> </li>
+            <li><a ng-click="submit('openid')" class="btn-auth btn-openid"  >Sign in with OpenID</a> </li>
 
-              <li><a ng-click="submit('persona')" class="persona-button"><span >Sign in with Persona</span></a> </li>
-              <li><a href="#" class="btn-auth btn-twitter" >Sign in with Twitter</a> </li>
-              <li><a href="#" class="btn-auth btn-windows" >Sign in with Live ID</a> </li>
-              <li><a href="#" class="btn-auth btn-yahoo"   >Sign in with Yahoo</a> </li>
-            </ul>
+            <li><a ng-click="submit('persona')" class="persona-button"><span >Sign in with Persona</span></a> </li>
+            <li><a href="#" class="btn-auth btn-twitter" >Sign in with Twitter</a> </li>
+            <li><a href="#" class="btn-auth btn-windows" >Sign in with Live ID</a> </li>
+            <li><a href="#" class="btn-auth btn-yahoo"   >Sign in with Yahoo</a> </li>
+          </ul>
 
-            <label>Your email address
-                <input type="text" class="login" ng-model="password"/>
+          <div ng-show="requireMoreInformation">
+            <h3>Additional information is required</h3>
+            <label><span ng-bind="requireMoreInformation.text" ></span>
+              <input
+                     name="login_url" id="login_url" placeholder="enter a valid url"
+                     type="url"
+                     ng-show='requireMoreInformation.type == "url"'
+                     ng-disabled='requireMoreInformation.type != "url"'
+                     required="This field is required"
+                     ng-required="{{requireMoreInformation}}"
+                     class="login"
+                     ng-model="additionalInformation"/>
+              <input
+                     name="login_text" id="login_text" placeholder="enter required text"
+                     type="text"
+                     ng-disabled='requireMoreInformation.type != "text"'
+                     ng-show='requireMoreInformation.type == "text"'
+                     required="This field is required"
+                     ng-required="{{requireMoreInformation}}"
+                     class="login"
+                     ng-model="additionalInformation"/>
+              <input
+                     name="email" id="email" placeholder="enter a valid email"
+                     type="email"
+                     ng-disabled='requireMoreInformation.type != "email"'
+                     ng-show='requireMoreInformation.type == "email"'
+                     required="This field is required"
+                     ng-required="{{requireMoreInformation}}"
+                     class="login"
+                     ng-model="additionalInformation"/>
             </label>
-            <button type="submit">Proceed</button>
-          </form>
-        </div>
-        <div class="clear"></div>
+            <button ng-click="submit(requireMoreInformation.providerId)" type="submit">Proceed</button>
+          </div>
+        </form>
       </div>
+      <div class="clear"></div>
     </div>
+  </div>
 
   <navigation ng-controller="NavigationCtrl" ></navigation>
   <!-- each view must specify the controller they use -->

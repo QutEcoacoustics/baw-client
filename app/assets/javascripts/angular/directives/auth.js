@@ -17,9 +17,14 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                 login.hide();
 
                 scope.$on('event:auth-loginRequired', function () {
-                    login.slideDown('slow', function () {
-                        main.hide();
-                    });
+                    if (login.is(':animated')) {
+                        // noop
+                    }
+                    else {
+                        login.slideDown('slow', function () {
+                            main.hide();
+                        });
+                    }
                 });
                 scope.$on('event:auth-loginConfirmed', function () {
                     main.show();

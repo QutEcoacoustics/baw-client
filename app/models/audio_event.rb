@@ -47,21 +47,29 @@ class AudioEvent < ActiveRecord::Base
     end
   end
 
+
+
   # json formatting
-  def as_json(options={})
-    super(
-        :include =>
-            [
-                :audio_event_tags,
-                :audio_recording  => {:only => [:id, :uuid]}
-            ],
-        :except => :audio_recording_id
-    )
-  end
+  #def as_json(options={})
+  #  super(
+  #      :include =>
+  #          [
+  #              :audio_event_tags,
+  #              :audio_recording  => {:only => [:id, :uuid]}
+  #          ],
+  #      :except => :audio_recording_id
+  #  )
+  #end
+
+  #def active_model_serializer
+  #  AudioEventSerializer
+  #end
+
+
 
   # other stuff
-  def download_format(options)
-    #as_json(:only => )
-  end
+  #def download_format(options)
+  #  #as_json(:only => )
+  #end
 
 end

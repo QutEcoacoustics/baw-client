@@ -63,15 +63,15 @@
                 authService.loginConfirmed();
             },
             loginFailure:function loginFailure(data, status, headers, config) {
-                $http.defaults.headers.common = null;
+                $http.defaults.headers.common["Authorization"] = null;
                 console.error("Login failure: ", data, status, headers, config);
             },
             logoutSuccess:function logoutSuccess(data, status, headers, config) {
 
-                $http.defaults.headers.common = null;
+                $http.defaults.headers.common["Authorization"] = null;
                 $rootScope.authorisationToken = null;
 
-                console.log("login successful", data);
+                console.log("logout successful", data);
             },
             logoutFailure:function logoutFailure(data, status, headers, config) {
                 console.error("Login failure: ", data, status, headers, config);
@@ -79,7 +79,7 @@
         }
     }]);
 
-    bawss.factory('PersonaAuthenticator', ['$rootScope', 'authService', '$http', 'Authenticator', function($rootScope, authService, $http, Authenticator) {
+    bawss.factory('AuthenticationProviders', ['$rootScope', 'authService', '$http', 'Authenticator', function($rootScope, authService, $http, Authenticator) {
         // Navigator is the persona global object
         navigator.id.watch({
             onlogin: function(assertion) {
@@ -102,17 +102,41 @@
         });
 
         return {
-            login:  function login() { navigator.id.request(); },
-            logout: function logout() { navigator.id.logout(); }
+            "persona" : {
+                login:  function login() { navigator.id.request(); },
+                logout: function logout() { navigator.id.logout(); },
+                requires: null
+            },
+            "google" : {
+                login:  function login() {
+                    popUpWindow('https://www.google.com/accounts/o8/id', 300, 200);
+
+                },
+                logout: function logout() {  },
+                requires: null
+            },
+            "openid" : {
+                login:  function login(url) {
+                    var popPath = "/security/auth/open_id?openid_url=" + window.fixedEncodeURIComponent(url);
+                    popUpWindow(popPath, 700, 500);
+
+
+//                    Authenticator.loginSuccess
+//                    Authenticator.loginFailure
+
+                },
+                logout: function logout() {
+
+                },
+                requires: {
+                    text: "Enter your OpenID URL",
+                    type: "url"
+                }
+            }
         }
     }]);
 
 
-    bawss.factory('GoogleAuthenticator', function() {
-        return {
-
-        }
-    });
 
 
 })();
