@@ -25,7 +25,7 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
         $scope.recordingurl = "/media/" + recordingId + "_0_120_0_11025.mp3";
 
 
-        var spectrogramResource = $resource('/media/:recordingId', {recording: '@recordingId'}, {
+        var spectrogramResource = $resource('/media/:recordingId', {recordingId: '@recordingId'}, {
             get: { method: 'GET', params: {recordingId: '@recordingId'}, isArray: false }
         });
         $scope.spectrogram = spectrogramResource.get($routeParams);
