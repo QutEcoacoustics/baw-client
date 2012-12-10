@@ -55,23 +55,32 @@
                     throw "Authenticator.loginSuccess: this function should not be called unless a successful response was received"
                 }
 
-                $rootScope.authorisationToken = data.auth_token;
-                $http.defaults.headers.common["Authorization"] = 'Token token="' +$rootScope.authorisationToken + '"';
+                $rootScope.$safeApply($rootScope, function() {
+                    $rootScope.authorisationToken = data.auth_token;
+                    $rootScope.userData = data;
+                    $http.defaults.headers.common["Authorization"] = 'Token token="' + $rootScope.authorisationToken + '"';
 
-                console.log("Login successful", data);
+                    console.log("Login successful", data);
 
-                authService.loginConfirmed();
+                    authService.loginConfirmed();
+                });
             },
             loginFailure:function loginFailure(data, status, headers, config) {
-                $http.defaults.headers.common["Authorization"] = null;
-                console.error("Login failure: ", data, status, headers, config);
+                $rootScope.$safeApply($rootScope, function() {
+                    $rootScope.authorisationToken = null;
+                    $rootScope.userData = null;
+                    $http.defaults.headers.common["Authorization"] = null;
+                    console.error("Login failure: ", data, status, headers, config);
+                });
             },
             logoutSuccess:function logoutSuccess(data, status, headers, config) {
+                $rootScope.$safeApply($rootScope, function() {
+                    $rootScope.authorisationToken = null;
+                    $rootScope.userData = null;
+                    $http.defaults.headers.common["Authorization"] = null;
 
-                $http.defaults.headers.common["Authorization"] = null;
-                $rootScope.authorisationToken = null;
-
-                console.log("Logout successful", data);
+                    console.log("Logout successful", data);
+                });
             },
             logoutFailure:function logoutFailure(data, status, headers, config) {
                 console.error("Logout failure: ", data, status, headers, config);
@@ -81,9 +90,15 @@
 
     bawss.factory('AuthenticationProviders', ['$rootScope', 'authService', '$http', 'Authenticator', function($rootScope, authService, $http, Authenticator) {
         var signOutPath = '/security/sign_out';
+        function signOut() {
+            $http({method:'GET', url:signOutPath})
+                .success(Authenticator.logoutSuccess)
+                .error(Authenticator.logoutFailure);
+        }
 
         // Navigator is the persona global object
         navigator.id.watch({
+            loggedInUser: null,
             onlogin: function(assertion) {
                 // A user has logged in! Here you need to:
                 // 1. Send the assertion to your backend for verification and to create a session.
@@ -93,15 +108,23 @@
                     .error(Authenticator.loginFailure);
 
             },
-            onlogout: function() {
-                // A user has logged out! Here you need to:
-                // Tear down the user's session by redirecting the user or making a call to your backend.
-                // Also, make sure loggedInUser will get set to null on the next page load.
-                $http({method:'GET', url:signOutPath})
-                    .success(Authenticator.logoutSuccess)
-                    .error(Authenticator.logoutFailure);
-            }
+            // A user has logged out! Here you need to:
+            // Tear down the user's session by redirecting the user or making a call to your backend.
+            // Also, make sure loggedInUser will get set to null on the next page load.
+            onlogout: signOut
         });
+
+        function openIdLogin(url) {
+            var popPath = "/security/auth/open_id?openid_url=" + angularCopies.fixedEncodeURIComponent(url);
+            popUpWindow(popPath, 700, 500, function(data) {
+                if (data.response === "ok") {
+                    Authenticator.loginSuccess(data);
+                }
+                else {
+                    Authenticator.loginFailure(data);
+                }
+            });
+        }
 
         return {
             "persona" : {
@@ -110,26 +133,22 @@
                 requires: null
             },
             "google" : {
-                login:  function login() {
-                    popUpWindow('https://www.google.com/accounts/o8/id', 300, 200);
-
+                login:  function() {
+                    openIdLogin('https://www.google.com/accounts/o8/id');
                 },
-                logout: function logout() {  },
+                logout: signOut,
                 requires: null
             },
-            "openid" : {
-                login:  function login(url) {
-                    var popPath = "/security/auth/open_id?openid_url=" + angularCopies.fixedEncodeURIComponent(url);
-                    popUpWindow(popPath, 700, 500);
-
-
-//                    Authenticator.loginSuccess
-//                    Authenticator.loginFailure
-
+            "yahoo" : {
+                login:  function() {
+                    openIdLogin('https://me.yahoo.com');
                 },
-                logout: function logout() {
-
-                },
+                logout: signOut,
+                requires: null
+            },
+            "open_id" : {
+                login:  openIdLogin,
+                logout: signOut,
                 requires: {
                     text: "Enter your OpenID URL",
                     type: "url"
