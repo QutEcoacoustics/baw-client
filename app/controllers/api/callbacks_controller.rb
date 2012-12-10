@@ -98,11 +98,13 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
   private
 
+  # The provider names must match those used on services.js and application.html.erb
+
   def browser_id_info(raw)
     {
         :canonical =>
             {
-                :provider => 'browser_id',
+                :provider => 'persona',
                 :uid => raw[:email],
                 #:user_id =>,
                 :token => raw[:issuer], # stores issuer instead
@@ -147,8 +149,10 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
       user = User.find_by_email(canonical_data[:email]) if !canonical_data[:email].blank? && user.blank?
       user = User.find_by_display_name(canonical_data[:display_name]) if !canonical_data[:display_name].blank? && user.blank?
 
-      new_display_name = canonical_data[:display_name]
-      user = User.create!(:display_name => new_display_name.blank? ? '' : new_display_name, :email => canonical_data[:email], :password => Devise.friendly_token[0,20]) if user.blank?
+      if user.blank?
+        new_display_name = canonical_data[:display_name]
+        user = User.create!(:display_name => new_display_name.blank? ? '' : new_display_name, :email => canonical_data[:email], :password => Devise.friendly_token[0,20])
+      end
     end
 
     # update display_name if given and it was blank

@@ -1,4 +1,4 @@
-
+require 'common_attributes'
 
 
 class AudioRecordingSerializer < CommonAttributesSerializer

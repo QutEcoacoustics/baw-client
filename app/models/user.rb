@@ -1,8 +1,7 @@
 class User < ActiveRecord::Base
   # Include devise modules.
-  # :registerable,
-  devise  :confirmable, :omniauthable,
-          :recoverable, :rememberable, :token_authenticatable,
+  # :registerable, :rememberable,  :recoverable,
+  devise  :confirmable, :omniauthable, :token_authenticatable,
           :trackable, :database_authenticatable, :lockable,
           :validatable, :timeoutable
 
@@ -25,7 +24,7 @@ class User < ActiveRecord::Base
 
   # validation
   #validates_presence_of :display_name
-  validates :display_name, :presence => {:unless => Proc.new { |a| a.email.present? }, :message => "Please provide a display_name, email, or both"}
+  validates :display_name, :presence => {:unless => Proc.new { |a| a.email.present? }, :message => "Please provide a name, email, or both"}
   validates_uniqueness_of :display_name, :email, :case_sensitive => false
   #friendly_id :display_name, :use_slug => true, :strip_non_ascii => true
 end

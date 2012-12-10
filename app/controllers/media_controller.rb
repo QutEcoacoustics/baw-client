@@ -71,15 +71,17 @@ class MediaController < ApplicationController
 
       # for any other extension (or no extension)
       # respond with file info in requested format
+      # channel should use the 0,1,2,4,8,... format
 
       file_info_to_send = {
-          :start_offset => @file_info[:start_offset],
-          :end_offset => @file_info[:end_offset],
+          :start_offset => @file_info[:start_offset].blank? ? 0 : @file_info[:start_offset],
+          :end_offset => @file_info[:end_offset].blank? ? recording.duration_seconds : @file_info[:end_offset],
+          :original_duration => recording.duration_seconds,
           :date => @file_info[:date],
           :time => @file_info[:time],
           :id => @file_info[:id],
-          :channel => @file_info[:channel],
-          :sample_rate => @file_info[:sample_rate],
+          :channel => @file_info[:channel].blank? ? 0 : @file_info[:channel], # default to mixing down to mono
+          :sample_rate => @file_info[:sample_rate].blank? ? recording.sample_rate_hertz : @file_info[:sample_rate],
           :window => @file_info[:window],
           :colour => @file_info[:colour],
           :original_format => @file_info[:original_format],

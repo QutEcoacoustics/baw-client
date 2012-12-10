@@ -52,6 +52,7 @@ module AudioHarvester
       @endpoint_record_move = endpoint_record_move
       @endpoint_login = endpoint_login
 
+      # set up paths to audio and caches.
       SharedSettings.settings[:original_audio_paths] = SharedSettings.settings[:original_audio_paths].collect{ |item| File.join(base_dir, item) }
       SharedSettings.settings[:cached_spectrogram_paths] = SharedSettings.settings[:cached_spectrogram_paths].collect{ |item| File.join(base_dir, item) }
       SharedSettings.settings[:cached_audio_paths] = SharedSettings.settings[:cached_audio_paths].collect{ |item| File.join(base_dir, item) }
@@ -146,11 +147,6 @@ module AudioHarvester
       else
         nil
       end
-    end
-
-    # constructs the full path that a file will be moved to
-    def self.create_target_path(original_base_path, uuid, audio_info)
-
     end
 
     def generate_hash(file_path)
@@ -412,7 +408,11 @@ harvester = AudioHarvester::Harvester.new(
     opts[:base_dir])
 
 # run the script for a directory
-# TODO
+if opts[:dir]
+  harvester.run_once_dir opts[:dir]
+end
 
 # run the script for a single file
-harvester.run_once_file opts[:file]
+if opts[:file]
+  harvester.run_once_file opts[:file]
+end
