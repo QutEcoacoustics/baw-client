@@ -120,13 +120,13 @@ var bawApp = (function () {
         // http://www.yearofmoo.com/2012/10/more-angularjs-magic-to-supercharge-your-webapp.html#apply-digest-and-phase
         $rootScope.$safeApply = function ($scope, fn) {
             $scope = $scope || $rootScope;
-            fn = fn || function () {
-            };
+            fn = fn || function () {};
+
             if ($scope.$$phase) {
                 fn();
             }
             else {
-                $scope.apply(fn);
+                $scope.$apply(fn);
             }
         };
 

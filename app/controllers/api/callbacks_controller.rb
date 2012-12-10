@@ -19,24 +19,38 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
   # END NOTES
 
   # any failure
+
+  def javascript_data data
+    "<script type='text/javascript'>function closeWindow(){ returneddata = #{data.to_json}; window.close(); return false;};(closeWindow)()</script>"
+  end
+
+  def window_content display_data, data
+    "<!DOCTYPE html><head></head><body>#{display_data} #{javascript_data data}</body></html>"
+  end
+
   def failure
     #set_flash_message :alert, :failure, :kind => failed_strategy.name.to_s.humanize, :reason => failure_message
     #redirect_to after_omniauth_failure_path_for(resource_name)
 
     #render :json => {:response => 'failure', :provider_id => failed_strategy.name.to_s, :reason => failure_message}.to_json, :status => :bad_request
-
+    displayed_data = '<p>Login unsuccessful. <a href="#" onclick="javascript:closeWindow();return false;">Close this window</a>.</p>'
     window_data = {:response => 'failure', :provider_id => failed_strategy.name.to_s, :reason => failure_message}
-    javascript_data = "<script type='text/javascript'>(function(){ returneddata = #{window_data.to_json}; window.close(); return false;})()</script>"
-    displayed_data = '<p>Authentication callback page. If you are seeing this page, something went wrong. <a href="/">Return to homepage</a>.</p>'
-    window_content = "<!DOCTYPE html><head></head><body>#{displayed_data} #{javascript_data}</body></html>"
 
     # use this javscript to get access to the returned data
     # returneddata = 0; dataitem = window.open('/security/auth/open_id/callback', 'dataitem'); dataitem.returneddata = returneddata;
     # to access the object: dataitem.returneddata
-    render :text => window_content, :status => :bad_request
+
+    respond_to do |format|
+      format.json { render :json => window_data.as_json, :status => :bad_request }
+      format.xml { render :xml => window_data.to_xml, :status => :bad_request }
+      format.any { render :text => window_content(displayed_data, window_data), :status => :bad_request }
+    end
   end
 
   def success_complete(canonical_data)
+    displayed_data = '<p>Login successful. Please <a href="#" onclick="javascript:closeWindow();return false;">close</a> this window.</p>'
+
+
     user = store_provider_info(canonical_data, current_user)
 
     sign_in(user, :event => :authentication)
@@ -47,7 +61,7 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
     respond_to do |format|
       format.json { render :json => content.as_json, :status => :ok }
       format.xml { render :xml => content.to_xml, :status => :ok }
-      format.any { render :json => content.as_json, :status => :ok }
+      format.any { render :text => window_content(displayed_data, content), :status => :ok }
     end
   end
 

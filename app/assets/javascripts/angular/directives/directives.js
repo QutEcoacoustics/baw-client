@@ -113,6 +113,8 @@
 
                 // init drawabox
                 scope.model.audio_events = scope.model.audio_events || [];
+                scope.model.selectedEvents = scope.model.selectedEvents || [];
+
                 scope.$canvas.drawabox({
                     "newBox": function(){
                         console.log("newBox");
