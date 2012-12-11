@@ -1,0 +1,49 @@
+<%= form_for(@analysis_item) do |f| %>
+  <% if @analysis_item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@analysis_item.errors.count, "error") %> prohibited this analysis_item from being saved:</h2>
+
+      <ul>
+      <% @analysis_item.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :worker_info %><br />
+    <%= f.text_field :worker_info %>
+  </div>
+  <div class="field">
+    <%= f.label :worker_started_utc %><br />
+    <%= f.datetime_select :worker_started_utc %>
+  </div>
+  <div class="field">
+    <%= f.label :worker_run_details %><br />
+    <%= f.text_area :worker_run_details %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br />
+    <%= f.text_field :status %>
+  </div>
+  <div class="field">
+    <%= f.label :offset_start_seconds %><br />
+    <%= f.text_field :offset_start_seconds %>
+  </div>
+  <div class="field">
+    <%= f.label :offset_end_seconds %><br />
+    <%= f.text_field :offset_end_seconds %>
+  </div>
+  <div class="field">
+    <%= f.label :audio_recording %><br />
+    <%= f.text_field :audio_recording %>
+  </div>
+  <div class="field">
+    <%= f.label :analysis_job %><br />
+    <%= f.text_field :analysis_job %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,37 @@
+<h1>Listing analysis_items</h1>
+
+<table>
+  <tr>
+    <th>Worker info</th>
+    <th>Worker started utc</th>
+    <th>Worker run details</th>
+    <th>Status</th>
+    <th>Offset start seconds</th>
+    <th>Offset end seconds</th>
+    <th>Audio recording</th>
+    <th>Analysis job</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @analysis_items.each do |analysis_item| %>
+  <tr>
+    <td><%= analysis_item.worker_info %></td>
+    <td><%= analysis_item.worker_started_utc %></td>
+    <td><%= analysis_item.worker_run_details %></td>
+    <td><%= analysis_item.status %></td>
+    <td><%= analysis_item.offset_start_seconds %></td>
+    <td><%= analysis_item.offset_end_seconds %></td>
+    <td><%= analysis_item.audio_recording %></td>
+    <td><%= analysis_item.analysis_job %></td>
+    <td><%= link_to 'Show', analysis_item %></td>
+    <td><%= link_to 'Edit', edit_analysis_item_path(analysis_item) %></td>
+    <td><%= link_to 'Destroy', analysis_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Analysis item', new_analysis_item_path %>

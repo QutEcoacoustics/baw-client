@@ -1,0 +1,43 @@
+<h1>Listing analysis_jobs</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Notes</th>
+    <th>Script name</th>
+    <th>Script version</th>
+    <th>Script description</th>
+    <th>Script settings</th>
+    <th>Script display name</th>
+    <th>Script extra data</th>
+    <th>Datat set identifier</th>
+    <th>Saved search</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @analysis_jobs.each do |analysis_job| %>
+  <tr>
+    <td><%= analysis_job.name %></td>
+    <td><%= analysis_job.description %></td>
+    <td><%= analysis_job.notes %></td>
+    <td><%= analysis_job.script_name %></td>
+    <td><%= analysis_job.script_version %></td>
+    <td><%= analysis_job.script_description %></td>
+    <td><%= analysis_job.script_settings %></td>
+    <td><%= analysis_job.script_display_name %></td>
+    <td><%= analysis_job.script_extra_data %></td>
+    <td><%= analysis_job.data_set_identifier %></td>
+    <td><%= analysis_job.saved_search %></td>
+    <td><%= link_to 'Show', analysis_job %></td>
+    <td><%= link_to 'Edit', edit_analysis_job_path(analysis_job) %></td>
+    <td><%= link_to 'Destroy', analysis_job, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Analysis job', new_analysis_job_path %>

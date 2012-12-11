@@ -14,6 +14,7 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
   # good info about the omniauth flow
   # http://www.arailsdemo.com/posts/18
 
+  # oauth example
   # see https://gist.github.com/993566
 
   # END NOTES

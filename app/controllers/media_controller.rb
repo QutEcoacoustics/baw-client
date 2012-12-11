@@ -3,6 +3,9 @@ require './lib/modules/mime'
 class MediaController < ApplicationController
   include FileCacher, Mime
 
+  # http byte range - doesn't seem to be quite right... :(
+  #include ByteRange
+
   #respond_to :xml, :json, :html, :png, :ogg, :oga, :webm, :webma, :mp3
 
   def index

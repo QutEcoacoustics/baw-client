@@ -76,16 +76,16 @@ Trollop::die :base_dir, 'must be given' if opts[:base_dir].nil?
 Trollop::die :login_email, 'must be given' if opts[:login_email].nil?
 Trollop::die :login_password, 'must be given' if opts[:login_password].nil?
 
-analysisRunner = AnalysisRunner::Runner.new(
+analysis_runner = AnalysisRunner::Runner.new(
     'localhost', 3000, '/media/', '/media/', '/media/',
     opts[:base_dir], opts[:analysis_script])
 
 # run the script for a directory
 if opts[:dir]
-  analysisRunner.run_once_dir opts[:dir]
+  analysis_runner.run_once_dir opts[:dir]
 end
 
 # run the script for a single file
 if opts[:file]
-  analysisRunner.run_once_file opts[:file]
+  analysis_runner.run_once_file opts[:file]
 end
