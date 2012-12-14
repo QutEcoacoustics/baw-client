@@ -40,7 +40,7 @@ require '../../config/settings'
 module AudioHarvester
 
   class Harvester
-    include Audio, Cache, Exceptions, Logging
+    include ExternalShared, Audio, Cache
 
     def initialize(host, port, config_file_name, login_email, login_password, endpoint_create, endpoint_login, endpoint_record_move, base_dir)
       @host = host

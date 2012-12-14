@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
           :validatable, :timeoutable,   :recoverable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :display_name, :email, :password, :admin
+  attr_accessible :user_name, :display_name, :email, :password, :admin
   has_many :authorizations, :dependent => :destroy
 
   # user stamp
@@ -24,7 +24,9 @@ class User < ActiveRecord::Base
 
   # validation
   #validates_presence_of :display_name
-  validates :display_name, :presence => {:unless => Proc.new { |a| a.email.present? }, :message => "Please provide a name, email, or both"}
-  validates_uniqueness_of :display_name, :email, :case_sensitive => false
+  validates :user_name, :presence => true, :uniqueness => { :case_sensitive => false },
+            :format => { :with => /\A[a-zA-Z0-9_ ]+\z/, :message => "only letters, numbers, space and underscore allowed" }
+  validates :display_name, :uniqueness => {:case_sensitive => false }, :presence => { :unless => Proc.new { |a| a.email.present? }, :message => "Please provide a name, email, or both." }
+  validates :email, :uniqueness => {:case_sensitive => false }, :presence => { :unless => Proc.new { |a| a.display_name.present? }, :message => "Please provide an email, name, or both." }
   #friendly_id :display_name, :use_slug => true, :strip_non_ascii => true
 end

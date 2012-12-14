@@ -88,7 +88,7 @@ class AudioRecordingsController < ApplicationController
     if !@audio_recording.blank? && @audio_recording.file_hash == params_ar[:file_hash] &&
         @audio_recording.uuid == params_ar[:uuid] && @audio_recording.status == 'new'
       # update audio recording from 'new' to 'to_check'
-      @audio_recording.status = 'to_check'
+      @audio_recording.status = :to_check
       @audio_recording.save!
       head :ok
     else
