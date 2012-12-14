@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @analysis_script.name %>
+</p>
+
+<p>
+  <b>Version:</b>
+  <%= @analysis_script.version %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @analysis_script.description %>
+</p>
+
+<p>
+  <b>Settings:</b>
+  <%= @analysis_script.settings %>
+</p>
+
+<p>
+  <b>Display name:</b>
+  <%= @analysis_script.display_name %>
+</p>
+
+<p>
+  <b>Extra data:</b>
+  <%= @analysis_script.extra_data %>
+</p>
+
+
+<%= link_to 'Edit', edit_analysis_script_path(@analysis_script) %> |
+<%= link_to 'Back', analysis_scripts_path %>

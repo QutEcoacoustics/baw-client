@@ -27,8 +27,6 @@ class ApplicationController < ActionController::Base
 
   private
 
-
-
   #def set_stamper
   #  User.stamper = current_user if user_signed_in?
   #end

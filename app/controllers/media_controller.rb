@@ -13,6 +13,9 @@ class MediaController < ApplicationController
   AUDIO_BASE_URL_US       = '/media/{%s}_{%s}_{%s}_{%s}_{%s}{%s}' % AUDIO_COMPONENTS
   SPECTROGRAM_BASE_URL_US = '/media/{%s}_{%s}_{%s}_{%s}_{%s}_{%s}_{%s}{%s}' % SPECTROGRAM_COMPONENTS
 
+  # http byte range - doesn't seem to be quite right... :(
+  #include ByteRange
+
 
   #respond_to :xml, :json, :html, :png, :ogg, :oga, :webm, :webma, :mp3
 

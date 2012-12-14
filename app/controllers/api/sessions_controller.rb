@@ -68,6 +68,8 @@ class Api::SessionsController < Devise::SessionsController
     end
   end
 
+  private
+
   def self.login_info(current_user, user, provider_id)
     { :response => 'ok',
       :user_id => user.id,
