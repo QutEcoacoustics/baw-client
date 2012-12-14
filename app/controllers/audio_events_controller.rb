@@ -2,7 +2,7 @@ class AudioEventsController < ApplicationController
   # GET /audio_events
   # GET /audio_events.json
   def index
-    if params[:by_audio_id]
+    if params[:byAudioId]
       return by_audio_id
     end
 
@@ -16,7 +16,7 @@ class AudioEventsController < ApplicationController
 
   def by_audio_id
     # TODO: check if quid
-    id = params[:by_audio_id]
+    id = params[:byAudioId]
 
     @audio_events =
         AudioEvent

@@ -17,11 +17,15 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                 login.hide();
 
                 scope.$on('event:auth-loginRequired', function () {
+                    // TODO: add extra checks to stop multiple animations
+
                     if (login.is(':animated')) {
                         // noop
                     }
                     else {
+                        console.warn("sliding login window down");
                         login.slideDown('slow', function () {
+
                             main.hide();
                         });
                     }

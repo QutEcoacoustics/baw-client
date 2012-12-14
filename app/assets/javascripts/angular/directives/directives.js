@@ -93,6 +93,18 @@
 
 
     bawds.directive('bawAnnotationViewer', function () {
+        function resizeOrMove(b, box) {
+            if (b.id === box.id) {
+                b.left = box.left;
+                b.top = box.top;
+                b.width = box.width;
+                b.height = box.height;
+            }
+            else {
+                throw "Box ids do not match on resizing  or move event";
+            }
+        }
+
         return {
             restrict: 'AE',
             scope: {
@@ -112,30 +124,45 @@
                 scope.$canvas = $($element.find(".annotation-viewer img + div")[0]);
 
                 // init drawabox
-                scope.model.audio_events = scope.model.audio_events || [];
+                scope.model.audioEvents = scope.model.audioEvents || [];
                 scope.model.selectedEvents = scope.model.selectedEvents || [];
 
                 scope.$canvas.drawabox({
-                    "newBox": function(){
-                        console.log("newBox");
+                    "newBox": function (newBox) {
+                        console.log("newBox", newBox);
+
+                        scope.model.audioEvents = newBox;
                     },
-                    "boxSelected": function(){
-                        console.log("boxSelected")
+                    "boxSelected": function (selectedBox) {
+                        console.log("boxSelected", selectedBox);
+
+                        // support for multiple selections - remove the clear
+                        scope.model.selectedEvents.length = 0;
+                        scope.model.selectedEvents.shift(selectedBox);
                     },
-                    "boxResizing": function(){
-                        console.log("boxResizing")
+                    "boxResizing": function (box) {
+                        console.log("boxResizing", box);
+                        resizeOrMove(scope.model.selectedEvents[0], box);
+
                     },
-                    "boxResized": function(){
-                        console.log("boxResized")
+                    "boxResized": function (box) {
+                        console.log("boxResized", box);
+                        resizeOrMove(scope.model.selectedEvents[0], box);
                     },
-                    "boxMoving": function(){
-                        console.log("boxMoving")}
-                    ,
-                    "boxMoved": function(){
-                        console.log("boxMoved")
+                    "boxMoving": function (box) {
+                        console.log("boxMoving");
+                        resizeOrMove(scope.model.selectedEvents[0], box);
                     },
-                    "boxDeleted": function(){
-                        console.log("boxDeleted")
+                    "boxMoved": function (box) {
+                        console.log("boxMoved");
+                        resizeOrMove(scope.model.selectedEvents[0], box);
+                    },
+                    "boxDeleted": function (deletedBox) {
+                        console.log("boxDeleted");
+
+                        // TODO: is this done by reference? does it even work?;
+                        _(scope.model.audioEvents).reject(function(item){return item.id === deletedBox.id;});
+                        _(scope.model.selectedEvents).reject(function(item){return item.id === deletedBox.id;});
                     }
                 });
 
