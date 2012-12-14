@@ -4,11 +4,12 @@
  * @param $scope
  * @param $resource
  * @param $routeParams
- * @param AudioRecording
  * @param AudioEvent
  * @constructor
+ * @param Tag
+ * @param Media
  */
-function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent, Tag) {
+function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
     $scope.errorState = !GUID_REGEXP.test($routeParams.recordingId);
@@ -19,57 +20,55 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
     else {
         var recordingId = $scope.recordingId = $routeParams.recordingId;
 
-        $scope.recording = AudioRecording.get($routeParams);
 
-        // HACK:
-        $scope.recordingurl = "/media/" + recordingId + "_0_120_0_11025.mp3";
+//
+//        $scope.recording = AudioRecording.get($routeParams);
+//
+//        // HACK:
+//        $scope.recordingurl = "/media/" + recordingId + "_0_120_0_11025.mp3";
+//
+//
+//        var spectrogramResource = $resource('/media/:recordingId', {recordingId: '@recordingId'}, {
+//            get: { method: 'GET', params: {recordingId: '@recordingId'}, isArray: false }
+//        });
+//        $scope.spectrogram = spectrogramResource.get($routeParams);
+//
+//        // HACK:
+//        $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
+
+        //$scope.model = $scope;
+
+        var formatPaths = function () {
+            if ($scope.media && $scope.media.hasOwnProperty('recordingId')) {
+                $scope.media.imageUrl = $scope.media.spectrogramBaseUrl.format($scope.media) + "?" + $scope.authTokenQuery();
+                $scope.media.audioUrl = $scope.media.audioBaseUrl.format($scope.media) + "?" + $scope.authTokenQuery();
+            }
+        };
+        $scope.$on('event:auth-loginRequired', formatPaths);
+        $scope.$on('event:auth-loginConfirmed', formatPaths);
+
+        $scope.media = Media.get($routeParams, {},
+            function mediaGetSuccess() {
+                // reformat url's
+                formatPaths();
+            },
+            function mediaGetFailure() {
+                throw "boo booos";
+            });
 
 
-        var spectrogramResource = $resource('/media/:recordingId', {recordingId: '@recordingId'}, {
-            get: { method: 'GET', params: {recordingId: '@recordingId'}, isArray: false }
-        });
-        $scope.spectrogram = spectrogramResource.get($routeParams);
+        // TODO: add time bounds
+        $scope.audioEvents = AudioEvent.query({byAudioId: recordingId});
 
-        // HACK:
-        $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
-        $scope.$on('event:auth-loginRequired', function () {
-            $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
-        });
-        $scope.$on('event:auth-loginConfirmed', function () {
-            $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
-        });
-
-
-        //    var audioEventResource = $resource('/audio_events?by_audio_id=:recordingId', {recordingId: '@recordingId'}, {
-        //        get:
-        //    });
-        $scope.audio_events = AudioEvent.query({by_audio_id: recordingId});
-
-
-        // HACK:
-        // this should be treated as readonly
-//        $scope.tags = [
-//            {text: "HALLO!", type_of_tag: null, is_taxanomic: false, id: -1},
-//            {text: "Koala", type_of_tag: "common_name", is_taxanomic: true, id: -2},
-//            {text: "Corrus Ovvu", type_of_tag: "species_name", is_taxanomic: true, id: -3},
-//            {text: "Cawwing", type_of_tag: "sounds_like", is_taxanomic: false, id: -4}
-//        ];
         $scope.tags = Tag.query();
 
         $scope.limits = {
-          time_min: 0.0,
-          time_max: 120.0,
-            freq_min: 0.0,
-            freq_max: 11025.0
+          timeMin: 0.0,
+          timeMax: 120.0,
+            freqMin: 0.0,
+            freqMax: 11025.0
         };
 
-        $scope.selectedAnnotation = {
-            audio_event_tags: [-1],
-            start_time_seconds: 0.05,
-            end_time_seconds: 15.23,
-            low_frequency_hertz:1000,
-            high_frequency_hertz: 8753
-        };
 
         $scope.clearSelected = function() {
             $scope.selectedAnnotation = {};
@@ -79,8 +78,8 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
             var a = angular.copy(this.selectedAnnotation);
 
             // prep tags
-            a.audio_event_tags_attributes = a.audio_event_tags.map(function (v) {return {tag_id:v};});
-            delete a.audio_event_tags
+            a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {return {tag_id:v};});
+            delete a.audioEventTtags
 
             a.audio_recording_id = recordingId;
 
@@ -89,8 +88,8 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
                     console.log("Annotation creation successful");
 
                     // now update tag-list
-                    $scope.audio_events.push(response);
-                    $scope.selected_Annotation = response;
+                    $scope.audioEvents.push(response);
+                    $scope.selectedAnnotation = response;
 
                 },
                 function createAnnotationFailure(response, getResponseHeaders) {
@@ -114,4 +113,4 @@ function ListenCtrl($scope, $resource, $routeParams, AudioRecording, AudioEvent,
     }
 }
 
-ListenCtrl.$inject = ['$scope', '$resource', '$routeParams', 'AudioRecording', 'AudioEvent', 'Tag'];
+ListenCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Media', 'AudioEvent', 'Tag'];

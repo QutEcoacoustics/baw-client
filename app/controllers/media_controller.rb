@@ -3,6 +3,17 @@ require './lib/modules/mime'
 class MediaController < ApplicationController
   include FileCacher, Mime
 
+  AUDIO_COMPONENTS       = ['recording_id', 'start_offset', 'end_offset', 'channel', 'sample_rate', 'audio_format']
+  SPECTROGRAM_COMPONENTS = ['recording_id', 'start_offset', 'end_offset', 'channel', 'sample_rate', 'window', 'color', 'image_format']
+
+
+  AUDIO_BASE_URL_CC       = '/media/{%s}_{%s}_{%s}_{%s}_{%s}{%s}' % (AUDIO_COMPONENTS.map { |s| s.camelize :lower })
+  SPECTROGRAM_BASE_URL_CC = '/media/{%s}_{%s}_{%s}_{%s}_{%s}_{%s}_{%s}{%s}' %(SPECTROGRAM_COMPONENTS.map { |s| s.camelize :lower })
+
+  AUDIO_BASE_URL_US       = '/media/{%s}_{%s}_{%s}_{%s}_{%s}{%s}' % AUDIO_COMPONENTS
+  SPECTROGRAM_BASE_URL_US = '/media/{%s}_{%s}_{%s}_{%s}_{%s}_{%s}_{%s}{%s}' % SPECTROGRAM_COMPONENTS
+
+
   #respond_to :xml, :json, :html, :png, :ogg, :oga, :webm, :webma, :mp3
 
   def index
@@ -53,9 +64,9 @@ class MediaController < ApplicationController
     # if the format is a supported image format, locate a cached spectrogram or generate it, then stream it back.
     #if image_media_types.include? final_format_requested
 
-    recording = AudioRecording.find_by_uuid(@file_info[:id])
-    @file_info[:date] = recording.recorded_date.strftime "%Y%m%d"
-    @file_info[:time] = recording.recorded_date.strftime "%H%M%S"
+    recording                    = AudioRecording.find_by_uuid(@file_info[:id])
+    @file_info[:date]            = recording.recorded_date.strftime "%Y%m%d"
+    @file_info[:time]            = recording.recorded_date.strftime "%H%M%S"
     @file_info[:original_format] = Mime::Type.file_extension_of recording.media_type
     #@file_info[:requested_media_type] = final_format_requested
     #@file_info[:requested_extension] = requested_extension
@@ -73,42 +84,59 @@ class MediaController < ApplicationController
       # respond with file info in requested format
       # channel should use the 0,1,2,4,8,... format
 
+      url_format_underscore = params["urlFormat"] == "underscore"
+
       file_info_to_send = {
-          :start_offset => @file_info[:start_offset].blank? ? 0 : @file_info[:start_offset],
-          :end_offset => @file_info[:end_offset].blank? ? recording.duration_seconds : @file_info[:end_offset],
-          :original_duration => recording.duration_seconds,
-          :date => @file_info[:date],
-          :time => @file_info[:time],
-          :id => @file_info[:id],
-          :channel => @file_info[:channel].blank? ? 0 : @file_info[:channel], # default to mixing down to mono
-          :sample_rate => @file_info[:sample_rate].blank? ? recording.sample_rate_hertz : @file_info[:sample_rate],
-          :window => @file_info[:window],
-          :colour => @file_info[:colour],
-          :original_format => @file_info[:original_format],
-          :format => final_format_requested,
-          :info_url => "/media/#{@file_info[:id]}"
+          :start_offset         => @file_info[:start_offset].blank? ? 0 : @file_info[:start_offset],
+          :end_offset           => @file_info[:end_offset].blank? ? recording.duration_seconds : @file_info[:end_offset],
+
+          #:original_duration => recording.duration_seconds,
+          #:date => @file_info[:date],
+          #:time => @file_info[:time],
+          #:original_format => @file_info[:original_format],
+          :original             => recording,
+
+          :recording_id         => @file_info[:id],
+
+          :channel              => @file_info[:channel].blank? ? 0 : @file_info[:channel], # default to mixing down to mono
+          :sample_rate          => @file_info[:sample_rate].blank? ? recording.sample_rate_hertz : @file_info[:sample_rate],
+          :window               => @file_info[:window] || SharedSettings.settings[:cached_spectrogram_defaults][0][:window],
+          :color                => @file_info[:colour] || SharedSettings.settings[:cached_spectrogram_defaults][0][:colour],
+          :audio_format         => final_format_requested || SharedSettings.settings[:cached_audio_defaults][0][:format],
+          :image_format         => SharedSettings.settings[:cached_spectrogram_defaults][0][:format],
+
+          :info_url             => "/media/#{@file_info[:id]}",
+          :audio_base_url       => (url_format_underscore ? AUDIO_BASE_URL_US : AUDIO_BASE_URL_CC),
+          :spectrogram_base_url => (url_format_underscore ? SPECTROGRAM_BASE_URL_US : SPECTROGRAM_BASE_URL_CC) ,
+
+          :options              => {
+              :colors        => Spectrogram.colour_options,
+              :window_size   => Spectrogram.window_options,
+              :audio_formats => audio_media_types.collect { |mt| mt.symbol },
+              :image_formats => image_media_types.collect { |mt| mt.symbol },
+          }
       }
 
-      unless file_info_to_send[:start_offset].nil?
-        base_audio_segment_url = "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
-            "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}."
-
-        file_info_to_send[:audio_base_url] = base_audio_segment_url
-      end
-
-      unless file_info_to_send[:window].nil?
-        file_info_to_send[:spectrogram_url] =
-            "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
-                "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}_"+
-                "#{file_info_to_send[:window]}_#{file_info_to_send[:colour]}.png"
-
-        file_info_to_send[:color_description] = Spectrogram.colour_options
-
-      end
+      #unless file_info_to_send[:start_offset].nil?
+      #  base_audio_segment_url = "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
+      #      "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}."
+      #
+      #  file_info_to_send[:audio_base_url] = base_audio_segment_url
+      #end
+      #
+      #unless file_info_to_send[:window].nil?
+      #  file_info_to_send[:spectrogram_url] =
+      #      "/media/#{file_info_to_send[:id]}_#{file_info_to_send[:start_offset]}_#{file_info_to_send[:end_offset]}_"+
+      #          "#{file_info_to_send[:channel]}_#{file_info_to_send[:sample_rate]}_"+
+      #          "#{file_info_to_send[:window]}_#{file_info_to_send[:colour]}.png"
+      #
+      #  file_info_to_send[:color_description] = Spectrogram.colour_options
+      #
+      #end
 
       respond_to do |format|
-        format.any(:xml, :html) {render :xml =>  file_info_to_send}
-        format.json {render :json =>  file_info_to_send}
+        format.any(:xml, :html) { render :xml => file_info_to_send }
+        format.json { render :json => file_info_to_send }
         format.all { head :bad_request }
       end
     end
@@ -128,7 +156,7 @@ class MediaController < ApplicationController
     return head(:bad_request) unless Rails.env == 'development'
 
     # iterate through all original audio folders, and check that the audio recordings there are in the database
-    Dir.glob("#{dir}/*").each_with_object({}) { |file, hash|  }
+    Dir.glob("#{dir}/*").each_with_object({ }) { |file, hash| }
 
 
   end
@@ -137,7 +165,7 @@ class MediaController < ApplicationController
 
   def read_dir(dir)
     # from http://stackoverflow.com/questions/6166103/traversing-directories-and-reading-from-files-in-ruby-on-rails
-    Dir.glob("#{dir}/*").each_with_object({}) do |f, h|
+    Dir.glob("#{dir}/*").each_with_object({ }) do |f, h|
       if File.file?(f)
         h[f] = open(f).read
       elsif File.directory?(f)

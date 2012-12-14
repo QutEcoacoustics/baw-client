@@ -43,6 +43,18 @@
         return $resource('/tags/:tagId', {tagId: '@tagId'}, {});
     });
 
+    bawss.factory('Media', function($resource){
+        var mediaResource = $resource('/media/:recordingId', {recordingId: '@recordingId'});
+
+        // this is a read only service, remove unnecessary methods
+        delete  mediaResource.save;
+        delete  mediaResource.remove;
+        delete  mediaResource.delete;
+        //delete  mediaResource.update;
+
+        return mediaResource;
+    });
+
     // authentication
     bawss.factory('Authenticator', ['$rootScope', 'authService', '$http', function($rootScope, authService, $http){
         return {
@@ -117,7 +129,7 @@
         function openIdLogin(url) {
             var popPath = "/security/auth/open_id?openid_url=" + angularCopies.fixedEncodeURIComponent(url);
             popUpWindow(popPath, 700, 500, function(data) {
-                if (data.response === "ok") {
+                if (data && data.response === "ok") {
                     Authenticator.loginSuccess(data);
                 }
                 else {

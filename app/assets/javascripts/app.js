@@ -3,14 +3,22 @@
 /* App Module */
 
 // global definition
-var bawApp = (function () {
+//noinspection JSCheckFunctionSignatures
+var bawApp = (function (undefined) {
     var exports = {
 
     };
 
-    // Helper function
-
-
+    /**
+     * Helper function to add a bunch of common routes for a page
+     * @param resourceName
+     * @param singularResourceName
+     * @param id
+     * @param controllerMany
+     * @param controllerOne
+     * @param addManageView
+     * @return {*|Object}
+     */
     function whenDefaults(resourceName, singularResourceName, id, controllerMany, controllerOne, addManageView) {
         var path = "/" + resourceName;
         var detailsPath = path + "/" + id;
@@ -42,7 +50,8 @@ var bawApp = (function () {
             'bawApp.filters',           /* our filters.js     */
             'baw.services',             /* our services.js    */
             'http-auth-interceptor',    /* the auth module    */
-            'angular-auth'              /* the auth module    */
+            'angular-auth',             /* the auth module    */
+            'rails'                     /* a module designed to rewrite object keys */
         ]);
 
     app.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
@@ -83,17 +92,18 @@ var bawApp = (function () {
             when('/', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
             when('/404', {controller: ErrorCtrl}).
             when('/404?path=:errorPath', {controller: ErrorCtrl}).
-            otherwise(
-            {redirectTo: function (params, location, search) {
-                return '/404?path=' + location;
-            }
+            otherwise({
+                redirectTo: function (params, location, search) {
+                    return '/404?path=' + location;
+                }
             });
 
         // location config
         $locationProvider.html5Mode(true);
-
-
     }]);
+
+
+
 
     app.run(['$rootScope', '$location', '$route', '$http', function ($rootScope, $location, $route, $http) {
         exports.print = $rootScope.print = function () {
@@ -155,10 +165,16 @@ var bawApp = (function () {
         $rootScope.authorisationToken = null;
 
         $rootScope.authTokenParams = function() {
-            return {
-                auth_token: $rootScope.authorisationToken
-            };
-        }
+            if ($rootScope.authorisationToken) {
+                return {
+                    auth_token: $rootScope.authorisationToken
+                };
+            }
+            return {};
+        };
+        $rootScope.authTokenQuery = function() {
+            return angularCopies.toKeyValue($rootScope.authTokenParams());
+        };
 
 
     }]);
