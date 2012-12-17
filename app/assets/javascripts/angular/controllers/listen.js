@@ -36,7 +36,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 //        // HACK:
 //        $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
 
-        //$scope.model = $scope;
+        $scope.model = {};
 
         var formatPaths = function () {
             if ($scope.media && $scope.media.hasOwnProperty('recordingId')) {
@@ -47,7 +47,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
         $scope.$on('event:auth-loginRequired', formatPaths);
         $scope.$on('event:auth-loginConfirmed', formatPaths);
 
-        $scope.media = Media.get($routeParams, {},
+        $scope.model.media = Media.get($routeParams, {},
             function mediaGetSuccess() {
                 // reformat url's
                 formatPaths();
@@ -58,7 +58,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
         // TODO: add time bounds
-        $scope.audioEvents = AudioEvent.query({byAudioId: recordingId});
+        $scope.model.audioEvents = AudioEvent.query({byAudioId: recordingId});
 
         $scope.tags = Tag.query();
 
@@ -88,7 +88,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
                     console.log("Annotation creation successful");
 
                     // now update tag-list
-                    $scope.audioEvents.push(response);
+                    $scope.model.audioEvents.push(response);
                     $scope.selectedAnnotation = response;
 
                 },

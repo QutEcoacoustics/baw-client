@@ -12,7 +12,7 @@
         <p>Listen and annotate.</p>
 
         <h3>Spectrogram</h3>
-        <baw-annotation-viewer model="media"></baw-annotation-viewer>
+        <baw-annotation-viewer model="model"></baw-annotation-viewer>
 
         <h3>Audio Controls</h3>
         <audio id="main-player" controls>
@@ -89,7 +89,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="ae in audioEvents">
+            <tr ng-repeat="ae in model.audioEvents">
                 <td>{{ae.id}}</td>
                 <td><a ng-href="/recordings/{{ae.audioRecording.uuid}}"
                        class="short-guid">{{ae.audioRecording.uuid}}</a></td>

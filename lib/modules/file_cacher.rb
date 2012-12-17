@@ -81,7 +81,7 @@ module FileCacher
         else
       end
 
-      raise "Audio recording was not ready: #{audio_recording.uuid}." unless audio_recording.status == :ready
+      raise "Audio recording was not ready: #{audio_recording.uuid}." unless audio_recording.status.to_sym == :ready
 
       # create the cached audio file in each of the possible paths
       target_possible_paths = Cache::possible_paths(Cache::cached_audio_storage_paths,target_file)
