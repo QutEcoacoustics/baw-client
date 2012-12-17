@@ -17,6 +17,6 @@ class AnalysisScript < ActiveRecord::Base
   validates :settings, :presence => true
   validates :version, :presence => true
   validates :display_name, :presence => true
-  validates :verified, :inclusion => { :in => [true, false] }
+  validates :verified, :inclusion => { :in => %w(true false) }
 
 end
