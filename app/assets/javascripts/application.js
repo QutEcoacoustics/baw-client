@@ -12,8 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.all
-//= require jquery.ui.datepicker
+// require jquery.ui.all // disabled because slow
+// require jquery.ui.datepicker // disabled because slow
 //= require angular.js
 //= require angular-resource.js
 //= require angular-ui.js

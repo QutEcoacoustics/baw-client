@@ -166,7 +166,11 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
       if user.blank?
         new_display_name = canonical_data[:display_name]
-        user = User.create!(:display_name => new_display_name.blank? ? '' : new_display_name, :email => canonical_data[:email], :password => Devise.friendly_token[0,20])
+
+        # HACK: for users created by external providers, dummy the user name with the .... field
+        user = User.create!(:display_name => new_display_name.blank? ? '' : new_display_name, :email => canonical_data[:email], :password => Devise.friendly_token[0,20], :user_name => -1 * Random.rand(100000))
+        user.user_name = user.id
+        user.save!
       end
     end
 

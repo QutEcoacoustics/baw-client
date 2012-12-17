@@ -71,9 +71,16 @@ angular.module('rails', [])
             // and only if object has a __railsJsonRenamer__
             // or if request is going to our server?
 
-            transformObject(data, underscore);
+            if ((headers()["Accept"] || "").indexOf("application/json") >= 0) {
 
-            stampObject(data, "camelCased->underscore");
+                if (data === undefined || data === null || !angular.isObject(data)) {
+                    return;
+                }
+
+                transformObject(data, underscore);
+
+                stampObject(data, "camelCased->underscore");
+            }
 
             return data;
         };
@@ -92,6 +99,11 @@ angular.module('rails', [])
                     }
 
                     return response;
+                },
+                function (response) {
+                    console.log("rails field naming interceptor, promise failed function", response);
+
+                    return p.reject(response);
                 });
                 return p;
             });
@@ -134,7 +146,7 @@ angular.module('rails', [])
     //
     $httpProvider.responseInterceptors.push( railsFieldRenamingInterceptor.$get());
 
-    $httpProvider.defaults.transformRequest.push(railsFieldRenamingInterceptor.$get());
+    $httpProvider.defaults.transformRequest.push(railsFieldRenamingTransformer.$get());
 }]);
 
 
