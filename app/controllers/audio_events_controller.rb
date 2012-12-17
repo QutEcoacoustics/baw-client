@@ -72,7 +72,7 @@ class AudioEventsController < ApplicationController
   # GET /audio_events/1/edit
   def edit
     @audio_event =
-        AudioEvent.find(params[:id]).includes(:audio_event_tags)
+        AudioEvent.find(params[:id]).include(:audio_event_tags)
   end
 
   # POST /audio_events

@@ -44,7 +44,7 @@ class AudioRecording < ActiveRecord::Base
 
   validates :file_hash, :presence => true
 
-  validates :status, :inclusion => { :in => [:new, :to_check, :ready, :corrupt, :ignore] }
+  validates :status, :inclusion => { :in => %w(new to_check ready corrupt ignore) }
 
   # uuid stuff
   attr_protected :uuid

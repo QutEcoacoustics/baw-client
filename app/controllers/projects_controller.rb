@@ -69,11 +69,10 @@ class ProjectsController < ApplicationController
 	
     respond_to do |format|
       if @project.update_attributes(params[:project])
-		    # also delete
-        #format.html { redirect_to @project, notice: 'Project was successfully updated.' }
+        format.html { redirect_to @project, notice: 'Project was successfully updated.' }
         format.json { head :no_content }
       else
-        #format.html { render action: "edit" }
+        format.html { render action: "edit" }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
