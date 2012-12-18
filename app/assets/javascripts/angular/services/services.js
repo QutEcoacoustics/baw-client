@@ -162,7 +162,7 @@
                 login:  openIdLogin,
                 logout: signOut,
                 requires: {
-                    text: "Enter your OpenID URL",
+                    text: "Enter your OpenID URL:",
                     type: "url"
                 }
             }

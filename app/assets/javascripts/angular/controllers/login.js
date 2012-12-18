@@ -1,15 +1,15 @@
-function LoginCtrl($scope, $http, authService, AuthenticationProviders) {
+function LoginCtrl($scope, $http, $location, authService, AuthenticationProviders) {
 
     $scope.requireMoreInformation = null;
     $scope.additionalInformation = null;
-
 
     $scope.submit = function (provider) {
 
        var authProvider = AuthenticationProviders[provider];
 
         if (!authProvider) {
-            throw "LoginCtrl:submit: Unknown Provider!"
+            console.error('Unknown provider',authProvider, provider);
+            throw "LoginCtrl:submit: Unknown Provider!";
         }
 
         if (authProvider.requires) {
@@ -19,7 +19,6 @@ function LoginCtrl($scope, $http, authService, AuthenticationProviders) {
                 $scope.requireMoreInformation.providerId = provider;
                 return;
             }
-
 
             authProvider.login($scope.additionalInformation);
 
@@ -39,31 +38,36 @@ function LoginCtrl($scope, $http, authService, AuthenticationProviders) {
 
     $scope.logout = function() {
 
-        var p, ap;
+        var provider, actualProvider;
         try {
-            p = $scope.$root.userData.provider_id;
+            provider = $scope.$root.userData.provider_id;
         }
-        catch(e){}
+        catch(e){
+            console.error('Error getting provider id', e);
+        }
 
-        if (p) {
-            ap = AuthenticationProviders[p];
-            if (ap) {
-                ap.logout();
+        if (provider) {
+            actualProvider = AuthenticationProviders[provider];
+            if (actualProvider) {
+                actualProvider.logout();
+                //$reloadView();
             }
         }
     };
 
-    $scope.loggedIn = false;
+    $scope.cancelLogin = function(){
+        $scope.$emit('event:auth-loginCancelled');
+        $location.path('/')
+    };
+
+
     $scope.displayName = "";
     $scope.email = "";
 
-    $scope.$watch('$root.userData', function (){
-        var token = $scope.$root.authorisationToken,
-            userData = $scope.$root.userData;
-        $scope.loggedIn = (token && userData) ? true : false;
+    $scope.$watch('$root.loggedIn', function (){
         if ($scope.loggedIn) {
-            $scope.displayName = userData.friendly_name;
-            $scope.email = userData.email;
+            $scope.displayName = $scope.userData.friendly_name;
+            $scope.email = $scope.userData.email;
         }
         else{
             $scope.userName = "";
@@ -73,4 +77,4 @@ function LoginCtrl($scope, $http, authService, AuthenticationProviders) {
 
 }
 
-LoginCtrl.$inject = ['$scope', '$http', 'authService', 'AuthenticationProviders'];
+LoginCtrl.$inject = ['$scope', '$http', '$location', 'authService', 'AuthenticationProviders'];

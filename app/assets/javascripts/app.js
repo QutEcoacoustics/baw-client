@@ -23,7 +23,7 @@ var bawApp = (function (undefined) {
         var path = "/" + resourceName;
         var detailsPath = path + "/" + id;
         var asset = "/assets/" + resourceName + "_index.html";
-        var asset_details = "/assets/" + singularResourceName + "_details.html";
+        var assetDetails = "/assets/" + singularResourceName + "_details.html";
 
         return this
             // many
@@ -33,11 +33,11 @@ var bawApp = (function (undefined) {
                 this.when(path + "/manage", {templateUrl: asset.replace("index.html", "manager.html"), controller: controllerMany})
             })
             // details
-            .when(detailsPath, {templateUrl: asset_details, controller: controllerOne})
+            .when(detailsPath, {templateUrl: assetDetails, controller: controllerOne})
             // create
-            .when(path + "/create", {templateUrl: asset_details, controller: controllerOne})
+            .when(path + "/create", {templateUrl: assetDetails, controller: controllerOne})
             // edit
-            .when(detailsPath + "/:editing", {templateUrl: asset_details, controller: controllerOne})
+            .when(detailsPath + "/:editing", {templateUrl: assetDetails, controller: controllerOne})
             ;
     }
 
@@ -90,8 +90,8 @@ var bawApp = (function (undefined) {
 
             //when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl}).
             when('/', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
-            when('/404', {controller: ErrorCtrl}).
-            when('/404?path=:errorPath', {controller: ErrorCtrl}).
+            when('/404', {templateUrl: '/assets/error_404.html', controller: ErrorCtrl}).
+            when('/404?path=:errorPath', {templateUrl: '/assets/error_404.html', controller: ErrorCtrl}).
             otherwise({
                 redirectTo: function (params, location, search) {
                     return '/404?path=' + location;
@@ -175,6 +175,15 @@ var bawApp = (function (undefined) {
         $rootScope.authTokenQuery = function() {
             return angularCopies.toKeyValue($rootScope.authTokenParams());
         };
+
+        $rootScope.loggedIn = false;
+
+        $rootScope.$watch('userData', function (){
+            var token = $rootScope.authorisationToken,
+                userData = $rootScope.userData;
+            $rootScope.loggedIn = (token && userData) ? true : false;
+
+        });
 
 
     }]);

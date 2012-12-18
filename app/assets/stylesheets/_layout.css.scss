@@ -29,17 +29,24 @@ a {
   color: nth($master-dark, 1);
 
   &:visited {
-    color: nth($master-dark-2, 1);;
+    color: nth($master-dark-2, 1);
   }
 
   &:hover {
-    text-decoration: none;
     color: nth($master-highlight, 1);
   }
 
   &:active {
-    color: nth($master-complementary, 1)
+    color: nth($master-complementary, 1);
   }
+}
+
+h2 {
+  margin: 0.83em 0;
+}
+
+h3 {
+  margin: 0.70em 0;
 }
 
 baw-debug-info {
@@ -66,7 +73,6 @@ html {
 }
 
 label {
-  display: block;
 
   &>span {
     display: block;
@@ -126,6 +132,11 @@ ul {
   }
 }
 
+button {
+  padding: 1px 6px;
+  margin: 2px;
+}
+
 /*
  *
  *  Specific styles
@@ -133,17 +144,34 @@ ul {
  */
 $footer-height: 40px;
 
-
 /* Header
 -----------------------------------------------------------------------------*/
 header {
-    height: 75px;
-    background: nth($master-highlight-2, 1);
-    border-bottom:2px solid nth($master-highlight, 1);
-    h1 {
-      font-size:2em;
-      padding:15px 0 0 15px;
+  height: 60px;
+  @include gradient("linear", nth($master-highlight-2,1) , nth($master-highlight-2,2));
+  border-bottom:2px solid nth($master-highlight, 1);
+  margin: 0;
+  & h1 {
+    font-size: 2em;
+    margin: 0 0 0 15px;
+    float:left;
+    line-height:60px;
+    & a {
+      text-decoration: none;
     }
+  }
+  & ul {
+    list-style-type: none;
+    float: right;
+    line-height:60px;
+    margin: 0 15px 0 0;
+    & li {
+      display: inline-block;
+      padding: 0;
+      margin: 3px;
+      float:left;
+    }
+  }
 }
 
 /* Middle
@@ -155,22 +183,21 @@ header {
   height: auto !important;
   //height: 100%;
   position: relative;
-  top: -5px;
+  //top: -5px;
 }
 
 #content-wrapper{
-  margin-top:    5px;
+  margin-top:    0px;
   margin-right:  15px;
   margin-left:   15px;
   margin-bottom: $footer-height;
 
+  padding-top:  15px;
 }
-
 
 #content {
   margin:5px 15px;
 }
-
 
 /* Footer
 -----------------------------------------------------------------------------*/
@@ -189,9 +216,6 @@ footer {
       }
     }
 }
-
-
-
 
 /* General Classes
 -----------------------------------------------------------------------------*/

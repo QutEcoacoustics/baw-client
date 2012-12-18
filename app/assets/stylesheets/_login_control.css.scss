@@ -73,6 +73,15 @@ body.waiting-for-angular div#initializing-panel {
   position: relative;
   width: 508px;
 }
+#loginboxclose{
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-weight: bold;
+  font-size: 16px;
+  font-family: monospace;
+  text-decoration: none;
+}
 #login-inner {
   font-family: Tahoma;
   font-size: 13px;
