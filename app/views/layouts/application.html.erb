@@ -10,29 +10,37 @@
   <script src="https://login.persona.org/include.js"></script>
   <%= csrf_meta_tags %>
   <%= yield(:head) %>
+
+  <!-- fot sticky footer -->
+  <!--[if !IE 7]>
+  <style type="text/css">
+      #wrap {display:table;height:100%}
+  </style>
+  <![endif]-->
 </head>
 <body baw-auth class="waiting-for-angular">
 
 <%= "" #yield
 %>
-<header>
+<div id="page-wrapper" >
 
-  <h1><a href="/">Bioacoustic Workbench</a></h1>
-  <ul>
-    <li><a href="/projects">Browse Projects</a></li>
-    <li><a href="/searches">Search</a></li>
-    <li><a href ng-click="$reloadView()">refresh</a></li>
-    <li ng-controller="LoginCtrl">
+  <header>
+
+    <h1><a href="/">Bioacoustic Workbench</a></h1>
+    <ul>
+      <li><a href="/projects">Browse Projects</a></li>
+      <li><a href="/searches">Search Recordings</a></li>
+      <li><a href ng-click="$reloadView()">refresh</a></li>
+      <li ng-controller="LoginCtrl">
       <span ng-show="loggedIn">
-        Welcome <a href="/user/{{userData.user_id}}" ng-bind="friendly_name" title="{{email}}"></a>&nbsp;&nbsp;<a href ng-click="logout()">Sign Out</a>
+        Welcome <a href="/user/{{userData.user_id}}" title="{{friendly_name}}: {{email}}">{{email}}</a>&nbsp;&nbsp;<a href ng-click="logout()">Sign Out</a>
       </span>
       <span ng-hide="loggedIn">
         <a href ng-click="login()">Sign In</a>
       </span>
-    </li>
-  </ul>
-</header>
-<div id="page-wrapper" >
+      </li>
+    </ul>
+  </header>
 
   <div id="login-holder">
     <div id="loginbox">

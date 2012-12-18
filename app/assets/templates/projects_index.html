@@ -7,15 +7,17 @@
 
     <ul id="project-list">
         <li ng-repeat="project in projects">
-                <div>
-                    <h3><a ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
-                    <p ng-bind="project.description" ></p>
-                    <small>{{project.updated_at}}</small>
-                    <p ng-bind="project.sites.length" ></p>
-
-                </div>
-
-            <img class="tile-image" ng-src="{{project.photos[0].uri}}" >
+            <div class="project-text">
+                <h3><a ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
+                <p ng-bind="project.description" ></p>
+                <small>{{project.updated_at}}</small>
+                <small>{{project.created_at}}</small>
+                <small>{{project.creator_id}}</small>
+                <small ng-bind="project.sites.length" ></small>
+            </div>
+            <div class="project-image">
+                <img class="tile-image" ng-src="{{project.photos[0].uri}}" >
+            </div>
         </li>
 
     </ul>
