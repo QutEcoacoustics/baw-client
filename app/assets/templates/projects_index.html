@@ -1,20 +1,21 @@
 <div id="content" data-ng-controller="ProjectsCtrl">
-    <h1>Project List</h1>
+    <h2>Projects</h2>
 
-    <p>These are the available projects.</p>
+    <p>Projects are a collection of sites that have a common goal.</p>
 
     <a href="/projects/manage">Manage projects</a>
 
     <ul id="project-list">
-        <li data-ng-repeat="project in projects">
+        <li ng-repeat="project in projects">
                 <div>
-                    <h3><a data-ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
-                    <p data-ng-bind="project.description" ></p>
+                    <h3><a ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
+                    <p ng-bind="project.description" ></p>
                     <small>{{project.updated_at}}</small>
                     <p ng-bind="project.sites.length" ></p>
 
                 </div>
-                <img class="tile-image" ng-src="{{project.photos[0].uri}}" >
+
+            <img class="tile-image" ng-src="{{project.photos[0].uri}}" >
         </li>
 
     </ul>

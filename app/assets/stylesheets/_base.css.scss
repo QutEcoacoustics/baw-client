@@ -63,6 +63,7 @@ $standard-glow-alpha: 0.2;
 
 @mixin gradient($type, $to...) {
   // old browsers
+  // http://www.colorzilla.com/gradient-editor/
   background-color: nth($to, 1);
 
   @if $type == "linear" {

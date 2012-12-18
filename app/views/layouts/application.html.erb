@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="baw"  ng-init="current_user = <%= current_user.to_json %>;">
+<html ng-app="baw">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= content_for?(:title) ? yield(:title) : "Baw Site" %></title>
@@ -17,24 +17,30 @@
 %>
 <header>
 
-  <a href="/"><h1>Bioacoustic Workbench</h1></a>
-  <a href ng-click="$reloadView()">refresh</a>
-  <div ng-controller="LoginCtrl">
-    <p ng-show="loggedIn">
-      Hello <span ng-bind="displayName" ></span>, <span ng-bind="email" ></span>.
-      <a href ng-click="logout()">logout</a>
-    </p>
-    <a ng-hide="loggedIn" href ng-click="login()">login</a>
-  </div>
+  <h1><a href="/">Bioacoustic Workbench</a></h1>
+  <ul>
+    <li><a href="/projects">Browse Projects</a></li>
+    <li><a href="/searches">Search</a></li>
+    <li><a href ng-click="$reloadView()">refresh</a></li>
+    <li ng-controller="LoginCtrl">
+      <span ng-show="loggedIn">
+        Welcome <a href="/user/{{userData.user_id}}" ng-bind="friendly_name" title="{{email}}"></a>&nbsp;&nbsp;<a href ng-click="logout()">Sign Out</a>
+      </span>
+      <span ng-hide="loggedIn">
+        <a href ng-click="login()">Sign In</a>
+      </span>
+    </li>
+  </ul>
 </header>
 <div id="page-wrapper" >
 
   <div id="login-holder">
     <div id="loginbox">
       <div id="login-inner" ng-controller="LoginCtrl">
+        <a href="/" id="loginboxclose" title="Cancel login and return to home page" ng-click="cancelLogin()">x</a>
 
         <form method="POST" autocomplete>
-          <h2>Login or signup with</h2>
+          <h2>Sign In</h2>
           <ul >
             <li><a href="#" class="btn-auth btn-facebook">Sign in with facebook</a> </li>
             <li><a href="#" class="btn-auth btn-github"  >Sign in with GitHub</a> </li>
@@ -78,7 +84,7 @@
                      class="login"
                      ng-model="additionalInformation"/>
             </label>
-            <button ng-click="submit(requireMoreInformation.providerId)" type="submit">Proceed</button>
+            <button ng-click="submit(requireMoreInformation.providerId)" type="submit">Sign In</button>
           </div>
         </form>
       </div>

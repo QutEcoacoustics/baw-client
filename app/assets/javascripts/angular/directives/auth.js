@@ -18,11 +18,14 @@ angular.module('angular-auth', ['http-auth-interceptor'])
 
                 scope.$on('event:auth-loginRequired', function () {
                     // TODO: add extra checks to stop multiple animations
+                    var loginIsVisible = $('#login-holder').is(':visible');
+                    var loginIsHidden = $('#login-holder').is(':hidden');
+                    var mainIsVisible = $('#content').is(':visible');
+                    var mainIsHidden = $('#content').is(':hidden');
 
-                    if (login.is(':animated')) {
-                        // noop
-                    }
-                    else {
+                    if(loginIsVisible || !loginIsHidden || !mainIsVisible || mainIsHidden || login.is(':animated')){
+                        // noop - do nothing, since login is already shown
+                    }else {
                         console.warn("sliding login window down");
                         login.slideDown('slow', function () {
 
@@ -30,7 +33,15 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                         });
                     }
                 });
+
                 scope.$on('event:auth-loginConfirmed', function () {
+                    console.warn("sliding login window up");
+                    main.show();
+                    login.slideUp();
+                });
+
+                scope.$on('event:auth-loginCancelled', function () {
+                    console.warn("sliding login window up");
                     main.show();
                     login.slideUp();
                 });
