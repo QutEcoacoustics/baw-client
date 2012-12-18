@@ -24,13 +24,14 @@ var bawApp = (function (undefined) {
         var detailsPath = path + "/" + id;
         var asset = "/assets/" + resourceName + "_index.html";
         var assetDetails = "/assets/" + singularResourceName + "_details.html";
+        var assetManage = "/assets/" + resourceName + "_manager.html";
 
         return this
             // many
             .when(path, {templateUrl: asset, controller: controllerMany})
             // manage
             .fluidIf(addManageView, function () {
-                this.when(path + "/manage", {templateUrl: asset.replace("index.html", "manager.html"), controller: controllerMany})
+                this.when(path + "/manage", {templateUrl: assetManage, controller: controllerMany})
             })
             // details
             .when(detailsPath, {templateUrl: assetDetails, controller: controllerOne})

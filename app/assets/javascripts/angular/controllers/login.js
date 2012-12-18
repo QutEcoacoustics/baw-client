@@ -56,10 +56,9 @@ function LoginCtrl($scope, $http, $location, authService, AuthenticationProvider
     };
 
     $scope.cancelLogin = function(){
+        $location.path('/');
         $scope.$emit('event:auth-loginCancelled');
-        $location.path('/')
     };
-
 
     $scope.displayName = "";
     $scope.email = "";

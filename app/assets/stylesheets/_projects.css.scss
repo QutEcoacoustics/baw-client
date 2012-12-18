@@ -1,21 +1,35 @@
 @import "base.css.scss";
 
 #project-list {
+ list-style-type: none;
 
 
   & li{
+    float:left;
+    margin: 5px;
+    @extend .rounded-corners;
+    border-color: nth($primary-color, 2);
+    background-color: nth($master-background, 2);
+    display:block;
+    width:400px;
+    height:180px;
 
-
-    & div{
+    & div.project-text{
       vertical-align: top;
       display: inline-block;
       padding: $standard-padding;
+      width: 180px;
+      float:left;
+    }
 
+    & div.project-image {
+      width:150px;
+      height:150px;
+      float:left;
     }
 
     & img{
       padding: $standard-padding;
-
       display: inline-block;
     }
   }
@@ -23,8 +37,11 @@
 }
 
 .tile-image  {
-  max-height: 200px;
-  max-width: 200px;
+  max-height: 150px;
+  max-width: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  display:block;
 }
 
 .thumb-image  {
