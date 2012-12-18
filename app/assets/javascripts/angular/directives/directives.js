@@ -93,16 +93,68 @@
 
 
     bawds.directive('bawAnnotationViewer', function () {
-        function resizeOrMove(b, box) {
-            if (b.id === box.id) {
-                b.left = box.left;
-                b.top = box.top;
-                b.width = box.width;
-                b.height = box.height;
+
+        var converters = function () {
+            // TODO: these are stubs and will need to be refactored
+
+            // constants go here
+
+            return {
+                pixelsToSeconds: function pixelsToSeconds(value) {
+                    return value;
+                },
+                pixelsToHertz: function pixelsToHertz(value) {
+                    return value;
+                },
+                secondsToPixels: function secondsToPixels(value) {
+                    return value;
+                },
+                hertzToPixels: function hertzToPixels(value) {
+                    return value;
+                }
+            };
+        };
+
+        function resizeOrMove(audioEvent, box) {
+            if (audioEvent.__temporaryId__ === box.id) {
+                audioEvent.startTimeSeconds =  box.left;
+                audioEvent.highFrequencyHertz = box.top;
+                //b.width = box.width;
+                //b.height = box.height;
+                audioEvent.endTimeSeconds = audioEvent.startTimeSeconds + box.width;
+                audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz + box.height;
             }
             else {
                 throw "Box ids do not match on resizing  or move event";
             }
+        }
+
+        function touchUpdatedField(audioEvent) {
+            audioEvent.updatedAt = new Date();
+        }
+
+        function create(simpleBox, audioRecordingId) {
+            var now = new Date();
+            var audioEvent = {
+                id: 1,
+                __temporaryId__: simpleBox.id,
+                audioRecordingId: audioRecordingId,
+
+                createdAt: now,
+                updatedAt: now,
+
+                endTimeSeconds: 0.0,
+                highFrequencyHertz: 0.0,
+                isReference: false,
+                lowFrequencyHertz: 0.0,
+                startTimeSeconds: 0.0,
+                audioEventTags: []
+            };
+
+            resizeOrMove(audioEvent, simpleBox);
+            touchUpdatedField(audioEvent);
+
+            return audioEvent;
         }
 
         return {
@@ -121,48 +173,53 @@
                 // assign a unique id to scope
                 scope.id = Number.Unique();
 
-                scope.$canvas = $($element.find(".annotation-viewer img + div")[0]);
+                scope.$canvas = $element.find(".annotation-viewer img + div").first();
 
                 // init drawabox
                 scope.model.audioEvents = scope.model.audioEvents || [];
-                scope.model.selectedEvents = scope.model.selectedEvents || [];
+                scope.model.selectedAudioEvents = scope.model.selectedAudioEvents || [];
 
                 scope.$canvas.drawabox({
-                    "newBox": function (newBox) {
-                        console.log("newBox", newBox);
+                    "newBox": function (element, newBox) {
+                        var newAudioEvent = create(newBox, "a dummy id!");
+                        scope.model.audioEvents.push(newAudioEvent);
 
-                        scope.model.audioEvents = newBox;
+                        console.log("newBox", newBox, newAudioEvent);
                     },
-                    "boxSelected": function (selectedBox) {
+                    "boxSelected": function (element, selectedBox) {
                         console.log("boxSelected", selectedBox);
 
                         // support for multiple selections - remove the clear
-                        scope.model.selectedEvents.length = 0;
-                        scope.model.selectedEvents.shift(selectedBox);
+                        scope.model.selectedAudioEvents.length = 0;
+                        scope.model.selectedAudioEvents.unshift(selectedBox);
                     },
-                    "boxResizing": function (box) {
+                    "boxResizing": function (element, box) {
                         console.log("boxResizing", box);
-                        resizeOrMove(scope.model.selectedEvents[0], box);
+                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
 
                     },
-                    "boxResized": function (box) {
+                    "boxResized": function (element, box) {
                         console.log("boxResized", box);
-                        resizeOrMove(scope.model.selectedEvents[0], box);
+                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
                     },
-                    "boxMoving": function (box) {
+                    "boxMoving": function (element, box) {
                         console.log("boxMoving");
-                        resizeOrMove(scope.model.selectedEvents[0], box);
+                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
                     },
-                    "boxMoved": function (box) {
+                    "boxMoved": function (element, box) {
                         console.log("boxMoved");
-                        resizeOrMove(scope.model.selectedEvents[0], box);
+                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
                     },
-                    "boxDeleted": function (deletedBox) {
+                    "boxDeleted": function (element, deletedBox) {
                         console.log("boxDeleted");
 
                         // TODO: is this done by reference? does it even work?;
-                        _(scope.model.audioEvents).reject(function(item){return item.id === deletedBox.id;});
-                        _(scope.model.selectedEvents).reject(function(item){return item.id === deletedBox.id;});
+                        _(scope.model.audioEvents).reject(function (item) {
+                            return item.id === deletedBox.id;
+                        });
+                        _(scope.model.selectedAudioEvents).reject(function (item) {
+                            return item.id === deletedBox.id;
+                        });
                     }
                 });
 
