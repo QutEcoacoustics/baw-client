@@ -23,7 +23,7 @@ class AnalysisJob < ActiveRecord::Base
   validates :script_settings, :presence => true
   validates :script_version, :presence => true
   validates :script_display_name, :presence => true
-  validates :process_new, :inclusion => { :in => %w(true false) }
+  validates :process_new, :inclusion => { :in => [true, false] }
   validate :data_set_cannot_process_new
 
   # custom validation methods

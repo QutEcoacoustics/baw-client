@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :user_name, :display_name, :email, :password, :admin
+
   has_many :authorizations, :dependent => :destroy
 
   # user stamp
@@ -28,9 +29,18 @@ class User < ActiveRecord::Base
             #:format => { :with => /\A[a-zA-Z0-9_ ]+\z/, :message => "only letters, numbers, space and underscore allowed" }
   validates :display_name, :uniqueness => {:case_sensitive => false }, :presence => { :unless => Proc.new { |a| a.email.present? }, :message => "Please provide a name, email, or both." }
   validates :email, :uniqueness => {:case_sensitive => false }, :presence => { :unless => Proc.new { |a| a.display_name.present? }, :message => "Please provide an email, name, or both." }
-  validates :user_name, :exclusion => { :in => %w(admin harvester analysis_runner) }
+  validates :user_name, :exclusion => { :in => %w(admin harvester analysis_runner) }, :unless => :skip_user_name_exclusion_list
   #friendly_id :display_name, :use_slug => true, :strip_non_ascii => true
 
 
+  # special vanlidation skip
+  # TODO: does this need some protectection?
+  def skip_user_name_exclusion_list=(value)
+    @skip_user_name_exclusion_list = value
+  end
+
+  def skip_user_name_exclusion_list
+    @skip_user_name_exclusion_list
+  end
 
 end

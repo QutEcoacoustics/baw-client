@@ -20,7 +20,7 @@ class Tag < ActiveRecord::Base
   enumerize :type_of_tag, :in => [:common_name, :species_name, :looks_like, :sounds_like], predicates: true
 
   # validation
-  validates :is_taxanomic, :inclusion => { :in => %w(true false) }
+  validates :is_taxanomic, :inclusion => { :in => [true, false] }
   validates :text, :uniqueness => { :case_sensitive => false }
   #validate :class_mutually_exclusive_with_tag_type
 
