@@ -27,10 +27,9 @@
     </div>
     <div ng-show="editing">
         <form id="project_edit_form">
-
             <label>
                 <span>Name</span>
-                <input type="text" ng-model="project.name">
+                <input type="text" ng-model="project.name" required maxlength="50">
             </label>
             <label>
                 <span>Urn</span>
@@ -38,7 +37,7 @@
             </label>
             <label>
                 <span>Description</span>
-                <textarea spellcheck ng-model="project.description" ></textarea>
+                <textarea spellcheck ng-model="project.description"></textarea>
             </label>
             <label>
                 <span>Notes</span>

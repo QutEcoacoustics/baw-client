@@ -11,7 +11,7 @@
      */
     function resourcePut($resource, path, paramDefaults, actions) {
         var a = actions || {};
-        a.update = a.update || {method: 'PUT'};
+        a.update = a.update || { method: 'PUT' };
         return $resource(path, paramDefaults, a);
     }
 

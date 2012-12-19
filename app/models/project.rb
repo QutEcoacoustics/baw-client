@@ -23,7 +23,7 @@ class Project < ActiveRecord::Base
 
   # validation
   validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
-  validates :urn, :presence => true
+  validates :urn, :presence => true, :uniqueness => { :case_sensitive => false }
 
   # commonly used queries (these return
   # ActiveRecord::Relation object which will allow for

@@ -160,7 +160,7 @@ header {
   & ul {
     list-style-type: none;
     float: right;
-    line-height:60px;
+    line-height:40px;
     margin: 0 15px 0 0;
     & li {
       display: inline-block;
@@ -251,4 +251,22 @@ body:before {
 
 .select2-container {
   min-width: 150px;
+}
+
+/* Validation Styles
+--------------------------------------------------------------------------------*/
+input.ng-invalid.ng-dirty, textarea.ng-invalid.ng-dirty {
+  background-color: #FA787E;
+}
+
+input.ng-valid.ng-dirty, textarea.ng-valid.ng-dirty {
+  background-color: #78FA89;
+}
+
+input.ng-pristine.ng-valid, textarea.ng-pristine.ng-valid {
+  background-color: #e4e4e4;
+}
+
+input.ng-pristine.ng-invalid, textarea.ng-pristine.ng-invalid {
+  background-color: #f7c0c0;
 }

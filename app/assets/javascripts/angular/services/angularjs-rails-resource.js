@@ -73,8 +73,12 @@ angular.module('rails', [])
 
             if ((headers()["Accept"] || "").indexOf("application/json") >= 0) {
 
-                if (data === undefined || data === null || !angular.isObject(data)) {
+                if (data === undefined || data === null){
                     return;
+                }
+
+                if (!angular.isObject(data)) {
+                    return data;
                 }
 
                 transformObject(data, underscore);
@@ -103,7 +107,7 @@ angular.module('rails', [])
                 function (response) {
                     console.log("rails field naming interceptor, promise failed function", response);
 
-                    return p.reject(response);
+                    return response;//p.reject(response);
                 });
                 return p;
             });

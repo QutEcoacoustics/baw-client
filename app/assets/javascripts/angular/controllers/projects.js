@@ -40,7 +40,6 @@ function ProjectCtrl($scope, $resource, $routeParams, Project) {
     });
 
 
-
     $scope.links = {};
 
     $scope.delete = function() {
@@ -61,9 +60,14 @@ function ProjectCtrl($scope, $resource, $routeParams, Project) {
         p.urn = this.project.urn;
         p.description = this.project.description;
         p.notes = this.project.notes;
-        p.site_ids = (this.project.sites || []).map(function(value) {return {id: value.id}});
+        p.site_ids = (this.project.sites || []).map(function(value) {return value.id} );
 
-        projectResource.update(routeArgs, p,  (function() {console.log("success update")}));
+        // validation
+        if(!p.name){
+
+        }
+
+        projectResource.update(routeArgs, p,  function() {console.log("success update")}, function() { console.log("failed update")} );
     };
 
 }

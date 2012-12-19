@@ -1,7 +1,7 @@
 require 'common_attributes'
 require 'audio_event_serializer'
 
-class AudioRecordingIdsSerializer < ActiveModel::Serializer
+class AudioRecordingIdsSerializer < CommonAttributesSerializer
   attributes :id, :uuid
 end
 

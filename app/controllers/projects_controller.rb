@@ -3,22 +3,22 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.includes(:sites, :photos)
+    @projects = Project.all
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => @projects.to_json(:include => [{ :sites => { :only => [ :id, :name ] } }, :photos]) }
+      format.json { render json: @projects }
     end
   end
 
   # GET /projects/1
   # GET /projects/1.json
   def show
-    @project = Project.find(params[:id], :include => [:sites, :photos])
+    @project = Project.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render :json => @project.to_json(:include => [:sites, :photos]) }
+      format.json { render json: @project }
     end
   end
 
@@ -26,8 +26,8 @@ class ProjectsController < ApplicationController
   # GET /projects/new.json
   def new
     @project = Project.new
-	@project.sites.build
-	@all_sites = Site.all
+    @project.sites.build
+    @all_sites = Site.all
 
     respond_to do |format|
       format.html # new.html.erb

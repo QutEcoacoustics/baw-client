@@ -51,7 +51,6 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
   def success_complete(canonical_data)
     displayed_data = '<p>Login successful. Please <a href="#" onclick="javascript:closeWindow();return false;">close</a> this window.</p>'
 
-
     user = store_provider_info(canonical_data, current_user)
 
     sign_in(user, :event => :authentication)

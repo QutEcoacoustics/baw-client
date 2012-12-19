@@ -46,12 +46,25 @@
 
     bawds.directive('bawJsonBinding', function () {
 
+
+
         return {
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attr, ngModel) {
 
-                ngModel.$parsers.push(angular.fromJson);
+                function catchParseErrors(viewValue){
+                    try{
+                        var result = angular.fromJson(viewValue);
+                    }catch(e){
+                        ngModel.$setValidity('bawJsonBinding',false);
+                        return '';
+                    }
+                    ngModel.$setValidity('bawJsonBinding',true);
+                    return result;
+                }
+
+                ngModel.$parsers.push(catchParseErrors);
                 ngModel.$formatters.push(angular.toJson)
             }
         };

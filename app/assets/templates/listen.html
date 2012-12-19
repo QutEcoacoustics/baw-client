@@ -39,18 +39,18 @@
 
             <label>
                 <span>Duration (seconds)</span></label>
-            <input type="text" min="{{limits.timeMin}}" max="{{limits.timeMax}}" required
+            <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" required
                    ng-model="selectedAnnotation.startTimeSeconds"/>
             &nbsp;to&nbsp;
-            <input type="text" min="{{limits.timeMin}}" max="{{limits.timeMax}}" required
+            <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" required
                    ng-model="selectedAnnotation.endTimeSeconds"/>
 
             <label>
                 <span>Frequency</span> </label>
-            <input type="text" min="{{limits.freqMin}}" max="{{limits.freqMax}}" required
+            <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" required
                    ng-model="selectedAnnotation.lowFrequencyHertz"/>
             &nbsp;to&nbsp;
-            <input type="text" min="{{limits.freqMin}}" max="{{limits.freqMax}}" required
+            <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" required
                    ng-model="selectedAnnotation.highFrequencyHertz"/>
 
 
