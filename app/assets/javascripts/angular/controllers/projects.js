@@ -60,7 +60,8 @@ function ProjectCtrl($scope, $resource, $routeParams, Project) {
         p.urn = this.project.urn;
         p.description = this.project.description;
         p.notes = this.project.notes;
-        p.site_ids = (this.project.sites || []).map(function(value) {return value.id} );
+
+        p.siteIds = (this.project.sites || []).map(function(value) {return value.id} );
 
         // validation
         if(!p.name){

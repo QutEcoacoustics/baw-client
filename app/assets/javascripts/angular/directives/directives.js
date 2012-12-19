@@ -130,12 +130,12 @@
 
         function resizeOrMove(audioEvent, box) {
             if (audioEvent.__temporaryId__ === box.id) {
-                audioEvent.startTimeSeconds =  box.left;
-                audioEvent.highFrequencyHertz = box.top;
+                audioEvent.startTimeSeconds =  box.left || 0;
+                audioEvent.highFrequencyHertz = box.top || 0;
                 //b.width = box.width;
                 //b.height = box.height;
-                audioEvent.endTimeSeconds = audioEvent.startTimeSeconds + box.width;
-                audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz + box.height;
+                audioEvent.endTimeSeconds = (audioEvent.startTimeSeconds + box.width) || 0;
+                audioEvent.lowFrequencyHertz = (audioEvent.highFrequencyHertz + box.height) || 0;
             }
             else {
                 throw "Box ids do not match on resizing  or move event";
@@ -149,7 +149,6 @@
         function create(simpleBox, audioRecordingId) {
             var now = new Date();
             var audioEvent = {
-                id: 1,
                 __temporaryId__: simpleBox.id,
                 audioRecordingId: audioRecordingId,
 
@@ -192,6 +191,7 @@
                 scope.model.audioEvents = scope.model.audioEvents || [];
                 scope.model.selectedAudioEvents = scope.model.selectedAudioEvents || [];
 
+
                 scope.$canvas.drawabox({
                     "newBox": function (element, newBox) {
                         var newAudioEvent = create(newBox, "a dummy id!");
@@ -202,17 +202,19 @@
                     "boxSelected": function (element, selectedBox) {
                         console.log("boxSelected", selectedBox);
 
+                        var audioEvent = _.find(scope.model.audioEvents, function(value) { return value.__temporaryId__ === selectedBox.id});
+
                         // support for multiple selections - remove the clear
                         scope.model.selectedAudioEvents.length = 0;
-                        scope.model.selectedAudioEvents.unshift(selectedBox);
+                        scope.model.selectedAudioEvents.push(audioEvent);
                     },
                     "boxResizing": function (element, box) {
-                        console.log("boxResizing", box);
+                        console.log("boxResizing");
                         resizeOrMove(scope.model.selectedAudioEvents[0], box);
 
                     },
                     "boxResized": function (element, box) {
-                        console.log("boxResized", box);
+                        console.log("boxResized");
                         resizeOrMove(scope.model.selectedAudioEvents[0], box);
                     },
                     "boxMoving": function (element, box) {
