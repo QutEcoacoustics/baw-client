@@ -39,9 +39,9 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
         $scope.model = {};
 
         var formatPaths = function () {
-            if ($scope.media && $scope.media.hasOwnProperty('recordingId')) {
-                $scope.media.imageUrl = $scope.media.spectrogramBaseUrl.format($scope.media) + "?" + $scope.authTokenQuery();
-                $scope.media.audioUrl = $scope.media.audioBaseUrl.format($scope.media) + "?" + $scope.authTokenQuery();
+            if ($scope.model.media && $scope.model.media.hasOwnProperty('recordingId')) {
+                $scope.model.media.imageUrl = $scope.model.media.spectrogramBaseUrl.format($scope.model.media) + "?" + $scope.authTokenQuery();
+                $scope.model.media.audioUrl = $scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + $scope.authTokenQuery();
             }
         };
         $scope.$on('event:auth-loginRequired', formatPaths);
