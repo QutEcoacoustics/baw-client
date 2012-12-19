@@ -35,16 +35,16 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
     #render :json => {:response => 'failure', :provider_id => failed_strategy.name.to_s, :reason => failure_message}.to_json, :status => :bad_request
     displayed_data = '<p>Login unsuccessful. <a href="#" onclick="javascript:closeWindow();return false;">Close this window</a>.</p>'
-    window_data = {:response => 'failure', :provider_id => failed_strategy.name.to_s, :reason => failure_message}
+    window_data = Api::SessionsController.fail_login_info(failure_message, failed_strategy.name.to_s)
 
     # use this javscript to get access to the returned data
     # returneddata = 0; dataitem = window.open('/security/auth/open_id/callback', 'dataitem'); dataitem.returneddata = returneddata;
     # to access the object: dataitem.returneddata
 
     respond_to do |format|
-      format.json { render :json => window_data.as_json, :status => :bad_request }
-      format.xml { render :xml => window_data.to_xml, :status => :bad_request }
-      format.any { render :text => window_content(displayed_data, window_data), :status => :bad_request }
+      format.json { render :json => window_data.as_json, :status => :unauthorized }
+      format.xml { render :xml => window_data.to_xml, :status => :unauthorized }
+      format.any { render :text => window_content(displayed_data, window_data), :status => :unauthorized }
     end
   end
 

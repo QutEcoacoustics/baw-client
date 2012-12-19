@@ -34,7 +34,8 @@ class Api::SessionsController < Devise::SessionsController
         # http://stackoverflow.com/questions/9641079/token-authentication-with-rails-and-devise
         # http://matteomelani.wordpress.com/2011/10/17/authentication-for-mobile-devices/
         current_user.ensure_authentication_token!
-        render :json => login_info(current_user,resource, 'default').to_json, :status => :ok
+        # this is only used for authenticating via the database
+        render :json => Api::SessionsController.login_info(current_user, resource, 'database').to_json, :status => :ok
       end
     end
 
@@ -59,24 +60,38 @@ class Api::SessionsController < Devise::SessionsController
     end
   end
 
-  # returns 401 or 200 depending on if a user is signed in or not
+  # returns information depending on if a user is signed in or not
   def ping
     if user_signed_in?
-      head :ok
+      current_user.ensure_authentication_token!
+
+      # get the most recently used provider
+      most_recent_auth = Authorization.where(:user_id => current_user.id).order('updated_at DESC').first!
+
+      render :json => Api::SessionsController.login_info(current_user, current_user, most_recent_auth.provider).to_json, :status => :ok
     else
-      head :unauthorized
+      render :json => Api::SessionsController.fail_login_info('Not logged in.',nil).to_json, :status => :ok
     end
   end
 
   private
 
   def self.login_info(current_user, user, provider_id)
-    { :response => 'ok',
+    {
+      :response => 'ok',
       :user_id => user.id,
       :auth_token => current_user.authentication_token,
       :friendly_name => user.display_name,
       :provider_id => provider_id,
       :email => user.email
+    }
+  end
+
+  def self.fail_login_info(message, provider_id)
+    {
+      :response => 'failure',
+      :provider_id => provider_id, #failed_strategy.name.to_s,
+      :reason => message
     }
   end
 
