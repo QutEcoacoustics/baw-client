@@ -60,8 +60,10 @@ class Api::SessionsController < Devise::SessionsController
     end
   end
 
+
   # returns information depending on if a user is signed in or not
   def ping
+
     if user_signed_in?
       current_user.ensure_authentication_token!
 

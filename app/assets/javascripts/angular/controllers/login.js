@@ -1,7 +1,11 @@
-function LoginCtrl($scope, $http, $location, authService, AuthenticationProviders) {
+function LoginCtrl($scope, $http, $location, authService, AuthenticationProviders, Authenticator) {
 
-    $scope.requireMoreInformation = null;
-    $scope.additionalInformation = null;
+    // WARNING: Cookies required for this to work
+    function checkLogin() {
+        Authenticator.checkLogin();
+    }
+
+    checkLogin();
 
     $scope.submit = function (provider) {
 
@@ -32,6 +36,8 @@ function LoginCtrl($scope, $http, $location, authService, AuthenticationProvider
         }
     };
 
+    $scope.requireMoreInformation = null;
+    $scope.additionalInformation = null;
     $scope.login = function() {
         $scope.$emit('event:auth-loginRequired');
     };
@@ -40,7 +46,7 @@ function LoginCtrl($scope, $http, $location, authService, AuthenticationProvider
 
         var provider, actualProvider;
         try {
-            provider = $scope.$root.userData.provider_id;
+            provider = $scope.$root.userData.providerId;
         }
         catch(e){
             console.error('Error getting provider id', e);
@@ -65,7 +71,7 @@ function LoginCtrl($scope, $http, $location, authService, AuthenticationProvider
 
     $scope.$watch('$root.loggedIn', function (){
         if ($scope.loggedIn) {
-            $scope.displayName = $scope.userData.friendly_name;
+            $scope.displayName = $scope.userData.friendlyName;
             $scope.email = $scope.userData.email;
         }
         else{
@@ -76,4 +82,4 @@ function LoginCtrl($scope, $http, $location, authService, AuthenticationProvider
 
 }
 
-LoginCtrl.$inject = ['$scope', '$http', '$location', 'authService', 'AuthenticationProviders'];
+LoginCtrl.$inject = ['$scope', '$http', '$location', 'authService', 'AuthenticationProviders', 'Authenticator'];
