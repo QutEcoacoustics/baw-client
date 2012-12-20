@@ -23,6 +23,10 @@
         return resourcePut($resource, '/projects/:projectId', {projectId: "@projectId"});
     });
 
+    bawss.factory('Site', function ($resource) {
+        return resourcePut($resource, '/sites/:siteId', {projectId: "@siteId"});
+    });
+
     bawss.factory('AudioRecording', function ($resource) {
         return resourcePut($resource, '/audio_recordings/:recordingId', {recordingId: '@recordingId'});
     });

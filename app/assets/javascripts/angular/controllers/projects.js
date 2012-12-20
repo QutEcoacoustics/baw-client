@@ -24,10 +24,12 @@ ProjectsCtrl.linkList = function (id) {
 ProjectsCtrl.$inject = ['$scope', '$resource', 'Project'];
 
 
-function ProjectCtrl($scope, $resource, $routeParams, Project) {
+function ProjectCtrl($scope, $resource, $routeParams, Project, Site) {
 
     var projectResource = Project; //$resource('/projects/:projectId', {projectId: $routeParams.projectId});
     var routeArgs = {projectId: $routeParams.projectId};
+
+    $scope.siteIds = [];
 
     $scope.editing = $routeParams.editing === "edit";
 
@@ -35,10 +37,27 @@ function ProjectCtrl($scope, $resource, $routeParams, Project) {
         $scope.links = ProjectsCtrl.linkList($scope.project.id);
 
         if ($scope.editing) {
-            $scope.original = this;
+            $scope.original = angular.copy($scope.project);
         }
-    });
 
+        // HACK: race condition requires this be done later (not sure what we're racing)
+        setTimeout(function(){
+            // need ids to pre-populate selector
+            var currentSiteIds = $scope.project.sites || [];
+            for(var index=0;currentSiteIds.length > index;index++){
+                $scope.siteIds.push(currentSiteIds[index].id.toString());
+            }
+
+            // HACK: and this too...
+            $scope.$apply(function() {  });
+        }, 800);
+
+
+        //$scope.siteIds.push(($scope.project.sites || []).map(function(value) {return value.id.toString()} );
+
+        //$scope.$apply(function() { $scope.siteIds.push(-1); });
+        //$scope.$apply(function() { $scope.siteIds.pop(); });
+    });
 
     $scope.links = {};
 
@@ -50,28 +69,27 @@ function ProjectCtrl($scope, $resource, $routeParams, Project) {
     };
 
     $scope.reset = function() {
-        $scope.project = $scope.original;
+        $scope.project = angular.copy($scope.original);
     };
 
     $scope.update = function updateProject() {
         // do not send back the full object for update
-        var p = {};
-        p.name = this.project.name;
-        p.urn = this.project.urn;
-        p.description = this.project.description;
-        p.notes = this.project.notes;
+        var p = { "project": {} };
+        p.project.name = $scope.project.name;
+        p.project.urn = $scope.project.urn;
+        p.project.description = $scope.project.description;
+        p.project.notes = $scope.project.notes;
 
-        p.siteIds = (this.project.sites || []).map(function(value) {return value.id} );
+        p.project.siteIds = $scope.siteIds;
 
-        // validation
-        if(!p.name){
-
-        }
-
-        projectResource.update(routeArgs, p,  function() {console.log("success update")}, function() { console.log("failed update")} );
+        projectResource.update(routeArgs, p,  function() {
+            console.log("success update");
+            $scope.original = angular.copy($scope.project);
+        }, function() { console.log("failed update")} );
     };
 
+    $scope.allSites = Site.query();
 }
 
-ProjectCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Project'];
+ProjectCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Project', 'Site'];
 

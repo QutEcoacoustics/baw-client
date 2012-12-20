@@ -1,11 +1,8 @@
 <div id="content" data-ng-controller="ProjectCtrl" >
     <a href="/projects">Projects</a>
     <a href="/projects/manage">Project Manager</a>
-    <a href="/">Home</a>
 
-    <h2>Project {{editing | boolToWords:' editing':'details'}}</h2>
-
-    <p>The details for a project.</p>
+    <h2>Project {{editing | boolToWords:'Editing':'Details'}}</h2>
 
     <p>
      <a ng-show="editing" ng-href="{{links.details}}" >cancel</a>
@@ -44,9 +41,14 @@
                 <textarea baw-json-binding ng-model="project.notes"></textarea>
             </label>
             <label>
-                <span>Sites</span>
-                <em> -- TO DO -- </em>
+                <span ng-click="siteIds=siteIds" title="{{siteIds|json}}">Sites </span>
+                <select ng-multiple="true" tags multiple ui-select2="{allowClear:true }"
+                        ng-model="siteIds" data-placeholder="Select Sites">
+                    <option></option>
+                    <option ng-repeat="s in allSites" value="{{s.id}}">{{s.name}}</option>
+                </select>
             </label>
+            <br><br>
             <button ng-click="reset()">Cancel</button>
             <button ng-click="update(project)">Save</button>
         </form>

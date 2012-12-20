@@ -63,28 +63,12 @@ body {
   height: 100%;
 }
 
-
-input {
-  vertical-align: middle;
-}
-
 img {
   border: none;
 }
 
 html {
   height: 100%;
-}
-
-label {
-
-  &>span {
-    display: block;
-  }
-
-  &>span + * {
-    margin-left: 2em;
-  }
 }
 
 li {
@@ -122,11 +106,6 @@ table {
   }
 }
 
-textarea {
-  width: 400px;
-  height: 200px;
-}
-
 ul {
   @extend ol;
   list-style-type:disc;
@@ -134,11 +113,6 @@ ul {
   & ol{
     margin:0 1.5em 1.5em 1.5em;
   }
-}
-
-button {
-  padding: 1px 6px;
-  margin: 2px;
 }
 
 /* Header
@@ -253,20 +227,78 @@ body:before {
   min-width: 150px;
 }
 
-/* Validation Styles
---------------------------------------------------------------------------------*/
-input.ng-invalid.ng-dirty, textarea.ng-invalid.ng-dirty {
-  background-color: #FA787E;
+/* Form Styles
+-----------------------------------------------------------------------------*/
+
+input {
+  vertical-align: middle;
+}
+
+label {
+
+  &>span {
+    display: block;
+    font-weight: bold;
+  }
+
+  &>span + * {
+    margin-left: 2em;
+    font-weight: normal;
+  }
+
+  & > input, & > textarea {
+    //@include vendor-prefix(box-shadow, 0px 0px 8px rgba(0, 0, 0, 0.3));
+    border: 1px solid nth($primary-color, 2);
+
+  }
+}
+
+button {
+  padding: 2px 6px;
+  margin: 2px;
+  @include gradient("linear", #F5FFD9, nth($master-highlight-2,1));
+  border: 1px solid nth($master-highlight-2,2);
+  @extend .rounded-corners;
+  font-size: 11pt;
+}
+
+button:hover {
+  @include vendor-prefix(box-shadow, 0px 0px 8px nth($master-highlight-2, 2));
+  border:1px solid nth($master-highlight-2, 2);
+}
+
+textarea {
+  width: 450px;
+  height: 150px;
+}
+
+textarea:focus, input:focus{
+  outline:none;
+  @include vendor-prefix(box-shadow, 0px 0px 8px nth($master-highlight-2, 2));
+}
+
+/* Form Validation Styles
+------------------------------------------------------------------------------*/
+input, textarea{
+  background-color: nth($master-background, 2);
+}
+
+input.ng-invalid.ng-dirty, textarea.ng-invalid.ng-dirty,  {
+  border-color: nth($error-dirty, 2);
+  @include vendor-prefix(box-shadow, 0px 0px 8px nth($error-dirty, 2));
+  background-color: nth($error-dirty, 3);
 }
 
 input.ng-valid.ng-dirty, textarea.ng-valid.ng-dirty {
-  background-color: #78FA89;
+  border: 1px solid nth($primary-color, 2);
 }
 
 input.ng-pristine.ng-valid, textarea.ng-pristine.ng-valid {
-  background-color: #e4e4e4;
+  border: 1px solid nth($primary-color, 2);
 }
 
 input.ng-pristine.ng-invalid, textarea.ng-pristine.ng-invalid {
-  background-color: #f7c0c0;
+  border: 1px solid nth($primary-color, 3);
+  @include vendor-prefix(box-shadow, 0px 0px 8px nth($primary-color, 3));
+  background-color: nth($primary-color, 3);
 }
