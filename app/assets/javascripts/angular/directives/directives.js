@@ -129,6 +129,7 @@
         };
 
         function resizeOrMove(audioEvent, box) {
+
             if (audioEvent.__temporaryId__ === box.id) {
                 audioEvent.startTimeSeconds =  box.left || 0;
                 audioEvent.highFrequencyHertz = box.top || 0;
@@ -138,8 +139,13 @@
                 audioEvent.lowFrequencyHertz = (audioEvent.highFrequencyHertz + box.height) || 0;
             }
             else {
-                throw "Box ids do not match on resizing  or move event";
+                console.error("Box ids do not match on resizing  or move event", audioEvent.__temporaryId__ , box.id);
             }
+        }
+        function resizeOrMoveWithApply(scope, audioEvent, box) {
+            scope.$apply(function() {
+                resizeOrMove(audioEvent, box);
+            })
         }
 
         function touchUpdatedField(audioEvent) {
@@ -181,6 +187,8 @@
 //                // transform DOM
 //            },
             link: function (scope, element, attributes, controller) {
+
+
                 var $element = $(element);
                 // assign a unique id to scope
                 scope.id = Number.Unique();
@@ -188,53 +196,61 @@
                 scope.$canvas = $element.find(".annotation-viewer img + div").first();
 
                 // init drawabox
-                scope.model.audioEvents = scope.model.audioEvents || [];
+                // we use hash (POJO) because most of our operations involve lookups
+                scope.model.audioEvents = scope.model.audioEvents || {};
+                // store only the ids in this array (again for speed)
                 scope.model.selectedAudioEvents = scope.model.selectedAudioEvents || [];
 
 
                 scope.$canvas.drawabox({
                     "newBox": function (element, newBox) {
                         var newAudioEvent = create(newBox, "a dummy id!");
-                        scope.model.audioEvents.push(newAudioEvent);
 
-                        console.log("newBox", newBox, newAudioEvent);
+                        scope.$apply(function() {
+                            scope.model.audioEvents[newAudioEvent.__temporaryId__] = newAudioEvent;
+                            console.log("newBox", newBox, newAudioEvent);
+                        });
                     },
                     "boxSelected": function (element, selectedBox) {
                         console.log("boxSelected", selectedBox);
 
-                        var audioEvent = _.find(scope.model.audioEvents, function(value) { return value.__temporaryId__ === selectedBox.id});
+                        //var audioEvent = _.find(scope.model.audioEvents, function(value) { return value.__temporaryId__ === selectedBox.id});
 
                         // support for multiple selections - remove the clear
                         scope.model.selectedAudioEvents.length = 0;
-                        scope.model.selectedAudioEvents.push(audioEvent);
+                        scope.model.selectedAudioEvents.push(selectedBox.id);
                     },
                     "boxResizing": function (element, box) {
                         console.log("boxResizing");
-                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
 
                     },
                     "boxResized": function (element, box) {
                         console.log("boxResized");
-                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
                     },
                     "boxMoving": function (element, box) {
                         console.log("boxMoving");
-                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
                     },
                     "boxMoved": function (element, box) {
                         console.log("boxMoved");
-                        resizeOrMove(scope.model.selectedAudioEvents[0], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
                     },
                     "boxDeleted": function (element, deletedBox) {
                         console.log("boxDeleted");
 
-                        // TODO: is this done by reference? does it even work?;
-                        _(scope.model.audioEvents).reject(function (item) {
-                            return item.id === deletedBox.id;
+                        scope.$apply(function(){
+                            // TODO: is this done by reference? does it even work?;
+                            _(scope.model.audioEvents).reject(function (item) {
+                                return item.id === deletedBox.id;
+                            });
+                            _(scope.model.selectedAudioEvents).reject(function (item) {
+                                return item.id === deletedBox.id;
+                            });
                         });
-                        _(scope.model.selectedAudioEvents).reject(function (item) {
-                            return item.id === deletedBox.id;
-                        });
+
+
                     }
                 });
 
