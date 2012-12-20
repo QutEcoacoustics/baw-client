@@ -90,8 +90,13 @@
             </thead>
             <tbody>
             <tr ng-repeat="ae in model.audioEvents">
-                <td>{{ae.id}}</td>
-                <td><a ng-href="/recordings/{{ae.audioRecording.uuid}}"
+                <td colspan="{{ae.id && 1 || 2}}">
+                    {{ae.id}}
+                    <span ng-hide="ae.id">
+                        <em>new annotation</em>
+                    </span>
+                </td>
+                <td ng-show="ae.id" ><a ng-href="/recordings/{{ae.audioRecording.uuid}}"
                        class="short-guid">{{ae.audioRecording.uuid}}</a></td>
                 <td>{{ae.createdAt}}</td>
                 <td>{{ae.creatorId}}</td>
@@ -100,7 +105,7 @@
                 <td>{{ae.updatedAt}}</td>
                 <td>{{ae.updaterId}}</td>
                 <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId}},</span></td>
-                <td>{{ae.starttimeSeconds}} - {{ae.endTimeSeconds}}</td>
+                <td>{{ae.startTimeSeconds}} - {{ae.endTimeSeconds}}</td>
                 <td>{{ae.lowFrequencyHertz}} - {{ae.highFrequencyHertz}}</td>
             </tr>
             </tbody>

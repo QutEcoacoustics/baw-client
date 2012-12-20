@@ -141,6 +141,18 @@ var bawApp = (function (undefined) {
             }
         };
 
+        $rootScope.$safeApply2 = function (fn) {
+            var $scope = this || $rootScope;
+            fn = fn || function () {};
+
+            if ($scope.$$phase) {
+                fn();
+            }
+            else {
+                $scope.$apply(fn);
+            }
+        };
+
         $rootScope.$on("$routeChangeError", function (event, current, previous, rejection) {
             console.warn("route changing has failed... handle me some how");
             //change this code to handle the error somehow

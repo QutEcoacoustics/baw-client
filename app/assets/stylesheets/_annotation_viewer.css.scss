@@ -53,6 +53,7 @@ baw-annotation-viewer {
     border-width: $border-width;
     border-color: nth($master-highlight, 2);
     position: absolute;
+    background-color: rgba(255,255,255,0.05);
 
     &[data-selected="true"] {
       border-color: nth($master-complementary, 2);

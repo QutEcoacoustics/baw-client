@@ -20,22 +20,6 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
     else {
         var recordingId = $scope.recordingId = $routeParams.recordingId;
 
-
-//
-//        $scope.recording = AudioRecording.get($routeParams);
-//
-//        // HACK:
-//        $scope.recordingurl = "/media/" + recordingId + "_0_120_0_11025.mp3";
-//
-//
-//        var spectrogramResource = $resource('/media/:recordingId', {recordingId: '@recordingId'}, {
-//            get: { method: 'GET', params: {recordingId: '@recordingId'}, isArray: false }
-//        });
-//        $scope.spectrogram = spectrogramResource.get($routeParams);
-//
-//        // HACK:
-//        $scope.spectrogram.url = "/media/" + recordingId + "_0_120_0_11025_512_g.png" + "?" + angularCopies.toKeyValue($scope.authTokenParams());
-
         $scope.model = {};
 
         var formatPaths = function () {
@@ -71,11 +55,12 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
         $scope.clearSelected = function() {
-            $scope.selectedAnnotation = {};
+            $scope.model.selectedAudioEvents.length = 0;
         };
 
         $scope.addAnnotation = function createAnnotation() {
-            var a = angular.copy(this.selectedAnnotation);
+            // BUG: ONLY SAVES FIRST ONE
+            var a = angular.copy(this. $scope.model.selectedAudioEvents[0]);
 
             // prep tags
             a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {return {tag_id:v};});
@@ -89,7 +74,6 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
                     // now update tag-list
                     $scope.model.audioEvents.push(response);
-                    $scope.selectedAnnotation = response;
 
                 },
                 function createAnnotationFailure(response, getResponseHeaders) {
