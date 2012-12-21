@@ -7,11 +7,11 @@ class CommonAttributesSerializer < ActiveModel::Serializer
              :updater_id
 
   def include_deleted_at?
-    object.respond_to? :deleted_at
+    object.respond_to?(:deleted_at) && !object.deleted_at.blank?
   end
 
   def include_deleter_id?
-    object.respond_to? :deleted_id
+    object.respond_to?(:deleted_id) && !object.deleted_id.blank?
   end
 
   def include_updated_at?

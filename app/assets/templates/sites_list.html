@@ -1,0 +1,23 @@
+<div id="content" data-ng-controller="SitesCtrl">
+
+    <h2>Sites</h2>
+
+    <p>Sites are geographical locations where sensors are placed.</p>
+
+    <ul class="item-list" when-scrolled="loadNext()">
+        <li ng-repeat="site in sites">
+            <div class="item-text">
+                <h3><a ng-href="/sites/{{site.id}}">{{site.name}}</a></h3>
+                <p><span data-ng-bind="site.latitude"></span>, <span data-ng-bind="site.longitude"></span></p>
+                <p>{{site.notes}}</p>
+                <small><a ng-href="/sites/{{site.id}}/edit">edit</a></small>
+                <small>Number of projects: {{site.projects.length}}</small>
+                <small>Number of recordings: {{site.audioRecordings.length}}</small>
+            </div>
+            <div class="item-image">
+                <img class="tile-image" ng-src="{{site.photos[0].uri}}" >
+            </div>
+        </li>
+
+    </ul>
+</div>

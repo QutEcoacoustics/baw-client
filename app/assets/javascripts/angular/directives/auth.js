@@ -16,17 +16,31 @@ angular.module('angular-auth', ['http-auth-interceptor'])
 
                 login.hide();
 
+                var isLoginBoxOpen = function(){
+                    var loginHolderElm = $('#login-holder');
+                    var mainElm = $('#content');
+
+                    var doCheck = {
+                        loginIsVisible: loginHolderElm.is(':visible'),
+                        loginIsHidden: loginHolderElm.is(':hidden'),
+                        mainIsVisible: mainElm.is(':visible'),
+                        mainIsHidden: mainElm.is(':hidden')
+                    };
+
+                    var loginVisible = doCheck.loginIsVisible && !doCheck.loginIsHidden;
+                    //var mainVisible = doCheck.mainIsVisible && !doCheck.mainIsHidden;
+                    //var isAnimating = loginHolderElm.is(':animated');
+
+                    return loginVisible;
+                }
+
                 scope.$on('event:auth-loginRequired', function () {
                     // TODO: add extra checks to stop multiple animations
-                    var loginIsVisible = $('#login-holder').is(':visible');
-                    var loginIsHidden = $('#login-holder').is(':hidden');
-                    var mainIsVisible = $('#content').is(':visible');
-                    var mainIsHidden = $('#content').is(':hidden');
 
-                    if(loginIsVisible || !loginIsHidden || !mainIsVisible || mainIsHidden || login.is(':animated')){
-                        // noop - do nothing, since login is already shown
-                    }else {
-                        console.warn("sliding login window down");
+                    var isOpen = isLoginBoxOpen();
+
+                    if(!isOpen){
+                        console.warn("showing login window");
                         login.slideDown('slow', function () {
 
                             main.hide();
@@ -35,15 +49,23 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                 });
 
                 scope.$on('event:auth-loginConfirmed', function () {
-                    console.warn("sliding login window up");
-                    main.show();
-                    login.slideUp();
+
+                    var isOpen = isLoginBoxOpen();
+                    if(isOpen){
+                        console.warn("hiding login window");
+                        main.show();
+                        login.slideUp();
+                    }
                 });
 
                 scope.$on('event:auth-loginCancelled', function () {
-                    console.warn("sliding login window up");
-                    main.show();
-                    login.slideUp();
+
+                    var isOpen = isLoginBoxOpen();
+                    if(isOpen){
+                        console.warn("hiding login window");
+                        main.show();
+                        login.slideUp();
+                    }
                 });
             }
         }

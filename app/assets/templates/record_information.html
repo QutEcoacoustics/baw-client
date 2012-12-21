@@ -1,3 +1,10 @@
-<span ng-show="name.created_at">created at&nbsp;<span>{{name.created_at}}</span></span>
-<span ng-show="name.updated_at">, last modified&nbsp;<span>{{name.updated_at}}</span></span>
-<span ng-show="name.deleted_at">, archived at&nbsp;<span>{{name.project.deleted_at}}</span></span>
+<ul>
+<li ng-show="name.createdAt">created at&nbsp;<span>{{name.createdAt}}</span></li>
+<li ng-show="name.creatorId">creator id&nbsp;<span>{{name.creatorId}}</span></li>
+
+<li ng-show="name.updatedAt">last modified&nbsp;<span>{{name.updatedAt}}</span></li>
+<li ng-show="name.updaterId">last modified id&nbsp;<span>{{name.updaterId}}</span></li>
+
+<li ng-show="name.deletedAt">archived at&nbsp;<span>{{name.project.deletedAt}}</span></li>
+<li ng-show="name.deleterId">archived id&nbsp;<span>{{name.project.deleterId}}</span></li>
+</ul>

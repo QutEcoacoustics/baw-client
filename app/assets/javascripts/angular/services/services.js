@@ -24,7 +24,7 @@
     });
 
     bawss.factory('Site', function ($resource) {
-        return resourcePut($resource, '/sites/:siteId', {projectId: "@siteId"});
+        return resourcePut($resource, '/sites/:siteId', {siteId: "@siteId"});
     });
 
     bawss.factory('AudioRecording', function ($resource) {
@@ -130,11 +130,11 @@
                             // the ping request is different, because it just asks for information, it will always return a 200,
                             // so split on response field
                             if (data && data.response == "ok") {
-                                console.info("Logged in via cookie with ping");
+                                console.info("Logged in via ping (probably used cookies).");
                                 loginSuccess(data, status, headers, config);
                             }
                             else {
-                                console.info("Ping login (via cookie) failed - assuming not logged in");
+                                console.info("Logged in via ping failed (probably something wrong with cookies).");
                                 loginFailure(data, status, headers, config);
                             }
 
@@ -147,7 +147,6 @@
 
                 return true;
             }
-
         }
     }]);
 

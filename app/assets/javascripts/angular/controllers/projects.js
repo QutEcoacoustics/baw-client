@@ -1,6 +1,5 @@
 "use strict";
 
-
 function ProjectsCtrl($scope, $resource, Project) {
     $scope.projectsResource = $resource('/projects', {});
     $scope.projects = $scope.projectsResource.query();
@@ -23,7 +22,6 @@ ProjectsCtrl.linkList = function (id) {
 
 ProjectsCtrl.$inject = ['$scope', '$resource', 'Project'];
 
-
 function ProjectCtrl($scope, $resource, $routeParams, Project, Site) {
 
     var projectResource = Project; //$resource('/projects/:projectId', {projectId: $routeParams.projectId});
@@ -31,14 +29,10 @@ function ProjectCtrl($scope, $resource, $routeParams, Project, Site) {
 
     $scope.siteIds = [];
 
-    $scope.editing = $routeParams.editing === "edit";
-
     $scope.project = projectResource.get(routeArgs, function () {
         $scope.links = ProjectsCtrl.linkList($scope.project.id);
 
-        if ($scope.editing) {
-            $scope.original = angular.copy($scope.project);
-        }
+        $scope.original = angular.copy($scope.project);
 
         // HACK: race condition requires this be done later (not sure what we're racing)
         setTimeout(function(){
@@ -50,7 +44,8 @@ function ProjectCtrl($scope, $resource, $routeParams, Project, Site) {
 
             // HACK: and this too...
             $scope.$apply(function() {  });
-        }, 800);
+            // the timeout required is based on the time to wait to ensure the data is available
+        }, 1000);
 
 
         //$scope.siteIds.push(($scope.project.sites || []).map(function(value) {return value.id.toString()} );
@@ -83,9 +78,9 @@ function ProjectCtrl($scope, $resource, $routeParams, Project, Site) {
         p.project.siteIds = $scope.siteIds;
 
         projectResource.update(routeArgs, p,  function() {
-            console.log("success update");
+            console.log("Updating Project: success.");
             $scope.original = angular.copy($scope.project);
-        }, function() { console.log("failed update")} );
+        }, function() { console.log("Updating Project: failed.")} );
     };
 
     $scope.allSites = Site.query();

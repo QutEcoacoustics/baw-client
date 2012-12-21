@@ -63,9 +63,11 @@ class Api::SessionsController < Devise::SessionsController
 
   # returns information depending on if a user is signed in or not
   def ping
-
     if user_signed_in?
       current_user.ensure_authentication_token!
+
+      # cancan auth check
+      #authorize!
 
       # get the most recently used provider
       most_recent_auth = Authorization.where(:user_id => current_user.id).order('updated_at DESC').first!
@@ -94,6 +96,16 @@ class Api::SessionsController < Devise::SessionsController
       :response => 'failure',
       :provider_id => provider_id, #failed_strategy.name.to_s,
       :reason => message
+    }
+  end
+
+  def self.forbidden_info(user)
+    most_recent_auth = Authorization.where(:user_id => user.id).order('updated_at DESC').first!
+    {
+        :response => 'forbidden',
+        :user_id => user.id,
+        :auth_token => user.authentication_token,
+        :provider_id => most_recent_auth.provider,
     }
   end
 

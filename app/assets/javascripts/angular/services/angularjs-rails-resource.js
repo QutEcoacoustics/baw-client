@@ -124,7 +124,8 @@
                                 function (response) {
                                     console.log("rails field naming interceptor, promise failed function", response);
 
-                                    return p.reject(response);
+                                    //return p.reject(response);
+                                    return response;
                                 });
                             return p;
                         });

@@ -255,7 +255,7 @@ label {
 
 button {
   padding: 2px 6px;
-  margin: 2px;
+  margin: 3px;
   @include gradient("linear", #F5FFD9, nth($master-highlight-2,1));
   border: 1px solid nth($master-highlight-2,2);
   @extend .rounded-corners;
@@ -301,4 +301,58 @@ input.ng-pristine.ng-invalid, textarea.ng-pristine.ng-invalid {
   border: 1px solid nth($primary-color, 3);
   @include vendor-prefix(box-shadow, 0px 0px 8px nth($primary-color, 3));
   background-color: nth($primary-color, 3);
+}
+
+/* List Styles
+------------------------------------------------------------------------------*/
+
+ul.item-list {
+  list-style-type: none;
+  & li{
+    float:left;
+    margin: 5px;
+    @extend .rounded-corners;
+    border-color: nth($primary-color, 2);
+    background-color: nth($master-background, 2);
+    display:block;
+    width:400px;
+    height:180px;
+
+    & div.item-text{
+      vertical-align: top;
+      display: inline-block;
+      padding: $standard-padding;
+      width: 180px;
+      float:left;
+    }
+
+    & div.item-image {
+      width:150px;
+      height:150px;
+      float:left;
+    }
+
+    & img{
+      padding: $standard-padding;
+      display: inline-block;
+    }
+
+    .tile-image  {
+      max-height: 150px;
+      max-width: 150px;
+      margin-left: auto;
+      margin-right: auto;
+      display:block;
+    }
+  }
+}
+
+.large-image {
+  max-height: 300px;
+  max-height: 300px;
+}
+
+.right-column {
+  float: right;
+  width: 50%;
 }

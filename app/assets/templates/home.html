@@ -11,7 +11,7 @@
         information to be put to use by ecologists and other parties interested in conservation.
     </p>
     <p ng-show="loggedIn">
-        Welcome back to the Bioacoustic Workbench, <span>{{userData.friendly_name}}</span>! We're glad you're here.
+        Welcome back to the Bioacoustic Workbench, <span>{{$scope.userData.friendly_name}}</span>! We're glad you're here.
     </p>
     <p ng-hide="loggedIn" ng-controller="LoginCtrl">
         Time to get started! You can <a href ng-click="login()">sign in</a> using an account you have at an external website.
@@ -27,7 +27,7 @@
         <a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">Listen2</a>
     </p>
     <p>
-        <a href="/search/">New search</a>
+        <a href="/searches/new">New search</a>
         <a href="/searches/">Saved searches</a>
     </p>
 

@@ -19,26 +19,40 @@ var bawApp = (function (undefined) {
      * @param addManageView
      * @return {*|Object}
      */
-    function whenDefaults(resourceName, singularResourceName, id, controllerMany, controllerOne, addManageView) {
-        var path = "/" + resourceName;
-        var detailsPath = path + "/" + id;
-        var asset = "/assets/" + resourceName + "_index.html";
-        var assetDetails = "/assets/" + singularResourceName + "_details.html";
-        var assetManage = "/assets/" + resourceName + "_manager.html";
+    function whenDefaults(resourceName, singularResourceName, id, controllerMany, controllerOne) {
+
+        // for a resource, there are three views:
+        //  - a list (possibly with delete/edit links),
+        //  - an item edit (for crating and editing),
+        //  -  a details/show (for showing item info read-only, in a good-looking format)
+
+        // more info on anchors:
+        // https://github.com/angular/angular.js/issues/352#issuecomment-1270847
+
+        // routes
+        var pathList = "/" + resourceName;
+        var pathShow = pathList + "/" + id;
+        var pathEdit = pathShow + "/edit";
+        var pathNew = pathList + '/new';
+
+        // assets
+        var assetList = "/assets/" + resourceName + "_list.html";
+        var assetEdit = "/assets/" + singularResourceName + "_edit.html";
+        var assetShow = "/assets/" + singularResourceName + "_show.html";
 
         return this
-            // many
-            .when(path, {templateUrl: asset, controller: controllerMany})
+            // list
+            .when(pathList, {templateUrl: assetList, controller: controllerMany})
             // manage
-            .fluidIf(addManageView, function () {
-                this.when(path + "/manage", {templateUrl: assetManage, controller: controllerMany})
-            })
-            // details
-            .when(detailsPath, {templateUrl: assetDetails, controller: controllerOne})
+            //.fluidIf(addManageView, function () {
+            //    this.when(listPath, {templateUrl: assetManage, controller: controllerMany})
+            //})
             // create
-            .when(path + "/create", {templateUrl: assetDetails, controller: controllerOne})
+            .when(pathNew, {templateUrl: assetEdit, controller: controllerOne})
             // edit
-            .when(detailsPath + "/:editing", {templateUrl: assetDetails, controller: controllerOne})
+            .when(pathEdit, {templateUrl: assetEdit, controller: controllerOne})
+            // details
+            .when(pathShow, {templateUrl: assetShow, controller: controllerOne})
             ;
     }
 
@@ -63,14 +77,11 @@ var bawApp = (function (undefined) {
         $routeProvider.
             when('/home', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
 
-//                when('/projects', {templateUrl: '/assets/projects_index.html', controller: ProjectCtrl}).
-//                when('/projects/manage', {templateUrl: '/assets/projects_manager.html', controller: ProjectsCtrl}).
-//                when('/projects/:projectId', {templateUrl: '/assets/project_details.html', controller: ProjectsCtrl}).
-//                when('/projects/:projectId/:editing', {templateUrl: '/assets/project_details.html', controller: ProjectsCtrl}).
-            whenDefaults("projects", "project", ":projectId", ProjectsCtrl, ProjectCtrl, true).
+            whenDefaults("projects", "project", ":projectId", ProjectsCtrl, ProjectCtrl).
 
-            when('/sites', {templateUrl: '/assets/sites.html', controller: SitesCtrl }).
-            when('/sites/:siteId', {templateUrl: '/assets/site.html', controller: SiteCtrl }).
+            whenDefaults("sites", "site", ":siteId", SitesCtrl, SiteCtrl).
+
+            whenDefaults("searches", "search", ":searchId", SearchesCtrl, SearchCtrl).
 
             when('/photos', {templateUrl: '/assets/photos.html', controller: PhotosCtrl }).
             when('/photos/:photoId', {templateUrl: '/assets/photo.html', controller: PhotoCtrl }).
@@ -81,15 +92,12 @@ var bawApp = (function (undefined) {
             when('/listen', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
             when('/listen/:recordingId', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
 
-            whenDefaults("searches", "search", ":searchId", SearchesCtrl, SearchCtrl, true).
-            when('/search', {templateUrl: '/assets/search_details.html', controller: SearchCtrl}).
-
             when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).
             when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).
 
             when('/attribution', {templateUrl: '/assets/attributions.html'}).
 
-            //when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl}).
+            // missing route page
             when('/', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
             when('/404', {templateUrl: '/assets/error_404.html', controller: ErrorCtrl}).
             when('/404?path=:errorPath', {templateUrl: '/assets/error_404.html', controller: ErrorCtrl}).
@@ -154,9 +162,14 @@ var bawApp = (function (undefined) {
         };
 
         $rootScope.$on("$routeChangeError", function (event, current, previous, rejection) {
-            console.warn("route changing has failed... handle me some how");
+            console.warn("route changing has failed... handle me some how", rejection);
             //change this code to handle the error somehow
-            $location.path('/404/' + $location.path);
+            //$location.path('/404/' + $location.path);
+//            alert("ROUTE CHANGE ERROR: " + rejection);
+//            $scope.alertType = "alert-error";
+//            $scope.alertMessage = "Failed to change routes :(";
+//            $scope.active = "";
+            $location.path('/404?path=');
         });
 
         // reload a view and controller (shortcut for full page refresh)

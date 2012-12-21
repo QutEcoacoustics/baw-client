@@ -1,0 +1,38 @@
+<div id="content" data-ng-controller="SiteCtrl" >
+    <h2>Editing Site</h2>
+    <p>
+        <a href="/sites">Sites</a>
+    </p>
+    <p>
+
+
+    </p>
+
+    <form id="site_edit_form" novalidate>
+        <label>
+            <span>Name</span>
+            <input type="text" ng-model="site.name" required maxlength="50">
+        </label>
+        <label>
+            <span>Latitude</span>
+            <input type="number" ng-model="site.latitude" required maxlength="15">
+        </label>
+        <label>
+            <span>Longitude</span>
+            <input type="number" ng-model="site.longitude" required maxlength="15">
+        </label>
+        <label>
+            <span>Notes</span>
+            <textarea baw-json-binding ng-model="site.notes"></textarea>
+        </label>
+
+        <br><br>
+        <button ng-click="update(site)">Save</button>
+        <button ng-click="reset()">Reset</button>
+        <a href ng-click="delete()" >delete</a>
+        <a ng-href="{{links.details}}">discard changes</a>
+    </form>
+</div>
+
+<baw-record-information ng-model="site" ></baw-record-information>
+</div>

@@ -3,19 +3,15 @@
 
     <p>Projects are a collection of sites that have a common goal.</p>
 
-    <a href="/projects/manage">Manage projects</a>
-
-    <ul id="project-list">
+    <ul class="item-list">
         <li ng-repeat="project in projects">
-            <div class="project-text">
+            <div class="item-text">
                 <h3><a ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
                 <p ng-bind="project.description" ></p>
-                <small>{{project.updated_at}}</small>
-                <small>{{project.created_at}}</small>
-                <small>{{project.creator_id}}</small>
-                <small ng-bind="project.sites.length" ></small>
+                <small><a ng-href="/projects/{{project.id}}/edit">edit</a></small>
+                <small>Number of sites: {{project.sites.length}}</small>
             </div>
-            <div class="project-image">
+            <div class="item-image">
                 <img class="tile-image" ng-src="{{project.photos[0].uri}}" >
             </div>
         </li>

@@ -8,6 +8,7 @@ class PhotosInProjectSerializer < CommonAttributesSerializer
   attributes :id, :description, :uri, :copyright
 end
 
+
 class ProjectSerializer < CommonAttributesSerializer
   attributes :id, :name, :description, :urn, :notes
 

@@ -45,9 +45,6 @@
     });
 
     bawds.directive('bawJsonBinding', function () {
-
-
-
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -66,6 +63,24 @@
 
                 ngModel.$parsers.push(catchParseErrors);
                 ngModel.$formatters.push(angular.toJson)
+            }
+        };
+    });
+
+    // ensures formatters are run on input blur
+    bawds.directive('renderOnBlur', function() {
+        return {
+            require: 'ngModel',
+            restrict: 'A',
+            link: function(scope, elm, attrs, ctrl) {
+                elm.bind('blur', function() {
+                    var viewValue = ctrl.$modelValue;
+                    for (var i in ctrl.$formatters) {
+                        viewValue = ctrl.$formatters[i](viewValue);
+                    }
+                    ctrl.$viewValue = viewValue;
+                    ctrl.$render();
+                });
             }
         };
     });
@@ -101,6 +116,21 @@
                     }
                 });
             }
+        };
+    });
+
+    // implements infinite scrolling
+    // http://jsfiddle.net/vojtajina/U7Bz9/
+    bawds.directive('whenScrolled', function() {
+        return function(scope, elm, attr) {
+            var raw = elm[0];
+
+            elm.bind('scroll', function() {
+                console.log('scrolled');
+                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                    scope.$apply(attr.whenScrolled);
+                }
+            });
         };
     });
 

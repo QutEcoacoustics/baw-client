@@ -2,30 +2,22 @@ class SitesController < ApplicationController
   # GET /sites
   # GET /sites.json
   def index
-    @sites = Site.includes(:audio_recordings)
+    @sites = Site.all
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @sites.to_json(:include => { :audio_recordings => { :only => [ :id ] }}) }
+      format.json { render json: @sites }
     end
   end
 
   # GET /sites/1
   # GET /sites/1.json
   def show
-
-    @site =
-        Site
-        .includes(:photos)
-        .joins(:projects)
-        .find(params[:id])
-
-    #  @site = Site.includes(:photos).find(params[:id])
-
+    @site =Site.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @site.as_json(:includes => :photos) }
+      format.json { render json: @site }
     end
   end
 
