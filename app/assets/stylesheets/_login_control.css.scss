@@ -14,37 +14,6 @@ body.waiting-for-angular div#initializing-panel {
   height: 100%;
 }
 
-
-//#content-outer {
-//  background: image-url("angular-auth/content_repeat.jpg") repeat-x;
-//  background-color: white;
-//}
-//#content {
-//  color: #333;
-//  font-family: Arial, Helvetica, sans-serif;
-//  font-size: 12px;
-//  line-height: 18px;
-//  margin: 0 auto 0 auto;
-//  max-width: 1260px;
-//  min-width: 780px;
-//  padding: 35px 0px 30px 0px;
-//}
-//h2 {
-//  color: #393939;
-//  font-size: 16px;
-//  font-weight: bold;
-//  line-height: 20px;
-//  margin-bottom: 10px;
-//}
-//h3 {
-//  color: #92b22c;
-//  font-size: 14px;
-//  font-weight: bold;
-//  line-height: 18px;
-//  margin-bottom: 10px;
-//}
-/*  LOGIN -------------------------------------------------------------------------------- */
-
 #login-holder {
   @include gradient("radial", nth($master-background,3) , nth($master-background,1));
 
@@ -73,15 +42,17 @@ body.waiting-for-angular div#initializing-panel {
   position: relative;
   width: 508px;
 }
+
 #loginboxclose{
   position:absolute;
   top:10px;
   right:10px;
-  font-weight: bold;
-  font-size: 16px;
-  font-family: monospace;
-  text-decoration: none;
+  //font-weight: bold;
+  //font-size: 16px;
+  //font-family: sans-serif;
+  //text-decoration: none;
 }
+
 #login-inner {
   font-family: Tahoma;
   font-size: 13px;

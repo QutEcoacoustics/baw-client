@@ -44,6 +44,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
         // TODO: add time bounds
         $scope.model.audioEvents = AudioEvent.query({byAudioId: recordingId});
 
+
         $scope.tags = Tag.query();
 
         $scope.limits = {
@@ -64,7 +65,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
             // prep tags
             a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {return {tag_id:v};});
-            delete a.audioEventTtags
+            delete a.audioEventTtags;
 
             a.audio_recording_id = recordingId;
 

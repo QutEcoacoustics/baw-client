@@ -226,65 +226,69 @@
                 scope.$canvas = $element.find(".annotation-viewer img + div").first();
 
                 // init drawabox
-                // we use hash (POJO) because most of our operations involve lookups
-                scope.model.audioEvents = scope.model.audioEvents || {};
+                scope.model.audioEvents = scope.model.audioEvents || [];
                 // store only the ids in this array (again for speed)
                 scope.model.selectedAudioEvents = scope.model.selectedAudioEvents || [];
 
 
                 scope.$canvas.drawabox({
+                    "selectionCallbackTrigger": "mousedown",
                     "newBox": function (element, newBox) {
                         var newAudioEvent = create(newBox, "a dummy id!");
 
+
                         scope.$apply(function() {
-                            scope.model.audioEvents[newAudioEvent.__temporaryId__] = newAudioEvent;
+                            scope.model.audioEvents.push( newAudioEvent);
+
+                            element[0].annotationViewerIndex  = scope.model.audioEvents.length - 1;
+
                             console.log("newBox", newBox, newAudioEvent);
                         });
                     },
                     "boxSelected": function (element, selectedBox) {
                         console.log("boxSelected", selectedBox);
 
-                        //var audioEvent = _.find(scope.model.audioEvents, function(value) { return value.__temporaryId__ === selectedBox.id});
-
                         // support for multiple selections - remove the clear
-                        scope.model.selectedAudioEvents.length = 0;
-                        scope.model.selectedAudioEvents.push(selectedBox.id);
+                        scope.$apply(function() {
+                            scope.model.selectedAudioEvents.length = 0;
+                            scope.model.selectedAudioEvents.push(scope.model.audioEvents[element[0].annotationViewerIndex]);
+                        });
                     },
                     "boxResizing": function (element, box) {
                         console.log("boxResizing");
-                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box);
 
                     },
                     "boxResized": function (element, box) {
                         console.log("boxResized");
-                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box);
                     },
                     "boxMoving": function (element, box) {
                         console.log("boxMoving");
-                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box);
                     },
                     "boxMoved": function (element, box) {
                         console.log("boxMoved");
-                        resizeOrMoveWithApply(scope, scope.model.audioEvents[box.id], box);
+                        resizeOrMoveWithApply(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box);
                     },
                     "boxDeleted": function (element, deletedBox) {
                         console.log("boxDeleted");
 
                         scope.$apply(function(){
-                            // TODO: is this done by reference? does it even work?;
-                            _(scope.model.audioEvents).reject(function (item) {
-                                return item.id === deletedBox.id;
-                            });
-                            _(scope.model.selectedAudioEvents).reject(function (item) {
-                                return item.id === deletedBox.id;
-                            });
+                            // TODO: i'm not sure how I should handle 'deleted' items yet
+                            var itemToDelete = scope.model.audioEvents[element[0].annotationViewerIndex];
+                            itemToDelete.deletedAt = (new Date());
+
+                            if (scope.model.selectedAudioEvents.length > 0) {
+                                var index = scope.model.selectedAudioEvents.indexOf(itemToDelete);
+
+                                if (index >= 0) {
+                                    scope.model.selectedAudioEvents.splice(index, 1);
+                                }
+                            }
                         });
-
-
                     }
                 });
-
-
             }
         }
     });
