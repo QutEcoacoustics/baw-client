@@ -205,6 +205,48 @@
             return audioEvent;
         }
 
+        /**
+         * Create an watcher for an audio event model.
+         * The purpose is to allow for reverse binding from model -> drawabox
+         * NB: interestingly, these watchers are bound to array indexes... not the objects in them.
+         *  this means the object is not coupled to the watcher and is not affected by any operation on it.
+         * @param scope
+         * @param array
+         * @param index
+         * @param drawaboxInstance
+         */
+        function registerWatcher(scope, array, index, drawaboxInstance) {
+
+            // create the watcher
+            var watcherFunc = function() {
+                return array[index];
+            };
+
+            // create the listener - the actual callback
+            var listenerFunc = function(value) {
+                console.log("audioEvent watcher fired");
+
+                // TODO: SET UP CONVERSIONS HERE
+                var top = value.highFrequencyHertz,
+                    left = value.startTimeSeconds,
+                    width = value.endTimeSeconds - value.startTimeSeconds,
+                    height = value.highFrequencyHertz - value.lowFrequencyHertz;
+
+                drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, undefined);
+            };
+
+            // tag both for easy removal later
+            var tag = "index" + index.toString()
+            watcherFunc.__drawaboxWatcherForAudioEvent = tag;
+            listenerFunc.__drawaboxWatcherForAudioEvent = tag;
+
+            // don't know if I need deregisterer or not - use this to stop listening...
+            // --
+            // note the last argument sets up the watcher for compare equality (not reference).
+            // this may cause memory / performance issues if the model gets too big later on
+            var deregisterer = scope.$watch(watcherFunc, listenerFunc, true)
+        }
+
         return {
             restrict: 'AE',
             scope: {
@@ -218,8 +260,8 @@
 //            },
             link: function (scope, element, attributes, controller) {
 
-
                 var $element = $(element);
+
                 // assign a unique id to scope
                 scope.id = Number.Unique();
 
@@ -227,7 +269,6 @@
 
                 // init drawabox
                 scope.model.audioEvents = scope.model.audioEvents || [];
-                // store only the ids in this array (again for speed)
                 scope.model.selectedAudioEvents = scope.model.selectedAudioEvents || [];
 
 
@@ -240,7 +281,11 @@
                         scope.$apply(function() {
                             scope.model.audioEvents.push( newAudioEvent);
 
-                            element[0].annotationViewerIndex  = scope.model.audioEvents.length - 1;
+                            var annotationViewerIndex = scope.model.audioEvents.length - 1;
+                            element[0].annotationViewerIndex  = annotationViewerIndex;
+
+                            // register for reverse binding
+                            registerWatcher(scope, scope.model.audioEvents, annotationViewerIndex, scope.$canvas);
 
                             console.log("newBox", newBox, newAudioEvent);
                         });

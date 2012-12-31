@@ -160,22 +160,27 @@
         }
 
         // Navigator is the persona global object
-        navigator.id.watch({
-            loggedInUser: null,
-            onlogin: function (assertion) {
-                // A user has logged in! Here you need to:
-                // 1. Send the assertion to your backend for verification and to create a session.
-                // 2. Update your UI.
-                $http({method: 'POST', url: '/security/auth/browser_id/callback', data: {assertion: assertion}})
-                    .success(Authenticator.loginSuccess)
-                    .error(Authenticator.loginFailure);
+        if (navigator) {
+            navigator.id.watch({
+                loggedInUser: null,
+                onlogin: function (assertion) {
+                    // A user has logged in! Here you need to:
+                    // 1. Send the assertion to your backend for verification and to create a session.
+                    // 2. Update your UI.
+                    $http({method: 'POST', url: '/security/auth/browser_id/callback', data: {assertion: assertion}})
+                        .success(Authenticator.loginSuccess)
+                        .error(Authenticator.loginFailure);
 
-            },
-            // A user has logged out! Here you need to:
-            // Tear down the user's session by redirecting the user or making a call to your backend.
-            // Also, make sure loggedInUser will get set to null on the next page load.
-            onlogout: signOut
-        });
+                },
+                // A user has logged out! Here you need to:
+                // Tear down the user's session by redirecting the user or making a call to your backend.
+                // Also, make sure loggedInUser will get set to null on the next page load.
+                onlogout: signOut
+            });
+        }
+        else {
+            console.error("Unable to start Persona authentication binding. This is usually caused by a lack of internet.")
+        }
 
         function openIdLogin(url) {
             var popPath = "/security/auth/open_id?openid_url=" + angularCopies.fixedEncodeURIComponent(url);
