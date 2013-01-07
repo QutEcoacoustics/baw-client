@@ -1,6 +1,12 @@
 <div ng-controller="AnnotationViewerCtrl">
     <div class="tag-preview">
-
+        <ul>
+            <li ng-repeat="annotation in model.audioEvents" ng-style="{left: ($index * 40) + 'px' }" >
+                <span ng-repeat="tag in annotation.audioEventTags">
+                    {{getTag(tag.tagId)}}{{!$last && ',' || ''}}
+                </span>
+            </li>
+        </ul>
     </div>
 
     <div id="scroller">
@@ -11,6 +17,5 @@
     </div>
 
     <div id="controls">
-        <baw-debug-info></baw-debug-info>
     </div>
 </div>

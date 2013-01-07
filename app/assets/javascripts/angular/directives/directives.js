@@ -1,12 +1,6 @@
 (function () {
     var bawds = angular.module('bawApp.directives', []);
 
-    bawds.directive('addRedBox', function () {
-        return function (scope, element, attrs) {
-            element.append("<div style='background-color: red; height: 100px; width: 100px'></div>");
-        }
-    });
-
     bawds.directive('bawRecordInformation', function () {
 
         return {
@@ -137,36 +131,20 @@
 
     bawds.directive('bawAnnotationViewer', function () {
 
-        var converters = function () {
-            // TODO: these are stubs and will need to be refactored
-
-            // constants go here
-
-            return {
-                pixelsToSeconds: function pixelsToSeconds(value) {
-                    return value;
-                },
-                pixelsToHertz: function pixelsToHertz(value) {
-                    return value;
-                },
-                secondsToPixels: function secondsToPixels(value) {
-                    return value;
-                },
-                hertzToPixels: function hertzToPixels(value) {
-                    return value;
-                }
-            };
-        };
-
-        function resizeOrMove(audioEvent, box) {
+        /**
+         *
+         * @param audioEvent
+         * @param box
+         * @param scope
+         */
+        function resizeOrMove(audioEvent, box, scope) {
 
             if (audioEvent.__temporaryId__ === box.id) {
-                audioEvent.startTimeSeconds =  box.left || 0;
-                audioEvent.highFrequencyHertz = box.top || 0;
-                //b.width = box.width;
-                //b.height = box.height;
-                audioEvent.endTimeSeconds = (audioEvent.startTimeSeconds + box.width) || 0;
-                audioEvent.lowFrequencyHertz = (audioEvent.highFrequencyHertz + box.height) || 0;
+                audioEvent.startTimeSeconds     =  scope.converters.pixelsToSeconds(box.left || 0);
+                audioEvent.highFrequencyHertz   =  scope.converters.pixelsToHertz(box.top || 0);
+
+                audioEvent.endTimeSeconds       = audioEvent.startTimeSeconds   + scope.converters.pixelsToSeconds(box.width || 0);
+                audioEvent.lowFrequencyHertz    = audioEvent.highFrequencyHertz + scope.converters.pixelsToHertz(box.height || 0);
             }
             else {
                 console.error("Box ids do not match on resizing  or move event", audioEvent.__temporaryId__ , box.id);
@@ -174,32 +152,21 @@
         }
         function resizeOrMoveWithApply(scope, audioEvent, box) {
             scope.$apply(function() {
-                resizeOrMove(audioEvent, box);
-            })
+                scope.__lastDrawABoxEditId__ = audioEvent.__temporaryId__;
+                resizeOrMove(audioEvent, box, scope);
+
+            });
         }
 
         function touchUpdatedField(audioEvent) {
             audioEvent.updatedAt = new Date();
         }
 
-        function create(simpleBox, audioRecordingId) {
-            var now = new Date();
-            var audioEvent = {
-                __temporaryId__: simpleBox.id,
-                audioRecordingId: audioRecordingId,
+        function create(simpleBox, audioRecordingId, scope) {
 
-                createdAt: now,
-                updatedAt: now,
+            var audioEvent = new Annotation(simpleBox.id, audioRecordingId);
 
-                endTimeSeconds: 0.0,
-                highFrequencyHertz: 0.0,
-                isReference: false,
-                lowFrequencyHertz: 0.0,
-                startTimeSeconds: 0.0,
-                audioEventTags: []
-            };
-
-            resizeOrMove(audioEvent, simpleBox);
+            resizeOrMove(audioEvent, simpleBox, scope);
             touchUpdatedField(audioEvent);
 
             return audioEvent;
@@ -224,19 +191,27 @@
 
             // create the listener - the actual callback
             var listenerFunc = function(value) {
-                console.log("audioEvent watcher fired");
 
-                // TODO: SET UP CONVERSIONS HERE
-                var top = value.highFrequencyHertz,
-                    left = value.startTimeSeconds,
-                    width = value.endTimeSeconds - value.startTimeSeconds,
-                    height = value.highFrequencyHertz - value.lowFrequencyHertz;
+                if (value) {
+                    if ( scope.__lastDrawABoxEditId__ === value.__temporaryId__){
+                        scope.__lastDrawABoxEditId__ = undefined;
+                        return;
+                    }
 
-                drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, undefined);
+                    console.log("audioEvent watcher fired");
+
+                    // TODO: SET UP CONVERSIONS HERE
+                    var top    = scope.converters.hertzToPixels(value.highFrequencyHertz),
+                        left   = scope.converters.secondsToPixels(value.startTimeSeconds),
+                        width  = scope.converters.secondsToPixels(value.endTimeSeconds - value.startTimeSeconds),
+                        height = scope.converters.hertzToPixels(value.highFrequencyHertz - value.lowFrequencyHertz);
+
+                    drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, undefined);
+                }
             };
 
             // tag both for easy removal later
-            var tag = "index" + index.toString()
+            var tag = "index" + index.toString();
             watcherFunc.__drawaboxWatcherForAudioEvent = tag;
             listenerFunc.__drawaboxWatcherForAudioEvent = tag;
 
@@ -275,7 +250,7 @@
                 scope.$canvas.drawabox({
                     "selectionCallbackTrigger": "mousedown",
                     "newBox": function (element, newBox) {
-                        var newAudioEvent = create(newBox, "a dummy id!");
+                        var newAudioEvent = create(newBox, "a dummy id!", scope);
 
 
                         scope.$apply(function() {
