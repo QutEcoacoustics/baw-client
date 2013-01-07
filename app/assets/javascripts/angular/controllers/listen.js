@@ -42,12 +42,23 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
         // TODO: add time bounds
-        $scope.model.audioEvents = AudioEvent.query({byAudioId: recordingId});
+        $scope.model.audioEvents = AudioEvent.query({byAudioId: recordingId},
+            function audioEventsQuerySuccess() {
+                // TODO : map tag's
+
+                // give local Ids
+                for (var index = 0; index < $scope.model.audioEvents.length; index++) {
+                    $scope.model.audioEvents[index].__temporaryId__ = Number.Unique;
+                }
+            },
+            function audioEventQueryFailure() {
+
+            });
 
 
         $scope.tags = Tag.query();
 
-        $scope.limits = {
+        $scope.model.limits = {
           timeMin: 0.0,
           timeMax: 120.0,
             freqMin: 0.0,

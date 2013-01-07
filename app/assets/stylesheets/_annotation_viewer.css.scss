@@ -5,6 +5,27 @@ baw-annotation-viewer {
 
   & .tag-preview {
 
+    font-size: 9pt;
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      position:  relative;
+      height:  60px;
+      //overflow: none;
+
+      li {
+        position: absolute;
+        top:  45px;
+
+        @include vendor-prefix(transform-origin, 0 0);
+        @include vendor-prefix(transform, rotate3d(0,0,1,-20deg));
+
+      }
+    }
+
   }
 
 
