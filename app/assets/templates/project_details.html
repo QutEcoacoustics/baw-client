@@ -1,0 +1,100 @@
+<div id="content" data-ng-controller="ProjectCtrl">
+    <h2>Project</h2>
+
+    <p>{{editing | boolToWords:'Editing project.':'The details for a project.'}}</p>
+
+    <a href="/projects">Projects</a>
+
+    <p>
+        <a ng-hide="editing" ng-href="{{links.edit}}">edit</a>
+    </p>
+
+    <div ng-hide="editing">
+        <h3 title="{{project.urn}}">{{project.name}}</h3>
+        <p ng-bind="project.description" ></p>
+        <pre>{{project.notes}}</pre>
+
+        <h4>Sites</h4>
+        <ul>
+            <li ng-repeat="site in project.sites">
+                <a ng-href="/sites/{{site.id}}">{{site.name}}</a>
+            </li>
+        </ul>
+
+        <h4>Images</h4>
+        <a target="_blank" ng-repeat="photo in project.photos" ng-href="{{photo.uri}}">
+            <img class="large-image" ng-src="{{photo.uri}}" />
+        </a>
+    </div>
+
+    <div ng-show="editing">
+        <form id="project_edit_form" novalidate>
+            <label>
+                <span>Name</span>
+                <input type="text" ng-model="project.name" required maxlength="50">
+            </label>
+            <label>
+                <span>Urn</span>
+                <span ng-bind="project.urn"></span>
+            </label>
+            <label>
+                <span>Description</span>
+                <textarea spellcheck ng-model="project.description"></textarea>
+            </label>
+            <label>
+                <span>Notes</span>
+                <textarea baw-json-binding ng-model="project.notes"></textarea>
+            </label>
+            <h3>Sites</h3>
+            <label>
+                <select ng-multiple="true" tags multiple ui-select2="{allowClear:true }"
+                        ng-model="siteIds" data-placeholder="Select Sites">
+                    <option></option>
+                    <option ng-repeat="s in allSites" value="{{s.id}}">{{s.name}}</option>
+                </select>
+            </label>
+            <h3>Photos</h3>
+            <ul>
+            <li ng-repeat="photo in project.photos">
+                <a href ng-click="deletePhoto()">remove</a>
+                <label>
+                    <span>Photo uri</span>
+                    <input type="text" ng-model="photo.uri" maxlength="1500">
+                </label>
+                <label>
+                    <span>Photo description</span>
+                    <input type="text" ng-model="photo.description" maxlength="5000">
+                </label>
+                <label>
+                    <span>Photo copyright</span>
+                    <input type="text" ng-model="photo.copyright" maxlength="500">
+                </label>
+            </li>
+            </ul>
+
+            <h3>New Photo</h3>
+            <label>
+                <span>Photo uri</span>
+                <input type="text" ng-model="project.photos[project.photos.length].uri" maxlength="1500">
+            </label>
+            <label>
+                <span>Photo description</span>
+                <input type="text" ng-model="project.photos[project.photos.length].description" maxlength="5000">
+            </label>
+            <label>
+                <span>Photo copyright</span>
+                <input type="text" ng-model="project.photos[project.photos.length].copyright" maxlength="500">
+            </label>
+
+            <br><br>
+            <button ng-click="update(project)">Save</button>
+            <button ng-click="reset()">Reset</button>
+            <button ><a ng-href="{{links.details}}">Cancel</a></button>
+            <button ng-click="delete()" >Delete</button>
+        </form>
+    </div>
+
+    <baw-record-information ng-model="project" ></baw-record-information>
+
+    <baw-debug-info />
+</div>

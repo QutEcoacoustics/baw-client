@@ -23,7 +23,7 @@ var bawApp = (function (undefined) {
 
         // for a resource, there are three views:
         //  - a list (possibly with delete/edit links),
-        //  - an item edit (for crating and editing),
+        //  - an item edit (for creating and editing),
         //  -  a details/show (for showing item info read-only, in a good-looking format)
 
         // more info on anchors:
@@ -32,13 +32,12 @@ var bawApp = (function (undefined) {
         // routes
         var pathList = "/" + resourceName;
         var pathShow = pathList + "/" + id;
-        var pathEdit = pathShow + "/edit";
+        var pathEdit = pathShow + "/:editing";
         var pathNew = pathList + '/new';
 
         // assets
         var assetList = "/assets/" + resourceName + "_list.html";
-        var assetEdit = "/assets/" + singularResourceName + "_edit.html";
-        var assetShow = "/assets/" + singularResourceName + "_show.html";
+        var assetDetails = "/assets/" + singularResourceName + "_details.html";
 
         return this
             // list
@@ -48,11 +47,11 @@ var bawApp = (function (undefined) {
             //    this.when(listPath, {templateUrl: assetManage, controller: controllerMany})
             //})
             // create
-            .when(pathNew, {templateUrl: assetEdit, controller: controllerOne})
+            .when(pathNew, {templateUrl: assetDetails, controller: controllerOne})
             // edit
-            .when(pathEdit, {templateUrl: assetEdit, controller: controllerOne})
+            .when(pathEdit, {templateUrl: assetDetails, controller: controllerOne})
             // details
-            .when(pathShow, {templateUrl: assetShow, controller: controllerOne})
+            .when(pathShow, {templateUrl: assetDetails, controller: controllerOne})
             ;
     }
 
@@ -78,13 +77,12 @@ var bawApp = (function (undefined) {
             when('/home', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
 
             whenDefaults("projects", "project", ":projectId", ProjectsCtrl, ProjectCtrl).
-
             whenDefaults("sites", "site", ":siteId", SitesCtrl, SiteCtrl).
-
+            whenDefaults("photos", "photo", ":photoId", PhotosCtrl, PhotoCtrl).
+            whenDefaults("bookmarks", "bookmark", ":bookmarkId", BookmarksCtrl, BookmarkCtrl).
             whenDefaults("searches", "search", ":searchId", SearchesCtrl, SearchCtrl).
-
-            when('/photos', {templateUrl: '/assets/photos.html', controller: PhotosCtrl }).
-            when('/photos/:photoId', {templateUrl: '/assets/photo.html', controller: PhotoCtrl }).
+            whenDefaults("tags", "tag", ":tagId", TagsCtrl, TagCtrl).
+            whenDefaults("audioEvents", "audioEvent", ":audioEventId", AudioEventsCtrl, AudioEventCtrl).
 
             when('/recordings', {templateUrl: '/assets/recordings.html', controller: RecordingsCtrl }).
             when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: RecordingCtrl }).

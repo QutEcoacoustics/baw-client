@@ -27,6 +27,10 @@
         return resourcePut($resource, '/sites/:siteId', {siteId: "@siteId"});
     });
 
+    bawss.factory('Photo', function ($resource) {
+        return resourcePut($resource, '/photos/:photoId', {photoId: "@photoId"});
+    });
+
     bawss.factory('AudioRecording', function ($resource) {
         return resourcePut($resource, '/audio_recordings/:recordingId', {recordingId: '@recordingId'});
     });

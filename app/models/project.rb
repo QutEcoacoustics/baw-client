@@ -9,11 +9,12 @@ class Project < ActiveRecord::Base
   has_many :project_sites
   has_many :sites, :through => :project_sites
 
-  accepts_nested_attributes_for :sites
+  accepts_nested_attributes_for :photos
 
   # attr
   # http://stackoverflow.com/questions/4934194/resulttype-614051528-expected-got-string-608366078-with-many-to-many-as
-  attr_accessible :description, :name, :urn, :notes, :sites, :sites_attributes, :site_ids
+  attr_accessible :description, :name, :urn, :notes, :site_ids, :photos_attributes # :sites, :sites_attributes (those damn s's!)
+
 
   # userstamp
   stampable

@@ -7,10 +7,6 @@ function SitesCtrl($scope, $resource, Site) {
     $scope.links = function(key) {
         return SitesCtrl.linkList(this.site.id)[key];
     };
-
-    $scope.delete = function(id) {
-        alert("deleting site {0}!".format(id));
-    };
 }
 
 SitesCtrl.linkList = function (id) {
@@ -26,6 +22,8 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
     var siteResource = Site;
     var routeArgs = {siteId: $routeParams.siteId};
 
+    $scope.editing = $routeParams.editing === "edit";
+
     $scope.site = siteResource.get(routeArgs, function () {
         $scope.links = SitesCtrl.linkList($scope.site.id);
 
@@ -38,9 +36,10 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
     $scope.links = {};
 
     $scope.delete = function() {
-        var doit = confirm("deleting site {0}!".format(this.site.id));
+        var doit = confirm("Are you sure you want to delete this site (id {0})?".format(this.site.id));
         if (doit) {
             siteResource.remove();
+
         }
     };
 
@@ -55,9 +54,13 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
         p.site.notes = $scope.site.notes;
 
         siteResource.update(routeArgs, p,  function() {
-            console.log("Updating Site: success.");
             $scope.original = angular.copy($scope.site);
-        }, function() { console.log("Updating Site: failed.")} );
+            var msg = "Site details updated successfully.";
+            console.log(msg); alert(msg);
+        }, function() {
+            var msg = "There was a problem updating the site details. Please check for errors and try again.";
+            console.log(msg); alert(msg);
+        });
     };
 }
 
