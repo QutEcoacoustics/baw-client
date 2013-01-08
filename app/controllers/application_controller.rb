@@ -2,13 +2,22 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   protect_from_forgery
 
-  # CanCan permisisons
-  # https://github.com/ryanb/cancan
-  #check_authorization
+  ## CanCan permisisons
+  ## https://github.com/ryanb/cancan
+
+  ##Automatically does the following:
+  ##@product = Product.find(params[:id])
+  ##authorize! :discontinue, @product
+  ## ----------------------------------
+
+  #check_authorization :unless => :devise_controller?
+  #load_and_authorize_resource  :unless => :devise_controller?
   rescue_from CanCan::AccessDenied do |exception|
-    #redirect_to root_url, :alert => exception.message
+    ##redirect_to root_url, :alert => exception.message
     render :json => Api::SessionsController.forbidden_info(current_user).to_json, :status => :forbidden
   end
+
+  # end CanCan permissions
 
   # userstamp
   include Userstamp

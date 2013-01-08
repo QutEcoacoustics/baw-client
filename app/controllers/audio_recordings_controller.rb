@@ -5,7 +5,6 @@ class AudioRecordingsController < ApplicationController
     @audio_recordings = AudioRecording.all
 
     respond_to do |format|
-      format.html # index.html.erb
       format.json { render json: @audio_recordings }
     end
   end
@@ -16,7 +15,6 @@ class AudioRecordingsController < ApplicationController
     @audio_recording = AudioRecording.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
       format.json { render json: @audio_recording }
     end
   end
@@ -27,15 +25,14 @@ class AudioRecordingsController < ApplicationController
     @audio_recording = AudioRecording.new
 
     respond_to do |format|
-      format.html # new.html.erb
       format.json { render json: @audio_recording }
     end
   end
 
   # GET /audio_recordings/1/edit
-  def edit
-    @audio_recording = AudioRecording.find(params[:id])
-  end
+  #def edit
+  #  @audio_recording = AudioRecording.find(params[:id])
+  #end
 
   # POST /audio_recordings
   # POST /audio_recordings.json
@@ -44,10 +41,8 @@ class AudioRecordingsController < ApplicationController
 
     respond_to do |format|
       if @audio_recording.save
-        format.html { redirect_to @audio_recording, notice: 'Audio recording was successfully created.' }
         format.json { render json: @audio_recording, status: :created, location: @audio_recording }
       else
-        format.html { render action: "new" }
         format.json { render json: @audio_recording.errors, status: :unprocessable_entity }
       end
     end
@@ -60,10 +55,8 @@ class AudioRecordingsController < ApplicationController
 
     respond_to do |format|
       if @audio_recording.update_attributes(params[:audio_recording])
-        format.html { redirect_to @audio_recording, notice: 'Audio recording was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
         format.json { render json: @audio_recording.errors, status: :unprocessable_entity }
       end
     end
@@ -76,7 +69,6 @@ class AudioRecordingsController < ApplicationController
     @audio_recording.destroy
 
     respond_to do |format|
-      format.html { redirect_to audio_recordings_url }
       format.json { head :no_content }
     end
   end

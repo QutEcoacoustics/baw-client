@@ -5,7 +5,6 @@ class TagsController < ApplicationController
     @tags = Tag.all
 
     respond_to do |format|
-      format.html # index.html.erb
       format.json { render json: @tags }
     end
   end
@@ -16,7 +15,6 @@ class TagsController < ApplicationController
     @tag = Tag.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
       format.json { render json: @tag }
     end
   end
@@ -27,15 +25,14 @@ class TagsController < ApplicationController
     @tag = Tag.new
 
     respond_to do |format|
-      format.html # new.html.erb
       format.json { render json: @tag }
     end
   end
 
   # GET /tags/1/edit
-  def edit
-    @tag = Tag.find(params[:id])
-  end
+  #def edit
+  #  @tag = Tag.find(params[:id])
+  #end
 
   # POST /tags
   # POST /tags.json
@@ -44,10 +41,8 @@ class TagsController < ApplicationController
 
     respond_to do |format|
       if @tag.save
-        format.html { redirect_to @tag, notice: 'Tag was successfully created.' }
         format.json { render json: @tag, status: :created, location: @tag }
       else
-        format.html { render action: "new" }
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -60,10 +55,8 @@ class TagsController < ApplicationController
 
     respond_to do |format|
       if @tag.update_attributes(params[:tag])
-        format.html { redirect_to @tag, notice: 'Tag was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
         format.json { render json: @tag.errors, status: :unprocessable_entity }
       end
     end
@@ -76,7 +69,6 @@ class TagsController < ApplicationController
     @tag.destroy
 
     respond_to do |format|
-      format.html { redirect_to tags_url }
       format.json { head :no_content }
     end
   end

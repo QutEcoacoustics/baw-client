@@ -5,7 +5,6 @@ class PhotosController < ApplicationController
     @photos = Photo.all
 
     respond_to do |format|
-      format.html # index.html.erb
       format.json { render json: @photos }
     end
   end
@@ -16,7 +15,6 @@ class PhotosController < ApplicationController
     @photo = Photo.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
       format.json { render json: @photo }
     end
   end
@@ -25,23 +23,19 @@ class PhotosController < ApplicationController
   # GET /photos/new.json
   def new
     @photo = Photo.new
-	
-	@all_sites = Site.all
-	@all_projects = Project.all
-	
+
     respond_to do |format|
-      format.html # new.html.erb
       format.json { render json: @photo }
     end
   end
 
   # GET /photos/1/edit
-  def edit
-    @photo = Photo.find(params[:id])
-	
-	@all_sites = Site.all
-	@all_projects = Project.all
-  end
+  #def edit
+  #  @photo = Photo.find(params[:id])
+  #
+  #@all_sites = Site.all
+  #@all_projects = Project.all
+  #end
 
   # POST /photos
   # POST /photos.json
@@ -50,10 +44,8 @@ class PhotosController < ApplicationController
 
     respond_to do |format|
       if @photo.save
-        format.html { redirect_to @photo, notice: 'Photo was successfully created.' }
         format.json { render json: @photo, status: :created, location: @photo }
       else
-        format.html { render action: "new" }
         format.json { render json: @photo.errors, status: :unprocessable_entity }
       end
     end
@@ -66,10 +58,8 @@ class PhotosController < ApplicationController
 
     respond_to do |format|
       if @photo.update_attributes(params[:photo])
-        format.html { redirect_to @photo, notice: 'Photo was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
         format.json { render json: @photo.errors, status: :unprocessable_entity }
       end
     end
@@ -82,7 +72,6 @@ class PhotosController < ApplicationController
     @photo.destroy
 
     respond_to do |format|
-      format.html { redirect_to photos_url }
       format.json { head :no_content }
     end
   end
