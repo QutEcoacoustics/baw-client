@@ -1,6 +1,9 @@
 class HomeController < ApplicationController
   skip_before_filter :authenticate_user!
   skip_authorization_check :only => [:index]
+  skip_authorize_resource :only => [:index]
+  skip_load_resource :only => [:index]
+
   def index
 
 

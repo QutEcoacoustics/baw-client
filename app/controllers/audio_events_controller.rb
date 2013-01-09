@@ -53,7 +53,6 @@ class AudioEventsController < ApplicationController
     @audio_event = AudioEvent.includes(:audio_event_tags).find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
       format.json { render json: @audio_event }
     end
   end
@@ -64,16 +63,15 @@ class AudioEventsController < ApplicationController
     @audio_event = AudioEvent.new
 
     respond_to do |format|
-      format.html # new.html.erb
       format.json { render json: @audio_event }
     end
   end
 
   # GET /audio_events/1/edit
-  def edit
-    @audio_event =
-        AudioEvent.find(params[:id]).include(:audio_event_tags)
-  end
+  #def edit
+  #  @audio_event =
+  #      AudioEvent.find(params[:id]).include(:audio_event_tags)
+  #end
 
   # POST /audio_events
   # POST /audio_events.json
@@ -102,10 +100,8 @@ class AudioEventsController < ApplicationController
 
     respond_to do |format|
       if @audio_event.update_attributes(params[:audio_event])
-        format.html { redirect_to @audio_event, notice: 'Audio event was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
         format.json { render json: @audio_event.errors, status: :unprocessable_entity }
       end
     end
@@ -118,7 +114,6 @@ class AudioEventsController < ApplicationController
     @audio_event.destroy
 
     respond_to do |format|
-      format.html { redirect_to audio_events_url }
       format.json { head :no_content }
     end
   end

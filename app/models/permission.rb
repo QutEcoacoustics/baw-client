@@ -36,4 +36,6 @@ class Permission < ActiveRecord::Base
     self.user.nil?
   end
 
+  # scopes
+
 end

@@ -38,8 +38,7 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
     $scope.delete = function() {
         var doit = confirm("Are you sure you want to delete this site (id {0})?".format(this.site.id));
         if (doit) {
-            siteResource.remove();
-
+            siteResource.remove(this.site.id, function(){ console.log('success')}, function(){ console.log('error')});
         }
     };
 

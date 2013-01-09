@@ -5,7 +5,6 @@ class AnalysisJobsController < ApplicationController
     @analysis_jobs = AnalysisJob.all
 
     respond_to do |format|
-      format.html # index.html.erb
       format.json { render json: @analysis_jobs }
     end
   end
@@ -16,7 +15,6 @@ class AnalysisJobsController < ApplicationController
     @analysis_job = AnalysisJob.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
       format.json { render json: @analysis_job }
     end
   end
@@ -27,15 +25,14 @@ class AnalysisJobsController < ApplicationController
     @analysis_job = AnalysisJob.new
 
     respond_to do |format|
-      format.html # new.html.erb
       format.json { render json: @analysis_job }
     end
   end
 
   # GET /analysis_jobs/1/edit
-  def edit
-    @analysis_job = AnalysisJob.find(params[:id])
-  end
+  #def edit
+  #  @analysis_job = AnalysisJob.find(params[:id])
+  #end
 
   # POST /analysis_jobs
   # POST /analysis_jobs.json
@@ -44,10 +41,8 @@ class AnalysisJobsController < ApplicationController
 
     respond_to do |format|
       if @analysis_job.save
-        format.html { redirect_to @analysis_job, notice: 'Analysis job was successfully created.' }
         format.json { render json: @analysis_job, status: :created, location: @analysis_job }
       else
-        format.html { render action: "new" }
         format.json { render json: @analysis_job.errors, status: :unprocessable_entity }
       end
     end
@@ -60,10 +55,8 @@ class AnalysisJobsController < ApplicationController
 
     respond_to do |format|
       if @analysis_job.update_attributes(params[:analysis_job])
-        format.html { redirect_to @analysis_job, notice: 'Analysis job was successfully updated.' }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
         format.json { render json: @analysis_job.errors, status: :unprocessable_entity }
       end
     end
@@ -76,7 +69,6 @@ class AnalysisJobsController < ApplicationController
     @analysis_job.destroy
 
     respond_to do |format|
-      format.html { redirect_to analysis_jobs_url }
       format.json { head :no_content }
     end
   end

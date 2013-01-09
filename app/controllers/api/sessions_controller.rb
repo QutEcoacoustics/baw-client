@@ -1,4 +1,6 @@
 class Api::SessionsController < Devise::SessionsController
+  skip_authorization_check :only => [:ping]
+
 
 =begin
   e.g.
