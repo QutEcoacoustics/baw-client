@@ -225,6 +225,29 @@ body:before {
 
 .select2-container {
   min-width: 150px;
+  width: 100%;
+}
+
+.rounded-corners {
+  border-style: $border-style;
+  border-width: $border-width;
+  @include rounded-corners($standard-border-radius);
+}
+
+
+.standard-transition{
+  @include transition();
+}
+
+.ui-show {
+  //@extend .standard-transition;
+
+}
+.ui-hide {
+  opacity: 0;
+  //@extend .standard-transition;
+  display: none;
+
 }
 
 /* Form Styles
