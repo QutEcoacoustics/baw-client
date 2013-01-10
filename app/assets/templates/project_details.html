@@ -1,15 +1,13 @@
 <div id="content" data-ng-controller="ProjectCtrl">
     <h2>Project</h2>
 
-    <p>{{editing | boolToWords:'Editing project.':'The details for a project.'}}</p>
+    <p ng-show="isShowing">The details for a project.</p>
+    <p ng-show="isCreating">Creating a new project.</p>
+    <p ng-show="isEditing">Editing project.</p>
 
     <a href="/projects">Projects</a>
 
-    <p>
-        <a ng-hide="editing" ng-href="{{links.edit}}">edit</a>
-    </p>
-
-    <div ng-hide="editing">
+    <div ng-show="isShowing">
         <h3 title="{{project.urn}}">{{project.name}}</h3>
         <p ng-bind="project.description" ></p>
         <pre>{{project.notes}}</pre>
@@ -27,7 +25,7 @@
         </a>
     </div>
 
-    <div ng-show="editing">
+    <div ng-show="isCreatingOrEditing">
         <form id="project_edit_form" novalidate>
             <label>
                 <span>Name</span>
@@ -54,43 +52,61 @@
                 </select>
             </label>
             <h3>Photos</h3>
-            <ul>
-            <li ng-repeat="photo in project.photos">
-                <a href ng-click="deletePhoto()">remove</a>
+            <table>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Uri</th>
+                    <th>Copyright</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <td><img ng-src="{{photo.uri}}" style="max-width:50px; max-height:50px;" /></td>
+                    <td><input type="url" ng-model="photo.uri" maxlength="1500" width="800px;"></td>
+                    <td><textarea spellcheck ng-model="photo.description"></textarea></td>
+                    <td><textarea spellcheck ng-model="photo.copyright"></textarea></td>
+                    <td><button ng-click="addPhoto(photo)">Add</button></td>
+                </tr>
+                </tfoot>
+                <tbody>
+                <tr  ng-repeat="photo in project.photos">
+                    <td><img ng-src="{{photo.uri}}" style="max-width:50px; max-height:50px;" /></td>
+                    <td><input type="url" ng-model="photo.uri" maxlength="1500"  width="800px;"></td>
+                    <td><textarea spellcheck ng-model="photo.description"></textarea></td>
+                    <td><textarea spellcheck ng-model="photo.copyright"></textarea></td>
+                    <td> <button ng-click="deletePhoto(photo)">Remove</button></td>
+                </tr>
+                </tbody>
+            </table>
+
+                <h3>New Photo</h3>
                 <label>
                     <span>Photo uri</span>
-                    <input type="text" ng-model="photo.uri" maxlength="1500">
+                    <input type="text" ng-model="project.photos[project.photos.length].uri" maxlength="1500">
                 </label>
                 <label>
                     <span>Photo description</span>
-                    <input type="text" ng-model="photo.description" maxlength="5000">
+                    <input type="text" ng-model="project.photos[project.photos.length].description" maxlength="5000">
                 </label>
                 <label>
                     <span>Photo copyright</span>
-                    <input type="text" ng-model="photo.copyright" maxlength="500">
+                    <input type="text" ng-model="project.photos[project.photos.length].copyright" maxlength="500">
                 </label>
-            </li>
-            </ul>
 
-            <h3>New Photo</h3>
-            <label>
-                <span>Photo uri</span>
-                <input type="text" ng-model="project.photos[project.photos.length].uri" maxlength="1500">
-            </label>
-            <label>
-                <span>Photo description</span>
-                <input type="text" ng-model="project.photos[project.photos.length].description" maxlength="5000">
-            </label>
-            <label>
-                <span>Photo copyright</span>
-                <input type="text" ng-model="project.photos[project.photos.length].copyright" maxlength="500">
-            </label>
-
-            <br><br>
-            <button ng-click="update(project)">Save</button>
-            <button ng-click="reset()">Reset</button>
-            <button ><a ng-href="{{links.details}}">Cancel</a></button>
-            <button ng-click="delete()" >Delete</button>
+                <br><br>
+                <div ng-show="isEditing">
+                    <button ng-click="update(project)">Save</button>
+                    <button ng-click="reset()">Reset</button>
+                    <button ><a ng-href="{{links.details}}">Cancel</a></button>
+                    <button ng-click="delete()" >Delete</button>
+                </div>
+                <div ng-show="isCreating">
+                    <button ng-click="create(project)">Save</button>
+                    <button ><a ng-href="{{links.list}}">Cancel</a></button>
+                </div>
         </form>
     </div>
 

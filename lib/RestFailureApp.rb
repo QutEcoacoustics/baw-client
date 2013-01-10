@@ -1,6 +1,6 @@
 class RestFailureApp < Devise::FailureApp
   def respond
-    if request.format
+    if !request.format.blank? && request.format.include?('json')
       json_failure
     else
       super
@@ -10,6 +10,6 @@ class RestFailureApp < Devise::FailureApp
   def json_failure
     self.status = 401
     self.content_type = 'application/json'
-    self.response_body = '{"error" : "authentication error"}'
+    self.response_body = Api::SessionsController.fail_login_info('Authentication error.',nil).to_json
   end
 end

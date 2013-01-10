@@ -33,7 +33,7 @@ var bawApp = (function (undefined) {
         var pathList = "/" + resourceName;
         var pathShow = pathList + "/" + id;
         var pathEdit = pathShow + "/:editing";
-        var pathNew = pathList + '/new';
+        //var pathNew = pathList + '/new';
 
         // assets
         var assetList = "/assets/" + resourceName + "_list.html";
@@ -47,7 +47,7 @@ var bawApp = (function (undefined) {
             //    this.when(listPath, {templateUrl: assetManage, controller: controllerMany})
             //})
             // create
-            .when(pathNew, {templateUrl: assetDetails, controller: controllerOne})
+            //.when(pathNew, {templateUrl: assetDetails, controller: controllerOne})
             // edit
             .when(pathEdit, {templateUrl: assetDetails, controller: controllerOne})
             // details
