@@ -3,7 +3,9 @@
 /**
  * The listen controller. Show a spectrogram, listen to audio, annotate the spectrogram.
  * @param $scope
- * @param $routeParams
+ * @param $element
+ * @param $attrs
+ * @param $transclude
  * @constructor
  */
 function AnnotationViewerCtrl($scope, $element, $attrs, $transclude) {
@@ -23,12 +25,15 @@ function AnnotationViewerCtrl($scope, $element, $attrs, $transclude) {
         // TODO: these are stubs and will need to be refactored
 
         // constants go here
+        var me = $scope;
 
         return {
-            pixelsToSeconds: function pixelsToSeconds(value) {
-                return value * 10;
+            pixelsToSeconds: function pixelsToSeconds(pixels) {
+                var seconds = pixels * pixelsPerSecond;
+                return seconds;
             },
-            pixelsToHertz: function pixelsToHertz(value) {
+            pixelsToHertz: function pixelsToHertz(pixels) {
+                var hertz  = hetz * pixelsPerHertz;
                 return value * 10;
             },
             secondsToPixels: function secondsToPixels(value) {

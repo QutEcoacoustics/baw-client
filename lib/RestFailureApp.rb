@@ -10,6 +10,6 @@ class RestFailureApp < Devise::FailureApp
   def json_failure
     self.status = 401
     self.content_type = 'application/json'
-    self.response_body = "{'error' : 'authentication error'}"
+    self.response_body = '{"error" : "authentication error"}'
   end
 end

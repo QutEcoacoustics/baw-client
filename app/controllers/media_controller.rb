@@ -115,8 +115,8 @@ class MediaController < ApplicationController
           :options              => {
               :colors        => Spectrogram.colour_options,
               :window_size   => Spectrogram.window_options,
-              :audio_formats => audio_media_types.collect { |mt| mt.symbol },
-              :image_formats => image_media_types.collect { |mt| mt.symbol },
+              :audio_formats => audio_media_types.collect { |mt| '.' + mt.symbol.to_s}.uniq,
+              :image_formats => image_media_types.collect { |mt| '.' + mt.symbol.to_s},
           }
       }
 

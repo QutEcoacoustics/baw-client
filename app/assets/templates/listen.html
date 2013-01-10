@@ -16,7 +16,7 @@
 
         <h3>Audio Controls</h3>
         <audio id="main-player" controls>
-            <source ng-src="{{media.audioUrl}}" src="">
+            <source ng-repeat="url in model.media.audioUrls" ng-src="{{url}}" src="">
             Your browser does not support the audio element.
         </audio>
         <div id="listenEditContainer">
@@ -31,10 +31,10 @@
                     <label>
                         <span>Tags</span>
                         <input type="hidden" ng-multiple="true" tags multiple ui-select2="{allowClear:true, tags:tags }"
-                                ng-model="selectedEvent.audioEventTags">
+                                ng-model="selectedEvent.audioEventTags" />
                             <!--<option ng-repeat="t in tags" value="{{t.id}}">{{t.text}} <span> &lt;!&ndash; ng-show={{t.type_of_tag}}&ndash;&gt;,-->
                         <!--{{t.typeOfTag}} &lt;!&ndash; &ndash;&gt;</span></option>-->
-                        </input>
+
                     </label>
                     <label>
                         <span>Duration (seconds)</span></label>
