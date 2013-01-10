@@ -12,14 +12,15 @@
  * require jquery.ui.all # disabled because slow
  *= require_tree ../../../vendor/assets/javascripts/.
  *= require_tree ../images/.
- *= require_tree .
- *= depend_on "_base"
+ * require_tree .
+ * depend_on "_base"
  */
 
 
-//@import "base";
-//@import "layout";
-//@import "_dynamic.css.scss.erb";
-//
-//
-//@import "/partials/*";
+@import "base";
+@import "layout";
+@import "_dynamic.css.scss.erb";
+
+
+@import "partials/*";
+

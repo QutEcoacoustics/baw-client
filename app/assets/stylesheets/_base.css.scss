@@ -87,11 +87,7 @@ $footer-height: 40px;
 @mixin rounded-corners($args...) {
   @include vendor-prefix(border-radius, $args);
 }
-.rounded-corners {
-  border-style: $border-style;
-  border-width: $border-width;
-  @include rounded-corners($standard-border-radius);
-}
+
 
 /*
  *
@@ -106,20 +102,6 @@ $footer-height: 40px;
     @include vendor-prefix(transition-delay, join($delay, (), comma));
 }
 
-.standard-transition{
-  @include transition();
-}
-
-.ui-show {
-  //@extend .standard-transition;
-
-}
-.ui-hide {
-  opacity: 0;
-  //@extend .standard-transition;
-  display: none;
-
-}
 
 @mixin glow($color) {
   $alphaed: rgba($color, $standard-glow-alpha);
