@@ -25,7 +25,8 @@ class ProjectsController < ApplicationController
   # GET /projects/new.json
   def new
     @project = Project.new
-    @project.sites.build
+    #@project.sites.build
+    #@project.photos.build
     #@all_sites = Site.all
 
     respond_to do |format|

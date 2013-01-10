@@ -5,14 +5,16 @@ function ProjectsCtrl($scope, $resource, Project) {
     $scope.projects = $scope.projectsResource.query();
 
     $scope.links = function(key) {
-        return ProjectsCtrl.linkList(this.project.id)[key];
+        return ProjectsCtrl.linkList(null)[key];
     };
 }
 
 ProjectsCtrl.linkList = function (id) {
     return {
         edit: '/projects/' + id + '/edit',
-        details: '/projects/' + id
+        details: '/projects/' + id,
+        new: '/projects/new',
+        list: '/projects'
     };
 };
 
@@ -20,12 +22,42 @@ ProjectsCtrl.$inject = ['$scope', '$resource', 'Project'];
 
 function ProjectCtrl($scope, $location, $resource, $routeParams, Project, Site, Photo) {
 
+    var self = this;
+
     var projectResource = Project; //$resource('/projects/:projectId', {projectId: $routeParams.projectId});
     var routeArgs = {projectId: $routeParams.projectId};
 
+    this.populateProject = function(){
+        var p = { "project": {} };
+
+        p.project.name = $scope.project.name;
+        p.project.urn = $scope.project.urn;
+        p.project.description = $scope.project.description;
+        p.project.notes = $scope.project.notes || {};
+
+        p.project.siteIds = $scope.siteIds || [];
+
+        p.project.photos_attributes = [];
+        for(var photoindex=0;photoindex<$scope.project.photos.length;photoindex++){
+            p.project.photos_attributes[photoindex] = {};
+            p.project.photos_attributes[photoindex].uri = $scope.project.photos[photoindex].uri;
+            p.project.photos_attributes[photoindex].description = $scope.project.photos[photoindex].description;
+            p.project.photos_attributes[photoindex].copyright = $scope.project.photos[photoindex].copyright;
+            p.project.photos_attributes[photoindex].id = $scope.project.photos[photoindex].id;
+        }
+
+        return p;
+    };
+
     $scope.siteIds = [];
 
-    $scope.editing = $routeParams.editing === "edit";
+    $scope.isEditing = $routeParams.editing === "edit";
+
+    $scope.isCreating = $routeParams.projectId === 'new';
+
+    $scope.isCreatingOrEditing = $scope.isEditing || $scope.isCreating;
+
+    $scope.isShowing = !$scope.isCreatingOrEditing;
 
 //    $scope.editMode = function(mode){
 //        if(mode){
@@ -71,53 +103,60 @@ function ProjectCtrl($scope, $location, $resource, $routeParams, Project, Site, 
         }
     };
 
-    $scope.deletePhoto = function(photoId){
-        var doit = confirm("Are you sure you want to delete this photo (id {0})?".format(photoId));
-        if (doit) {
+    $scope.deletePhoto = function(photoToDelete){
+        console.log('deletePhoto',photoToDelete);
+        var doit = confirm("Are you sure you want to delete this photo from uri {0} ?".format(photoToDelete.uri));
 
-            for(var remPhotoIndex = 0;remPhotoIndex<this.project.photos.length;remPhotoIndex++){
-                if(this.project.photos[remPhotoIndex].id === photoId){
-                    // remove the element
-                    this.project.photos.splice(remPhotoIndex, 1);
-                    break;
-                }
+        if (doit) {
+            var index = $scope.project.photos.indexOf(photoToDelete);
+            if(index > -1){
+                var removedPhoto = $scope.project.photos.splice(index, 1);
             }
         }
     };
 
+    $scope.addPhoto = function addPhoto(newPhoto){
+        console.log('addPhoto',newPhoto);
+        if(newPhoto){
+            $scope.project.photos.push(newPhoto);
+        }
+    };
+
+
     $scope.reset = function() {
-        if($scope.editing){
+        if($scope.isEditing){
             $scope.project = angular.copy($scope.original);
         }
     };
 
     $scope.update = function updateProject() {
-        if($scope.editing){
-            // do not send back the full object for update
-            var p = { "project": {} };
+        if($scope.isEditing){
 
-            p.project.name = $scope.project.name;
-            p.project.urn = $scope.project.urn;
-            p.project.description = $scope.project.description;
-            p.project.notes = $scope.project.notes;
-
-            p.project.siteIds = $scope.siteIds;
-
-            p.project.photos_attributes = [];
-            for(var photoindex=0;photoindex<$scope.project.photos.length;photoindex++){
-                p.project.photos_attributes[photoindex] = {};
-                p.project.photos_attributes[photoindex].uri = $scope.project.photos[photoindex].uri;
-                p.project.photos_attributes[photoindex].description = $scope.project.photos[photoindex].description;
-                p.project.photos_attributes[photoindex].copyright = $scope.project.photos[photoindex].copyright;
-                p.project.photos_attributes[photoindex].id = $scope.project.photos[photoindex].id;
-            }
+            var p = self.populateProject();
 
             projectResource.update(routeArgs, p,  function() {
-                $scope.original = angular.copy($scope.site);
+                $scope.original = angular.copy($scope.project);
                 var msg = "Project details updated successfully.";
                 console.log(msg); alert(msg);
             }, function() {
                 var msg = "There was a problem updating the project details. Please check for errors and try again.";
+                console.log(msg); alert(msg);
+            });
+        }
+    };
+
+    $scope.create = function createProject() {
+        if($scope.isCreating){
+            var p = self.populateProject();
+
+            console.log(p);
+
+            projectResource.save({}, p,  function() {
+                $scope.original = angular.copy($scope.project);
+                var msg = "Project created successfully.";
+                console.log(msg); alert(msg);
+            }, function() {
+                var msg = "There was a problem creating the project. Please check for errors and try again.";
                 console.log(msg); alert(msg);
             });
         }
