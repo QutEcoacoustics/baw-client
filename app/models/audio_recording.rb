@@ -31,9 +31,9 @@ class AudioRecording < ActiveRecord::Base
 
   validates :recorded_date, :presence => true, :timeliness => {:on_or_before => lambda { Date.current }, :type => :date }
   validates :site, :presence => true
-  validates :duration_seconds, :presence => true, :numericality => { :greater_than_or_equal_to  => 0 }
+  validates :duration_seconds, :presence => true, :numericality => {greater_than_or_equal_to: 0}
 
-  validates :sample_rate_hertz, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
+  validates :sample_rate_hertz, :numericality => {only_integer: true, greater_than_or_equal_to: 0}
 
   # the channels field encodes our special version of a bit flag. 0 (no bits flipped) represents
   # a mix down option - we don't store mix downs (if we did they would be stored as single channel / mono (value = 1))
@@ -44,7 +44,7 @@ class AudioRecording < ActiveRecord::Base
 
   validates :file_hash, :presence => true
 
-  validates :status, :inclusion => { :in => %w(new to_check ready corrupt ignore) }
+  validates :status, :inclusion => {in: %w(new to_check ready corrupt ignore)}
 
   # uuid stuff
   attr_protected :uuid

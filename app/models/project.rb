@@ -25,6 +25,7 @@ class Project < ActiveRecord::Base
   # validation
   validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
   validates :urn, :presence => true, :uniqueness => { :case_sensitive => false }
+  validates_format_of :urn, :with => /^urn:[a-z0-9][a-z0-9-]{0,31}:[a-z0-9()+,\-.:=@;$_!*'%\/?#]+$/
 
   # commonly used queries (these return
   # ActiveRecord::Relation object which will allow for
