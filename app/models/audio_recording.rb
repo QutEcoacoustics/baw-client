@@ -9,6 +9,8 @@ class AudioRecording < ActiveRecord::Base
   belongs_to :site
   has_many :audio_events
   belongs_to :user, :class_name => 'User', :foreign_key => "uploader_id"
+  has_many :analysis_items
+  has_many :bookmarks
 
   # attr
   attr_accessible :bit_rate_bps, :channels, :data_length_bytes,

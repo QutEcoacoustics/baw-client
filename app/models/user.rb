@@ -22,6 +22,12 @@ class User < ActiveRecord::Base
   has_many :tags
   has_many :audio_event_tags
   has_many :permissions
+  has_many :analysis_scripts
+  has_many :analysis_jobs
+  has_many :progresses
+  has_many :bookmarks
+  has_many :saved_searches
+
 
   # validation
   #validates_presence_of :display_name

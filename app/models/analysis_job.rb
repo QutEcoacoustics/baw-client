@@ -4,12 +4,18 @@ class AnalysisJob < ActiveRecord::Base
 
   # relations
   belongs_to :saved_search
+  has_many :analysis_items
 
   # attr
-  attr_accessible :data_set_identifier, :description, :name, :notes,
+  attr_accessible :description, :name, :notes, :process_new,
+                  # a generated identifier from an ?executed? saved search
+                  :data_set_identifier,
+
+                  # this is a copy of the information from the analysis_scripts table
+                  # duplicated create and instance snap-shot of the data that will not change
                   :script_description, :script_display_name, :script_extra_data, :script_name,
-                  :script_settings, :script_version,
-                  :process_new
+                  :script_settings, :script_version
+
 
   accepts_nested_attributes_for :saved_search
 
@@ -28,6 +34,6 @@ class AnalysisJob < ActiveRecord::Base
 
   # custom validation methods
   def data_set_cannot_process_new
-    errors.add(:level, "An analysis job that references a data set cannot process new recordings.") if self.data_set_identifier && self.process_new
+    errors.add(:level, 'An analysis job that references a data set cannot process new recordings.') if self.data_set_identifier && self.process_new
   end
 end
