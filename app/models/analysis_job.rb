@@ -12,7 +12,7 @@ class AnalysisJob < ActiveRecord::Base
                   :data_set_identifier,
 
                   # this is a copy of the information from the analysis_scripts table
-                  # duplicated create and instance snap-shot of the data that will not change
+                  # duplicated to create a instance snap-shot of the data that will not change
                   :script_description, :script_display_name, :script_extra_data, :script_name,
                   :script_settings, :script_version
 
