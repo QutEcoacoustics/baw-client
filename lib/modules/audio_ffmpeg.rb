@@ -19,6 +19,8 @@ module AudioFfmpeg
           :codec_type => 'audio',
           :format_long_name => 'MP2/3 (MPEG audio layer 2/3)'
       }
+  # webm, webma
+  # ogg, oga
   }
 
   # public methods
@@ -51,9 +53,76 @@ module AudioFfmpeg
   end
 
   def self.modify_ffmpeg(source, target, modify_parameters = {})
-    ffprobe_arguments_info = "-sexagesimal -print_format default -show_error -show_streams -show_format"
-    ffprobe_command = "#@ffprobe_path #{ffprobe_arguments_info} \"#{source}\""
-    ffprobe_stdout_str, ffprobe_stderr_str, ffprobe_status = Open3.capture3(ffprobe_command)
+    # ffmpeg is the catch-all, so it will do anything specified in modify_parameters.
+
+    raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
+    raise ArgumentError, "Target exists: #{File.basename(target)}" unless !File.exists? target
+
+    result = {}
+
+    arguments = ''
+
+
+    # start offset
+    # -ss Seek to given time position in seconds. hh:mm:ss[.xxx] syntax is also supported.
+    if modify_parameters.include? :start_offset
+      start_offset_formatted = Time.at(modify_parameters[:start_offset].to_i).utc.strftime('%H:%M:%S.%3N')
+      arguments += " -ss #{start_offset_formatted}"
+    end
+
+    # end offset
+    # -t Restrict the transcoded/captured video sequence to the duration specified in seconds. hh:mm:ss[.xxx] syntax is also supported.
+    if modify_parameters.include? :end_offset
+      #end_offset_formatted = Time.at(modify_parameters[:end_offset]).utc.strftime('%H:%M:%S.%3N')
+      end_offset_raw = modify_parameters[:end_offset].to_i
+      end_offset_time = Time.at(end_offset_raw).utc
+      if modify_parameters.include? :start_offset
+        start_offset_raw = modify_parameters[:start_offset].to_i
+        start_offset_time = Time.at(start_offset_raw).utc
+        arguments += " -t #{Time.at(end_offset_raw - start_offset_raw).utc.strftime('%H:%M:%S.%3N')}"
+      else
+        # if start offset was not included, include audio from the start of the file.
+        arguments += " -t #{end_offset_time.strftime('%H:%M:%S.%3N')}"
+      end
+    end
+
+    # -ar Set the audio sampling frequency (default = 44100 Hz).
+    # -ab Set the audio bitrate in bit/s (default = 64k).
+    if modify_parameters.include? :sample_rate
+      arguments += " -ar #{modify_parameters[:sample_rate]}"
+    end
+
+    # set the right codec if we know it
+    # -acodec Force audio codec to codec. Use the copy special value to specify that the raw codec data must be copied as is.
+    # output file. extension used to determine filetype.
+    codec = ''
+    case File.extname(target).upcase!
+      when 'WAV'
+        codec = "pcm_s16le"; # pcm signed 16-bit little endian - compatible with CDDA
+      when 'MP3'
+        codec = "libmp3lame"; # needs to be specified, different codecs for encoding and decoding
+      when 'OGG', 'OGA', 'WEBMA', 'WEBMA'
+        codec = "libvorbis -aq 80"; # ogg container vorbis encoder at quality level of 80
+      else
+        codec = 'copy'
+    end
+
+    if modify_parameters.include? :channel
+      # help... not sure how to do this
+      arguments +=  ''
+    end
+
+    ffmpeg_command = "#@ffmpeg_path -i \"#{source}\" #{arguments} \"#{target}\""
+    ffmpeg_stdout_str, ffmpeg_stderr_str, ffmpeg_status = Open3.capture3(ffmpeg_command)
+
+
+    Logging::logger.debug  "Ffmpeg command #{ffmpeg_command}"
+
+    if ffmpeg_status.exitstatus != 0 || !File.exists?(target)
+      Logging::logger.error "Ffmpeg exited with an error: #{ffmpeg_stderr_str}"
+    end
+
+    result
 
   end
 

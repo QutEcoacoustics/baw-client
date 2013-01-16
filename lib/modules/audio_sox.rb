@@ -77,7 +77,7 @@ include OS, Logging
     sox_command = "#@sox_path -V4 \"#{source}\" \"#{target}\" #{arguments}" # commands to get info from audio file
     sox_stdout_str, sox_stderr_str, sox_status = Open3.capture3(sox_command) # run the commands and wait for the result
 
-    puts "Sox command #{sox_command}"
+    Logging::logger.debug  "Sox command #{sox_command}"
 
     if sox_status.exitstatus != 0 || !File.exists?(target)
       Logging::logger.error "Sox exited with an error: #{sox_stderr_str}"

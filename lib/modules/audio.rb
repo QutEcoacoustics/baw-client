@@ -66,7 +66,7 @@ module Audio
 
     else
 
-      AudioSox::modify_sox(target, target, modify_parameters)
+      AudioFfmpeg::modify_ffmpeg(source, target, modify_parameters)
 
     end
 
