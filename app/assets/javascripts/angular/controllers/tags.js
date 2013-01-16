@@ -1,6 +1,6 @@
 "use strict";
 
-function TagsCtrl($scope, $resource, Tag) {
+function TagsCtrl($scope, $resource, $routeParams, Tag) {
     $scope.tagsResource = $resource('/tags', {});
     $scope.tags = $scope.tagsResource.query();
 
@@ -20,7 +20,7 @@ TagsCtrl.linkList = function (id) {
     };
 };
 
-TagsCtrl.$inject = ['$scope', '$resource', 'Tag'];
+TagsCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Tag'];
 
 function TagCtrl($scope, $resource, $routeParams, Tag) {
 
