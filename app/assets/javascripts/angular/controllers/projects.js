@@ -165,5 +165,5 @@ function ProjectCtrl($scope, $location, $resource, $routeParams, Project, Site, 
     $scope.allSites = Site.query();
 }
 
-ProjectCtrl.$inject = ['$scope', '$location', '$resource', '$routeParams', 'Project', 'Site'];
+ProjectCtrl.$inject = ['$scope', '$location', '$resource', '$routeParams', 'Project', 'Site', 'Photo'];
 

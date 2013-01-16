@@ -5,7 +5,7 @@ function SearchesCtrl($scope, $resource, Search) {
 //    $scope.sites = $scope.sitesResource.get();
 }
 
-SearchesCtrl.$inject = ['$scope', '$resource'];
+SearchesCtrl.$inject = ['$scope', '$resource', 'Search'];
 
 
 function SearchCtrl($scope, $resource, Search) {
@@ -34,4 +34,4 @@ function SearchCtrl($scope, $resource, Search) {
 
 }
 
-SearchCtrl.$inject = ['$scope', '$resource'];
+SearchCtrl.$inject = ['$scope', '$resource', 'Search'];

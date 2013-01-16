@@ -1,38 +1,38 @@
 class AnalysisScript < ActiveRecord::Base
   before_validation :populate_name
-  after_initialize :init
+  after_initialize :after_init
 
-  Whitelist_characters  = "a-zA-Z0-9_\\-\\."
-  Negative_whitelist    = /[^#{Whitelist_characters}]/
-  White_listed_filename = /^[#{Whitelist_characters}]+$/
-  White_listed_filepath = /^([\\\/]?[#{Whitelist_characters}]+)?([\\\/][#{Whitelist_characters}]+)+$/
+  WHITELIST_CHARACTERS  = "a-zA-Z0-9_\\-\\."
+  NEGATIVE_WHITELIST    = /[^#{WHITELIST_CHARACTERS}]/
+  WHITE_LISTED_FILENAME = /^[#{WHITELIST_CHARACTERS}]+$/
+  WHITE_LISTED_FILEPATH = /^([\\\/]?[#{WHITELIST_CHARACTERS}]+)?([\\\/][#{WHITELIST_CHARACTERS}]+)+$/
 
-  def initialize
+  def initialize(attributes = nil, options = {})
     @name_unforced = true
-    super()
+    super(attributes, options)
   end
 
 
   # flex store
   store :notes
 
-                            # attr
-  attr_accessible :display_name, # the original name given by the user to name the script,
-                  #   e.g.: "My awesome/brilliant analysis!!"
-                  :name, # a filesystem safe version of display_name (computed)
-                  #   Note, this should not be a path
-                  #   e.g.: "my_awesome_brilliant_analysis__"
-                  :extra_data, # a manually entered settings file, copied to script dir on execution
-                  :settings, # a file-path to a settings file
+  # attr
+  attr_accessible :display_name,  # the original name given by the user to name the script,
+                                  #   e.g.: "My awesome/brilliant analysis!!"
+                  :name,          # a filesystem safe version of display_name (computed)
+                                  #   Note, this should not be a path
+                                  #   e.g.: "my_awesome_brilliant_analysis__"
+                  :extra_data,    # a manually entered settings file, copied to script dir on execution
+                  :settings,      # a file-path to a settings file
 
                   :description,
                   :notes,
 
-                  :version, # an incrementing field tracking changes
-                  :verified # whether or not this script has been checked (security purposes)
-                            #   TODO: THIS FIELD SHOULD BE RESTRICTED
+                  :version,       # an incrementing field tracking changes
+                  :verified       # whether or not this script has been checked (security purposes)
+                                  #   TODO: THIS FIELD SHOULD BE RESTRICTED
 
-                            # userstamp
+  # userstamp
   stampable
   belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
   acts_as_paranoid
@@ -41,11 +41,11 @@ class AnalysisScript < ActiveRecord::Base
   # validations
   validates :name, presence: true, length: { minimum: 2, maximum: 255 },
             uniqueness:      { case_sensitive: false }
-  validates_format_of :name, :with => White_listed_filename
+  validates_format_of :name, :with => WHITE_LISTED_FILENAME
 
   validates :display_name, presence: true, length: { minimum: 2, maximum: 255 }
 
-  validates :settings, allow_nil: true, format: White_listed_filepath
+  validates :settings, allow_nil: true, format: WHITE_LISTED_FILEPATH
 
   validates :version, presence: true
   validates :verified, inclusion: { in: [true, false] }
@@ -53,7 +53,7 @@ class AnalysisScript < ActiveRecord::Base
 
   # methods
 
-  def init
+  def after_init
     @name_unforced = true if @name_unforced.nil?
   end
 
@@ -90,7 +90,7 @@ class AnalysisScript < ActiveRecord::Base
     return old if old.blank?
     old = old.dup
 
-    old = old.gsub(Negative_whitelist, '_')
+    old = old.gsub(NEGATIVE_WHITELIST, '_')
 
     old = old.downcase
 

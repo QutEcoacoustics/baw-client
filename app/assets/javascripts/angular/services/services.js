@@ -19,23 +19,23 @@
     /**
      *
      */
-    bawss.factory('Project', function ($resource) {
+    bawss.factory('Project', [ '$resource', function ($resource) {
         return resourcePut($resource, '/projects/:projectId', {projectId: "@projectId"});
-    });
+    }]);
 
-    bawss.factory('Site', function ($resource) {
+    bawss.factory('Site', [ '$resource', function ($resource) {
         return resourcePut($resource, '/sites/:siteId', {siteId: "@siteId"});
-    });
+    }]);
 
-    bawss.factory('Photo', function ($resource) {
+    bawss.factory('Photo', [ '$resource', function ($resource) {
         return resourcePut($resource, '/photos/:photoId', {photoId: "@photoId"});
-    });
+    }]);
 
-    bawss.factory('AudioRecording', function ($resource) {
+    bawss.factory('AudioRecording', [ '$resource', function ($resource) {
         return resourcePut($resource, '/audio_recordings/:recordingId', {recordingId: '@recordingId'});
-    });
+    }]);;
 
-    bawss.factory('AudioEvent', function ($resource) {
+    bawss.factory('AudioEvent', [ '$resource', function ($resource) {
         var actions = {
             query: { method: 'GET', isArray: true }
         };
@@ -43,13 +43,13 @@
         var resource = resourcePut($resource, '/audio_events/:audioEventId', {audioEventId: '@audioEventId'}, actions);
         resource.csvLink = "/audio_events/download.csv";
         return resource;
-    });
+    }]);
 
-    bawss.factory('Tag', function ($resource) {
+    bawss.factory('Tag', [ '$resource', function ($resource) {
         return $resource('/tags/:tagId', {tagId: '@tagId'}, {});
-    });
+    }]);
 
-    bawss.factory('Media', function ($resource) {
+    bawss.factory('Media', [ '$resource', function ($resource) {
         var mediaResource = $resource('/media/:recordingId', {recordingId: '@recordingId'});
 
         // this is a read only service, remove unnecessary methods
@@ -59,7 +59,7 @@
         //delete  mediaResource.update;
 
         return mediaResource;
-    });
+    }]);
 
     // authentication
     bawss.factory('Authenticator', ['$rootScope', 'authService', '$http', function ($rootScope, authService, $http) {

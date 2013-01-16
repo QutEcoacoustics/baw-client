@@ -17,4 +17,4 @@ function RecordingCtrl($scope, $resource) {
     $scope.recording = recordingResource.get({recordingId:1});
 }
 
-RecordingCtrl.$inject = ['$scope', '$resource']
+RecordingCtrl.$inject = ['$scope', '$resource'];

@@ -16,7 +16,6 @@ var bawApp = (function (undefined) {
      * @param id
      * @param controllerMany
      * @param controllerOne
-     * @param addManageView
      * @return {*|Object}
      */
     function whenDefaults(resourceName, singularResourceName, id, controllerMany, controllerOne) {

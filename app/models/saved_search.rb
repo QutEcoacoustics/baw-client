@@ -6,7 +6,9 @@ class SavedSearch < ActiveRecord::Base
   has_many :progresses
 
   # attr
-  attr_accessible :name, :search_object
+  attr_accessible :name,
+                  :search_object    # a string (text type) based representation of a saved search
+                                    #   the format is json
 
   # userstamp
   stampable
