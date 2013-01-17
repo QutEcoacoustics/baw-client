@@ -1,6 +1,8 @@
 require 'digest'
 require 'digest/md5'
 
+# This class know about which audio tools to use to convert/segment audio.
+# this way the intermediate files can be put in the right spots, rather than temp files.
 module FileCacher
   include Cache, Spectrogram, Audio, Exceptions
 

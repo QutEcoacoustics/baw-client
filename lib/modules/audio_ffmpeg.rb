@@ -18,9 +18,25 @@ module AudioFfmpeg
           :codec_long_name => 'MP3 (MPEG audio layer 3)',
           :codec_type => 'audio',
           :format_long_name => 'MP2/3 (MPEG audio layer 2/3)'
+      },
+      :webma => {
+          :codec_name => 'vorbis',
+          :codec_long_name => 'Vorbis',
+          :codec_type => 'audio',
+          :format_long_name => 'Matroska / WebM'
+      },
+      :oga => {
+          :codec_name => 'vorbis',
+          :codec_long_name => 'Vorbis',
+          :codec_type => 'audio',
+          :format_long_name => 'Ogg'
+      },
+      :asf => {
+          :codec_name => 'wmav2',
+          :codec_long_name => 'Windows Media Audio 2',
+          :codec_type => 'audio',
+          :format_long_name => 'ASF (Advanced / Active Streaming Format)'
       }
-  # webm, webma
-  # ogg, oga
   }
 
   # public methods
@@ -55,13 +71,13 @@ module AudioFfmpeg
   def self.modify_ffmpeg(source, target, modify_parameters = {})
     # ffmpeg is the catch-all, so it will do anything specified in modify_parameters.
 
-    raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
-    raise ArgumentError, "Target exists: #{File.basename(target)}" unless !File.exists? target
+    raise ArgumentError, "Source is a wavpack file, use wavpack to convert to .wav first instead: #{File.basename(source)}" if source.match(/\.wv$/)
 
-    result = {}
+    raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
+    raise ArgumentError, "Target exists: #{File.basename(target)}" if File.exists? target
+    raise ArgumentError "Source and Target are the same file: #{File.basename(target)}" unless source != target
 
     arguments = ''
-
 
     # start offset
     # -ss Seek to given time position in seconds. hh:mm:ss[.xxx] syntax is also supported.
@@ -95,17 +111,30 @@ module AudioFfmpeg
     # set the right codec if we know it
     # -acodec Force audio codec to codec. Use the copy special value to specify that the raw codec data must be copied as is.
     # output file. extension used to determine filetype.
+    ext_to_copy_to = ''
+    vorbis_codec = 'libvorbis -aq 80' # ogg container vorbis encoder at quality level of 80
     codec = ''
-    case File.extname(target).upcase!
+    case File.extname(target).upcase!.reverse.chomp('.').reverse
       when 'WAV'
-        codec = "pcm_s16le"; # pcm signed 16-bit little endian - compatible with CDDA
+        codec = "pcm_s16le" # pcm signed 16-bit little endian - compatible with CDDA
       when 'MP3'
-        codec = "libmp3lame"; # needs to be specified, different codecs for encoding and decoding
-      when 'OGG', 'OGA', 'WEBMA', 'WEBMA'
-        codec = "libvorbis -aq 80"; # ogg container vorbis encoder at quality level of 80
+        codec = "libmp3lame" # needs to be specified, different codecs for encoding and decoding
+      when 'OGG'
+        codec = vorbis_codec
+      when 'OGA'
+        codec = vorbis_codec
+        target = target.chomp(File.extname(target))+'.ogg'
+        ext_to_copy_to = 'oga'
+      when  'WEBM'
+        codec = vorbis_codec
+      when  'WEBMA'
+        codec = vorbis_codec
+        target = target.chomp(File.extname(target))+'.webm'
+        ext_to_copy_to = 'webma'
       else
         codec = 'copy'
     end
+    arguments += " -acodec #{codec}"
 
     if modify_parameters.include? :channel
       # help... not sure how to do this
@@ -115,15 +144,27 @@ module AudioFfmpeg
     ffmpeg_command = "#@ffmpeg_path -i \"#{source}\" #{arguments} \"#{target}\""
     ffmpeg_stdout_str, ffmpeg_stderr_str, ffmpeg_status = Open3.capture3(ffmpeg_command)
 
-
     Logging::logger.debug  "Ffmpeg command #{ffmpeg_command}"
 
     if ffmpeg_status.exitstatus != 0 || !File.exists?(target)
       Logging::logger.error "Ffmpeg exited with an error: #{ffmpeg_stderr_str}"
     end
 
-    result
+    if ext_to_copy_to
+      new_target = target.chomp(File.extname(target))+'.'+ext_to_copy_to
+      FileUtils.copy target, new_target
+    end
 
+    {
+        info: {
+            ffmpeg: {
+                command: ffmpeg_command,
+                source: source,
+                target: target,
+                parameters: modify_parameters
+            }
+        }
+    }
   end
 
   # returns the duration in seconds (and fractions if present)

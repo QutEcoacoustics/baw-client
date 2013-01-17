@@ -44,11 +44,7 @@ module AudioWavpack
   def self.modify_wavpack(source, target, modify_parameters = {})
     raise ArgumentError, "Source is not a wavpack file: #{File.basename(source)}" unless source.match(/\.wv$/)
     raise ArgumentError, "Target is not a wav file: : #{File.basename(target)}" unless target.match(/\.wav$/)
-
-    result = {
-        :info => { :wavpack => {} },
-        :error => { :wavpack => {} }
-    }
+    raise ArgumentError "Source and Target are the same file: #{File.basename(target)}" unless source != target
 
     if File.exists? target
       return result
@@ -82,7 +78,15 @@ module AudioWavpack
       Logging::logger.error "Wvunpack command #{wvunpack_command} exited with an error: #{wvunpack_stderr_str}"
     end
 
-    result
+    {
+        info: {
+            wavpack: {
+                command: wvunpack_command,
+                source: source,
+                target: target,
+                parameters: modify_parameters
+            }
+        }
+    }
   end
-
 end

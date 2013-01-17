@@ -14,11 +14,7 @@ module AudioMp3splt
     raise ArgumentError, "Target is not a mp3 file: : #{File.basename(target)}" unless target.match(/\.mp3$/)
     raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
     raise ArgumentError, "Target exists: #{File.basename(target)}" if File.exists? target
-
-    result = {
-        :info => { :wavpack => {} },
-        :error => { :wavpack => {} }
-    }
+    raise ArgumentError "Source and Target are the same file: #{File.basename(target)}" unless source != target
 
     # mp3splt needs the file extension removed
     target_dirname = File.dirname target
@@ -44,8 +40,9 @@ module AudioMp3splt
       arguments += ' EOF '
     end
 
-    mp3splt_command = "#@mp3splt_path #{arguments}" # commands to get info from audio file
-    mp3splt_stdout_str, mp3splt_stderr_str, mp3splt_status = Open3.capture3(mp3splt_command) # run the commands and wait for the result
+    mp3splt_command = "#{File.basename(@mp3splt_path)}  #{arguments}" # commands to get info from audio file ( -D )
+    working_dir = File.dirname(File.expand_path(@mp3splt_path, Rails.root))
+    mp3splt_stdout_str, mp3splt_stderr_str, mp3splt_status = Open3.capture3(mp3splt_command, :chdir => working_dir) # run the commands and wait for the result
 
     Logging::logger.debug"mp3splt info return status #{mp3splt_status.exitstatus}. Command: #{mp3splt_command}"
 
@@ -53,6 +50,15 @@ module AudioMp3splt
       Logging::logger.error "Mp3splt exited with an error: #{mp3splt_stderr_str}"
     end
 
-    result
+    {
+        info: {
+            mp3splt: {
+                command: mp3splt_command,
+                source: source,
+                target: target,
+                parameters: modify_parameters
+            }
+        }
+    }
   end
 end

@@ -1,6 +1,7 @@
 require 'open3'
 require './lib/modules/string'
 
+# the audio
 module Audio
   include AudioSox, AudioMp3splt, AudioWavpack, AudioFfmpeg
 
@@ -34,38 +35,42 @@ module Audio
   def self.modify(source, target, modify_parameters)
     raise ArgumentError, "Source does not exist: #{File.basename(source)}" unless File.exists? source
     raise ArgumentError, "Target exists: #{File.basename(target)}" unless !File.exists? target
-    raise ArgumentError "Source and Target are the same file." unless source != target
+    raise ArgumentError "Source and Target are the same file: #{File.basename(target)}" unless source != target
 
-    if source.match(/\.wv$/) && target.match(/\.wav$/)
-      raise ArgumentError, "Source must be a wavpack file: #{File.basename(source)}." unless source.match(/\.wv$/)
-      raise ArgumentError, "Target must be a wav file: #{File.basename(target)}." unless  target.match(/\.wav$/)
-      raise ArgumentError, "Target must be a wav file, given #{modify_parameters[:format]}." unless modify_parameters[:format] == 'wav'
-
-      AudioWavpack::modify_wavpack(source, target, modify_parameters)
-
-    elsif source.match(/\.wv$/) && target.match(/\.mp3$/)
-
+    if source.match(/\.wv$/) && (modify_parameters.include?(:start_offset) || modify_parameters.include?(:end_offset))
+      # convert to wav, then to target file (might need to change channels or sample rate or format)
       # put the wav file in a temp location
       temp_wav_file = temp_file('wav')
       AudioWavpack::modify_wavpack(source, temp_wav_file, modify_parameters)
 
       # remove start and end offset from modify_parameters (otherwise it will be done again!)
-      wav_to_mp3_modify_params = modify_parameters.clone
-      wav_to_mp3_modify_params.delete :start_offset
-      wav_to_mp3_modify_params.delete :end_offset
+      wav_to_modify_params = modify_parameters.clone
+      wav_to_modify_params.delete :start_offset
+      wav_to_modify_params.delete :end_offset
 
-      AudioSox::modify_sox(temp_wav_file, target, wav_to_mp3_modify_params)
+      Audio::modify(temp_wav_file, target, wav_to_modify_params)
+
+      File.delete temp_wav_file
+
+    elsif source.match(/\.mp3$/) && (modify_parameters.include?(:start_offset) || modify_parameters.include?(:end_offset))
+      # segment the mp3, then to target file (might need to change channels or sample rate or format)
+      # put the mp3 file in a temp location
+      temp_wav_file = temp_file('mp3')
+      AudioMp3splt::modify_mp3splt(source, temp_wav_file, modify_parameters)
+
+      # remove start and end offset from modify_parameters (otherwise it will be done again!)
+      wav_to_modify_params = modify_parameters.clone
+      wav_to_modify_params.delete :start_offset
+      wav_to_modify_params.delete :end_offset
+
+      Audio::modify(temp_wav_file, target, wav_to_modify_params)
+
+      File.delete temp_wav_file
 
     elsif source.match(/\.wav$/)&& target.match(/\.mp3$/)
-
-      AudioSox::modify_sox(source, target, modify_parameters)
-
-    elsif source.match(/\.mp3$/) && target.match(/\.mp3$/)
-
       AudioSox::modify_sox(source, target, modify_parameters)
 
     else
-
       AudioFfmpeg::modify_ffmpeg(source, target, modify_parameters)
 
     end

@@ -21,7 +21,14 @@ include OS, Logging
 
     if sox_status.exitstatus == 0
       # sox std out contains info (separate on first colon(:))
-      sox_stdout_str.strip.split(/\r?\n|\r/).each { |line| result[:info][:sox][ line[0,line.index(':')].strip] = line[line.index(':')+1,line.length].strip  }
+      sox_stdout_str.strip.split(/\r?\n|\r/).each { |line|
+        if line.include?(':')
+          colon_index = line.index(':')
+          new_value = line[colon_index+1,line.length].strip
+          new_key = line[0,colon_index].strip
+          result[:info][:sox][new_key] = new_value
+        end
+      }
       # sox_stderr_str is empty
     else
       Logging::logger.error "Sox info error. Return status #{sox_status.exitstatus}. Command: #{sox_command}"
