@@ -16,7 +16,7 @@ gemfile:
 before_script:
   - sh vendor/bin/install_console_audio_tools.sh
 script:
-  - ls -la
+#  - ls -la
   - RAILS_ENV=test bundle exec rake db:migrate --trace
   - RAILS_ENV=test bundle exec rake --trace
 notifications:
