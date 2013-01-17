@@ -12,7 +12,7 @@ class Tag < ActiveRecord::Base
 
   # userstamp
   stampable
-  belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
+  belongs_to :user, class_name: 'User', foreign_key: :creator_id
   acts_as_paranoid
   validates_as_paranoid
 
