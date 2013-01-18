@@ -43,7 +43,7 @@ class AnalysisScript < ActiveRecord::Base
             uniqueness:      { case_sensitive: false }
   validates_format_of :name, :with => WHITE_LISTED_FILENAME
 
-  validates :display_name, presence: true, length: { minimum: 2, maximum: 255 }
+  validates :display_name, presence: true, length: { minimum: 2, maximum: 255 }, uniqueness:      { case_sensitive: false }
 
   validates :settings, allow_nil: true, format: WHITE_LISTED_FILEPATH
 
