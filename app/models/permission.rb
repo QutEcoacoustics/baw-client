@@ -24,7 +24,7 @@ class Permission < ActiveRecord::Base
 
   # custom validation methods
   def anonymous_permission_can_only_be_read_or_none
-    return unless self.user_id.nil?
+    return unless self.user.nil?
 
     return if self.reader? || self.none?
 

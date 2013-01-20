@@ -1,3 +1,5 @@
+require_relative '../../lib/modules/JSON_patch'
+
 class SavedSearch < ActiveRecord::Base
 
   # relations
@@ -16,8 +18,11 @@ class SavedSearch < ActiveRecord::Base
 
   # validation
   validates :search_object, :presence => true
-  validates_uniqueness_of :search_object,
-                          :scope => [:creator_id, :name]
+  #validates_uniqueness_of :search_object, :scope => [:creator_id, :name]
+  validates_uniqueness_of :name, :scope => [:owner_id]
+
+  validate :json_format
+
 
   # custom methods
   def implicit_global?
@@ -35,4 +40,12 @@ class SavedSearch < ActiveRecord::Base
   def explicit_personal?
     !name.blank? && !owner_id.blank?
   end
+
+  protected
+
+  def json_format
+
+    errors.add(:search_object, 'search_object not in json format') unless JSON.is_json?(search_object)
+  end
+
 end
