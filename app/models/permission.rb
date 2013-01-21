@@ -8,7 +8,7 @@ class Permission < ActiveRecord::Base
   belongs_to :permissionable, :polymorphic => true
 
   # attr
-  attr_accessible :level, :permissionable_type, :permissionable_id
+  attr_accessible :user_id, :level, :permissionable_type, :permissionable_id
 
   # userstamp
   stampable
