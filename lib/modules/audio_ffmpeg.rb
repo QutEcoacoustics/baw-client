@@ -138,7 +138,8 @@ module AudioFfmpeg
 
     if modify_parameters.include? :channel
       # help... not sure how to do this
-      arguments +=  ''
+      # HACK: WARNING this will always mix down to mono
+      arguments += ' -ac 1 '
     end
 
     ffmpeg_command = "#@ffmpeg_path -i \"#{source}\" #{arguments} \"#{target}\""
@@ -150,7 +151,7 @@ module AudioFfmpeg
       Logging::logger.error "Ffmpeg exited with an error: #{ffmpeg_stderr_str}"
     end
 
-    if ext_to_copy_to
+    if ext_to_copy_to.length > 0
       new_target = target.chomp(File.extname(target))+'.'+ext_to_copy_to
       FileUtils.copy target, new_target
     end

@@ -10,7 +10,16 @@
  * @param Media
  */
 function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
+    var CHUNK_DURATION_SECONDS = 30.0;
+    function getMediaParameters() {
+        return {
+            start_offset: $routeParams.start,
+            end_offset: $routeParams.end,
+            // this one is different, it is encoded into the path of the request by angular
+            recordingId: $routeParams.recordingId
 
+        }
+    }
 
     $scope.errorState = !GUID_REGEXP.test($routeParams.recordingId);
 
@@ -18,6 +27,22 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
         console.warn("Invalid guid specified in route... page rendering disabled");
     }
     else {
+
+        $routeParams.start =  parseFloat($routeParams.start) || 0.0;
+        $routeParams.end =  parseFloat($routeParams.end) || CHUNK_DURATION_SECONDS;
+        var chunkDuration = ($routeParams.end - $routeParams.start);
+        if (chunkDuration < 0) {
+
+            $routeParams.start = 0.0;
+            console.warn("invalid start offsets specified, reverting to safe value: start=" + $routeParams.start );
+        }
+        if (chunkDuration > CHUNK_DURATION_SECONDS) {
+            $routeParams.end = $routeParams.start + CHUNK_DURATION_SECONDS;
+            console.warn("invalid end offsets specified, reverting to safe value: end=" + $routeParams.end );
+        }
+
+
+
         var recordingId = $scope.recordingId = $routeParams.recordingId;
 
         $scope.model = {};
@@ -29,8 +54,8 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
                 $scope.model.media.audioUrls = [];
                 angular.forEach($scope.model.media.options.audioFormats, function (value, key){
-                    $scope.model.media.audioFormat = value;
-                    this.push($scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + authToken);
+                    $scope.model.media.audioFormat = value.extension;
+                    this.push({url: $scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + authToken, mime: value.mimeType});
                 },$scope.model.media.audioUrls);
 
             }
@@ -38,7 +63,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
         $scope.$on('event:auth-loginRequired', formatPaths);
         $scope.$on('event:auth-loginConfirmed', formatPaths);
 
-        $scope.model.media = Media.get($routeParams, {},
+        $scope.model.media = Media.get(getMediaParameters(), {},
             function mediaGetSuccess() {
                 // reformat url's
                 formatPaths();

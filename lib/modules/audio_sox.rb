@@ -78,7 +78,8 @@ include OS, Logging
 =end
     if modify_parameters.include? :channel
       # help... not sure how to do this
-      arguments +=  ""
+      # HACK: WARNING this will always mix down to mono
+      arguments += ' remix - '
     end
 
     sox_command = "#@sox_path -V4 \"#{source}\" \"#{target}\" #{arguments}" # commands to get info from audio file

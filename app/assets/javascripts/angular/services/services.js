@@ -138,7 +138,7 @@
                                 loginSuccess(data, status, headers, config);
                             }
                             else {
-                                console.info("Logged in via ping failed (probably something wrong with cookies).");
+                                console.info("Logged in via ping failed (probably something wrong with cookies or not logged in).");
                                 loginFailure(data, status, headers, config);
                             }
 

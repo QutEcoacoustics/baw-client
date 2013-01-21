@@ -110,13 +110,13 @@ class MediaController < ApplicationController
 
           :info_url             => "/media/#{@file_info[:id]}",
           :audio_base_url       => (url_format_underscore ? AUDIO_BASE_URL_US : AUDIO_BASE_URL_CC),
-          :spectrogram_base_url => (url_format_underscore ? SPECTROGRAM_BASE_URL_US : SPECTROGRAM_BASE_URL_CC) ,
+          :spectrogram_base_url => (url_format_underscore ? SPECTROGRAM_BASE_URL_US : SPECTROGRAM_BASE_URL_CC),
 
           :options              => {
               :colors        => Spectrogram.colour_options,
               :window_size   => Spectrogram.window_options,
-              :audio_formats => audio_media_types.collect { |mt| '.' + mt.symbol.to_s}.uniq,
-              :image_formats => image_media_types.collect { |mt| '.' + mt.symbol.to_s},
+              :audio_formats => audio_media_types.collect { |mt| { extension: '.' + mt.symbol.to_s, mime_type: mt.to_s } }.uniq,
+              :image_formats => image_media_types.collect { |mt| { extension: '.' + mt.symbol.to_s, mime_type: mt.to_s } },
           }
       }
 

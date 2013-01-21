@@ -79,7 +79,8 @@ module Cache
     file_name[0,2]
   end
 
-  def self.build_parameters(parameter_names = {}, modify_parameters = {})
+  def self.build_parameters(parameter_names = [], modify_parameters = {})
+
     file_name = ''
     
     parameter_names.each do |param| 
@@ -89,7 +90,11 @@ module Cache
         file_name += '.'+get_parameter(:format, modify_parameters, false).reverse.chomp('.').reverse
       elsif param == :original_format
         file_name += '.'+get_parameter(:original_format, modify_parameters, false).reverse.chomp('.').reverse
-      else 
+      elsif [:start_offset, :end_offset].include? param
+        file_name += get_parameter(param, modify_parameters, true, :float)
+      elsif [:channel, :sample_rate, :window].include? param
+        file_name += get_parameter(param, modify_parameters, true, :int)
+      else
         file_name += get_parameter(param, modify_parameters)
       end
     end
@@ -97,7 +102,7 @@ module Cache
     file_name
   end
   
-  def self.get_parameter(parameter, modify_parameters, include_separator = true)
+  def self.get_parameter(parameter, modify_parameters, include_separator = true, format = :string)
     # need to cater for the situation where modify_parameters contains strings (we want symbols)
     modify_parameters.keys.each do |key|
       modify_parameters[(key.to_sym rescue key) || key] = modify_parameters.delete(key)
@@ -111,6 +116,16 @@ module Cache
     
     if modify_parameters.include? parameter
       result_name = modify_parameters[parameter].to_s
+
+      case format
+        when :int
+          result_name = result_name.to_i.to_s
+        when :float
+          result_name = result_name.to_f.to_s
+        else
+          # noop
+      end
+
       
       #if parameter == :format
         #result_name = result_name.trim '.', ''

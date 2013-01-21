@@ -88,6 +88,7 @@ var bawApp = (function (undefined) {
 
             when('/listen', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
             when('/listen/:recordingId', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
+            when('/listen/:recordingId/start=:start/end=:end', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
 
             when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).
             when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).

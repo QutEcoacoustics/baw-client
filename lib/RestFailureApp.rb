@@ -1,6 +1,6 @@
 class RestFailureApp < Devise::FailureApp
   def respond
-    if !request.format.blank? && request.format.include?('json')
+    if !request.format.blank? && request.format.to_s.include?('json')
       json_failure
     else
       super

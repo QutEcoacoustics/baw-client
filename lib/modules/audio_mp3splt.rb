@@ -24,17 +24,19 @@ module AudioMp3splt
     # WARNING: can't get more than an hour, since minutes only goes to 59.
     # formatted time: mm.ss.ss
     start_offset_num = 0.0
-    if modify_parameters.include?(:start_offset) && modify_parameters[:start_offset] > 0
-      start_offset = ' '+Time.at(modify_parameters[:start_offset]).utc.strftime('%M.%S.%2N')+' '
-      start_offset_num = modify_parameters[:start_offset]
+    if modify_parameters.include?(:start_offset) && modify_parameters[:start_offset].to_f > 0
+      start_offset = modify_parameters[:start_offset].to_f
+      start_offset = ' '+(start_offset /  60.0).floor.to_s  + '.' +  ('%05.2f' % (start_offset % 60)) + ' '
+      start_offset_num = modify_parameters[:start_offset].to_f
     else
       start_offset = ' 0.0 '
     end
 
     arguments += " #{start_offset} "
 
-    if modify_parameters.include?(:end_offset) && modify_parameters[:end_offset] > 0 && modify_parameters[:end_offset] > start_offset_num
-      end_offset_formatted = Time.at(modify_parameters[:end_offset]).utc.strftime('%M.%S.%2N')
+    if modify_parameters.include?(:end_offset) && modify_parameters[:end_offset].to_f > 0 && modify_parameters[:end_offset].to_f > start_offset_num
+      end_offset = modify_parameters[:end_offset].to_f
+      end_offset_formatted = (end_offset /  60.0).floor.to_s  + '.' +  ('%05.2f' % (end_offset % 60))
       arguments += " #{end_offset_formatted} "
     else
       arguments += ' EOF '
