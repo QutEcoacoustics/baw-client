@@ -21,29 +21,11 @@ function AnnotationViewerCtrl($scope, $element, $attrs, $transclude) {
         }
     };
 
-    $scope.converters = (function () {
-        // TODO: these are stubs and will need to be refactored
 
-        // constants go here
-        var me = $scope;
 
-        return {
-            pixelsToSeconds: function pixelsToSeconds(pixels) {
-                var seconds = pixels * pixelsPerSecond;
-                return seconds;
-            },
-            pixelsToHertz: function pixelsToHertz(pixels) {
-                var hertz  = hetz * pixelsPerHertz;
-                return value * 10;
-            },
-            secondsToPixels: function secondsToPixels(value) {
-                return value / 10;
-            },
-            hertzToPixels: function hertzToPixels(value) {
-                return value / 10;
-            }
-        };
-    })();
+
+    // updated in directive
+    $scope.converters = {};
 
 
 }
