@@ -45,7 +45,9 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
         var recordingId = $scope.recordingId = $routeParams.recordingId;
 
-        $scope.model = {};
+        $scope.model = {
+            audioElement: {}
+        };
 
         var formatPaths = function () {
             if ($scope.model.media && $scope.model.media.hasOwnProperty('recordingId')) {
