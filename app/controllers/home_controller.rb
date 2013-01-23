@@ -20,4 +20,8 @@ class HomeController < ApplicationController
       head :not_acceptable
     end
   end
+
+  def whoami
+    head 418, :status => "I'm a teapot"
+  end
 end

@@ -11,7 +11,7 @@ class Progress < ActiveRecord::Base
 
                   # ↓ these are just keys ↓
                   :activity, :saved_search_id, :audio_recording_id,
-                  :start_offset_seconds, :end_offset_seconds
+                  :start_offset_seconds, :end_offset_seconds, :creator_id
 
 
   # userstamp
@@ -24,9 +24,7 @@ class Progress < ActiveRecord::Base
                           scope:          [:saved_search_id, :audio_recording_id,
                                            :start_offset_seconds, :end_offset_seconds, :creator_id]
 
-  validates_presence_of :offset_list,
-                        :activity, :saved_search_id, :audio_recording_id,
-                        :start_offset_seconds, :end_offset_seconds, :creator_id
+  validates_presence_of :offset_list, :activity, :saved_search_id, :audio_recording_id, :creator_id
 
   validates :start_offset_seconds, :presence => true, :numericality => { :greater_than_or_equal_to => 0 }
   validates :end_offset_seconds, :presence => true, :numericality => { :greater_than_or_equal_to => 0 }
