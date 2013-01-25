@@ -14,7 +14,7 @@ class AnalysisJob < ActiveRecord::Base
                   # this is a copy of the information from the analysis_scripts table
                   # duplicated to create a instance snap-shot of the data that will not change
                   :script_description, :script_display_name, :script_extra_data, :script_name,
-                  :script_settings, :script_version
+                  :script_settings, :script_version, :saved_search_id
 
 
   accepts_nested_attributes_for :saved_search

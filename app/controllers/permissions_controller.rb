@@ -73,7 +73,7 @@ class PermissionsController < ApplicationController
     @permission.destroy
 
     respond_to do |format|
-      format.json { head :no_content }
+        format.json { head :no_content }
     end
   end
 end

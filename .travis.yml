@@ -13,7 +13,7 @@ branches:
     - 'master'
 gemfile:
   - Gemfile
-before_script:
+before_install:
   - sh vendor/bin/install_console_audio_tools.sh
 script:
 #  - ls -la

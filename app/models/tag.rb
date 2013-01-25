@@ -17,12 +17,14 @@ class Tag < ActiveRecord::Base
   validates_as_paranoid
 
   # enums
-  enumerize :type_of_tag, in: [:common_name, :species_name, :looks_like, :sounds_like], predicates: true
+  AVAILABLE_TYPE_OF_TAGS = [:common_name, :species_name, :looks_like, :sounds_like].map{ |item| item.to_s }
+  enumerize :type_of_tag, in: AVAILABLE_TYPE_OF_TAGS, predicates: true
+  validates :type_of_tag, :inclusion => {in: AVAILABLE_TYPE_OF_TAGS}, :presence => true
 
   # validation
   validates :is_taxanomic, inclusion: { in: [true, false] }
   validates :text, uniqueness: { case_sensitive: false }
-  validates :type_of_tag, :presence => true
+
 
   validate :no_nils
 
@@ -41,6 +43,12 @@ class Tag < ActiveRecord::Base
   #  errors.add(:class, "class and type_of_tag cannot both be set")
   #  errors.add(:type_of_tag, "class and type_of_tag cannot both be set")
   #end
+
+  # http://stackoverflow.com/questions/11569940/inclusion-validation-fails-when-provided-a-symbol-instead-of-a-string
+  # this lets a symbol be set, and it all still works
+  def type_of_tag=(new_type_of_tag)
+    super new_type_of_tag.to_s
+  end
 
   private
   # default values

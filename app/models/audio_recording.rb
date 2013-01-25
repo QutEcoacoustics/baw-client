@@ -1,6 +1,8 @@
 require 'timeliness'
 
 class AudioRecording < ActiveRecord::Base
+  extend Enumerize
+
   before_create :set_create_defaults
   # flex store
   store :notes
@@ -26,6 +28,11 @@ class AudioRecording < ActiveRecord::Base
   acts_as_paranoid
   validates_as_paranoid
 
+  #enums
+  AVAILABLE_STATUSES = [:new, :to_check, :ready, :corrupt, :ignore].map{ |item| item.to_s }
+  enumerize :status, in: AVAILABLE_STATUSES, predicates: true
+  validates :status, :inclusion => {in: AVAILABLE_STATUSES}, :presence => true
+
   # validation
   validates :uuid, :presence => true, :length =>  {:is => 36}, :uniqueness => { :case_sensitive => false }
   validates :uploader_id, :presence => true
@@ -46,11 +53,17 @@ class AudioRecording < ActiveRecord::Base
 
   validates :file_hash, :presence => true
 
-  validates :status, :inclusion => {in: %w(new to_check ready corrupt ignore)}
+
 
   # uuid stuff
   attr_protected :uuid
   include UUIDHelper
+
+  # http://stackoverflow.com/questions/11569940/inclusion-validation-fails-when-provided-a-symbol-instead-of-a-string
+  # this lets a symbol be set, and it all still works
+  def status=(new_status)
+    super new_status.to_s
+  end
 
   # scoped, re-usable queries
   # when chaining a lambda scope you must also wrap it with a

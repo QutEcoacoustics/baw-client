@@ -62,6 +62,10 @@ class BookmarksController < ApplicationController
     end
   end
 
+  # Bookmarks can be deleted but not Archived
+  DELETEABLE = true
+  ARCHIVEABLE = false
+
   # DELETE /bookmarks/1
   # DELETE /bookmarks/1.json
   def destroy

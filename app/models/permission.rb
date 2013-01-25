@@ -1,5 +1,3 @@
-require 'enumerize'
-
 class Permission < ActiveRecord::Base
   extend Enumerize
 
@@ -15,12 +13,12 @@ class Permission < ActiveRecord::Base
   belongs_to :user, class_name: 'User', foreign_key: :creator_id
 
   # enumerations
-  enumerize :level, :in => [:owner, :writer, :reader, :none], :default => :none, predicates: true
+  AVAILABLE_LEVELS = [:owner, :writer, :reader, :none].map{ |item| item.to_s }
+  enumerize :level, :in => AVAILABLE_LEVELS, :default => :none, predicates: true
+  validates :level, :inclusion => {in: AVAILABLE_LEVELS}, :presence => true
 
   # validation
-  validates :level, :presence => true
   validate :anonymous_permission_can_only_be_read_or_none
-
 
   # custom validation methods
   def anonymous_permission_can_only_be_read_or_none
@@ -36,6 +34,10 @@ class Permission < ActiveRecord::Base
     self.user.nil?
   end
 
-  # scopes
+  # http://stackoverflow.com/questions/11569940/inclusion-validation-fails-when-provided-a-symbol-instead-of-a-string
+  # this lets a symbol be set, and it all still works
+  def level=(new_level)
+    super new_level.to_s
+  end
 
 end
