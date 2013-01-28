@@ -10,7 +10,7 @@ class AudioRecordingSerializer < CommonAttributesSerializer
              :recorded_date, :sample_rate_hertz, :status, :uploader_id,
              :uuid
 
-  has_many :sites, :serializer => AudioRecordingInSiteSerializer
+  has_one :site, :serializer => AudioRecordingInSiteSerializer
 end
 
 
