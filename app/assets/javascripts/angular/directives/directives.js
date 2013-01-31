@@ -303,13 +303,15 @@
 
 
                 // init unit conversion
-                function updateConverters() {scope.model.converters = updateUnitConversions(scope, scope.$image.width(), scope.$image.height());}
+                function updateConverters() {
+                    scope.model.converters = updateUnitConversions(scope, scope.$image.width(), scope.$image.height());
+                }
                 scope.$watch(function() {return scope.model.media.imageUrl}, updateConverters);
                 scope.$image[0].addEventListener('load', updateConverters, false);
 
                 // init drawabox
                 scope.model.audioEvents = scope.model.audioEvents || [];
-                scope.model.selectedAudioEvents = scope.model.selectedAudioEvents || [];
+                //scope.model.selectedAudioEvents = scope.model.selectedAudioEvents || [];
 
 
                 scope.$canvas.drawabox({
@@ -335,8 +337,15 @@
 
                         // support for multiple selections - remove the clear
                         scope.$apply(function () {
-                            scope.model.selectedAudioEvents.length = 0;
-                            scope.model.selectedAudioEvents.push(scope.model.audioEvents[element[0].annotationViewerIndex]);
+                            //scope.model.selectedAudioEvents.length = 0;
+                            //scope.model.selectedAudioEvents.push(scope.model.audioEvents[element[0].annotationViewerIndex]);
+
+                            angular.forEach(scope.model.audioEvents, function (value, key){
+                                value._selected = false;
+                            });
+
+                            // new form of selecting
+                            scope.model.audioEvents[element[0].annotationViewerIndex]._selected = true
                         });
                     },
                     "boxResizing": function (element, box) {
@@ -364,13 +373,13 @@
                             var itemToDelete = scope.model.audioEvents[element[0].annotationViewerIndex];
                             itemToDelete.deletedAt = (new Date());
 
-                            if (scope.model.selectedAudioEvents.length > 0) {
-                                var index = scope.model.selectedAudioEvents.indexOf(itemToDelete);
-
-                                if (index >= 0) {
-                                    scope.model.selectedAudioEvents.splice(index, 1);
-                                }
-                            }
+//                            if (scope.model.selectedAudioEvents.length > 0) {
+//                                var index = scope.model.selectedAudioEvents.indexOf(itemToDelete);
+//
+//                                if (index >= 0) {
+//                                    scope.model.selectedAudioEvents.splice(index, 1);
+//                                }
+//                            }
                         });
                     }
                 });
@@ -421,6 +430,33 @@
                 });
             }
         }
+    });
+
+    bawds.directive('bawChecked', function() {
+       return {
+           restict: 'A',
+           link: function radioInputType(scope, element, attr, ctrl) {
+               // make the name unique, if not defined
+               if (isUndefined(attr.name)) {
+                   element.attr('name', Number.Unique());
+               }
+
+               element.bind('click', function() {
+                   if (element[0].checked) {
+                       scope.$apply(function() {
+                           ctrl.$setViewValue(attr.value);
+                       });
+                   }
+               });
+
+               ctrl.$render = function() {
+                   var value = attr.value;
+                   element[0].checked = (value == ctrl.$viewValue);
+               };
+
+               attr.$observe('value', ctrl.$render);
+           }
+       }
     });
 })();
 

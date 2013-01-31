@@ -80,9 +80,13 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
             function audioEventsQuerySuccess() {
                 // TODO : map tag's
 
-                // give local Ids
+
                 for (var index = 0; index < $scope.model.audioEvents.length; index++) {
+                    // give local Ids
                     $scope.model.audioEvents[index].__temporaryId__ = Number.Unique;
+
+                    // give other properties
+                    $scope.model.audioEvents[index]._selected = false;
                 }
             },
             function audioEventQueryFailure() {
@@ -101,8 +105,28 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
         $scope.clearSelected = function() {
-            $scope.model.selectedAudioEvents.length = 0;
+            //$scope.model.selectedAudioEvents.length = 0;
+
+            angular.forEach($scope.model.audioEvents, function (value, key){
+               value._selected = false;
+            });
         };
+
+        $scope.selectedFilter = function(audioEvent) {
+            return audioEvent._selected;
+        };
+
+        $scope.debug = function(args) {
+            console.log(args);
+            console.log(this);
+
+        };
+
+//        $scope.selectAudioEvent = function(audioEvent) {
+//            $scope.model.selectedAudioEvents.length = 0;
+//            $scope.model.selectedAudioEvents.push(audioEvent);
+//        };
+
 
         $scope.addAnnotation = function createAnnotation() {
             // BUG: ONLY SAVES FIRST ONE

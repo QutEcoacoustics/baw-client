@@ -1,6 +1,8 @@
 @import "base";
 @import "../_dynamic.css.scss.erb";
 
+
+
 baw-annotation-viewer {
 
   & .tag-preview {
@@ -17,8 +19,11 @@ baw-annotation-viewer {
       //overflow: none;
 
       li {
+        border-bottom: red solid 1px;
+        margin-left: -6px;
         position: absolute;
-        top:  45px;
+        top:  42px;
+
 
         @include vendor-prefix(transform-origin, 0 0);
         @include vendor-prefix(transform, rotate3d(0,0,1,-20deg));
@@ -75,6 +80,17 @@ baw-annotation-viewer {
     border-color: nth($master-highlight, 2);
     position: absolute;
     background-color: rgba(255,255,255,0.05);
+    overflow: visible;
+
+    &:before {
+      border-left: red solid 1px;
+      height: 256px;
+      position: relative;
+      top: -257px;
+      left: -1px;
+      display: inline-block;
+      content: "";
+    }
 
     &[data-selected="true"] {
       border-color: nth($master-complementary, 2);

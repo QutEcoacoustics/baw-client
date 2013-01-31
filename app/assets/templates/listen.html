@@ -16,7 +16,7 @@
 
         <h3>Audio Controls</h3>
         <audio id="main-player" ng-audio="model.audioElement" controls>
-            <source ng-repeat="url in model.media.audioUrls" ng-src="{{url.url}}" src="" type="{{url.mime}}" >
+            <source ng-repeat="url in model.media.audioUrls" ng-src="{{url.url}}" src="" type="{{url.mime}}">
             Your browser does not support the audio element.
         </audio>
         <div id="listenEditContainer">
@@ -27,12 +27,13 @@
                 <span>Selected elements: {{model.selectedAudioEvents.length}}</span>
 
                 <form id="annotationEditForm" name="annotationEditForm"
-                      ng-repeat="selectedEvent in model.selectedAudioEvents">
+                      ng-repeat="selectedEvent in model.audioEvents | filter:selectedFilter">
                     <label>
                         <span>Tags</span>
                         <input type="hidden" ng-multiple="true" tags multiple ui-select2="{allowClear:true, tags:tags }"
-                                ng-model="selectedEvent.audioEventTags" />
-                            <!--<option ng-repeat="t in tags" value="{{t.id}}">{{t.text}} <span> &lt;!&ndash; ng-show={{t.type_of_tag}}&ndash;&gt;,-->
+                               ng-model="selectedEvent.audioEventTags"/>
+                        <!--<option ng-repeat="t in tags" value="{{t.id}}">{{t.text}} <span> &lt;!&ndash; ng-show={{t.type_of_tag}}&ndash;&gt;
+                        ,-->
                         <!--{{t.typeOfTag}} &lt;!&ndash; &ndash;&gt;</span></option>-->
 
                     </label>
@@ -72,6 +73,7 @@
                 <table>
                     <thead>
                     <tr>
+                        <th>Selected</th>
                         <th>Annotation ID</th>
                         <th>Audio Recording</th>
                         <th>Created At</th>
@@ -87,6 +89,9 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="ae in model.audioEvents">
+                        <td>
+                            <input type="radio" ng-checked="ae._selected" ng-model="ae._selected"   name="selectionRadioGroup"  >
+                        </td>
                         <td colspan="{{ae.id && 1 || 2}}">
                             {{ae.id}}
                     <span ng-hide="ae.id">
@@ -101,7 +106,7 @@
                         <td>{{ae.deleterId}}</td>
                         <td>{{ae.updatedAt}}</td>
                         <td>{{ae.updaterId}}</td>
-                        <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId}},</span></td>
+                        <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId}}{{!$last && ',' || ''}}</span></td>
                         <td>{{ae.startTimeSeconds}} - {{ae.endTimeSeconds}}</td>
                         <td>{{ae.lowFrequencyHertz}} - {{ae.highFrequencyHertz}}</td>
                     </tr>
