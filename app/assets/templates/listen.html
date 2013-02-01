@@ -90,7 +90,8 @@
                     <tbody>
                     <tr ng-repeat="ae in model.audioEvents">
                         <td>
-                            <input type="radio" ng-checked="ae._selected" ng-model="ae._selected"   name="selectionRadioGroup"  >
+                            <!--<input type="radio" ng-checked="ae._selected" ng-model="ae._selected"   name="selectionRadioGroup"  >-->
+                            <input type="radio" baw-checked ng-model="ae._selected"   name="selectionRadioGroup"  >
                         </td>
                         <td colspan="{{ae.id && 1 || 2}}">
                             {{ae.id}}

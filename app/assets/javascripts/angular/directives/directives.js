@@ -167,7 +167,9 @@
         }
 
         function updateUnitConversions(scope, imageWidth, imageHeight) {
-            var conversions = unitConversions(scope.model.media.sampleRate, scope.model.media.window, imageWidth, imageHeight)
+            var conversions = unitConversions(scope.model.media.sampleRate, scope.model.media.window, imageWidth, imageHeight);
+
+            var PRECISION = 6;
 
             return {
                 conversions : conversions,
@@ -432,25 +434,40 @@
         }
     });
 
+    /**
+     * A cross record element checker
+     */
     bawds.directive('bawChecked', function() {
+        
+        
        return {
            restict: 'A',
+            require: 'ngModel',
            link: function radioInputType(scope, element, attr, ctrl) {
                // make the name unique, if not defined
-               if (isUndefined(attr.name)) {
+               if (angularCopies.isUndefined(attr.name)) {
                    element.attr('name', Number.Unique());
                }
-
-               element.bind('click', function() {
-                   if (element[0].checked) {
+               
+               function updateModel() {
+                   // if value is defined, then when checked, set to value
+                   // otherwise just use true/false
+                   var value = angularCopies.isUndefined(attr.value) && element[0].checked || (element[0].checked && attr.value || null) ;
+                    if ( value != ctrl.$viewValue) {
                        scope.$apply(function() {
-                           ctrl.$setViewValue(attr.value);
+                           ctrl.$setViewValue(value);
                        });
+                    }
                    }
-               });
+               
+
+               element.bind('click', updateModel);
+               
+               element.bind('change', updateModel);
 
                ctrl.$render = function() {
-                   var value = attr.value;
+                   var value = angularCopies.isUndefined(attr.value) ? true : attr.value;
+                   
                    element[0].checked = (value == ctrl.$viewValue);
                };
 
