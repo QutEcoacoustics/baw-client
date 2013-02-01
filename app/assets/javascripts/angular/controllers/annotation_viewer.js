@@ -21,11 +21,15 @@ function AnnotationViewerCtrl($scope, $element, $attrs, $transclude) {
         }
     };
 
+    $scope.positionLabel = function (audioEvent) {
+        return $scope.model.converters.secondsToPixels(audioEvent.startTimeSeconds);
+    };
+
 
 
 
     // updated in directive
-    $scope.converters = {};
+    $scope.model.converters = $scope.model.converters || {};
 
 
 }

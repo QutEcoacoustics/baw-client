@@ -1,7 +1,7 @@
 <div ng-controller="AnnotationViewerCtrl">
     <div class="tag-preview">
         <ul>
-            <li ng-repeat="annotation in model.audioEvents" ng-style="{left: ($index * 40) + 'px' }" >
+            <li ng-repeat="annotation in model.audioEvents" ng-style="{left: (positionLabel(annotation)) + 'px' }" >
                 <span ng-repeat="tag in annotation.audioEventTags">
                     {{getTag(tag.tagId)}}{{!$last && ',' || ''}}
                 </span>
