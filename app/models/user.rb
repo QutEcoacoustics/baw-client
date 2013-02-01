@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  before_validation :ensure_password
 
   # NB: this intentionally left simple
   #   The bulk of the emails populated into this model will come from external authentication providers
@@ -60,6 +61,12 @@ class User < ActiveRecord::Base
 
   def skip_user_name_exclusion_list
     @skip_user_name_exclusion_list
+  end
+
+  private
+
+  def ensure_password
+    self.password = Devise.friendly_token[0,20] if self.password.blank?
   end
 
 end

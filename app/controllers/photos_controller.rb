@@ -72,7 +72,7 @@ class PhotosController < ApplicationController
     @photo.destroy
 
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 end

@@ -68,8 +68,10 @@ class ProgressesController < ApplicationController
     @progress = Progress.find(params[:id])
     @progress.destroy
 
+    add_archived_at_header @progress
+
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 end

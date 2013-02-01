@@ -68,8 +68,10 @@ class AudioRecordingsController < ApplicationController
     @audio_recording = AudioRecording.find(params[:id])
     @audio_recording.destroy
 
+    add_archived_at_header(@audio_recording)
+
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 

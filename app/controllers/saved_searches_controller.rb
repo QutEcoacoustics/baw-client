@@ -68,8 +68,10 @@ class SavedSearchesController < ApplicationController
     @saved_search = SavedSearch.find(params[:id])
     @saved_search.destroy
 
+    add_archived_at_header @saved_search
+
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 end

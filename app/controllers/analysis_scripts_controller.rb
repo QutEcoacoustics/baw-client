@@ -68,8 +68,10 @@ class AnalysisScriptsController < ApplicationController
     @analysis_script = AnalysisScript.find(params[:id])
     @analysis_script.destroy
 
+    add_archived_at_header(@analysis_script)
+
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 end

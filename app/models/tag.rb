@@ -4,8 +4,7 @@ class Tag < ActiveRecord::Base
   # relations
   has_many :audio_event_tags
   has_many :audio_events, :through => :audio_event_tags
-
-  accepts_nested_attributes_for :audio_events, :audio_event_tags
+  accepts_nested_attributes_for :audio_events
 
   # attr
   attr_accessible :is_taxanomic, :text, :type_of_tag
@@ -13,8 +12,8 @@ class Tag < ActiveRecord::Base
   # userstamp
   stampable
   belongs_to :user, class_name: 'User', foreign_key: :creator_id
-  acts_as_paranoid
-  validates_as_paranoid
+  #acts_as_paranoid # deletable, not archiveable
+  #validates_as_paranoid
 
   # enums
   AVAILABLE_TYPE_OF_TAGS = [:common_name, :species_name, :looks_like, :sounds_like].map{ |item| item.to_s }

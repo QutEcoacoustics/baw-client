@@ -42,6 +42,16 @@ class ApplicationController < ActionController::Base
     render :layout => false
   end
 
+  def add_archived_at_header(model)
+    #if model.respond_to?(:deleted_at) && !model.deleted_at.blank?
+      response.headers["X-Archived-At"] = 'hi'#model.deleted_at
+    #end
+  end
+
+  def no_content_as_json
+    head :no_content, :content_type => "application/json"
+  end
+
   private
 
   #def set_stamper

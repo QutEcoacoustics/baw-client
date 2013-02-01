@@ -29,11 +29,6 @@ class TagsController < ApplicationController
     end
   end
 
-  # GET /tags/1/edit
-  #def edit
-  #  @tag = Tag.find(params[:id])
-  #end
-
   # POST /tags
   # POST /tags.json
   def create
@@ -69,7 +64,7 @@ class TagsController < ApplicationController
     @tag.destroy
 
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 end

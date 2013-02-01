@@ -68,8 +68,10 @@ class SitesController < ApplicationController
     @site = Site.find(params[:id])
     @site.destroy
 
+    add_archived_at_header(@site)
+
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 end

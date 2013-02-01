@@ -25,20 +25,11 @@ class ProjectsController < ApplicationController
   # GET /projects/new.json
   def new
     @project = Project.new
-    #@project.sites.build
-    #@project.photos.build
-    #@all_sites = Site.all
 
     respond_to do |format|
       format.json { render json: @project }
     end
   end
-
-  # GET /projects/1/edit
-  #def edit
-  #  @project = Project.find(params[:id])
-  #@all_sites = Site.all
-  #end
 
   # POST /projects
   # POST /projects.json
@@ -61,9 +52,7 @@ class ProjectsController < ApplicationController
   # http://iqbalfarabi.net/2011/01/20/rails-nested-form-with-has-many-through-association/
   def update
     @project = Project.find(params[:id])
-	
-	#ProjectSite.find(2).destroy
-	
+
     respond_to do |format|
       if @project.update_attributes(params[:project])
         format.json { head :no_content }
@@ -79,8 +68,10 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     @project.destroy
 
+    add_archived_at_header(@project)
+
     respond_to do |format|
-      format.json { head :no_content }
+      format.json { no_content_as_json }
     end
   end
 end

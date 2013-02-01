@@ -68,9 +68,11 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.destroy
 
+    add_archived_at_header @user
+
     respond_to do |format|
-      format.html { redirect_to users_url }
-      format.json { head :no_content }
+      #format.html { redirect_to users_url }
+      format.json { no_content_as_json }
     end
   end
 end
