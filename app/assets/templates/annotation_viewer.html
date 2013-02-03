@@ -1,15 +1,16 @@
 <div ng-controller="AnnotationViewerCtrl">
-    <div class="tag-preview">
-        <ul>
-            <li ng-repeat="annotation in model.audioEvents" ng-style="{left: (positionLabel(annotation)) + 'px' }" >
+
+
+    <div id="scroller">
+        <div class="tag-preview">
+            <ul>
+                <li ng-repeat="annotation in model.audioEvents" ng-style="{left: (positionLabel(annotation)) + 'px' }" >
                 <span ng-repeat="tag in annotation.audioEventTags">
                     {{getTag(tag.tagId)}}{{!$last && ',' || ''}}
                 </span>
-            </li>
-        </ul>
-    </div>
-
-    <div id="scroller">
+                </li>
+            </ul>
+        </div>
         <div class="annotation-viewer" id="annotation-viewer_{{id}}" >
             <img ng-src="{{model.media.imageUrl}}" src="">
             <div id="spectrogramAnnotations_{{id}}" ></div>

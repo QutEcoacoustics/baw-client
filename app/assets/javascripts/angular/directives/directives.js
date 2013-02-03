@@ -172,7 +172,7 @@
             var PRECISION = 6;
 
             return {
-                conversions : conversions,
+                conversions: conversions,
                 pixelsToSeconds: function pixelsToSeconds(pixels) {
                     var seconds = pixels / conversions.pixelsPerSecond;
                     return seconds;
@@ -263,12 +263,12 @@
                     console.log("audioEvent watcher fired");
 
                     // TODO: SET UP CONVERSIONS HERE
-                    var top    = scope.model.converters.hertzToPixels(value.highFrequencyHertz),
-                        left   = scope.model.converters.secondsToPixels(value.startTimeSeconds),
-                        width  = scope.model.converters.secondsToPixels(value.endTimeSeconds - value.startTimeSeconds),
+                    var top = scope.model.converters.hertzToPixels(value.highFrequencyHertz),
+                        left = scope.model.converters.secondsToPixels(value.startTimeSeconds),
+                        width = scope.model.converters.secondsToPixels(value.endTimeSeconds - value.startTimeSeconds),
                         height = scope.model.converters.hertzToPixels(value.highFrequencyHertz - value.lowFrequencyHertz);
 
-                    drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, undefined);
+                    drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, value._selected);
                 }
             };
 
@@ -308,8 +308,12 @@
                 function updateConverters() {
                     scope.model.converters = updateUnitConversions(scope, scope.$image.width(), scope.$image.height());
                 }
-                scope.$watch(function() {return scope.model.media.imageUrl}, updateConverters);
+
+                scope.$watch(function () {
+                    return scope.model.media.imageUrl
+                }, updateConverters);
                 scope.$image[0].addEventListener('load', updateConverters, false);
+                updateConverters();
 
                 // init drawabox
                 scope.model.audioEvents = scope.model.audioEvents || [];
@@ -342,7 +346,7 @@
                             //scope.model.selectedAudioEvents.length = 0;
                             //scope.model.selectedAudioEvents.push(scope.model.audioEvents[element[0].annotationViewerIndex]);
 
-                            angular.forEach(scope.model.audioEvents, function (value, key){
+                            angular.forEach(scope.model.audioEvents, function (value, key) {
                                 value._selected = false;
                             });
 
@@ -399,7 +403,7 @@
             link: function (scope, elements, attributes, controller) {
                 var element = elements[0];
                 if (element.nodeName !== "AUDIO") {
-                    throw "Cannot put ngAudio element on an element that is not a <audio />";
+                    throw 'Cannot put ngAudio element on an element that is not a <audio />';
                 }
 
                 var events = {'abort': undefined, 'canplay': undefined, 'canplaythrough': undefined,
@@ -437,43 +441,88 @@
     /**
      * A cross record element checker
      */
-    bawds.directive('bawChecked', function() {
-        
-        
-       return {
-           restict: 'A',
+    bawds.directive('bawChecked', function () {
+
+        // a cache of elements for each radio group
+        var library = {};
+
+
+        return {
+            restict: 'A',
             require: 'ngModel',
-           link: function radioInputType(scope, element, attr, ctrl) {
-               // make the name unique, if not defined
-               if (angularCopies.isUndefined(attr.name)) {
-                   element.attr('name', Number.Unique());
-               }
-               
-               function updateModel() {
-                   // if value is defined, then when checked, set to value
-                   // otherwise just use true/false
-                   var value = angularCopies.isUndefined(attr.value) && element[0].checked || (element[0].checked && attr.value || null) ;
-                    if ( value != ctrl.$viewValue) {
-                       scope.$apply(function() {
-                           ctrl.$setViewValue(value);
-                       });
+            link: function radioInputType(scope, element, attr, ctrl) {
+                // make the name unique, if not defined
+                if (angularCopies.isUndefined(attr.name)) {
+                    element.attr('name', Number.Unique());
+                }
+
+                // add element to cache group
+                library[attr.name] = [];
+
+                function fixLast(negativeModelValue) {
+                    if (library[attr.name].length > 0) {
+                        var oldScope = library[attr.name].pop();
+
+                        oldScope[0].$safeApply2(function () {
+                            // for the other elements, ensure consistent state
+                            oldScope[1].$setViewValue(negativeModelValue);
+                        });
                     }
-                   }
-               
 
-               element.bind('click', updateModel);
-               
-               element.bind('change', updateModel);
+                    library[attr.name].push([scope, ctrl]);
+                }
 
-               ctrl.$render = function() {
-                   var value = angularCopies.isUndefined(attr.value) ? true : attr.value;
-                   
-                   element[0].checked = (value == ctrl.$viewValue);
-               };
 
-               attr.$observe('value', ctrl.$render);
-           }
-       }
+                // reverse binding (from element to model)
+
+                function updateModel() {
+                    // if value is defined, then when checked, set to value
+                    // otherwise just use true/false
+                    var negativeModelValue;
+                    var newModelValue;
+                    var checked = element[0].checked;
+                    if (angularCopies.isUndefined(attr.value)) {
+                        newModelValue = checked;
+                        negativeModelValue = !checked;
+                    }
+                    else {
+                        newModelValue = checked ? attr.value : null;
+                        negativeModelValue = checked ? null : attr.value;
+                    }
+
+
+                    if (newModelValue != ctrl.$viewValue) {
+                        fixLast(negativeModelValue);
+
+                        scope.$apply(function () {
+                            // for the current element change it
+                            ctrl.$setViewValue(newModelValue);
+                        });
+                    }
+
+
+                }
+
+
+                element.bind('click', updateModel);
+//               element.bind('change', updateModel);
+
+                // forward binding (from model to element)
+                ctrl.$render = function () {
+                    var value = angularCopies.isUndefined(attr.value) ? true : attr.value;
+
+                    element[0].checked = (value == ctrl.$viewValue);
+
+                    if (element[0].checked === true) {
+                        fixLast(false);
+                    }
+                };
+
+                attr.$observe('value', ctrl.$render);
+            }
+        }
     });
+
+
 })();
 

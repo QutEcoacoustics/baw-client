@@ -94,7 +94,8 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
             });
 
 
-        $scope.tags = Tag.query();
+        // download all the tags and store them in Tag service cache
+        Tag.query({}, {}, function(){}, undefined);
 
         $scope.model.limits = {
           timeMin: 0.0,

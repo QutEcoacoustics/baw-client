@@ -1,5 +1,5 @@
-@import "base";
-@import "../_dynamic.css.scss.erb";
+@import 'base';
+@import '../_dynamic.css.scss.erb';
 
 
 
@@ -107,7 +107,7 @@ baw-annotation-viewer {
   }
 
   & .close-icon {
-    position: relative;
+    position: absolute;
     left: 3px;
     top: 6px;
     color: black;

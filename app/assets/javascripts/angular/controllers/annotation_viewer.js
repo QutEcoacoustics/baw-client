@@ -41,6 +41,8 @@ function Annotation(localId, audioRecordingId) {
     var now = new Date();
 
     this.__temporaryId__ = localId || Number.Unique();
+    this._selected = false;
+
     this.audioRecordingId = audioRecordingId;
 
     this.createdAt = now;

@@ -33,7 +33,7 @@
 
     bawss.factory('AudioRecording', [ '$resource', function ($resource) {
         return resourcePut($resource, '/audio_recordings/:recordingId', {recordingId: '@recordingId'});
-    }]);;
+    }]);
 
     bawss.factory('AudioEvent', [ '$resource', function ($resource) {
         var actions = {
@@ -45,8 +45,54 @@
         return resource;
     }]);
 
-    bawss.factory('Tag', [ '$resource', function ($resource) {
-        return $resource('/tags/:tagId', {tagId: '@tagId'}, {});
+
+    function wrap(resource, method, injection) {
+        var wrappedMethod = resource[method];
+
+        resource[method] = function (params, data, success, error) {
+            if (arguments.length != 4) {
+                throw "we are doing some funky stuff on this resource method... expecting exactly 4 arguments [params, data, success, error]";
+            }
+
+            var newSuccess = function (value, headers) {
+                injection(value, headers);
+                success(value, headers);
+            };
+
+            return wrappedMethod.call(wrappedMethod, params, data, newSuccess, error);
+        };
+    }
+
+    /**
+     * A Service for dealing with textual Tags
+     *
+     * This service memoises requests for tags
+     */
+    bawss.factory('Tag', [ '$resource', '$q', function ($resource, $q) {
+        var resource =  $resource('/tags/:tagId', {tagId: '@tagId'}, {});
+
+        var tags = {};
+
+        function memoize(result) {
+            if (angular.isArray(result)) {
+                angular.forEach(result, function(value) {
+                    tags[value.id] = value;
+                })
+            }
+            else {
+                tags[result.id] = result;
+            }
+        }
+
+        wrap(resource, "get", memoize);
+        wrap(resource, "query", memoize);
+
+        resource.resolve = function resolveTag(id) {
+          var tag = tags[id];
+          return tag;
+        };
+
+        return resource;
     }]);
 
     bawss.factory('Media', [ '$resource', function ($resource) {
