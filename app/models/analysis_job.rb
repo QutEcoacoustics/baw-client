@@ -20,8 +20,10 @@ class AnalysisJob < ActiveRecord::Base
   accepts_nested_attributes_for :saved_search
 
   # userstamp
+  acts_as_paranoid
   stampable
   belongs_to :user, class_name: 'User', foreign_key: :creator_id
+  validates_as_paranoid
 
   # validations
   validates :name, presence: true, length: { minimum: 2, maximum: 255 }, uniqueness: { case_sensitive: false }

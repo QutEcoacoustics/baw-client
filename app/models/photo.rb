@@ -5,6 +5,10 @@ class Photo < ActiveRecord::Base
   # attr
   attr_accessible :copyright, :uri, :description, :imageable_type, :imageable_id
 
+  # userstamp
+  stampable
+  belongs_to :user, class_name: 'User', foreign_key: :creator_id
+
   # validation
   # http://stackoverflow.com/questions/6778269/rails-3-polymorphic-liking-of-entities-by-user-how
   # http://stackoverflow.com/questions/746387/labels-for-radio-buttons-in-rails-form

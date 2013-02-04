@@ -16,9 +16,9 @@ class Site < ActiveRecord::Base
   accepts_nested_attributes_for :audio_recordings
 
   # userstamp
-  stampable
-  belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
   acts_as_paranoid
+  stampable
+  belongs_to :user, class_name: 'User', foreign_key: :creator_id
   validates_as_paranoid
 
   # validations

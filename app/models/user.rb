@@ -16,9 +16,12 @@ class User < ActiveRecord::Base
 
 
 
-  # user stamp
-  model_stamper
+  # userstamp
+  model_stamper # this identifies this class as being the class that 'stamps'
+  acts_as_paranoid
   stampable
+  belongs_to :user, class_name: 'User', foreign_key: :creator_id
+  validates_as_paranoid
 
   # other associations
   has_many :authorizations, :dependent => :destroy

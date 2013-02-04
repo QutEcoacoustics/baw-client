@@ -17,9 +17,9 @@ class Project < ActiveRecord::Base
 
 
   # userstamp
-  stampable
-  belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
   acts_as_paranoid
+  stampable
+  belongs_to :user, class_name: 'User', foreign_key: :creator_id
   validates_as_paranoid
 
   # validation
