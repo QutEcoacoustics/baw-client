@@ -10,7 +10,7 @@ class AudioRecording < ActiveRecord::Base
   # relations
   belongs_to :site
   has_many :audio_events
-  belongs_to :user, :class_name => 'User', :foreign_key => "uploader_id"
+  belongs_to :user, :class_name => 'User', :foreign_key => :uploader_id
   has_many :analysis_items
   has_many :bookmarks
 
@@ -23,9 +23,9 @@ class AudioRecording < ActiveRecord::Base
   accepts_nested_attributes_for :site
 
   # userstamp
-  stampable
-  belongs_to :user, :class_name => 'User', :foreign_key => :creator_id
   acts_as_paranoid
+  stampable
+  belongs_to :user, class_name: 'User', foreign_key: :creator_id
   validates_as_paranoid
 
   #enums

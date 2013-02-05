@@ -16,6 +16,9 @@ class AnalysisItem < ActiveRecord::Base
   enumerize :status, in: AVAILABLE_STATUSES, :default => :ready, predicates: true
   validates :status, inclusion: {in: AVAILABLE_STATUSES}, presence: true
 
+
+  # userstamp not used
+
   # validations
   validates :offset_start_seconds, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :offset_end_seconds, presence: true, numericality: {greater_than_or_equal_to: 0}
