@@ -39,7 +39,6 @@ class User < ActiveRecord::Base
   has_many :bookmarks, :foreign_key => :creator_id
   has_many :saved_searches, :foreign_key => :creator_id
 
-
   # validation
   #validates_presence_of :display_name
   validates :user_name, presence: true, uniqueness: { case_sensitive: false },
@@ -53,7 +52,6 @@ class User < ActiveRecord::Base
   validates :email, format: {with:VALID_EMAIL_REGEX, message: 'Basic email validation failed. It should have at least 1 `@` and 1 `.`'}
 
   #friendly_id :display_name, :use_slug => true, :strip_non_ascii => true
-
 
   # special validation skip
   # these methods allow a temporary skip of exclusion validation. this is used for seeding users into the database

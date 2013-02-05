@@ -6,7 +6,7 @@ class Permission < ActiveRecord::Base
   belongs_to :permissionable, :polymorphic => true
 
   # attr
-  attr_accessible :user_id, :level, :permissionable_type, :permissionable_id
+  attr_accessible :user_id, :level, :logged_in, :permissionable_type, :permissionable_id
 
   # userstamp
   stampable
@@ -18,20 +18,34 @@ class Permission < ActiveRecord::Base
   validates :level, :inclusion => {in: AVAILABLE_LEVELS}, :presence => true
 
   # validation
-  validate :anonymous_permission_can_only_be_read_or_none
+  validate :check_invalid_combinations
 
   # custom validation methods
-  def anonymous_permission_can_only_be_read_or_none
-    return unless self.user.nil?
+  def check_invalid_combinations
+    # any logged in user can be an owner? No
+    if self.logged_in && self.owner? && self.user.blank?
+      errors.add(:user_id, "Owner permissions must be specified with a user id.")
+    end
 
-    return if self.reader? || self.none?
+    # any anonymous user can be an owner? No
+    if !self.logged_in && self.owner? && self.user.blank?
+      errors.add(:level, "Anonymous users cannot have owners permission.")
+    end
 
-    errors.add(:level, "The permission level can only be 'read' or 'none' for anonymous permissions")
+    # any anonymous user can be an owner? No
+    if !self.logged_in && self.writer? && self.user.blank?
+      errors.add(:level, "Anonymous users cannot have writer permission.")
+    end
+
+    # not logged in and user id specified is not allowed
+    if !self.logged_in && !self.user.blank?
+      errors.add(:user_id, "Permissions cannot have a user id and not be logged in.")
+    end
   end
 
   # methods
   def anonymous?
-    self.user.nil?
+    self.user.blank?
   end
 
   # http://stackoverflow.com/questions/11569940/inclusion-validation-fails-when-provided-a-symbol-instead-of-a-string
