@@ -60,6 +60,7 @@ baw-annotation-viewer {
       position: absolute;
       top: 0;
       left: 0;
+      overflow: hidden;
 
       // debug
       @if $DEBUG { background-color: rgba(255,0,0,0.15) ;}

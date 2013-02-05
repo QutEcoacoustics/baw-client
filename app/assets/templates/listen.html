@@ -12,7 +12,14 @@
         <p>Listen and annotate.</p>
 
         <h3>Spectrogram</h3>
+        <p>
+           Date: {{model.media.original.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}
+        </p>
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
+        <p>
+            <span>Date: {{model.media.original.recordedDate}}</span>
+            <span>Date: {{model.media.original.recordedDate}}</span>
+        </p>
 
         <h3>Audio Controls</h3>
         <audio id="main-player" ng-audio="model.audioElement" controls>
@@ -74,6 +81,7 @@
                     <thead>
                     <tr>
                         <th>Selected</th>
+                        <th>Jump to</th>
                         <th>Annotation ID</th>
                         <th>Audio Recording</th>
                         <th>Created At</th>
@@ -91,7 +99,11 @@
                     <tr ng-repeat="ae in model.audioEvents">
                         <td>
                             <!--<input type="radio" ng-checked="ae._selected" ng-model="ae._selected"   name="selectionRadioGroup"  >-->
-                            <input type="radio" baw-checked ng-model="ae._selected"   name="selectionRadioGroup"  >
+                            <input type="radio" baw-checked ng-model="ae._selected"  name="selectionRadioGroup"  >
+                            SELECTED:{{ae._selected}}
+                        </td>
+                        <td>
+                            <!-- TODO -->
                         </td>
                         <td colspan="{{ae.id && 1 || 2}}">
                             {{ae.id}}

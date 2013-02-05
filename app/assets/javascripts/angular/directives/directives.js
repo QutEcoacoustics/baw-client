@@ -199,8 +199,9 @@
          * @param scope
          */
         function resizeOrMove(audioEvent, box, scope) {
+            var boxId = parseInt(box.id);
 
-            if (audioEvent.__temporaryId__ === box.id) {
+            if (audioEvent.__temporaryId__ === boxId) {
                 audioEvent.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
                 audioEvent.highFrequencyHertz = scope.model.converters.pixelsToHertz(box.top || 0);
 
@@ -208,7 +209,7 @@
                 audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz + scope.model.converters.pixelsToHertz(box.height || 0);
             }
             else {
-                console.error("Box ids do not match on resizing  or move event", audioEvent.__temporaryId__, box.id);
+                console.error("Box ids do not match on resizing  or move event", audioEvent.__temporaryId__, boxId);
             }
         }
 
@@ -226,7 +227,7 @@
 
         function create(simpleBox, audioRecordingId, scope) {
 
-            var audioEvent = new Annotation(simpleBox.id, audioRecordingId);
+            var audioEvent = new Annotation(parseInt(simpleBox.id), audioRecordingId);
 
             resizeOrMove(audioEvent, simpleBox, scope);
             touchUpdatedField(audioEvent);
@@ -503,9 +504,8 @@
 
                 }
 
-
                 element.bind('click', updateModel);
-//               element.bind('change', updateModel);
+                // element.bind('change', updateModel);
 
                 // forward binding (from model to element)
                 ctrl.$render = function () {
@@ -519,6 +519,10 @@
                 };
 
                 attr.$observe('value', ctrl.$render);
+
+
+                // lastly cache any new items
+//                library[attr.name].push([scope, ctrl]);
             }
         }
     });
