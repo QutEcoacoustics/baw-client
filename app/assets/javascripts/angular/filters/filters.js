@@ -31,4 +31,23 @@
         }
     });
 
+    /**
+     * moment js adapters
+     *
+     * requires momentjs
+     */
+    bawfs.filter('moment', function() {
+       return function(input, method) {
+
+           if (input) {
+               var restOfArguments = Array.prototype.slice.call(arguments, 2, arguments.length)
+
+               var  m = moment(input);
+               return m[method].apply(m, restOfArguments);
+
+           }
+
+       }
+    });
+
 })();

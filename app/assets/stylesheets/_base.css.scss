@@ -24,6 +24,13 @@ $master-complementary:  #4A2B66 #73305F #34346A;
 
 $error-dirty:           rgba(216, 109, 132, 0.7) rgba(216, 109, 132, 0.4) rgba(216, 109, 132, 0.1);
 
+// https://kuler.adobe.com/#themeID/2220568
+$time-recording-relative-color: #67BF47;
+$time-segment-relative-color: #2DA65D;
+$time-chunk-relative-color: #34888C;
+$time-absolute-color: #414F73;
+$time-duration-color: #EEF272;
+
 $standard-padding-horizontal: 0.5em;
 $standard-padding-vertical:   0.25em;
 $standard-padding:             $standard-padding-vertical $standard-padding-horizontal;
@@ -37,7 +44,7 @@ $adjacent-padding: $standard-padding-horizontal / 2;
 $border-width: 1px;
 $border-style: solid;
 $standard-border: $border-width $border-style;
-$standard-border-radius: 6px;
+$standard-border-radius: 4px;
 
 $standard-glow-alpha: 0.2;
 

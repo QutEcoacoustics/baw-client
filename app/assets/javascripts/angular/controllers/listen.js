@@ -82,11 +82,8 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
                 for (var index = 0; index < $scope.model.audioEvents.length; index++) {
-                    // give local Ids
-                    $scope.model.audioEvents[index].__temporaryId__ = Number.Unique;
-
-                    // give other properties
-                    $scope.model.audioEvents[index]._selected = false;
+                    // transform
+                    $scope.model.audioEvents[index] = new Annotation($scope.model.audioEvents[index]);
                 }
             },
             function audioEventQueryFailure() {
@@ -95,7 +92,9 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
         // download all the tags and store them in Tag service cache
-        Tag.query({}, {}, function(){}, undefined);
+        Tag.query({}, {}, function(){
+           
+        }, undefined);
 
         $scope.model.limits = {
           timeMin: 0.0,
@@ -104,6 +103,20 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
             freqMax: 11025.0
         };
 
+
+        $scope.startOffset = function() {
+            if (!$scope.model.media) {
+                return;
+            }
+
+            return moment($scope.model.media.original.recordedDate).add({seconds: $scope.model.media.startOffset});
+        };
+        $scope.endOffset = function() {
+            if (!$scope.model.media) {
+                return;
+            }
+            return moment($scope.model.media.original.recordedDate).add({seconds: $scope.model.media.endOffset});
+        };
 
         $scope.clearSelected = function() {
             //$scope.model.selectedAudioEvents.length = 0;
