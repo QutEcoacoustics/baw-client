@@ -1,0 +1,53 @@
+@import 'base';
+
+@mixin hint-custom-color($color, $content) {
+  border-color: $color;
+
+  &:before {
+    border-top-color: $color;
+  }
+  &:after{
+    background-color: $color;
+    text-shadow: darken($color, 20%);
+    content: $content;
+  }
+
+}
+
+.time {
+  background-color: nth($master-background, 2) ;
+  @include rounded-corners($standard-border-radius);
+  color: nth($master-dark, 2);
+  border-style: solid;
+  border-width: 2px;
+  @extend .hint;
+  @extend .hint--top;
+  padding: 0 $standard-padding-horizontal;
+}
+
+.relative-recording-time {
+  @extend .time;
+  @include hint-custom-color($time-recording-relative-color, "Time measured from the start of the audio file");
+
+}
+
+.relative-segment-time {
+  @extend .time;
+  @include hint-custom-color($time-segment-relative-color, "Time measured from the start of the segment");
+}
+
+.relative-chunk-time {
+  @extend .time;
+  @include hint-custom-color($time-chunk-relative-color, "Time measured from the start of the playing audio");
+}
+
+.absolute-time {
+  @extend .time;
+  @include hint-custom-color($time-absolute-color, "An absolute point in time");
+}
+
+.duration {
+  @extend .time;
+  @include hint-custom-color($time-duration-color, "A span of time (a length)");
+}
+

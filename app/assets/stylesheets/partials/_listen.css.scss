@@ -14,3 +14,17 @@
   display: inline-block;
   vertical-align: top;
 }
+
+#segmentTimeStamps {
+  width: 100%;
+
+  & span {
+    &:nth-child(1) {
+      float: left;
+    }
+
+    &:nth-child(2) {
+      float: right;
+    }
+  }
+}

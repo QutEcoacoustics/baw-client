@@ -105,10 +105,17 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
 
 
         $scope.startOffset = function() {
-            return moment($scope.media.model.original.recordedDate).add({seconds: $scope.media.model.startOffset});
+            if (!$scope.model.media) {
+                return;
+            }
+
+            return moment($scope.model.media.original.recordedDate).add({seconds: $scope.model.media.startOffset});
         };
         $scope.endOffset = function() {
-            return moment($scope.media.model.original.recordedDate).add({seconds: $scope.media.model.endOffset});
+            if (!$scope.model.media) {
+                return;
+            }
+            return moment($scope.model.media.original.recordedDate).add({seconds: $scope.model.media.endOffset});
         };
 
         $scope.clearSelected = function() {

@@ -13,13 +13,13 @@
 
         <h3>Spectrogram</h3>
         <p>
-           Date: {{model.media.original.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}
+           Start date of audio recording: <span class="absolute-time">{{model.media.original.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>, Duration: {{model.media.original.duration}}seconds
         </p>
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
-        <p>
-            <span>Date: {{model.media.original.recordedDate}}</span>
-            <span>Date: {{model.media.original.recordedDate}}</span>
-        </p>
+        <div id="segmentTimeStamps">
+            <span >Segment start: <span class="relative-chunk-time">{{model.media.startOffset| moment:"format":"HH:mm:ss"}}</span></span>
+            <span >Segment end: <span class="relative-chunk-time">{{model.media.startOffset | moment:"format":"HH:mm:ss"}}</span></span>
+        </div>
 
         <h3>Audio Controls</h3>
         <audio id="main-player" ng-audio="model.audioElement" controls>
@@ -120,8 +120,8 @@
                         <td>{{ae.updatedAt}}</td>
                         <td>{{ae.updaterId}}</td>
                         <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId}}{{!$last && ',' || ''}}</span></td>
-                        <td>{{ae.startTimeSeconds}} - {{ae.endTimeSeconds}}</td>
-                        <td>{{ae.lowFrequencyHertz}} - {{ae.highFrequencyHertz}}</td>
+                        <td>{{ae.startTimeSeconds | number:3}} - {{ae.endTimeSeconds | number:3}}</td>
+                        <td>{{ae.lowFrequencyHertz  | number:3}} - {{ae.highFrequencyHertz | number:3}}</td>
                     </tr>
                     </tbody>
                 </table>
