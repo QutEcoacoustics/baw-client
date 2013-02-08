@@ -51,19 +51,19 @@ class PermissionsController < ApplicationController
   # PUT /permissions/1
   # PUT /permissions/1.json
   def update
-    #@permission = Permission.find(params[:id])
-    #
-    #respond_to do |format|
-    #  if @permission.update_attributes(params[:permission])
-    #    format.json { head :no_content }
-    #  else
-    #    format.json { render json: @permission.errors, status: :unprocessable_entity }
-    #  end
-    #end
+    @permission = Permission.find(params[:id])
 
     respond_to do |format|
-      format.json { head :bad_request }
+      if @permission.update_attributes(params[:permission])
+        format.json { head :no_content }
+      else
+        format.json { render json: @permission.errors, status: :unprocessable_entity }
+      end
     end
+
+    #respond_to do |format|
+    #  format.json { head :bad_request }
+    #end
   end
 
   # DELETE /permissions/1
