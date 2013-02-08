@@ -1,24 +1,38 @@
 <div id="content" data-ng-controller="ListenCtrl">
-
-    <a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">demo</a>
-    <a href="/listen/">demo empty</a>
-
     <div ng-show="errorState">
         Something has gone wrong - can't load this page.
     </div>
     <div ng-hide="errorState">
         <h1>Listen</h1>
-
-        <p>Listen and annotate.</p>
-
+        Listen and annotate.
+        <ul>
+        <li>
+            Audio recording: <span class="absolute-time hint--top">{{model.media.original.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>, Duration of recording: <span class="duration hint--top" >{{model.media.original.durationSeconds | formatTimeSpan}} </span>
+        </li>
+        <li>
+            Segment: <span class="absolute-time hint--top">--TODO--</span>, Duration of segment: <span class="duration hint--top" >--TODO-- </span>
+        </li>
+        <li>
+            On screen: <span class="absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>, Duration of chunk: <span class="duration hint--top" >{{durationChunk()}} </span>
+        </li>
+        </ul>
+        <div>
+            <h3>Navigation</h3>
+            <a ng-href="{{createNavigationHref('previous')}}" class="">Previous chunk</a>
+            <a ng-href="{{createNavigationHref('next')}}" class="">Next chunk</a>
+        </div>
         <h3>Spectrogram</h3>
-        <p>
-           Start date of audio recording: <span class="absolute-time">{{model.media.original.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>, Duration: {{model.media.original.duration}}seconds
-        </p>
+
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
-        <div id="segmentTimeStamps">
-            <span >Segment start: <span class="relative-chunk-time">{{model.media.startOffset| moment:"format":"HH:mm:ss"}}</span></span>
-            <span >Segment end: <span class="relative-chunk-time">{{model.media.startOffset | moment:"format":"HH:mm:ss"}}</span></span>
+        <div id="chunkTimeStamps" class="clear-pseudo">
+            <span class="left" >Segment start: <span class="relative-recording-time hint--right">{{startOffsetChunk()}}</span>
+            </span>
+            <span class="position">
+                Position: <br />
+                <span class="relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br />
+                <span class="relative-recording-time hint--bottom">{{currentOffsetRecording()}}</span>
+            </span>
+            <span class="right">Segment end: <span class="relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
         </div>
 
         <h3>Audio Controls</h3>
@@ -99,7 +113,7 @@
                     <tr ng-repeat="ae in model.audioEvents">
                         <td>
                             <!--<input type="radio" ng-checked="ae._selected" ng-model="ae._selected"   name="selectionRadioGroup"  >-->
-                            <input type="radio" baw-checked ng-model="ae._selected"  name="selectionRadioGroup"  >
+                            <input type="radio" baw-checked="ae._selected"  name="selectionRadioGroup"  >
                             SELECTED:{{ae._selected}}
                         </td>
                         <td>

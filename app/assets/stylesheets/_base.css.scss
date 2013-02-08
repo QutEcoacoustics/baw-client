@@ -29,7 +29,7 @@ $time-recording-relative-color: #67BF47;
 $time-segment-relative-color: #2DA65D;
 $time-chunk-relative-color: #34888C;
 $time-absolute-color: #414F73;
-$time-duration-color: #EEF272;
+$time-duration-color: #623D73; //#EEF272;
 
 $standard-padding-horizontal: 0.5em;
 $standard-padding-vertical:   0.25em;
@@ -116,6 +116,8 @@ $footer-height: 40px;
   @include transition(box-shadow border-color,  400ms 50ms, linear linear);
 
 }
+
+
 
 
 /*

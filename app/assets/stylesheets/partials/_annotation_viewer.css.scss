@@ -63,8 +63,21 @@ baw-annotation-viewer {
       overflow: hidden;
 
       // debug
-      @if $DEBUG { background-color: rgba(255,0,0,0.15) ;}
+     // @if $DEBUG { background-color: rgba(255,0,0,0.15) ;}
 
+      // required for IE10
+      background-color: rgba(255, 255, 255, 0);
+
+    }
+
+    & .positionLine {
+      border-left: solid 1px red;
+      height: 100%;
+      width: 1px;
+      position: absolute;
+      top:  0;
+      left: 0;
+      -webkit-transform: translatex(0px);
     }
   }
 

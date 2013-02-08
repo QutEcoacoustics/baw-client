@@ -234,6 +234,19 @@ body:before {
   @include rounded-corners($standard-border-radius);
 }
 
+.clear-pseudo {
+  &:after {
+    display: block;
+    clear:  both;
+    content: " ";
+    height: 0;
+    overflow: hidden;
+  }
+}
+
+.clear {
+  overflow: hidden;
+}
 
 .standard-transition{
   @include transition();

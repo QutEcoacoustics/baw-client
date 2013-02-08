@@ -233,8 +233,8 @@
         }
 
         function openIdLogin(url) {
-            var popPath = "/security/auth/open_id?openid_url=" + angularCopies.fixedEncodeURIComponent(url);
-            popUpWindow(popPath, 700, 500, function (data) {
+            var popPath = "/security/auth/open_id?openid_url=" + baw.angularCopies.fixedEncodeURIComponent(url);
+            baw.popUpWindow(popPath, 700, 500, function (data) {
                 data = data || {};
 
                 railsFieldRenamingInterceptor().core(data);

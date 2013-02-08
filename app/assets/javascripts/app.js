@@ -69,7 +69,7 @@ var bawApp = (function (undefined) {
 
     app.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider.whenDefaults = whenDefaults;
-        $routeProvider.fluidIf = fluidIf;
+        $routeProvider.fluidIf = baw.fluidIf;
 
         // routes
         $routeProvider.
@@ -197,7 +197,7 @@ var bawApp = (function (undefined) {
             return {};
         };
         $rootScope.authTokenQuery = function() {
-            return angularCopies.toKeyValue($rootScope.authTokenParams());
+            return baw.angularCopies.toKeyValue($rootScope.authTokenParams());
         };
 
         $rootScope.loggedIn = false;

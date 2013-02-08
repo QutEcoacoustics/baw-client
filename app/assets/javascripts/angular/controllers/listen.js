@@ -8,8 +8,9 @@
  * @constructor
  * @param Tag
  * @param Media
+ * @param $route
  */
-function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
+function ListenCtrl($scope, $resource, $routeParams, $route, Media, AudioEvent, Tag) {
     var CHUNK_DURATION_SECONDS = 30.0;
     function getMediaParameters() {
         return {
@@ -21,7 +22,7 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
         }
     }
 
-    $scope.errorState = !GUID_REGEXP.test($routeParams.recordingId);
+    $scope.errorState = !baw.GUID_REGEXP.test($routeParams.recordingId);
 
     if ($scope.errorState) {
         console.warn("Invalid guid specified in route... page rendering disabled");
@@ -104,18 +105,74 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
         };
 
 
-        $scope.startOffset = function() {
+        $scope.startOffsetChunk = function() {
             if (!$scope.model.media) {
                 return;
             }
 
-            return moment($scope.model.media.original.recordedDate).add({seconds: $scope.model.media.startOffset});
+            return baw.secondsToDurationFormat($scope.model.media.startOffset);
         };
-        $scope.endOffset = function() {
+        $scope.endOffsetChunk = function() {
             if (!$scope.model.media) {
                 return;
             }
-            return moment($scope.model.media.original.recordedDate).add({seconds: $scope.model.media.endOffset});
+            return baw.secondsToDurationFormat($scope.model.media.endOffset);
+        };
+
+        $scope.durationChunk = function() {
+            if (!$scope.model.media) {
+                return;
+            }
+            return baw.secondsToDurationFormat($scope.model.media.endOffset - $scope.model.media.startOffset);
+        };
+
+        $scope.currentOffsetChunk = function() {
+            var offset = 0;
+            if ($scope.model.audioElement) {
+                offset = $scope.model.audioElement.position;
+            }
+            return baw.secondsToDurationFormat(offset);
+        };
+
+        $scope.currentOffsetRecording = function() {
+            var offset = 0;
+            if ($scope.model.audioElement) {
+                offset = $scope.model.audioElement.position;
+            }
+
+            if (!$scope.model.media) {
+                return "";
+            }
+
+            var start = parseFloat($scope.model.media.startOffset);
+
+            return baw.secondsToDurationFormat(start + offset);
+        };
+
+        $scope.absoluteDateChunkStart = function() {
+            if (!$scope.model.media || !$scope.model.media.original) {
+                return;
+            }
+
+            var base = moment($scope.model.media.original.recordedDate);
+            var offset = base.add({seconds: $scope.model.media.startOffset});
+            return offset;
+        };
+
+        $scope.createNavigationHref = function(linkType, stepBy) {
+
+            if (!angular.isNumber(stepBy)) {
+                stepBy = CHUNK_DURATION_SECONDS;
+            }
+
+            if (linkType === "previous") {
+                return "/listen/" + recordingId + "/start=" + ($routeParams.start - stepBy)  + "/end=" +  ($routeParams.end - stepBy);
+            }
+            else if (linkType === "next") {
+                return "/listen/" + recordingId + "/start=" + ($routeParams.start + stepBy)  + "/end=" + ($routeParams.end + stepBy) ;
+            }
+
+            throw "Invalid link type specified in createNavigationHref";
         };
 
         $scope.clearSelected = function() {
@@ -181,4 +238,4 @@ function ListenCtrl($scope, $resource, $routeParams, Media, AudioEvent, Tag) {
     }
 }
 
-ListenCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Media', 'AudioEvent', 'Tag'];
+ListenCtrl.$inject = ['$scope', '$resource', '$routeParams', '$route', 'Media', 'AudioEvent', 'Tag'];

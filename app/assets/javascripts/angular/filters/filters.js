@@ -50,4 +50,22 @@
        }
     });
 
+
+    /**
+     * Format a given value to the with the site's default timespan formatter
+     * assumes input is in seconds
+     */
+    bawfs.filter('formatTimeSpan', function() {
+        return function(input) {
+
+            if (input) {
+                return baw.secondsToDurationFormat(input);
+            }
+            else {
+                return '';
+            }
+
+        }
+    });
+
 })();

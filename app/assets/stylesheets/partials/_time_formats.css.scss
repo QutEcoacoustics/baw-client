@@ -1,53 +1,78 @@
 @import 'base';
 
+@mixin arrow-border-color($color, $isInsideSelector: "true") {
+  @each $position in top, bottom, left, right {
+  // if the current mixin is called from within a selector, use a '&'. Otherwise not.
+    @if $isInsideSelector == "true" {
+      &.hint--#{$position}:before {
+        border-#{$position}-color: $color;
+      }
+    } @else {
+      .hint--#{$position}:before {
+        border-#{$position}-color: $color;
+      }
+    }
+  }
+}
+
 @mixin hint-custom-color($color, $content) {
   border-color: $color;
-
+  @include vendor-prefix(box-shadow, 1px 1px 8px -1px rgba($color, 0.5));
   &:before {
-    border-top-color: $color;
+    //border-top-color: $color;
   }
-  &:after{
+  &:after {
     background-color: $color;
-    text-shadow: darken($color, 20%);
-    content: $content;
+    text-shadow:      0 -1px 0px darken($color, 20%);
+    content:          $content;
   }
 
 }
 
 .time {
-  background-color: nth($master-background, 2) ;
+  background-color: rgba(255,255,255, 0.3) ;
   @include rounded-corners($standard-border-radius);
-  color: nth($master-dark, 2);
+  color:        nth($master-dark, 1);
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   @extend .hint;
-  @extend .hint--top;
-  padding: 0 $standard-padding-horizontal;
+
+  padding:      0 $standard-padding-horizontal;
 }
 
 .relative-recording-time {
   @extend .time;
   @include hint-custom-color($time-recording-relative-color, "Time measured from the start of the audio file");
 
+  @include arrow-border-color($time-recording-relative-color, "true");
+
 }
 
 .relative-segment-time {
   @extend .time;
   @include hint-custom-color($time-segment-relative-color, "Time measured from the start of the segment");
+
+  @include arrow-border-color($time-segment-relative-color, "true");
 }
 
 .relative-chunk-time {
   @extend .time;
   @include hint-custom-color($time-chunk-relative-color, "Time measured from the start of the playing audio");
+
+  @include arrow-border-color($time-chunk-relative-color, "true");
 }
 
 .absolute-time {
   @extend .time;
   @include hint-custom-color($time-absolute-color, "An absolute point in time");
+
+  @include arrow-border-color($time-absolute-color, "true");
 }
 
 .duration {
   @extend .time;
   @include hint-custom-color($time-duration-color, "A span of time (a length)");
+
+  @include arrow-border-color($time-duration-color, "true");
 }
 

@@ -25,6 +25,10 @@ function AnnotationViewerCtrl($scope, $element, $attrs, $transclude) {
         return $scope.model.converters.secondsToPixels(audioEvent.startTimeSeconds);
     };
 
+    $scope.positionLine = function () {
+      return $scope.model.converters.secondsToPixels($scope.model.audioElement.position);
+    };
+
 
     // updated in directive
     $scope.model.converters = $scope.model.converters || {};
@@ -47,6 +51,7 @@ function Annotation(localIdOrResource, audioRecordingId) {
 
     this.__temporaryId__ = localId || Number.Unique();
     this._selected = false;
+    this.audioEventTags = [];
 
     if (localId) {
         this.audioRecordingId = audioRecordingId;
@@ -59,7 +64,7 @@ function Annotation(localIdOrResource, audioRecordingId) {
         this.isReference = false;
         this.lowFrequencyHertz = 0.0;
         this.startTimeSeconds = 0.0;
-        this.audioEventTags = [];
+
     }
 
     if (resource) {

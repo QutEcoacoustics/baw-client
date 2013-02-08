@@ -1,4 +1,4 @@
-(function () {
+(function (undefined) {
     var bawds = angular.module('bawApp.directives', []);
 
     bawds.directive('bawRecordInformation', function () {
@@ -92,11 +92,11 @@
                     var valid = true;
                     if (isList) {
                         for (var i = 0; i < viewValue.length && valid; i++) {
-                            valid = GUID_REGEXP.test(viewValue[i]);
+                            valid = baw.GUID_REGEXP.test(viewValue[i]);
                         }
                     }
                     else {
-                        valid = GUID_REGEXP.test(viewValue);
+                        valid = baw.GUID_REGEXP.test(viewValue);
                     }
 
                     if (valid) {
@@ -253,7 +253,7 @@
             };
 
             // create the listener - the actual callback
-            var listenerFunc = function (value) {
+            var listenerFunc = function audioEventToBoxWatcher(value) {
 
                 if (value) {
                     if (scope.__lastDrawABoxEditId__ === value.__temporaryId__) {
@@ -261,7 +261,7 @@
                         return;
                     }
 
-                    console.log("audioEvent watcher fired");
+                    console.log("audioEvent watcher fired", value.__temporaryId__, value._selected);
 
                     // TODO: SET UP CONVERSIONS HERE
                     var top = scope.model.converters.hertzToPixels(value.highFrequencyHertz),
@@ -411,7 +411,7 @@
                     'durationchange': function (event) {
                         scope.$safeApply2(function () {
                             if (attributes.ngAudio) {
-                                var target = scope.$eval(attributes.ngAudio)
+                                var target = scope.$eval(attributes.ngAudio);
                                 if (target) {
                                     target.duration = element.duration;
                                     return;
@@ -435,6 +435,25 @@
                         value();
                     }
                 });
+
+                // position binding - reverse (element to model)
+                // TODO: we can optimise this, it does not always need to be running
+                window.requestAnimationFrame(function audioElementPositionRAF() {
+                    // need to request each new frame
+                    window.requestAnimationFrame(audioElementPositionRAF);
+                    if (attributes.ngAudio) {
+                        var target = scope.$eval(attributes.ngAudio);
+                        if (target) {
+                            var position = element.currentTime;
+                            if (target.position != position) {
+                                scope.$safeApply2(function () {
+                                    target.position = position;
+                                });
+                            }
+                        }
+                    }
+                }, elements[0]);
+
             }
         }
     });
@@ -442,7 +461,7 @@
     /**
      * A cross record element checker
      */
-    bawds.directive('bawChecked', function () {
+    bawds.directive('bawChecked', ['$parse', function ($parse) {
 
         // a cache of elements for each radio group
         var library = {};
@@ -450,79 +469,98 @@
 
         return {
             restict: 'A',
-            require: 'ngModel',
-            link: function radioInputType(scope, element, attr, ctrl) {
+            link: function radioInputType(scope, element, attr) {
                 // make the name unique, if not defined
-                if (angularCopies.isUndefined(attr.name)) {
+                if (baw.angularCopies.isUndefined(attr.name)) {
                     element.attr('name', Number.Unique());
                 }
 
-                // add element to cache group
-                library[attr.name] = [];
+                var getter = $parse(attr.bawChecked);
+                var assigner = getter.assign;
 
-                function fixLast(negativeModelValue) {
-                    if (library[attr.name].length > 0) {
-                        var oldScope = library[attr.name].pop();
+                    // store elements from same group to enable mass updates
+                library[attr.name] = library[attr.name] || [];
+                library[attr.name].push({e: element, s: scope, g: getter, a: assigner});
 
-                        oldScope[0].$safeApply2(function () {
-                            // for the other elements, ensure consistent state
-                            oldScope[1].$setViewValue(negativeModelValue);
+
+
+                // forward binding from model
+                // aggressively updates all elements
+                scope.$watch(getter, function (newValue, oldValue) {
+                    if (newValue) {
+                        // if a true value is set, aggressively set others to false
+                        angular.forEach(library[attr.name], function (libraryItem) {
+                            if (libraryItem.e === element) {
+                                libraryItem.e[0].checked = true;
+                            } else {
+                                libraryItem.e[0].checked = false;
+                                libraryItem.a(libraryItem.s, false);
+                            }
                         });
-                    }
-
-                    library[attr.name].push([scope, ctrl]);
-                }
-
-
-                // reverse binding (from element to model)
-
-                function updateModel() {
-                    // if value is defined, then when checked, set to value
-                    // otherwise just use true/false
-                    var negativeModelValue;
-                    var newModelValue;
-                    var checked = element[0].checked;
-                    if (angularCopies.isUndefined(attr.value)) {
-                        newModelValue = checked;
-                        negativeModelValue = !checked;
                     }
                     else {
-                        newModelValue = checked ? attr.value : null;
-                        negativeModelValue = checked ? null : attr.value;
+                        // if it's false, just make sure it is checked right (don't perpetuate the loop)
+                        element[0].checked = false;
                     }
+                });
 
+                // reverse bindings, elements to model
+                function updateModel(event) {
+                    var isChecked = event.target.checked;
 
-                    if (newModelValue != ctrl.$viewValue) {
-                        fixLast(negativeModelValue);
+                    var newest = library[attr.name][library[attr.name].length - 1];
+                    // STUPID ARSE HACK... for some reason the latest item although selected does not properly update
+                    // the 'last' value on the watch. so when it is first set to false nothing happens.
+                    // therefore *force* a change here by doing a separate apply with a bullshit value
+                    scope.$apply(function () {
+                        newest.a(newest.s, null);
+                    });
 
-                        scope.$apply(function () {
-                            // for the current element change it
-                            ctrl.$setViewValue(newModelValue);
-                        });
-                    }
+                    scope.$apply(function () {
+                        assigner(scope, isChecked);
 
+                        if (newest.e[0] != event.target) {
+                            newest.a(newest.s, !isChecked);
+                        }
+                    });
 
                 }
 
                 element.bind('click', updateModel);
-                // element.bind('change', updateModel);
 
-                // forward binding (from model to element)
-                ctrl.$render = function () {
-                    var value = angularCopies.isUndefined(attr.value) ? true : attr.value;
+            }
+        }
+    }]);
 
-                    element[0].checked = (value == ctrl.$viewValue);
 
-                    if (element[0].checked === true) {
-                        fixLast(false);
+    /**
+     * A directive for binding the position of an element to the model.
+     * The binding uses translate transforms.
+     *
+     * ONLY one way binding supported at the moment
+     */
+    bawds.directive('bawTranslateX', function () {
+
+        var transformSupport = Modernizr.csstransforms;
+        var transformProperty = 'left';
+        if (transformSupport) {
+            transformProperty = Modernizr.prefixed('transform');
+        }
+
+
+        return {
+            restrict: 'A',
+            link: function (scope, elements, attributes, controller) {
+                var element = elements[0];
+
+                scope.$watch(attributes.bawTranslateX, function (newValue, oldValue) {
+                    if (transformSupport) {
+                        element.style[transformProperty] = 'translateX(' + newValue.toFixed(3) + 'px)';
                     }
-                };
-
-                attr.$observe('value', ctrl.$render);
-
-
-                // lastly cache any new items
-//                library[attr.name].push([scope, ctrl]);
+                    else {
+                        element.style[transformProperty] = '' + newValue.toFixed(3) + 'px';
+                    }
+                });
             }
         }
     });
