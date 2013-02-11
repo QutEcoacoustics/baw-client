@@ -5,6 +5,8 @@ class SavedSearch < ActiveRecord::Base
   # relations
   has_many :progresses
   belongs_to :user, class_name: 'User', foreign_key: :owner_id
+  # this is needed to be able to set a user object, rather than the user id
+  belongs_to :owner, class_name: 'User', foreign_key: :owner_id
 
   # attr
   attr_accessible :name,
