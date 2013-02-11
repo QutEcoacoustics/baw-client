@@ -10,7 +10,7 @@
  *
  *= require_self
  * require jquery.ui.all # disabled because slow
- *= require_tree ../../../vendor/assets/javascripts/.
+ *= require_tree ../../../vendor/assets/stylesheets/.
  *= require_tree ../images/.
  *= require vendor
  * require_tree .
@@ -18,11 +18,10 @@
  * depend_on "_base"
  */
 
-@import "hint.css\_hint.scss";
+@import "hint.css\hint";
 @import "base";
 @import "layout";
 @import "_dynamic.css.scss.erb";
-
 
 @import "partials/*";
 
