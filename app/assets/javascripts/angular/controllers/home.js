@@ -14,7 +14,7 @@ function HomeCtrl($scope, $resource, $routeParams, AudioEvent) {
 
     $scope.welcomeMessage = "Welcome to <bar>";
 
-    $scope.downloadAnnotationLink = AudioEvent.csvLink;
+    $scope.downloadAnnotationLink = AudioEvent.csvLink();
 
 
 }

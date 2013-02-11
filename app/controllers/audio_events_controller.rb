@@ -109,8 +109,31 @@ class AudioEventsController < ApplicationController
   end
 
   def download
+
+    project_id = nil
+    if params[:project_id]
+      project_id = Integer(params[:project_id].to_s, 10)
+    end
+
+    site_id = nil
+    if params[:site_id]
+      site_id = Integer(params[:site_id].to_s, 10)
+    end
+
+    query = AudioEvent.includes(:tags)
+
+    if project_id || site_id
+
+      query =  query.joins(audio_recording: {site: :projects})
+
+      query = query.where(projects: {id: project_id}) if project_id
+
+      query = query.where(sites: {id: site_id}) if site_id
+
+    end
+
     @formatted_annotations =
-        custom_format AudioEvent.includes(:tags).order(:audio_event => :recorded_date).all
+        custom_format query.order(:audio_event => :recorded_date).all
 
     respond_to do |format|
       format.xml { render :xml => @formatted_annotations  }

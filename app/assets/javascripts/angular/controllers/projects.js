@@ -20,12 +20,14 @@ ProjectsCtrl.linkList = function (id) {
 
 ProjectsCtrl.$inject = ['$scope', '$resource', 'Project'];
 
-function ProjectCtrl($scope, $location, $resource, $routeParams, Project, Site, Photo) {
+function ProjectCtrl($scope, $location, $resource, $routeParams, Project, Site, Photo, AudioEvent) {
 
     var self = this;
 
     var projectResource = Project; //$resource('/projects/:projectId', {projectId: $routeParams.projectId});
     var routeArgs = {projectId: $routeParams.projectId};
+
+    $scope.downloadAnnotationLink = AudioEvent.csvLink({projectId: $routeParams.projectId});
 
     this.populateProject = function(){
         var p = { "project": {} };
@@ -165,5 +167,5 @@ function ProjectCtrl($scope, $location, $resource, $routeParams, Project, Site, 
     $scope.allSites = Site.query();
 }
 
-ProjectCtrl.$inject = ['$scope', '$location', '$resource', '$routeParams', 'Project', 'Site', 'Photo'];
+ProjectCtrl.$inject = ['$scope', '$location', '$resource', '$routeParams', 'Project', 'Site', 'Photo', 'AudioEvent'];
 

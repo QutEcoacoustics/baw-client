@@ -17,7 +17,7 @@ class SiteSerializer < CommonAttributesSerializer
 
   has_many :projects, :serializer => ProjectsInSiteSerializer
   has_many :photos, :serializer => PhotosInSiteSerializer
-  has_many :audio_recordings, :serializer => AudioRecordingsInSiteSerializer
+  #has_many :audio_recordings, :serializer => AudioRecordingsInSiteSerializer
 
 end
 

@@ -10,6 +10,11 @@
     <div ng-show="isShowing">
         <h3 title="{{project.urn}}">{{project.name}}</h3>
         <p ng-bind="project.description" ></p>
+
+        <p>
+            <a ng-href="{{downloadAnnotationLink}}" target="_blank" >Download</a> all annotations from this project.
+        </p>
+
         <pre>{{project.notes}}</pre>
 
         <h4>Sites</h4>

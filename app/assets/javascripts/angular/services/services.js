@@ -36,12 +36,47 @@
     }]);
 
     bawss.factory('AudioEvent', [ '$resource', function ($resource) {
+        var baseCsvUri = "/audio_events/download.";
+        function makeCsvLink(options) {
+            var formattedUrl = baseCsvUri;
+            if (!angular.isObject(options)) {
+                // overwrite input then continur to format
+                options = {};
+            }
+
+            if (options.format) {
+                formattedUrl += options.format;
+            }
+            else {
+                formattedUrl += "csv"
+            }
+
+            if (options.projectId || options.siteId) {
+                formattedUrl += "?"
+            }
+
+            if (options.projectId) {
+                formattedUrl += "project_id=" + options.projectId.toString();
+            }
+
+            if (options.projectId && options.siteId) {
+                formattedUrl += "&"
+            }
+
+            if (options.siteId) {
+                formattedUrl += "site_id=" + options.siteId.toString();
+            }
+
+
+            return formattedUrl;
+        }
+
         var actions = {
             query: { method: 'GET', isArray: true }
         };
 
         var resource = resourcePut($resource, '/audio_events/:audioEventId', {audioEventId: '@audioEventId'}, actions);
-        resource.csvLink = "/audio_events/download.csv";
+        resource.csvLink = makeCsvLink;
         return resource;
     }]);
 
