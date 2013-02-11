@@ -18,9 +18,15 @@ SitesCtrl.linkList = function (id) {
 
 SitesCtrl.$inject = ['$scope', '$resource', 'Site'];
 
-function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording) {
+function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording, AudioEvent) {
     var siteResource = Site;
     var routeArgs = {siteId: $routeParams.siteId};
+
+    $scope.downloadAnnotationLink = AudioEvent.csvLink({siteId: $routeParams.siteId});
+
+    // download a list of audio recordings belonging to this site
+    // HACK: GET ALL THE THINGS
+    $scope.audioRecordings = AudioRecording.query({site_id: $routeParams.siteId, times_only: true});
 
     $scope.editing = $routeParams.editing === "edit";
 
@@ -63,4 +69,4 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
     };
 }
 
-SiteCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Project', 'Site', 'AudioRecording'];
+SiteCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Project', 'Site', 'AudioRecording', 'AudioEvent'];

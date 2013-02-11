@@ -17,12 +17,23 @@
         </p>
 
         <p>
+            <a ng-href="{{downloadAnnotationLink}}" target="_blank" >Download</a> all annotations from this site.
+        </p>
+
+
+        <p>
             <img src="http://maps.googleapis.com/maps/api/staticmap?center={{site.latitude}},{{site.longitude}}&zoom=12&size=250x250&maptype=hybrid&sensor=false">
         </p>
         <p ng-bind="site.latitude" ></p>
         <p ng-bind="site.longitude" ></p>
 
-        <p>Number of recordings: {{site.audioRecordings.length}}</p>
+        <p>Number of recordings: {{site.audioRecordings.length}}
+
+        <ul>
+        <li ng-repeat="ar in audioRecordings" >
+         <a ng-href="/listen/{{ar.uuid}}">{{ar.recordedDate}},&nbsp;{{ar.durationSeconds}}</a>
+        </li>
+    </ul>
 
         <pre>{{site.notes}}</pre>
 

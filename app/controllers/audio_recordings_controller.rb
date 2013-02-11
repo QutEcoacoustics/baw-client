@@ -2,7 +2,18 @@ class AudioRecordingsController < ApplicationController
   # GET /audio_recordings
   # GET /audio_recordings.json
   def index
-    @audio_recordings = AudioRecording.all
+
+    site_query_id = (params[:site_id].to_s).to_i
+
+    if site_query_id > 0
+      @audio_recordings = AudioRecording.where(site_id: site_query_id).all
+
+    else
+      @audio_recordings = AudioRecording.all
+
+    end
+
+
 
     respond_to do |format|
       format.json { render json: @audio_recordings }
