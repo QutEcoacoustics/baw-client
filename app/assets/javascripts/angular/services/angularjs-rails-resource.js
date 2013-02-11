@@ -112,7 +112,7 @@
 
             return function () {
                 return {
-                    promise: function railsFieldRenamingInterceptor($injector) {
+                    promise: function railsFieldRenamingInterceptor() {
                         return (function (p) {
                             p.then(function (response) {
                                     if ((response.headers()["content-type"] || "").indexOf("application/json") >= 0) {
