@@ -76,13 +76,6 @@ class AudioRecording < ActiveRecord::Base
   # these need to be left outer joins. includes should do this, but does not.
   # use joins with the join in sql text :(
   # http://guides.rubyonrails.org/active_record_querying.html#specifying-conditions-on-eager-loaded-associations
-  def self.recording_projects(project_ids)
-    includes(:site => :projects).where(:projects => {:id => project_ids})
-  end
-
-  def self.recording_sites(site_ids)
-    includes(:site).where(:sites => {:id => site_ids})
-  end
 
   def self.recording_ids(recording_ids)
     where(:id => recording_ids)
@@ -92,22 +85,49 @@ class AudioRecording < ActiveRecord::Base
     where(:uuid => recording_ids)
   end
 
-  # only one of these can be included.
+  def self.recording_projects(project_ids)
+    includes(:site => :projects).where(:projects => {:id => project_ids})
+  end
+
+  def self.recording_sites(site_ids)
+    includes(:site).where(:sites => {:id => site_ids})
+  end
+
   def self.recording_within_date(start_date, end_date)
     rel_query = scoped
-    if start_date.kind_of?(DateTime)
+    if start_date.kind_of?(Time)
       sqlite_calculation = "datetime(recorded_date, '+' || duration_seconds || ' seconds') >= :start_date"
-      formatted_start_date = start_date.utc.midnight.strftime('%Y-%m-%d %H:%M:%S')
+      formatted_start_date = start_date.utc.strftime('%Y-%m-%d %H:%M:%S')
       rel_query = rel_query.where(sqlite_calculation, {:start_date => formatted_start_date})
     else
-      raise ArgumentError, "Expected start_date to be a DateTime, given #{start_date.class} type."
+      raise ArgumentError, "Expected start_date to be a Time, given #{start_date.class} type, with value #{start_date}."
     end
 
-    if end_date.kind_of?(DateTime)
-      formatted_end_date = end_date.utc.advance({days: 1}).midnight.strftime('%Y-%m-%d %H:%M:%S')
+    if end_date.kind_of?(Time)
+      formatted_end_date = end_date.utc.strftime('%Y-%m-%d %H:%M:%S')
       rel_query = rel_query.where('recorded_date < :end_date', {:end_date => formatted_end_date})
     else
-      raise ArgumentError, "Expected end_date to be a DateTime, given #{start_date.class} type."
+      raise ArgumentError, "Expected end_date to be a Time, given #{end_date.class} type, with value #{end_date}."
+    end
+
+    rel_query
+  end
+
+  def self.recording_within_time(start_time, end_time)
+    rel_query = scoped
+    if start_time.kind_of?(Time)
+      sqlite_calculation = "time(recorded_date, '+' || duration_seconds || ' seconds') >= :start_time"
+      formatted_start_time = start_time.utc.strftime('%H:%M:%S')
+      rel_query = rel_query.where(sqlite_calculation, {:start_time => formatted_start_time})
+    else
+      raise ArgumentError, "Expected start_time to be a Time, given #{start_time.class} type, with value #{start_time}."
+    end
+
+    if end_time.kind_of?(Time)
+      formatted_end_time = end_time.utc.strftime('%H:%M:%S')
+      rel_query = rel_query.where('time(recorded_date) < :end_time', {:end_time => formatted_end_time})
+    else
+      raise ArgumentError, "Expected end_time to be a Time, given #{end_time.class} type, with value #{end_time}."
     end
 
     rel_query
@@ -117,6 +137,7 @@ class AudioRecording < ActiveRecord::Base
     rel_query = includes(:audio_events => :tags)
 
     tags.each do |tag|
+      #Tag.matching(:text, tag)
       rel_query = rel_query.where(Tag.arel_table[:text].matches("%#{tag}%"))
     end
 
@@ -152,6 +173,19 @@ class AudioRecording < ActiveRecord::Base
 
     rel_query
   end
+
+
+
+  # from: http://stackoverflow.com/questions/7051062/whats-the-best-way-to-include-a-like-clause-in-a-rails-query
+  def self.match_scope_condition(col, query)
+    arel_table[col].matches("%#{query}%")
+  end
+
+  scope :matching, lambda {|*args|
+    col, opts = args.shift, args.extract_options!
+    op = opts[:operator] || :or
+    where args.flatten.map {|query| match_scope_condition(col, query) }.inject(&op)
+  }
 
   private
 

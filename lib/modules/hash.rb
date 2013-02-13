@@ -7,4 +7,15 @@ class ::Hash
     merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
     self.merge(second, &merger)
   end
+
+  # http://stackoverflow.com/questions/1753336/hashkey-to-hash-key-in-ruby
+  def method_missing(method, *opts)
+    m = method.to_s
+    if self.has_key?(m)
+      return self[m]
+    elsif self.has_key?(m.to_sym)
+      return self[m.to_sym]
+    end
+    super
+  end
 end
