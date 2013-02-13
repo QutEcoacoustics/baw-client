@@ -7,17 +7,17 @@
  * @param $attrs
  * @param $transclude
  * @constructor
+ * @param Tag
  */
-function AnnotationViewerCtrl($scope, $element, $attrs, $transclude) {
+function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
 
     $scope.getTag = function getTag(id) {
-        id = parseInt(id);
-        if (id) {
-            // TODO: SOME MAGIC, get tag label from a list that has hopefully already been loaded somewhere
-            return "Magic Name " + id;
+        var tagObject = Tag.resolve(id);
+        if (tagObject) {
+            return tagObject.text;
         }
         else {
-            return "Unknown Tag Label";
+            return "<unknown>";
         }
     };
 
@@ -80,4 +80,4 @@ function Annotation(localIdOrResource, audioRecordingId) {
     }
 }
 
-AnnotationViewerCtrl.$inject = ['$scope', '$element', '$attrs', '$transclude'];
+AnnotationViewerCtrl.$inject = ['$scope', '$element', '$attrs', '$transclude', 'Tag'];

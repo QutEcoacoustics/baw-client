@@ -10,6 +10,7 @@
  *
  *= require_self
  * require jquery.ui.all # disabled because slow
+ *= require select2
  *= require_tree ../../../vendor/assets/stylesheets/.
  *= require_tree ../images/.
  *= require vendor

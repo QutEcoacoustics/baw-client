@@ -1,3 +1,5 @@
+'strict';
+
 /* http://docs.angularjs.org/#!angular.filter */
 (function() {
     var bawfs = angular.module('bawApp.filters', []);
@@ -40,13 +42,14 @@
        return function(input, method) {
 
            if (input) {
-               var restOfArguments = Array.prototype.slice.call(arguments, 2, arguments.length)
+               var restOfArguments = Array.prototype.slice.call(arguments, 2, arguments.length);
 
                var  m = moment(input);
                return m[method].apply(m, restOfArguments);
 
            }
 
+           return "";
        }
     });
 
@@ -67,5 +70,29 @@
 
         }
     });
+
+
+    /**
+     * Output a tag name when given an ID
+     */
+    bawfs.filter('tagName', ['Tag', function(Tag) {
+        return function(input) {
+
+            var id = parseInt(input, 10);
+
+            if (id && !isNaN(id)) {
+                var tag = Tag.resolve(id);
+
+                if (tag) {
+                    return tag.text;
+                }
+
+                return "";
+            }
+            else {
+                return "";
+            }
+        }
+    }]);
 
 })();

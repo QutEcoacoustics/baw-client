@@ -78,14 +78,9 @@
                             <input type="checkbox" ng-model="selectedEvent.isReference">&nbsp;Is reference tag?
                         </label>
                     </fieldset>
-                    <p>
-                        data for tag: ({{selectedEvent.startTimeSeconds}}, {{selectedEvent.endTimeSeconds}});
-                        ({{selectedEvent.lowFrequencyHertz}}, {{selectedEvent.highFrequencyHertz}});
-                        {{selectedEvent.isReference}};
-                        <span ng-bind="selectedEvent.tags"></span>
-                    </p>
-                    <button type="button" ng-click="reset()">Clear</button>
-                    <button ng-click="addAnnotation()">Add annotation</button>
+
+                    <!--<button type="button" ng-click="reset()">Clear</button>-->
+                    <!--<button ng-click="addAnnotation()">Add annotation</button>-->
 
                 </form>
             </div>
@@ -133,7 +128,7 @@
                         <td>{{ae.deleterId}}</td>
                         <td>{{ae.updatedAt}}</td>
                         <td>{{ae.updaterId}}</td>
-                        <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId}}{{!$last && ',' || ''}}</span></td>
+                        <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId | tagName}}{{!$last && ',' || ''}}</span></td>
                         <td>{{ae.startTimeSeconds | number:3}} - {{ae.endTimeSeconds | number:3}}</td>
                         <td>{{ae.lowFrequencyHertz  | number:3}} - {{ae.highFrequencyHertz | number:3}}</td>
                     </tr>

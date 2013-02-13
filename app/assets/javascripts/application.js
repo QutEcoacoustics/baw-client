@@ -15,6 +15,7 @@
 // require jquery.ui.all // disabled because slow
 // require jquery.ui.datepicker // disabled because slow
 //= require moment
+//= require select2
 //= require angular.js
 //= require angular-resource.js
 //= require angular-ui.js

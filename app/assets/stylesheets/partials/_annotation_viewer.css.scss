@@ -17,13 +17,14 @@ baw-annotation-viewer {
       position:  relative;
       height:  60px;
       //overflow: none;
+      line-height: $standard-line-height;
 
       li {
         border-bottom: red solid 1px;
-        margin-left: -6px;
+        margin-left: -4px;
         position: absolute;
-        top:  42px;
-
+        bottom:  -1px;
+        padding-left: 2px;
 
         @include vendor-prefix(transform-origin, 0 0);
         @include vendor-prefix(transform, rotate3d(0,0,1,-20deg));
