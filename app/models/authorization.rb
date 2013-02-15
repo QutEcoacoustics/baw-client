@@ -4,4 +4,8 @@ class Authorization < ActiveRecord::Base
   attr_accessible :link, :name, :provider, :secret, :token, :uid, :user_id
 
   belongs_to :user
+
+  validates :uid, uniqueness: { case_sensitive: false, scope: :provider }
+  validates :name, uniqueness: { case_sensitive: false, scope: :provider }
+  validates :link, uniqueness: { case_sensitive: false }
 end

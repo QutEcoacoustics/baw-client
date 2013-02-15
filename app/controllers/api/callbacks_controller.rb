@@ -56,7 +56,7 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
     sign_in(user, :event => :authentication)
 
     current_user.reset_authentication_token!
-    content = Api::SessionsController.login_info(current_user, user, canonical_data[:canonical][:provider])
+    content = Api::SessionsController.login_info(current_user, user, canonical_data[:authorization][:provider])
 
     respond_to do |format|
       format.json { render :json => content.as_json, :status => :ok }
@@ -69,6 +69,9 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
   # External providers
   #
 
+  # available information:
+  # response, env, current_user, params
+
   def browser_id
     # https://developer.mozilla.org/en-US/docs/Persona/Remote_Verification_API
     # this callback will have an assertion included. The assertion should be POST'ed with the
@@ -80,14 +83,14 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
     else
 
       base_uri = "#{request.protocol}#{request.host_with_port}"
-      body = { :audience => base_uri, :assertion => params[:assertion]}
+      body = {:audience => base_uri, :assertion => params[:assertion]}
       verify_uri = URI.parse('https://verifier.login.persona.org/verify')
       post_request = construct_post(verify_uri, body)
-      Net::HTTP.start(verify_uri.host, verify_uri.port,:use_ssl => verify_uri.scheme == 'https') do |http|
+      Net::HTTP.start(verify_uri.host, verify_uri.port, :use_ssl => verify_uri.scheme == 'https') do |http|
         verify_response = http.request(post_request)
         Rails.logger.debug "Verify browser_id response: #{verify_response.code}, Message: #{verify_response.message}, Body: #{verify_response.body}"
         if verify_response.code == '200'
-          verify_response_attr = JSON.parse(verify_response.body, { :symbolize_names => true })
+          verify_response_attr = JSON.parse(verify_response.body, {:symbolize_names => true})
           if verify_response_attr[:status] == 'okay'
             canonical_data = browser_id_info(verify_response_attr)
 
@@ -96,17 +99,36 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
           end
         end
       end
-
-      # success, reset any existing tokens and
-      # return a new token for this session
-      #
-      #head :ok
-
     end
   end
 
   def open_id
     canonical_data = open_id_info(request.env["omniauth.auth"])
+    success_complete(canonical_data)
+  end
+
+  def facebook
+    canonical_data = facebook_info(request.env["omniauth.auth"])
+    success_complete(canonical_data)
+  end
+
+  def twitter
+    canonical_data = twitter_info(request.env["omniauth.auth"])
+    success_complete(canonical_data)
+  end
+
+  def github
+    canonical_data = github_info(request.env["omniauth.auth"])
+    success_complete(canonical_data)
+  end
+
+  def windowslive
+    canonical_data = windows_live_info(request.env["omniauth.auth"])
+    success_complete(canonical_data)
+  end
+
+  def linked_in
+    canonical_data = linked_in_info(request.env["omniauth.auth"])
     success_complete(canonical_data)
   end
 
@@ -116,85 +138,295 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
   def browser_id_info(raw)
     {
-        :canonical =>
+        authorization:
             {
-                :provider => 'persona',
-                :uid => raw[:email],
-                #:user_id =>,
-                :token => raw[:issuer], # stores issuer instead
-                :secret => raw[:expires], # stores expirses instead
-                :name => nil,
-                :link => 'https://persona.org' # link to external provider profile when logged in
+                #id:
+                provider: 'persona',
+                uid: raw[:email],
+                #user_id
+                token: raw[:issuer], # stores issuer instead
+                secret: raw[:expires], # stores expires instead
+                name: nil,
+                link: 'https://persona.org' # link to external provider profile when logged in
+                #created_at
+                #updated_at
             },
-        :email => raw[:email],
-        :display_name => nil
+        user:
+            {
+                display_name: nil,
+                email: raw[:email],
+                is_fake_email: false,
+                user_name: nil
+            }
     }
   end
 
   def open_id_info(raw)
+
+    open_id_name = raw.info.include?(:name) ? raw.info.name : ''
+    open_id_nickname = raw.info.include?(:nickname) ? raw.info.nickname : ''
+    open_id_any_name = open_id_nickname.blank? ?
+        (open_id_name.blank? ? '' : open_id_name) :
+        open_id_nickname
+
+    open_id_email = raw.info.include?(:email) ? raw.info.email : ''
+    open_id_local_or_claimed_url = raw.extra.response.endpoint.local_id.blank? ?
+        (raw.extra.response.endpoint.claimed_id.blank? ? '' : raw.extra.response.endpoint.claimed_id) :
+        raw.extra.response.endpoint.local_id
+
     {
-        :canonical =>
+        authorization:
             {
-                :provider => 'open_id',
-                :uid => raw.uid,
-                #:user_id =>,
-                :token => raw.extra.response.endpoint.local_id, # stores open id issuer/server instead
-                :secret => nil,
-                :name => if raw.info.include?(:name) then
-                           raw.info.name
-                         elsif raw.info.include?(:nickname) then
-                           raw.info.nickname
-                         else
-                           nil
-                         end,
-                :link => raw.extra.response.identity_url
+                #id:
+                provider: 'open_id',
+                uid: raw.uid,
+                #user_id
+                token: open_id_local_or_claimed_url, # stores open id issuer/server instead
+                secret: nil,
+                name: open_id_any_name,
+                link: raw.extra.response.identity_url
             },
-        :email => raw.info.include?(:email) ? raw.info.email : '',
-        :display_name => raw.info.include?(:nickname) ? raw.info.nickname : nil,
+        user:
+            {
+                display_name: open_id_any_name,
+                email: open_id_email,
+                is_fake_email: false,
+                user_name: open_id_any_name
+            }
     }
   end
 
-  def store_provider_info(canonical_data,resource=nil)
+  def facebook_info(raw)
+
+    facebook_name = raw.info.include?(:name) ? raw.info.name : ''
+    facebook_nickname = raw.info.include?(:nickname) ? raw.info.nickname : ''
+    facebook_any_name = facebook_name.blank? ? (facebook_nickname.blank? ? '' : facebook_nickname) : facebook_name
+    facebook_email = raw.info.include?(:email) ? raw.info.email : ''
+
+    {
+        authorization:
+            {
+                #id:
+                provider: 'facebook',
+                uid: raw.uid,
+                #user_id
+                token: raw.extra.response.endpoint.local_id, # stores open id issuer/server instead
+                secret: nil,
+                name: facebook_any_name,
+                link: raw.extra.response.identity_url
+            },
+        user:
+            {
+                display_name: facebook_name,
+                email: facebook_email,
+                is_fake_email: false,
+                user_name: facebook_nickname
+            }
+    }
+  end
+
+  def twitter_info(raw)
+
+    twitter_name = raw['info'].include?('name') ? raw['info']['name'] : ''
+    twitter_nickname = raw['info'].include?('nickname') ? raw['info']['nickname'] : ''
+    twitter_any_name = twitter_name.blank? ? (twitter_nickname.blank? ? '' : twitter_nickname) : twitter_name
+
+    # create a unique, dummy email, since twitter doesn't provide one
+    # set dummy email to true, so that this email is never shown
+    fake_email = raw['uid'].gsub(/[^0-9a-zA-Z]/,'_')+'.twitter@example.com'
+
+    {
+        authorization:
+            {
+                provider: 'twitter',
+                uid: raw['uid'],
+                token: raw['credentials']['token'],
+                secret: raw['credentials']['secret'],
+                name: twitter_nickname,
+                link: "http://twitter.com/#{raw['info']['nickname']}"
+            },
+        user: {
+            display_name: twitter_name,
+            email: fake_email,
+            is_fake_email: true,
+            user_name: twitter_nickname
+        },
+        image: raw['info'].include?('image') ? raw['info']['image'] : '',
+        description: raw['info'].include?('description') ? raw['info']['description'] : '',
+        location: raw['info'].include?('location') ? raw['info']['location'] : ''
+    }
+  end
+
+  def github_info(raw)
+    {
+        authorization:
+            {
+                provider: 'github',
+                uid: nil,
+                token: nil,
+                secret: nil,
+                name: nil,
+                link: nil
+            },
+        user: {
+            display_name: nil,
+            email: nil,
+            is_fake_email: nil,
+            user_name: nil
+        }
+    }
+  end
+
+  def windows_live_info(raw)
+    {
+        authorization:
+            {
+                provider: 'github',
+                uid: nil,
+                token: nil,
+                secret: nil,
+                name: nil,
+                link: nil
+            },
+        user: {
+            display_name: nil,
+            email: nil,
+            is_fake_email: nil,
+            user_name: nil
+        }
+    }
+  end
+
+  def linked_in_info(raw)
+    {
+        authorization:
+            {
+                provider: 'github',
+                uid: nil,
+                token: nil,
+                secret: nil,
+                name: nil,
+                link: nil
+            },
+        user: {
+            display_name: nil,
+            email: nil,
+            is_fake_email: nil,
+            user_name: nil
+        }
+    }
+  end
+
+  def store_provider_info(canonical_data, resource=nil)
     user = resource
 
-    if user.blank?
-      authn = Authorization.find_by_uid(canonical_data[:canonical][:uid])
-      user = authn.user unless authn.blank?
-      user = User.find_by_email(canonical_data[:email]) if !canonical_data[:email].blank? && user.blank?
-      user = User.find_by_display_name(canonical_data[:display_name]) if !canonical_data[:display_name].blank? && user.blank?
+    user = create_or_update_user(canonical_data, user)
+    authorization = create_or_update_authorization(canonical_data, user)
 
-      if user.blank?
-        new_display_name = canonical_data[:display_name]
+    user
+  end
 
-        # HACK: for users created by external providers, dummy the user name with the .... field
-        user = User.create!(:display_name => new_display_name.blank? ? '' : new_display_name, :email => canonical_data[:email], :password => Devise.friendly_token[0,20], :user_name => -1 * Random.rand(100000))
-        user.user_name = user.id
-        user.save!
+  def create_or_update_user(canonical_data, user=nil)
+    authorization = nil
+
+    #uid = canonical_data[:canonical][:uid] # very likely to be present
+    #name = canonical_data[:canonical][:name] # might be present
+    #email = canonical_data[:email] # good chance this won't be present
+    #email_is_dummy = canonical_data[:dummy_email] # will be true or false
+
+    # check uid and provider
+    if user.blank? &&
+        canonical_data[:authorization].include?(:uid) && !canonical_data[:authorization][:uid].blank? &&
+        canonical_data[:authorization].include?(:provider) && !canonical_data[:authorization][:provider].blank?
+      authorization = Authorization.where(uid: canonical_data[:authorization][:uid], provider: canonical_data[:authorization][:provider]).first
+      unless authorization.blank?
+        user = authorization.user
       end
     end
 
+    # check name and provider
+    if user.blank? &&
+        canonical_data[:authorization].include?(:name) && !canonical_data[:authorization][:name].blank? &&
+        canonical_data[:authorization].include?(:provider) && !canonical_data[:authorization][:provider].blank?
+      authorization = Authorization.where(name: canonical_data[:authorization][:name], provider: canonical_data[:authorization][:provider]).first
+      unless authorization.blank?
+        user = authorization.user
+      end
+    end
+
+    # if the email is given and isn't a dummy email, and the user doesn't have an email, set the email
+    if user.blank? &&
+        canonical_data[:user].include?(:is_fake_email) && !canonical_data[:user][:is_fake_email] &&
+        canonical_data[:user].include?(:email) && !canonical_data[:user][:email].blank?
+      user = User.find_by_email(canonical_data[:user][:email])
+    end
+
+    # can't find an existing user, create a new one
+    if user.blank?
+      # need: user_name, display_name, email, is_fake_email
+      # display_name and user_name might be nil
+      new_display_name = canonical_data[:user][:display_name].blank? ?
+          -1 * Random.rand(100000) : canonical_data[:user][:display_name]
+
+      new_user_name = canonical_data[:user][:user_name].blank? ?
+          -1 * Random.rand(100000) :
+          canonical_data[:user][:user_name].gsub(/[^0-9a-zA-Z]/,'_')+'_'+canonical_data[:authorization][:provider]
+
+      # HACK: for users created by external providers, dummy the user name with the .... field
+      user = User.create!(
+          display_name: new_display_name,
+          email: canonical_data[:user][:email],
+          is_fake_email: canonical_data[:user][:is_fake_email],
+          password: Devise.friendly_token[0, 20],
+          user_name: new_user_name)
+      user.user_name = "user#{user.id}" if canonical_data[:user][:user_name].blank?
+      user.display_name = "user#{user.id}" if canonical_data[:user][:display_name].blank?
+      user.save!
+    end
+
+    raise "Could not find or create a user for external provider information: #{canonical_data.to_json}" if user.blank?
+
+    # this won't work, as not possible to set a blank display_name
     # update display_name if given and it was blank
-    if user.display_name.blank? && !canonical_data[:display_name].blank?
-      user.display_name = canonical_data[:display_name]
+    #if user.display_name.blank? && canonical_data[:user].include?(:display_name) && !canonical_data[:user][:display_name].blank?
+    #  user.display_name = canonical_data[:display_name]
+    #end
+
+    # this won't work, as not possible to set a blank user_name
+    # update user_name if given and it was blank
+    #if user.display_name.blank? && canonical_data[:user].include?(:display_name) && !canonical_data[:user][:display_name].blank?
+    #  user.display_name = canonical_data[:display_name]
+    #end
+
+    # update email if given and it was not a fake email and not blank
+    if user.is_fake_email &&
+        canonical_data[:user].include?(:is_fake_email) && !canonical_data[:user][:is_fake_email] &&
+        canonical_data[:user].include?(:email) && !canonical_data[:user][:email].blank?
+      user.email = canonical_data[:user][:email]
+      user.is_fake_email = false
     end
 
-    # update email is given and it was blank
-    if user.email.blank? && !canonical_data[:email].blank?
-      user.email = canonical_data[:email]
-    end
-
-    raise 'Could not find or create a user for external provider information' if user.blank?
-
-    auth = user.authorizations.find_by_provider(canonical_data[:canonical][:provider])
-    if auth.nil?
-      auth = user.authorizations.build(:provider => canonical_data[:canonical][:provider])
-      user.authorizations.push(auth)
-    end
-
-    # update all auth attributes. This will remove info if it is not provided in canonical_data[:canonical].
-    auth.update_attributes canonical_data[:canonical]
+    # this needs to be here to ensure existing users records are updated
+    user.save!
 
     user
+  end
+
+  def create_or_update_authorization(canonical_data, user=nil)
+    raise "Invalid data from provider." if canonical_data.blank?
+    raise "Invalid user information." if user.blank?
+
+    # need to find by provider and uid
+    authorization = user.authorizations.where(provider: canonical_data[:authorization][:provider], uid: canonical_data[:authorization][:uid]).first
+    if authorization.blank?
+      authorization = user.authorizations.build(provider: canonical_data[:authorization][:provider])
+      user.authorizations.push(authorization)
+    end
+
+    # update all auth attributes. This will remove info if it is not provided in canonical_data[:authorization].
+    authorization.update_attributes! canonical_data[:authorization]
+
+    authorization
   end
 
   def construct_post(endpoint_uri, body)
@@ -204,79 +436,4 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
     post_request.body = body.to_json
     post_request
   end
-
-=begin
-
-  require 'uuidtools'
-
-  def facebook
-    oauthorize "Facebook"
-  end
-
-  def twitter
-    oauthorize "Twitter"
-  end
-
-  def linked_in
-    oauthorize "LinkedIn"
-  end
-
-  def passthru
-    render :file => "#{Rails.root}/public/404.html", :status => 404, :layout => false
-  end
-
-  private
-
-  def oauthorize(kind)
-    @user = find_for_ouath(kind, env["omniauth.auth"], current_user)
-    if @user
-      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => kind
-      session["devise.#{kind.downcase}_data"] = env["omniauth.auth"]
-      sign_in_and_redirect @user, :event => :authentication
-    end
-  end
-
-  def find_for_ouath(provider, access_token, resource=nil)
-    user, email, name, uid, auth_attr = nil, nil, nil, {}
-    case provider
-      when "Facebook"
-        uid = access_token['uid']
-        email = access_token['extra']['user_hash']['email']
-        auth_attr = { :uid => uid, :token => access_token['credentials']['token'], :secret => nil, :name => access_token['extra']['user_hash']['name'], :link => access_token['extra']['user_hash']['link'] }
-      when "Twitter"
-        uid = access_token['extra']['user_hash']['id']
-        name = access_token['user_info']['name']
-        auth_attr = { :uid => uid, :token => access_token['credentials']['token'], :secret => access_token['credentials']['secret'], :name => name, :link => "http://twitter.com/#{name}" }
-      when 'LinkedIn'
-        uid = access_token['uid']
-        name = access_token['user_info']['name']
-        auth_attr = { :uid => uid, :token => access_token['credentials']['token'], :secret => access_token['credentials']['secret'], :name => name, :link => access_token['user_info']['public_profile_url'] }
-      else
-        raise 'Provider #{provider} not handled'
-    end
-    if resource.nil?
-      if email
-        user = find_for_oauth_by_email(email, resource)
-      elsif uid && name
-        user = find_for_oauth_by_uid(uid, resource)
-        if user.nil?
-          user = find_for_oauth_by_name(name, resource)
-        end
-      end
-    else
-      user = resource
-    end
-
-    auth = user.authorizations.find_by_provider(provider)
-    if auth.nil?
-      auth = user.authorizations.build(:provider => provider)
-      user.authorizations << auth
-    end
-    auth.update_attributes auth_attr
-
-    return user
-  end
-
-
-=end
 end

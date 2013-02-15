@@ -48,19 +48,14 @@
         <form method="POST" autocomplete>
           <h2>Sign In</h2>
           <ul >
-            <li><a ng-click="submit('google')" class="btn-auth btn-google"  >Sign in with Google</a> </li>
-            <li><a ng-click="submit('open_id')" class="btn-auth btn-openid"  >Sign in with OpenID</a> </li>
-            <li><a ng-click="submit('persona')" class="persona-button"><span >Sign in with Persona</span></a> </li>
-            <li><a ng-click="submit('yahoo')" href="#" class="btn-auth btn-yahoo"   >Sign in with Yahoo ID</a> </li>
-
-          </ul>
-
-          <h3>Comming Soon</h3>
-          <ul>
-            <li><a class="btn-auth btn-facebook">Sign in with facebook</a></li>
-            <li><a class="btn-auth btn-github"  >Sign in with GitHub</a></li>
-            <li><a class="btn-auth btn-twitter" >Sign in with Twitter</a></li>
-            <li><a class="btn-auth btn-windows" >Sign in with Live ID</a></li>
+            <li><a ng-click="submit('google')" class="btn-auth btn-google">Sign in with Google</a> </li>
+            <li><a ng-click="submit('open_id')" class="btn-auth btn-openid">Sign in with OpenID</a> </li>
+            <li><a ng-click="submit('facebook')" class="btn-auth btn-facebook">Sign in with Facebook</a></li>
+            <li><a ng-click="submit('twitter')" class="btn-auth btn-twitter" >Sign in with Twitter</a></li>
+            <li><a ng-click="submit('persona')" class="persona-button"><span>Sign in with Persona</span></a> </li>
+            <li><a ng-click="submit('github')" class="btn-auth btn-github"  >Sign in with GitHub</a></li>
+            <li><a ng-click="submit('windowslive')" class="btn-auth btn-windows" >Sign in with Live ID</a></li>
+            <li><a ng-click="submit('yahoo')" href="#" class="btn-auth btn-yahoo">Sign in with Yahoo ID</a> </li>
           </ul>
 
           <div ng-show="requireMoreInformation">

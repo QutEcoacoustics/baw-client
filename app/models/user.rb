@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
           :validatable, :timeoutable,   :recoverable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :user_name, :display_name, :email, :password, :admin
+  attr_accessible :user_name, :display_name, :email, :is_fake_email, :password, :admin
 
 
 
@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
   validates :user_name, presence: true, uniqueness: { case_sensitive: false },
             exclusion: { in: %w(admin harvester analysis_runner) }, unless: :skip_user_name_exclusion_list
             #:format => { :with => /\A[a-zA-Z0-9_ ]+\z/, :message => "only letters, numbers, space and underscore allowed" }
-  validates :display_name, uniqueness: { case_sensitive: false },
+  validates :display_name, #uniqueness: { case_sensitive: false },
             presence: { unless: Proc.new { |a| a.email.present? }, message: 'Please provide a display name, email, or both.' }
 
   # it turns out devise provdes its own validations for the email field
