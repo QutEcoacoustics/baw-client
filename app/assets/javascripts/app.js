@@ -61,7 +61,8 @@ var bawApp = (function (undefined) {
             'ui.filters',               /* angular-ui project */
             'bawApp.directives',        /* our directives.js  */
             'bawApp.filters',           /* our filters.js     */
-            'baw.services',             /* our services.js    */
+            'bawApp.services',             /* our services.js    */
+            'bawApp.controllers',
             'http-auth-interceptor',    /* the auth module    */
             'angular-auth',             /* the auth module    */
             'rails'                     /* a module designed to rewrite object keys */
@@ -73,32 +74,32 @@ var bawApp = (function (undefined) {
 
         // routes
         $routeProvider.
-            when('/home', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
+            when('/home', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
 
-            whenDefaults("projects", "project", ":projectId", ProjectsCtrl, ProjectCtrl).
-            whenDefaults("sites", "site", ":siteId", SitesCtrl, SiteCtrl).
-            whenDefaults("photos", "photo", ":photoId", PhotosCtrl, PhotoCtrl).
-            whenDefaults("bookmarks", "bookmark", ":bookmarkId", BookmarksCtrl, BookmarkCtrl).
-            whenDefaults("searches", "search", ":searchId", SearchesCtrl, SearchCtrl).
-            whenDefaults("tags", "tag", ":tagId", TagsCtrl, TagCtrl).
-            whenDefaults("audioEvents", "audioEvent", ":audioEventId", AudioEventsCtrl, AudioEventCtrl).
+            whenDefaults("projects", "project", ":projectId", 'ProjectsCtrl', 'ProjectCtrl').
+            whenDefaults("sites", "site", ":siteId", 'SitesCtrl', 'SiteCtrl').
+            whenDefaults("photos", "photo", ":photoId", 'PhotosCtrl', 'PhotoCtrl').
+            whenDefaults("bookmarks", "bookmark", ":bookmarkId", 'BookmarksCtrl', 'BookmarkCtrl').
+            whenDefaults("searches", "search", ":searchId", 'SearchesCtrl', 'SearchCtrl').
+            whenDefaults("tags", "tag", ":tagId", 'TagsCtrl', 'TagCtrl').
+            whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
 
-            when('/recordings', {templateUrl: '/assets/recordings.html', controller: RecordingsCtrl }).
-            when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: RecordingCtrl }).
+            when('/recordings', {templateUrl: '/assets/recordings.html', controller: 'RecordingsCtrl' }).
+            when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
 
-            when('/listen', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
-            when('/listen/:recordingId', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
-            when('/listen/:recordingId/start=:start/end=:end', {templateUrl: '/assets/listen.html', controller: ListenCtrl}).
+            when('/listen', {templateUrl: '/assets/listen.html', controller: 'ListenCtrl'}).
+            when('/listen/:recordingId', {templateUrl: '/assets/listen.html', controller: 'ListenCtrl'}).
+            when('/listen/:recordingId/start=:start/end=:end', {templateUrl: '/assets/listen.html', controller: 'ListenCtrl'}).
 
-            when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).
-            when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: AccountsCtrl}).
+            when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
+            when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
 
             when('/attribution', {templateUrl: '/assets/attributions.html'}).
 
             // missing route page
-            when('/', {templateUrl: '/assets/home.html', controller: HomeCtrl}).
-            when('/404', {templateUrl: '/assets/error_404.html', controller: ErrorCtrl}).
-            when('/404?path=:errorPath', {templateUrl: '/assets/error_404.html', controller: ErrorCtrl}).
+            when('/', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
+            when('/404', {templateUrl: '/assets/error_404.html', controller: 'ErrorCtrl'}).
+            when('/404?path=:errorPath', {templateUrl: '/assets/error_404.html', controller: 'ErrorCtrl'}).
             otherwise({
                 redirectTo: function (params, location, search) {
                     return '/404?path=' + location;

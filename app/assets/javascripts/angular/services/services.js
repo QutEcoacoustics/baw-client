@@ -13,7 +13,7 @@
         return $resource(path, paramDefaults, a);
     }
 
-    var bawss = angular.module("baw.services", ['ngResource']);
+    var bawss = angular.module("bawApp.services", ['ngResource']);
 
 
     /**

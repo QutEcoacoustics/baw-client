@@ -227,7 +227,7 @@
 
         function create(simpleBox, audioRecordingId, scope) {
 
-            var audioEvent = new Annotation(parseInt(simpleBox.id), audioRecordingId);
+            var audioEvent = new baw.Annotation(parseInt(simpleBox.id), audioRecordingId);
 
             resizeOrMove(audioEvent, simpleBox, scope);
             touchUpdatedField(audioEvent);
@@ -290,7 +290,7 @@
             scope: {
                 model: '=model'
             },
-            controller: AnnotationViewerCtrl,
+            controller: 'AnnotationViewerCtrl',
             require: '', // ngModel?
             templateUrl: '/assets/annotation_viewer.html',
 //            compile: function(element, attributes, transclude)  {
@@ -563,6 +563,24 @@
                 });
             }
         }
+    });
+
+    bawds.directive('bawInjectTransformers', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            priority: -1,
+            link: function (scope, element, attr, ngModel) {
+                var local = scope.$eval(attr.bawInjectTransformers);
+
+                if (!angular.isObject(local) || !angular.isFunction(local.fromModel) || !angular.isFunction(local.fromElement)) {
+                    throw "The bawInjectTransformers must be bound to an object with two functions (`fromModel` and `fromElement`)";
+                }
+
+                ngModel.$parsers.push(local.fromElement);
+                ngModel.$formatters.push(local.fromModel);
+            }
+        };
     });
 
 

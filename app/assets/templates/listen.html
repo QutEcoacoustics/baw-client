@@ -51,8 +51,8 @@
                       ng-repeat="selectedEvent in model.audioEvents | filter:selectedFilter">
                     <label>
                         <span>Tags</span>
-                        <input type="hidden" ng-multiple="true" tags multiple ui-select2="{allowClear:true, tags:tags }"
-                               ng-model="selectedEvent.audioEventTags"/>
+                        <input type="hidden" ng-multiple="true" tags multiple ui-select2="select2Settings"
+                               ng-model="selectedEvent.audioEventTags" baw-inject-transformers="select2Transformers"/>
                         <!--<option ng-repeat="t in tags" value="{{t.id}}">{{t.text}} <span> &lt;!&ndash; ng-show={{t.type_of_tag}}&ndash;&gt;
                         ,-->
                         <!--{{t.typeOfTag}} &lt;!&ndash; &ndash;&gt;</span></option>-->

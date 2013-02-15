@@ -20,6 +20,7 @@
 //= require angular-resource.js
 //= require angular-ui.js
 //= require angular-ui-ieshiv.js
+//= require angular/controllers/controller_module.js
 //= require_tree .
 //= require lib
 //= require_tree ../../../vendor/assets/javascripts/.
