@@ -175,7 +175,7 @@
                 $rootScope.userData = null;
                 $http.defaults.headers.common["Authorization"] = null;
 
-                if (config.url === "/security/ping") {
+                if (config && config.url === "/security/ping") {
                     return;
                 }
 
@@ -283,6 +283,22 @@
             });
         }
 
+        function openAuthLogin(providerId){
+            var popPath = "/security/auth/"+providerId;
+            baw.popUpWindow(popPath, 700, 500, function (data) {
+                data = data || {};
+
+                railsFieldRenamingInterceptor().core(data);
+
+                if (data.response === "ok") {
+                    Authenticator.loginSuccess(data);
+                }
+                else {
+                    Authenticator.loginFailure(data);
+                }
+            });
+        }
+
         return {
             "persona": {
                 login: function login() {
@@ -314,6 +330,26 @@
                     text: "Enter your OpenID URL:",
                     type: "url"
                 }
+            },
+            "facebook": {
+                login: function(){ openAuthLogin('facebook')},
+                logout: signOut,
+                requires: null
+            },
+            "github": {
+                login: function(){ openAuthLogin('github')},
+                logout: signOut,
+                requires: null
+            },
+            "twitter": {
+                login: function(){ openAuthLogin('twitter')},
+                logout: signOut,
+                requires: null
+            },
+            "windowslive": {
+                login: function(){ openAuthLogin('windowslive')},
+                logout: signOut,
+                requires: null
             }
         }
     }]);
