@@ -101,4 +101,8 @@ class SavedSearchStore
     to_return = {:search => self, :query => the_query, :items => results}
     OpenStruct.new(to_return)
   end
+
+  def to_s
+    self.to_json
+  end
 end

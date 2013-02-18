@@ -8,6 +8,7 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <script src="https://login.persona.org/include.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWT_qg_GDQVSlQB9O_1CEQf8l4bErP5Ek&sensor=false"></script>
   <%= csrf_meta_tags %>
   <%= yield(:head) %>
 
@@ -28,10 +29,9 @@
 
     <h1><a href="/">Bioacoustic Workbench</a></h1>
     <ul>
-      <li><a href="/projects">Browse Projects</a></li>
       <li ng-controller="LoginCtrl">
       <span ng-show="loggedIn">
-        Welcome <a href="/user/{{userData.user_id}}" title="{{friendly_name}}: {{email}}">{{email}}</a>&nbsp;&nbsp;<a href ng-click="logout()">Sign Out</a>
+        Welcome <a href="/user/{{userData.userId}}" title="{{friendlyName}}">{{friendlyName}}</a>&nbsp;&nbsp;<a href ng-click="logout()">Sign Out</a>
       </span>
       <span ng-hide="loggedIn">
         <a href ng-click="login()">Sign In</a>

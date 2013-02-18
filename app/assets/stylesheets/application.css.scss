@@ -15,7 +15,7 @@
  *= require_tree ../images/.
  *= require vendor
  * require_tree .
- * require_tree bootstrap
+ *= require_tree ./bootstrap
  * depend_on "_base"
  */
 

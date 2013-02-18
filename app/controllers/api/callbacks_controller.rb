@@ -41,8 +41,11 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
     # returneddata = 0; dataitem = window.open('/security/auth/open_id/callback', 'dataitem'); dataitem.returneddata = returneddata;
     # to access the object: dataitem.returneddata
 
+    Rails.logger.warn("Log in failed. Data: #{window_data.as_json}; Params: #{params}")
+
     respond_to do |format|
       format.json { render :json => window_data.as_json, :status => :unauthorized }
+      format.js { render :json => window_data.as_json, :status => :unauthorized }
       format.xml { render :xml => window_data.to_xml, :status => :unauthorized }
       format.any { render :text => window_content(displayed_data, window_data), :status => :unauthorized }
     end
@@ -55,11 +58,17 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
     sign_in(user, :event => :authentication)
 
-    current_user.reset_authentication_token!
+    unless current_user.blank?
+      current_user.reset_authentication_token!
+    end
+
     content = Api::SessionsController.login_info(current_user, user, canonical_data[:authorization][:provider])
+
+    Rails.logger.debug("Log in succeeded. Data: #{content.as_json}; Params: #{params}")
 
     respond_to do |format|
       format.json { render :json => content.as_json, :status => :ok }
+      format.js { render :json => content.as_json, :status => :ok }
       format.xml { render :xml => content.to_xml, :status => :ok }
       format.any { render :text => window_content(displayed_data, content), :status => :ok }
     end
@@ -233,7 +242,7 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
     # create a unique, dummy email, since twitter doesn't provide one
     # set dummy email to true, so that this email is never shown
-    fake_email = raw['uid'].gsub(/[^0-9a-zA-Z]/,'_')+'.twitter@example.com'
+    fake_email = raw['uid'].gsub(/[^0-9a-zA-Z]/, '_')+'.twitter@example.com'
 
     {
         authorization:
@@ -370,7 +379,7 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
       new_user_name = canonical_data[:user][:user_name].blank? ?
           -1 * Random.rand(100000) :
-          canonical_data[:user][:user_name].gsub(/[^0-9a-zA-Z]/,'_')+'_'+canonical_data[:authorization][:provider]
+          canonical_data[:user][:user_name].gsub(/[^0-9a-zA-Z]/, '_')+'_'+canonical_data[:authorization][:provider]
 
       # HACK: for users created by external providers, dummy the user name with the .... field
       user = User.create!(

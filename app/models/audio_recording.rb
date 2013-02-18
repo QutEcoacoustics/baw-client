@@ -55,10 +55,21 @@ class AudioRecording < ActiveRecord::Base
 
   validates :file_hash, :presence => true
 
+  validate :is_uuid
 
   # uuid stuff
   attr_protected :uuid
   include UUIDHelper
+
+  def is_uuid
+    unless self.uuid.blank?
+      begin
+        UUIDTools::UUID.parse(self.uuid)
+      rescue
+        self.errors.add(:uuid, "must be a valid UUID, given #{self.uuid.class} with value #{self.uuid}.")
+      end
+    end
+  end
 
   # http://stackoverflow.com/questions/11569940/inclusion-validation-fails-when-provided-a-symbol-instead-of-a-string
   # this lets a symbol be set, and it all still works

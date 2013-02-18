@@ -71,12 +71,10 @@ function LoginCtrl($scope, $http, $location, authService, AuthenticationProvider
 
     $scope.$watch('$root.loggedIn', function (){
         if ($scope.loggedIn) {
-            $scope.displayName = $scope.userData.friendlyName;
-            $scope.email = $scope.userData.email;
+            $scope.friendlyName = $scope.userData.friendlyName;
         }
         else{
-            $scope.userName = "";
-            $scope.email = "";
+            $scope.friendlyName = "";
         }
     });
 

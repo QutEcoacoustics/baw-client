@@ -1,20 +1,26 @@
-<div id="content" data-ng-controller="HomeCtrl">
+<div id="content" data-ng-controller="HomeCtrl" style="position:relative;">
     <h2>Home</h2>
+
     <p>
         Welcome to a place where you can listen, learn, share your discoveries and help out the environment!
         The Bioacoustic Workbench is a repository for audio recordings of the environment and tools that aid in
         analysing the sounds.
     </p>
+
     <p>
         We gather recordings from a wide range of environments, find practical ways to annotate
         the sounds with information about what's going on in them, and then enable that
         information to be put to use by ecologists and other parties interested in conservation.
     </p>
+
     <p ng-show="loggedIn">
-        Welcome back to the Bioacoustic Workbench, <span>{{$scope.userData.friendly_name}}</span>! We're glad you're here.
+        Welcome back to the Bioacoustic Workbench, <span>{{$scope.userData.friendly_name}}</span>! We're glad you're
+        here.
     </p>
+
     <p ng-hide="loggedIn" ng-controller="LoginCtrl">
-        Time to get started! You can <a href ng-click="login()">sign in</a> using an account you have at an external website.
+        Time to get started! You can <a href ng-click="login()">sign in</a> using an account you have at an external
+        website.
     </p>
 
     <p>
@@ -24,6 +30,7 @@
     </p>
 
     <h3>Audio Recordings and Annotations</h3>
+
     <p>
         <a href="/recordings">Audio Recordings</a>
 
@@ -32,8 +39,23 @@
     </p>
 
     <h3>Download annotations</h3>
+
     <p>
         Download all annotations on site (temporary). In
-        <a ng-href="{{downloadAnnotationLink}}" target="_blank" >csv</a> format.
+        <a ng-href="{{downloadAnnotationLink}}" target="_blank">csv</a> format.
     </p>
+
+    <div id="map_canvas" style="width:100%; height:600px;z-index:2;"></div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var mapOptions = {
+                center: new google.maps.LatLng(-34.397, 150.644),
+                zoom: 8,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map_canvas"),
+                    mapOptions);
+        });
+    </script>
 </div>
