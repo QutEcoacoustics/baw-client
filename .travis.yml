@@ -24,7 +24,7 @@ before_install:
   - ffmpeg -version
   - mp3splt -version
   - sox --version
-  - wvunpack --help
+  #- wvunpack --help # can't run this, coz it returns an non-zero exit code (WTF?)
   - echo "Before install done."
 script:
 #  - ls -la
