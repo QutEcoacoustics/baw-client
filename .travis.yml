@@ -15,13 +15,16 @@ gemfile:
   - Gemfile
 before_install:
   - echo "Installing audio tools."
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 16126D3A3E5C1192
   - sudo apt-get update -qq
-  - sudo apt-get install -qq ffmpeg mp3splt sox wavpack --fix-missing
+  - sudo apt-get install -qq libav-tools ffmpeg mp3splt sox wavpack --fix-missing
   - echo "Testing for audio tools."
+  - avconv -version
   - ffmpeg -version
   - mp3splt -version
   - sox --version
-  - wvunpack
+  - wvunpack --help
   - echo "Before install done."
 script:
 #  - ls -la
