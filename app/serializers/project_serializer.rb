@@ -10,7 +10,7 @@ end
 
 
 class ProjectSerializer < CommonAttributesSerializer
-  attributes :id, :name, :description, :urn, :notes
+  attributes :id, :name, :description, :urn, :notes, :latitude, :longitude
 
   has_many :sites, :serializer => SitesInProjectSerializer
   has_many :photos, :serializer => PhotosInProjectSerializer

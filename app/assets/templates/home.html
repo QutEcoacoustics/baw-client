@@ -44,18 +44,4 @@
         Download all annotations on site (temporary). In
         <a ng-href="{{downloadAnnotationLink}}" target="_blank">csv</a> format.
     </p>
-
-    <div id="map_canvas" style="width:100%; height:600px;z-index:2;"></div>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var mapOptions = {
-                center: new google.maps.LatLng(-34.397, 150.644),
-                zoom: 8,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            var map = new google.maps.Map(document.getElementById("map_canvas"),
-                    mapOptions);
-        });
-    </script>
 </div>
