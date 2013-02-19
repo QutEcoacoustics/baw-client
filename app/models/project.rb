@@ -13,7 +13,8 @@ class Project < ActiveRecord::Base
 
   # attr
   # http://stackoverflow.com/questions/4934194/resulttype-614051528-expected-got-string-608366078-with-many-to-many-as
-  attr_accessible :description, :name, :urn, :notes, :site_ids, :photos_attributes # :sites, :sites_attributes (those damn s's!)
+  attr_accessible :description, :name, :urn, :notes, :latitude, :longitude,
+                  :site_ids, :photos_attributes # :sites, :sites_attributes (those damn s's!)
 
 
   # userstamp
@@ -25,6 +26,8 @@ class Project < ActiveRecord::Base
   # validation
   validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
   validates :urn, :presence => true, :uniqueness => { :case_sensitive => false }
+  validates :latitude, :numericality => true
+  validates :longitude, :numericality => true
   validates_format_of :urn, :with => /^urn:[a-z0-9][a-z0-9-]{0,31}:[a-z0-9()+,\-.:=@;$_!*'%\/?#]+$/
 
   # commonly used queries (these return

@@ -7,7 +7,7 @@ class Tag < ActiveRecord::Base
   accepts_nested_attributes_for :audio_events
 
   # attr
-  attr_accessible :is_taxanomic, :text, :type_of_tag
+  attr_accessible :is_taxanomic, :text, :type_of_tag, :retired, :notes
 
   # userstamp
   stampable
@@ -21,6 +21,7 @@ class Tag < ActiveRecord::Base
   # validation
   validates :is_taxanomic, inclusion: { in: [true, false] }
   validates :text, uniqueness: { case_sensitive: false }
+  validates :retired, inclusion: { in: [true, false] }
 
 
   validate :no_nils
