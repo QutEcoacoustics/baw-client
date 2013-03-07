@@ -1,6 +1,6 @@
 /**
  * AngularUI - The companion suite for AngularJS
- * @version v0.3.2 - 2013-02-12
+ * @version v0.4.0 - 2013-02-17
  * @link http://angular-ui.github.com
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -70,6 +70,7 @@ angular.module('ui.directives').directive('uiCalendar',['ui.config', '$parse', f
             var tracker = 0;
             /* returns the length of all source arrays plus the length of eventSource itself */
             var getSources = function () {
+              var equalsTracker = scope.$eval(attrs.equalsTracker);
               tracker = 0;
               angular.forEach(sources,function(value,key){
                 if(angular.isArray(value)){
@@ -951,6 +952,8 @@ angular.module('ui.directives').directive('uiSelect2', ['ui.config', '$timeout',
               } else {
                 if (angular.isObject(controller.$viewValue)) {
                   elm.select2('data', controller.$viewValue);
+                } else if (!controller.$viewValue) {
+                  elm.select2('data', null);
                 } else {
                   elm.select2('val', controller.$viewValue);
                 }
@@ -1002,17 +1005,20 @@ angular.module('ui.directives').directive('uiSelect2', ['ui.config', '$timeout',
         }
 
         // Set initial value since Angular doesn't
-        //elm.val(null);//scope.$eval(attrs.ngModel));
+        //elm.val(scope.$eval(attrs.ngModel));
 
         // Initialize the plugin late so that the injected DOM does not disrupt the template compiler
         $timeout(function () {
           elm.select2(opts);
+
+          // Set initial value - I'm not sure about this but it seems to need to be there
+          elm.val(controller.$viewValue);
+          controller.$render();
+
           // Not sure if I should just check for !isSelect OR if I should check for 'tags' key
           if (!opts.initSelection && !isSelect)
-            elm.select2('data', controller.$viewValue);
-            controller.$setViewValue(elm.select2('data'));
 
-            //controller.$render();
+            controller.$setViewValue(elm.select2('data'));
         });
       };
     }

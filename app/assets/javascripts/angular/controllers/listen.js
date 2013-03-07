@@ -198,7 +198,7 @@
 
                 $scope.select2Settings = {
                     allowClear: true,
-                    tags: $scope.tags,
+                    tags: $scope.tags
 //                    id: function selectTagId(tag) {
 //                        return tag.tagId;
 //                    },

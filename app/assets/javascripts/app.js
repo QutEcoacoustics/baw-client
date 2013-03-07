@@ -96,6 +96,10 @@ var bawApp = (function (undefined) {
 
             when('/attribution', {templateUrl: '/assets/attributions.html'}).
 
+            // experiments
+            when('/experiments/tour', {templateUrl: '/assets/tour_experiment.html', controller: 'ExperimentsCtrl'}).
+            when('/experiments/rapidScan', {templateUrl: '/assets/rapid_scanning_experiment.html', controller: 'ExperimentsCtrl'}).
+
             // missing route page
             when('/', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
             when('/404', {templateUrl: '/assets/error_404.html', controller: 'ErrorCtrl'}).

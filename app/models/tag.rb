@@ -53,5 +53,6 @@ class Tag < ActiveRecord::Base
   after_initialize :init
   def init
     self.is_taxanomic ||= false
+    self.retired ||= false
   end
 end

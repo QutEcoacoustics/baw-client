@@ -1,0 +1,13 @@
+{
+    "experiment": "Rapid Spectrogtam Scanning",
+    "instructions": [
+        "Step 1",
+        "Step 2"
+    ],
+    "experimentSteps": [
+        {},
+        {},
+        {}
+    ],
+    "experimentResultsPostUri": "/experiments"
+}

@@ -67,7 +67,7 @@ class MediaController < ApplicationController
     # if the format is a supported image format, locate a cached spectrogram or generate it, then stream it back.
     #if image_media_types.include? final_format_requested
 
-    recording                    = AudioRecording.find_by_uuid(@file_info[:id])
+    recording                    = AudioRecording.find_by_uuid!(@file_info[:id])
     @file_info[:date]            = recording.recorded_date.strftime "%Y%m%d"
     @file_info[:time]            = recording.recorded_date.strftime "%H%M%S"
     @file_info[:original_format] = Mime::Type.file_extension_of recording.media_type
