@@ -1,47 +1,35 @@
 <div id="content" data-ng-controller="HomeCtrl" style="position:relative;">
-    <h2>Home</h2>
-
     <p>
         Welcome to a place where you can listen, learn, share your discoveries and help out the environment!
         The Bioacoustic Workbench is a repository for audio recordings of the environment and tools that aid in
         analysing the sounds.
-    </p>
-
-    <p>
         We gather recordings from a wide range of environments, find practical ways to annotate
         the sounds with information about what's going on in them, and then enable that
         information to be put to use by ecologists and other parties interested in conservation.
     </p>
 
     <p ng-show="loggedIn">
-        Welcome back to the Bioacoustic Workbench, <span>{{$scope.userData.friendly_name}}</span>! We're glad you're
+        Welcome back to the Bioacoustic Workbench, <span>{{$root.userData.friendlyName}}</span>! We're glad you're
         here.
     </p>
 
     <p ng-hide="loggedIn" ng-controller="LoginCtrl">
-        Time to get started! You can <a href ng-click="login()">sign in</a> using an account you have at an external
-        website.
+        Time to get started! You can <a href ng-click="login()">sign in</a> using an account you already have!
     </p>
+    <a ng-click="populateProjectMarkers()">Show all Projects</a>
 
-    <p>
-        <a href="/projects">Projects</a>
-        <a href="/sites">Sites</a>
-        <a href="/photos">Photos</a>
-    </p>
+    <div ui-map-info-window="myInfoWindow">
+        <h3>{{currentMarkerTitle}}</h3>
 
-    <h3>Audio Recordings and Annotations</h3>
+        <p>Location: {{currentMarkerLat}}, {{currentMarkerLng}}</p>
 
-    <p>
-        <a href="/recordings">Audio Recordings</a>
+        <p><a ng-href="/projects/{{currentMarkerId}}">Go to Project</a></p>
+    </div>
 
-        <a href="/listen">Listen</a>
-        <a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">Listen2</a>
-    </p>
+    <!-- this is the confusing part. we have to point the map marker directive at an existing google.maps.Marker object, so it can hook up events -->
+    <div ng-repeat="marker in myMarkers" baw-map-marker="myMarkers[$index]"
+         ui-event="{'map-click': 'openMarkerInfo(marker)', 'map-once-idle': 'loadProjects()'}"></div>
+    <div id="map_canvas" baw-map="projectMap" style="height: 500px; width: 100%;" ui-options="mapOptions"></div>
 
-    <h3>Download annotations</h3>
 
-    <p>
-        Download all annotations on site (temporary). In
-        <a ng-href="{{downloadAnnotationLink}}" target="_blank">csv</a> format.
-    </p>
 </div>

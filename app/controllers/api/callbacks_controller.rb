@@ -59,7 +59,7 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
     sign_in(user, :event => :authentication)
 
     unless current_user.blank?
-      current_user.reset_authentication_token!
+      current_user.ensure_authentication_token!
     end
 
     content = Api::SessionsController.login_info(current_user, user, canonical_data[:authorization][:provider])
