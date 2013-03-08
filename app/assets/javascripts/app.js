@@ -83,6 +83,7 @@ var bawApp = (function (undefined) {
             whenDefaults("searches", "search", ":searchId", 'SearchesCtrl', 'SearchCtrl').
             whenDefaults("tags", "tag", ":tagId", 'TagsCtrl', 'TagCtrl').
             whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
+            whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
 
             when('/recordings', {templateUrl: '/assets/recordings.html', controller: 'RecordingsCtrl' }).
             when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
@@ -117,7 +118,7 @@ var bawApp = (function (undefined) {
 
 
 
-    app.run(['$rootScope', '$location', '$route', '$http', function ($rootScope, $location, $route, $http) {
+    app.run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', function ($rootScope, $location, $route, $http, AudioEvent) {
         exports.print = $rootScope.print = function () {
             var seen = [];
             var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling", "$$prevSibling", "$root", "this", "$parent"];
@@ -214,6 +215,7 @@ var bawApp = (function (undefined) {
 
         });
 
+        $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
 
     }]);
 

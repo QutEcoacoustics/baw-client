@@ -29,14 +29,20 @@
 
     <h1><a href="/">Bioacoustic Workbench</a></h1>
     <ul>
+      <li><a href="/projects">Projects</a></li>
+      <li><a href="/listen">Listen</a></li>
+
       <li ng-controller="LoginCtrl">
       <span ng-show="loggedIn">
-        Welcome <a href="/user/{{userData.userId}}" title="{{friendlyName}}">{{friendlyName}}</a>&nbsp;&nbsp;<a href ng-click="logout()">Sign Out</a>
+        Welcome <a href="/users/{{userData.userId}}" title="{{friendlyName}}">{{friendlyName}}</a>&nbsp;&nbsp;<a href ng-click="logout()">Sign Out</a>
       </span>
       <span ng-hide="loggedIn">
-        <a href ng-click="login()">Sign In</a>
+        Welcome! <a href ng-click="login()">Sign In</a>
       </span>
       </li>
+      <li>Debugging: </li>
+      <li><a href="/listen/1bd0d668-1471-4396-adc3-09ccd8fe949a">Listen</a></li>
+      <li><a ng-href="{{downloadAnnotationLink}}" target="_blank">Annotations</a></li>
     </ul>
   </header>
 

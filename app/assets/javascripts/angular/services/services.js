@@ -31,6 +31,10 @@
         return resourcePut($resource, '/photos/:photoId', {photoId: "@photoId"});
     }]);
 
+    bawss.factory('User', [ '$resource', function ($resource) {
+        return resourcePut($resource, '/users/:userId', {userId: "@userId"});
+    }]);
+
     bawss.factory('AudioRecording', [ '$resource', function ($resource) {
         return resourcePut($resource, '/audio_recordings/:recordingId', {recordingId: '@recordingId'});
     }]);
