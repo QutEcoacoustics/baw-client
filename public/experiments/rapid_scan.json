@@ -1,13 +1,22 @@
 {
-    "experiment": "Rapid Spectrogtam Scanning",
+    "experiment": "Rapid Spectrogram Scanning",
     "instructions": [
-        "Step 1",
-        "Step 2"
+        "This is a timed experiment. You are encouraged to balance accurate work with finishing quickly.",
+        "This experiment is designed to measure how quickly acoustic events of interest can be detected",
+        "There are 3 parts of this experiment to complete",
+        "In total the experiment should take no longer than 30 minutes",
+        "You may use external resources to assist you. We recommend preparing them before the experiment."
     ],
     "experimentSteps": [
-        {},
-        {},
-        {}
+        {
+            "template": "/assets/rapid_scanning_experiment.html"
+        },
+        {
+            "template": "/assets/rapid_scanning_experiment.html"
+        },
+        {
+            "template": "/assets/rapid_scanning_experiment.html"
+        }
     ],
     "experimentResultsPostUri": "/experiments"
 }

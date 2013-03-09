@@ -1,0 +1,134 @@
+<div id="content" ng-controller="ExperimentsCtrl">
+    <style>
+        .isa_info, .isa_success, .isa_warning, .isa_error {
+            border: 1px solid;
+            margin: 10px 0px;
+            padding:10px 10px 10px 50px;
+            background-repeat: no-repeat;
+            background-position: 10px center;-moz-border-radius:.5em;
+            -webkit-border-radius:.5em;
+            border-radius:.5em;
+
+            width: 500px;
+
+        }
+        .isa_info {
+            color: #00529B;
+            background-color: #BDE5F8;
+            background-image: url('/experiments/info.png');
+        }
+        .isa_success {
+            color: #4F8A10;
+            background-color: #DFF2BF;
+            background-image:url('/experiments/success.png');
+        }
+        .isa_warning {
+            color: #9F6000;
+            background-color: #FEEFB3;
+            background-image: url('/experiments/warning.png');
+        }
+        .isa_error {
+            color: #D8000C;
+            background-color: #FFBABA;
+            background-image: url('/experiments/error.png');
+        }
+    </style>
+
+    <h1>Experiment: {{spec.experiment}}</h1>
+
+    <div id="experimentPreface" ng-show="stage == PREFACE_STAGE">
+        <h2>Welcome</h2>
+
+        <p>
+
+        </p>
+
+        <h3>Instructions</h3>
+        <ul>
+            <li ng-repeat="step in spec.instructions">{{step}}</li>
+            <li>Please do not leave this page, or close your browser during the experiment, your progress will be lost</li>
+            <li>
+                Ensure you read the experiment <a href="/ParticipantInformation.html"
+                                                  ng-click="results.ethicsStatementViewed = true" target="_blank"
+                                                  style="">ethics statement</a>. You will need to click the link.
+                <br/>
+                <label>
+                    <input type="checkbox" ng-checked="results.ethicsStatementViewed" disabled/>
+                    I have visited the ethics page
+                </label>
+                <br/>
+                <label>
+                    <input type="checkbox" ng-model="results.consented"/>
+                    I consent to participating in this experiment and I understand I can leave at any time without
+                    penalty
+                </label>
+
+                <br/>
+                <label>
+                    <input type="checkbox" ng-model="results.allowContact"/>
+                    I do not wish to be contacted for follow up questions
+                </label>
+            </li>
+            <li>
+                You need to be signed in to participate in this experiment. Registration is very easy.
+                <div ng-hide="loggedIn" class="isa_warning">You are not signed in yet. <a ng-click="login()">Click</a> to sign in.</div>
+                <div ng-show="loggedIn" class="isa_info">You are signed in as {{userData.email}} </div>
+            </li>
+            <li>
+                Google Chrome is required for this experiment.
+                <p ng-show="isChrome()" class="isa_info">You are using chrome</p>
+                <p ng-hide="isChrome()" class="isa_error">You are NOT using chrome</p>
+            </li>
+        </ul>
+
+        <div id="prefaceErrors" class="isa_error" ng-hide="errors.length == 0">
+            <ul>
+                <li ng-repeat="error in errors">{{error}}</li>
+            </ul>
+        </div>
+
+        <button ng-click="verifyPreface()">Start experiment</button>
+    </div>
+    <div id="experimentBody" ng-show="stage == EXPERIMENT_STAGE">
+        <h2>Main experiment</h2>
+        <div>
+            Progress: {{step}}/{{spec.experimentSteps.length}}  <progress value="{{step}}" max="{{spec.experimentSteps.length}}"></progress>
+        </div>
+        <div ng-include src="step.template"></div>
+
+        <button ng-click="step = step + 1">Next</button>
+    </div>
+    <div id="experimentConclusion" ng-show="stage == FINAL_STAGE">
+        <h2>Done!</h2>
+
+        <p>Thank you very much for participating.</p>
+
+        <p  class="isa_info" ng-show="resultsSending">Your results are being saved at the moment. <em>Please do not close the window or navigate away!</em>
+             <br/>
+            <progress></progress>
+        </p>
+
+        <p class="isa_success" ng-show="resultsSentSuccessfully == true">Your results have been saved. You may now close this window.
+        </p>
+
+        <div class="isa_error" ng-show="resultsSentSuccessfully == false">
+            Saving the results failed. We don't know why but something didn't work.
+            We'd still really like your experiment data, could please email the information you see below?
+            <br/>
+            Copy this data:
+            <textarea  readonly> {{results}} </textarea>
+            <p>
+                and send to: <a href="mailto:anthony.truskinger@student.qut.edu.au">anthony.truskinger@student.qut.edu.au</a>
+            </p>
+        </div>
+
+
+
+        <p>Below is a copy of the data we have saved</p>
+
+        <textarea  readonly > {{results}} </textarea>
+
+        <div id="summary"></div>
+    </div>
+
+</div>
