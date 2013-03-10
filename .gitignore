@@ -11,6 +11,7 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+Thubs.db
 
 # YARD artifacts 
 .yardoc
@@ -45,3 +46,4 @@ doc/
 /media/original/*
 /media/cachedimages/*
 /media/cachedaudio/*
+/media/experiments/*

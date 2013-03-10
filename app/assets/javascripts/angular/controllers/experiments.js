@@ -105,7 +105,7 @@
                 // send back results to server
                 $scope.resultsSending = true;
                 $scope.resultsSentSuccessfully = undefined;
-                $http.post('', $scope.results)
+                $http.post('/experiments', $scope.results)
                     .success(function (data, status, headers, config) {
 
                         $scope.resultsSending = false;
