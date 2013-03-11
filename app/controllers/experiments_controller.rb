@@ -21,7 +21,7 @@ class ExperimentsController < ApplicationController
     end
   end
 
-  EXPERIMENTS_SAVE_DIRECTORY = "#{Rails.root}/media/experiments"
+  EXPERIMENTS_SAVE_DIRECTORY = BawSite::Application.config.custom_experiment_path
 
   def create
     success = nil

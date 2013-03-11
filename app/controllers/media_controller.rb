@@ -103,10 +103,10 @@ class MediaController < ApplicationController
 
           :channel              => @file_info[:channel].blank? ? 0 : @file_info[:channel], # default to mixing down to mono
           :sample_rate          => @file_info[:sample_rate].blank? ? recording.sample_rate_hertz : @file_info[:sample_rate],
-          :window               => @file_info[:window] || SharedSettings.settings[:cached_spectrogram_defaults][0][:window],
-          :color                => @file_info[:colour] || SharedSettings.settings[:cached_spectrogram_defaults][0][:colour],
-          :audio_format         => final_format_requested || SharedSettings.settings[:cached_audio_defaults][0][:format],
-          :image_format         => SharedSettings.settings[:cached_spectrogram_defaults][0][:format],
+          :window               => @file_info[:window] || BawSite::Application.config.custom_cached_spectrogram_defaults[0][:window],
+          :color                => @file_info[:colour] || BawSite::Application.config.custom_cached_spectrogram_defaults[0][:colour],
+          :audio_format         => final_format_requested || BawSite::Application.config.custom_cached_audio_defaults[0][:format],
+          :image_format         => BawSite::Application.config.custom_cached_spectrogram_defaults[0][:format],
 
           :info_url             => "/media/#{@file_info[:id]}",
           :audio_base_url       => (url_format_underscore ? AUDIO_BASE_URL_US : AUDIO_BASE_URL_CC),
