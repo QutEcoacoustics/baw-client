@@ -41,7 +41,8 @@
             // todo: populate user information
 
             // download experiment protocol
-            $http.get('/experiments/rapid_scan.json').
+            var experiment = $routeParams.experiment  == "tour" ? '/experiments/bird_tour.json' : '/experiments/rapid_scan.json';
+            $http.get(experiment).
                 success(function (data, status, headers, config) {
                     $scope.spec = data;
                     $scope.results.experiment = $scope.spec.experiment;
