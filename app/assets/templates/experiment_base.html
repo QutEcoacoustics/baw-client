@@ -96,9 +96,9 @@
     <div id="experimentBody" ng-show="stage == EXPERIMENT_STAGE">
         <h2>Main experiment</h2>
         <div>
-            Progress: {{step}}/{{spec.experimentSteps.length}}  <progress value="{{step}}" max="{{spec.experimentSteps.length}}"></progress>
+            Progress: {{step}}/{{spec.experimentSteps.length}}  <meter value="{{step}}" max="{{spec.experimentSteps.length}}"></meter>
         </div>
-        <div ng-include src="step.template"></div>
+        <div ng-include src="getPath()"></div>
 
         <button ng-click="step = step + 1">Next</button>
     </div>

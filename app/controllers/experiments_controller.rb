@@ -34,7 +34,7 @@ class ExperimentsController < ApplicationController
 
     if success.nil?
       FileUtils.makedirs EXPERIMENTS_SAVE_DIRECTORY
-      File.open( (EXPERIMENTS_SAVE_DIRECTORY + '/' + Time.now.to_i.to_s + '.json'), 'w' ){ |file|
+      File.open( (EXPERIMENTS_SAVE_DIRECTORY + '/' + Time.now.to_f.to_s + '.json'), 'w' ){ |file|
           file.write post_data
       }
 

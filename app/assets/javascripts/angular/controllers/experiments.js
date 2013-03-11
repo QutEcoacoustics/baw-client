@@ -7,7 +7,7 @@
     app.controller('ExperimentsCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
 
         /**
-         * The listen controller.
+         * The Experiments controller.
          * @param $scope
          * @param $resource
          * @param $routeParams
@@ -45,6 +45,10 @@
                 success(function (data, status, headers, config) {
                     $scope.spec = data;
                     $scope.results.experiment = $scope.spec.experiment;
+
+                    if ($routeParams.cheat) {
+                        $scope.stage = $routeParams.cheat;
+                    }
                 }).error(function (data, status, headers, config) {
                     alert("downloading test specification failed");
                 });
@@ -86,6 +90,13 @@
                 $scope.step = 0;
                 $scope.stage = $scope.EXPERIMENT_STAGE;
 
+            };
+
+            $scope.getPath = function () {
+                if ($scope.spec && $scope.spec.experimentSteps && $scope.spec.experimentSteps[$scope.step]) {
+
+                    return $scope.spec.experimentSteps[$scope.step].template
+                }
             };
 
             $scope.$watch(function () {
