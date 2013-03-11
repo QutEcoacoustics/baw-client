@@ -41,7 +41,7 @@
             // todo: populate user information
 
             // download experiment protocol
-            var experiment = $routeParams.experiment  == "tour" ? '/experiments/bird_tour.json' : '/experiments/rapid_scan.json';
+            var experiment = $routeParams.experiment == "tour" ? '/experiment_assets/bird_tour.json' : '/experiment_assets/rapid_scan.json';
             $http.get(experiment).
                 success(function (data, status, headers, config) {
                     $scope.spec = data;
@@ -49,6 +49,9 @@
 
                     if ($routeParams.cheat) {
                         $scope.stage = $routeParams.cheat;
+                        if ($scope.stage = $scope.EXPERIMENT_STAGE) {
+                            $scope.step = 1;
+                        }
                     }
                 }).error(function (data, status, headers, config) {
                     alert("downloading test specification failed");
@@ -88,15 +91,15 @@
                     return;
                 }
 
-                $scope.step = 0;
+                $scope.step = 1;
                 $scope.stage = $scope.EXPERIMENT_STAGE;
 
             };
 
             $scope.getPath = function () {
-                if ($scope.spec && $scope.spec.experimentSteps && $scope.spec.experimentSteps[$scope.step]) {
+                if ($scope.spec && $scope.spec.experimentSteps && $scope.spec.experimentSteps[$scope.step - 1]) {
 
-                    return $scope.spec.experimentSteps[$scope.step].template
+                    return $scope.spec.experimentSteps[$scope.step - 1].template
                 }
             };
 
@@ -129,6 +132,59 @@
                     });
             };
 
+            $scope.prettyResults = function() {
+              return JSON.stringify($scope.results, undefined, 2);
+            };
 
+
+        }]);
+
+
+    app.controller('RapidScanCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
+        function RapidScanCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
+            $scope.hello = "Hello world!";
+
+            $scope.bigScope = $scope.$parent;
+
+            $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
+
+            var stepResults;
+            $scope.$watch(function () {
+                return $scope.bigScope.step;
+            }, function (newValue, oldValue) {
+                stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+            });
+
+            $scope.startTimer = function() {
+              stepResults.startTime  = Date.now();
+            };
+
+            $scope.startTimer = function() {
+                stepResults.endTime  = Date.now();
+            };
+
+            $scope.SPECTROGRAM_WIDTH = 1080;
+            var PPS = 45;
+            $scope.flashes = function() {
+                var duration = stepResults.endTime - stepResults.startTime ;
+
+                // work out the number of flash cards that need to be shown
+                var adjustedPPS = PPS * stepResults.compression;
+                var segmentDuration = $scope.SPECTROGRAM_WIDTH / adjustedPPS;
+
+                var numberOfSegments = duration / segmentDuration;
+
+                var segments = [];
+                for(var i = 0; i < numberOfSegments; i++) {
+                    var start = stepResults.endTime + (i * segmentDuration),
+                        end = start + segmentDuration;
+
+                    var imageUrl = "";
+
+                    segments.push({start: start, end: end, imageLink: imageUrl});
+                }
+
+                return segments;
+            };
         }]);
 })();

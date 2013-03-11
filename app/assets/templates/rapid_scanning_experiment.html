@@ -1,1 +1,42 @@
-<h1>BLA BLAH BLAH</h1>
+<div ng-controller="RapidScanCtrl">
+
+    <style type="text/css">
+        .experimentContainer {
+            width: 100%;
+            text-align: center;
+        }
+
+    </style>
+
+    <div class="experimentContainer">
+
+        <div id="translateTest" ng-show="bigScope.step == 1">
+            <div id="instructions" >
+                <div>
+                    <img src="/experiment_assets/Instructions.jpg">
+                </div>
+            </div>
+            <div>
+                <ul>
+                    <li ng-repeat="segment in flashes()">
+                        <p>
+                            {{segment.start}}, {{segment.end}}
+                        </p>
+                        <img src="http://sail.usc.edu/Peter/mystery/mystery.jpg"></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--<div id="flashTest" ng-show="bigScope.step == 2">-->
+            <!--<div id="instructions2" >-->
+                <!--<div>-->
+                    <!--<img src="/experiment_assets/Instructions.jpg">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div>-->
+                <!--<img src="http://sail.usc.edu/Peter/mystery/mystery.jpg">-->
+            <!--</div>-->
+
+        <!--</div>-->
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{
+    "experiment": "Virtual bird tour",
+    "instructions": [
+        "This is a timed expersssssssssssssiment. You are encouraged to balance accurate work with finishing quickly.",
+        "This experiment is dessaaaaaaaaaaaasigned to measure how quickly acoustic events of interest can be detected",
+        "There are 3 parts asssssssssssof this experiment to complete",
+        "In total the expaaaaaaaaaaaaaaaaeriment should take no longer than 30 minutes",
+        "You may use externaaaaaaaaaaaaaaaal resources to assist you. We recommend preparing them before the experiment."
+    ],
+    "experimentSteps": [
+        {
+            "template": "/assets/tour_experiment.html"
+        },
+        {
+            "template": "/assets/tour_experiment.html"
+        },
+        {
+            "template": "/assets/tour_experiment.html"
+        }
+    ],
+    "experimentResultsPostUri": "/experiments"
+}

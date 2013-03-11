@@ -1,0 +1,47 @@
+{
+    "experiment": "Rapid Spectrogram Scanning",
+    "instructions": [
+        "This is a timed experiment. You are encouraged to balance accurate work with finishing quickly.",
+        "This experiment is designed to measure how quickly acoustic events of interest can be detected",
+        "There are 3 parts of this experiment to complete",
+        "In total the experiment should take no longer than 30 minutes",
+        "You may use external resources to assist you. We recommend preparing them before the experiment."
+    ],
+    "experimentSteps": [
+        {
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "ff-koala",
+            "type": "fast-forward",
+            "audioId": "some-guid",
+            "startTime": 1800,
+            "endTime": 2400,
+            "compression": 1
+        },
+        {
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "flashing-koala",
+            "type": "flashing",
+            "startTime": 1800,
+            "endTime": 2400,
+            "compression": 1
+        },
+        {
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "ff-night",
+            "type": "fast-forward",
+            "audioId": "some-guid",
+            "startTime": 1800,
+            "endTime": 2400,
+            "compression": 1
+        },
+        {
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "flashing-night",
+            "type": "flashing",
+            "startTime": 1800,
+            "endTime": 2400,
+            "compression": 1
+        }
+    ],
+    "experimentResultsPostUri": "/experiments"
+}

@@ -1,4 +1,5 @@
 require 'FileUtils'
+require 'modules/JSON_patch'
 
 class ExperimentsController < ApplicationController
 

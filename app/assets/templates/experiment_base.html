@@ -15,25 +15,31 @@
         .isa_info {
             color: #00529B;
             background-color: #BDE5F8;
-            background-image: url('/experiments/info.png');
+            background-image: url("/experiment_assets/info.png");
         }
         .isa_success {
             color: #4F8A10;
             background-color: #DFF2BF;
-            background-image:url('/experiments/success.png');
+            background-image:url("/experiment_assets/success.png");
         }
         .isa_warning {
             color: #9F6000;
             background-color: #FEEFB3;
-            background-image: url('/experiments/warning.png');
+            background-image: url("/experiment_assets/warning.png");
         }
         .isa_error {
             color: #D8000C;
             background-color: #FFBABA;
-            background-image: url('/experiments/error.png');
+            background-image: url("/experiment_assets/error.png");
         }
 
-
+        .progress {
+            position: relative;
+            float: right;
+            top: 0;
+            right: 0;
+            margin-top: -75px;
+        }
 
 
     </style>
@@ -95,7 +101,7 @@
     </div>
     <div id="experimentBody" ng-show="stage == EXPERIMENT_STAGE">
         <h2>Main experiment</h2>
-        <div>
+        <div class="progress">
             Progress: {{step}}/{{spec.experimentSteps.length}}  <meter value="{{step}}" max="{{spec.experimentSteps.length}}"></meter>
         </div>
         <div ng-include src="getPath()"></div>
@@ -120,7 +126,7 @@
             We'd still really like your experiment data, could please email the information you see below?
             <br/>
             Copy this data:
-            <textarea  readonly> {{results}} </textarea>
+            <textarea  readonly> {{prettyResults()}} </textarea>
             <p>
                 and send to: <a href="mailto:anthony.truskinger@student.qut.edu.au">anthony.truskinger@student.qut.edu.au</a>
             </p>
@@ -130,7 +136,7 @@
 
         <p>Below is a copy of the data we have saved</p>
 
-        <textarea  readonly > {{results}} </textarea>
+        <textarea  readonly > {{prettyResults()}} </textarea>
 
         <div id="summary"></div>
     </div>
