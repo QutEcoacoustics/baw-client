@@ -1,22 +1,70 @@
 {
     "experiment": "Virtual bird tour",
     "instructions": [
-        "This is a timed expersssssssssssssiment. You are encouraged to balance accurate work with finishing quickly.",
-        "This experiment is dessaaaaaaaaaaaasigned to measure how quickly acoustic events of interest can be detected",
-        "There are 3 parts asssssssssssof this experiment to complete",
-        "In total the expaaaaaaaaaaaaaaaaeriment should take no longer than 30 minutes",
-        "You may use externaaaaaaaaaaaaaaaal resources to assist you. We recommend preparing them before the experiment."
+        "This experiment investigates a method of verifying the labels applied to annotations made on a spectrogram.",
+        "Resources are provided to aid in learning to identify the vocalisations (calls) of particular species.",
+        "Your task is to select 'Yes', 'No', or 'Unsure' for each unlabeled spectrogram annotation that need to be classified.",
+        "There are six locations in this experiment. Information about the species of interest is provided for each location. There are 12 parts in total.",
+        "Each of the six parts should take about 5 minutes to complete. The entire process should take around 30 minutes."
     ],
     "experimentSteps": [
         {
-            "template": "/assets/tour_experiment.html"
+            "template": "/assets/experiments/virtual_tour/location_st_bees.html"
         },
         {
-            "template": "/assets/tour_experiment.html"
-        },
-        {
-            "template": "/assets/tour_experiment.html"
+            "template": "/assets/experiments/virtual_tour/task_st_bees.html"
         }
     ],
-    "experimentResultsPostUri": "/experiments"
+    "experimentResultsPostUri": "/experiments",
+    "locations": [
+        {
+            "name": "Peregian Beach",
+            "lat": -26.469932,
+            "long": 153.09229,
+            "species": "",
+            "environmentType": "Coastal Heath"
+        },
+        {
+            "name": "Bimblebox",
+            "lat": -23.556582,
+            "long": 146.478767,
+            "species": "",
+            "environmentType": "Semi-arid Woodland"
+        },
+        {
+            "name": "Cape Tribulation",
+            "lat": -16.097557,
+            "long": 145.453005,
+            "species": "",
+            "environmentType": "Rainforest"
+        },
+        {
+            "name": "Cape Tribulation",
+            "lat": -16.097557,
+            "long": 145.453005,
+            "species": "",
+            "environmentType": "Rainforest"
+        },
+        {
+            "name": "Mt Carbine",
+            "lat": -16.538952,
+            "long": 145.121655,
+            "species": "",
+            "environmentType": "Open Savannah"
+        },
+        {
+            "name": "Samford",
+            "lat": -27.388907,
+            "long": 152.878325,
+            "species": "",
+            "environmentType": "Dry Sclerophyll Forest"
+        },
+        {
+            "name": "St Bees",
+            "lat": -20.913738,
+            "long": 149.44051,
+            "species": "",
+            "environmentType": "Cloud Forest"
+        }
+    ]
 }
