@@ -142,41 +142,44 @@
 
     app.controller('RapidScanCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
         function RapidScanCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
-            $scope.hello = "Hello world!";
 
             $scope.bigScope = $scope.$parent;
 
             $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
-            var stepResults;
+            $scope.stepResults = undefined;
             $scope.$watch(function () {
                 return $scope.bigScope.step;
             }, function (newValue, oldValue) {
-                stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+                $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+
+                $scope.flashes = calculateFlashes();
             });
 
             $scope.startTimer = function() {
-              stepResults.startTime  = Date.now();
+                $scope.stepResults.startTime  = Date.now();
             };
 
             $scope.startTimer = function() {
-                stepResults.endTime  = Date.now();
+                $scope.stepResults.endTime  = Date.now();
             };
 
             $scope.SPECTROGRAM_WIDTH = 1080;
             var PPS = 45;
-            $scope.flashes = function() {
-                var duration = stepResults.endTime - stepResults.startTime ;
+            $scope.flashes = [];
+
+            function calculateFlashes() {
+                var duration = $scope.stepResults.endTime - $scope.stepResults.startTime ;
 
                 // work out the number of flash cards that need to be shown
-                var adjustedPPS = PPS * stepResults.compression;
+                var adjustedPPS = PPS * $scope.stepResults.compression;
                 var segmentDuration = $scope.SPECTROGRAM_WIDTH / adjustedPPS;
 
                 var numberOfSegments = duration / segmentDuration;
 
                 var segments = [];
                 for(var i = 0; i < numberOfSegments; i++) {
-                    var start = stepResults.endTime + (i * segmentDuration),
+                    var start = $scope.stepResults.endTime + (i * segmentDuration),
                         end = start + segmentDuration;
 
                     var imageUrl = "";
@@ -185,6 +188,6 @@
                 }
 
                 return segments;
-            };
+            }
         }]);
 })();

@@ -10,37 +10,33 @@
     "experimentSteps": [
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "ff-koala",
-            "type": "fast-forward",
+            "name": "Koala Flash 2x",
+            "type": "flashing",
             "audioId": "some-guid",
             "startTime": 1800,
             "endTime": 2400,
-            "compression": 1
+            "compression": 1,
+            "speed": 2.0
         },
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "flashing-koala",
+            "name": "Koala Flash 5x",
             "type": "flashing",
-            "startTime": 1800,
-            "endTime": 2400,
-            "compression": 1
-        },
-        {
-            "template": "/assets/rapid_scanning_experiment.html",
-            "name": "ff-night",
-            "type": "fast-forward",
             "audioId": "some-guid",
             "startTime": 1800,
             "endTime": 2400,
-            "compression": 1
+            "compression": 1,
+            "speed": 1
         },
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "flashing-night",
+            "name": "Koala Flash 2x",
             "type": "flashing",
+            "audioId": "some-guid",
             "startTime": 1800,
             "endTime": 2400,
-            "compression": 1
+            "compression": 1,
+            "speed": 0.5
         }
     ],
     "experimentResultsPostUri": "/experiments"
