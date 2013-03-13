@@ -10,20 +10,25 @@
 
     <div class="experimentContainer">
 
-        <div id="translateTest" ng-show="bigScope.step == 1">
-            <div id="instructions" >
-                <div>
-                    <img src="/experiment_assets/Instructions.jpg">
-                </div>
-            </div>
+        <div id="instructions" >
             <div>
-                <ul>
-                    <li ng-repeat="segment in flashes()">
-                        <p>
-                            {{segment.start}}, {{segment.end}}
-                        </p>
-                        <img src="http://sail.usc.edu/Peter/mystery/mystery.jpg"></li>
-                </ul>
+                <img src="/experiment_assets/Instructions.jpg">
+            </div>
+            <button>I understand the instructions</button>
+        </div>
+
+        <div>
+            <div ng-show="bigScope.step == $index">
+
+                <div>
+                    <ul>
+                        <li ng-repeat="segment in flashes">
+                            <p>
+                                {{segment.start}}, {{segment.end}}
+                            </p>
+                            <img src="http://sail.usc.edu/Peter/mystery/mystery.jpg"></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
