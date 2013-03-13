@@ -1,22 +1,117 @@
 {
     "experiment": "Virtual bird tour",
     "instructions": [
-        "This is a timed expersssssssssssssiment. You are encouraged to balance accurate work with finishing quickly.",
-        "This experiment is dessaaaaaaaaaaaasigned to measure how quickly acoustic events of interest can be detected",
-        "There are 3 parts asssssssssssof this experiment to complete",
-        "In total the expaaaaaaaaaaaaaaaaeriment should take no longer than 30 minutes",
-        "You may use externaaaaaaaaaaaaaaaal resources to assist you. We recommend preparing them before the experiment."
+        "This experiment investigates a method of verifying the labels applied to annotations made on a spectrogram.",
+        "Resources are provided to aid in learning to identify the vocalisations (calls) of particular species.",
+        "Your task is to select 'Yes', 'No', or 'Unsure' for each unlabeled spectrogram annotation that need to be classified.",
+        "There are six locations in this experiment. Information about the species of interest is provided for each location. There are 12 parts in total.",
+        "Each of the six parts should take about 5 minutes to complete. The entire process should take around 30 minutes."
     ],
     "experimentSteps": [
         {
-            "template": "/assets/tour_experiment.html"
+            "template": "/assets/tour_experiment.html",
+            "locationName": "Peregian Beach",
+            "speciesCommonName": 1,
+            "exampleAnnotationIds": [6, 7, 8],
+            "verifyAnnotationIds": [9644, 2, 3, 4, 5],
+            "backgroundImage": ""
         },
         {
-            "template": "/assets/tour_experiment.html"
-        },
-        {
-            "template": "/assets/tour_experiment.html"
+            "template": "/assets/tour_experiment.html",
+            "locationName": "Peregian Beach",
+            "speciesCommonName": 1,
+            "exampleAnnotationIds": [6, 7, 8],
+            "verifyAnnotationIds": [9644, 2, 3, 4, 5]
         }
     ],
-    "experimentResultsPostUri": "/experiments"
+    "experimentResultsPostUri": "/experiments",
+    "inputData": {
+        "locations": [
+            {
+                "name": "Peregian Beach",
+                "lat": -26.469932,
+                "long": 153.09229,
+                "environmentType": "Coastal Heath"
+            },
+            {
+                "name": "Bimblebox",
+                "lat": -23.556582,
+                "long": 146.478767,
+                "environmentType": "Semi-arid Woodland"
+            },
+            {
+                "name": "Cape Tribulation",
+                "lat": -16.097557,
+                "long": 145.453005,
+                "environmentType": "Rainforest"
+            },
+            {
+                "name": "Mt Carbine",
+                "lat": -16.538952,
+                "long": 145.121655,
+                "environmentType": "Open Savannah"
+            },
+            {
+                "name": "Samford",
+                "lat": -27.388907,
+                "long": 152.878325,
+                "environmentType": "Dry Sclerophyll Forest"
+            },
+            {
+                "name": "St Bees",
+                "lat": -20.913738,
+                "long": 149.44051,
+                "environmentType": "Cloud Forest"
+            }
+        ],
+        "species": [
+            {
+                "id": 1,
+                "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:309069cc-e7e1-454f-9de3-7113400fca49",
+                "commonName": "Sacred Kingfisher",
+                "scientificName": "Todiramphus sanctus",
+                "faunaImage": "http://bie.ala.org.au/repo/1013/128/1286798/smallRaw.jpg",
+                "distributionImage": ["http://spatial.ala.org.au/layers-service/distribution/map/png/6714",
+                    "http://www.birdsinbackyards.net/sites/www.birdsinbackyards.net/files/styles/medium/public/factsheets/images/map/todiramphus-sanctus.gif"],
+                "conservationStatus": "Least Concern",
+                "description": "The Sacred Kingfisher is a medium sized kingfisher. It has a turquoise back, turquoise blue rump and tail, buff-white underparts and a broad cream collar. There is a broad black eye stripe extending from bill to nape of neck. Both sexes are similar, although the female is generally lighter with duller upper parts. Young birds are similar to the female, but have varying amounts of rusty-brown edging to feathers on the collar and underparts, and buff edges on the wing coverts. The voice of the Sacred Kingfisher is a loud \"ek ek ek ek\" repeated continuously throughout breeding season. Birds also give a \"kee kee kee\" in excitement and a series of chirring, scolding notes when alarmed."
+            }
+        ],
+        "annotations": [
+            {
+                "type": "verify",
+                "speciesId": 1,
+                "id": 9644,
+                "dateStart": "2010-11-28",
+                "timeStart": 16229770,
+                "freqMax": 3832.91015625,
+                "freqMin": 2454.78515625,
+                "duration": 1378,
+                "audioMp3": "/experiment_assets/NEJB_NE465_20101014-072021.mp3",
+                "audioOga": "/experiment_assets/NEJB_NE465_20101014-072021.ogg",
+                "audioWebm": "/experiment_assets/NEJB_NE465_20101014-072021.webm",
+                "spectrogramImage": "",
+                "notes": {
+                    "type": "verify - annotation that will be verified; example - example annotation; filler - annotation presented with those to be verified, as a decoy.",
+                    "timeStart": "offset from midnight in milliseconds",
+                    "duration": "in milliseconds"
+                }
+            },
+            {
+                "type": "verify",
+                "speciesId": 1,
+                "locationName": "Peregian Beach",
+                "id": 9644,
+                "dateStart": "2010-11-28",
+                "timeStart": 16229770,
+                "freqMax": 3832.91015625,
+                "freqMin": 2454.78515625,
+                "duration": 1378,
+                "audioMp3": "/experiment_assets/NEJB_NE465_20101014-072021.mp3",
+                "audioOga": "/experiment_assets/NEJB_NE465_20101014-072021.ogg",
+                "audioWebm": "/experiment_assets/NEJB_NE465_20101014-072021.webm",
+                "spectrogramImage": ""
+            }
+        ]
+    }
 }

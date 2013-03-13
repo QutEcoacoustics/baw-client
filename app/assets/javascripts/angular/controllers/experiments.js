@@ -187,4 +187,22 @@
                 return segments;
             };
         }]);
+
+    app.controller('VirtualBirdTourCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
+        function VirtualBirdTourCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
+
+            $scope.bigScope = $scope.$parent;
+            //$scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
+            $scope.inputData = angular.copy($scope.bigScope.spec.inputData);
+
+            var stepResults;
+            $scope.$watch(function () {
+                return $scope.bigScope.step;
+            }, function (newValue, oldValue) {
+                stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+            });
+
+            $scope.selectedTab = "instructions";
+
+        }]);
 })();

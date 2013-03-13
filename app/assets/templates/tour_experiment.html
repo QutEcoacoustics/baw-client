@@ -1,136 +1,287 @@
+<div ng-controller="VirtualBirdTourCtrl">
 <style type="text/css">
-    div.vbt_annotation
-    {
-        height: 299px;
-        background-color: #7b903c;
-        border: 1px solid #7a903c;
-        border-radius: 4px;
-        -webkit-border-radius: 4px;
-        -ms-border-radius: 4px;
-        -moz-border-radius: 4px;
-        -o-border-radius: 4px;
+div.vbt_annotation {
+    background-color: rgb(208, 208, 208);
+    border: 1px solid #7a903c;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
 
-        float: left;
-        margin: 5px;
-        position: relative;
-        z-index: 0;
-        overflow: hidden;
-        padding: 0;
-        cursor: default;
-        width: 300px;
-    }
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+    float: left;
 
-    div.vbt_annotation div.vbt_image
-    {
-        position:relative;
-        margin:0 auto;
-    }
+    padding: 0;
+    margin: 5px;
+    cursor: default;
 
-    div.vbt_annotation div.vbt_image img
-    {
-        z-index: 1;
-        height: 256px;
-    }
+    min-width: 241px;
+    max-width: 300px;
+}
 
-    div.vbt_annotation div.vbt_image div.vbt_event_bound
-    {
-        opacity: .9;
-        filter: alpha(opacity=90);
-        position: absolute;
-        z-index: 2;
-        border: 1px solid #51FF00;
-    }
+div.vbt_annotation div.vbt_image {
+    position: relative;
+    margin: 0 auto;
+    height: 256px;
+}
 
-    div.vbt_annotation div.vbt_freqLine
-    {
-        position:absolute;
-        width:100%;
-        border:0 solid red;
-        /*border-top:1px solid orange;*/
-        border-bottom:1px dotted #e8e7e4;
-        height:15px;
-        color:#e8e7e4;
-        background-color:transparent;
-        text-align:left;
-    }
+div.vbt_annotation div.vbt_image img {
+    z-index: 1;
+    height: 256px;
+}
 
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine1  { left:0; top: 217px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine2  { left:0; top: 194px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine3  { left:0; top: 171px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine4  { left:0; top: 147px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine5  { left:0; top: 124px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine6  { left:0; top: 101px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine7  { left:0; top: 78px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine8  { left:0; top: 54px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine9  { left:0; top: 31px; }
-    div.vbt_annotation div.vbt_freqLines div.vbt_freqLine10 { left:0; top: 8px; }
+div.vbt_annotation div.vbt_image div.vbt_event_bound {
+    opacity: .9;
+    filter: alpha(opacity=90);
+    position: absolute;
+    z-index: 2;
+    border: 1px solid #51FF00;
+}
 
-    div.vbt_annotation div.vbt_options
-    {
-        margin: 5px 0 0 0;
-    }
+div.vbt_annotation div.vbt_freqLine {
+    position: absolute;
+    width: 100%;
+    border: 0 solid red;
+    /*border-top:1px solid orange;*/
+    border-bottom: 1px dotted #e8e7e4;
+    height: 15px;
+    color: white;
+    background-color: transparent;
+    text-align: left;
+}
 
-    div.vbt_annotation div.vbt_options ul
-    {
-        list-style-type: none;
-        padding: 0;
-        margin: 0 auto;
-        width: 241px;
-        overflow: hidden;
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine1 {
+    left: 0;
+    top: 217px;
+}
 
-    }
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine2 {
+    left: 0;
+    top: 194px;
+}
 
-    div.vbt_annotation div.vbt_options ul li
-    {
-        float: left;
-        padding: 1px 1px;
-        margin: 3px;
-        background-color: #f5ffd9;
-        background: linear-gradient(#f5ffd9, #d4deb8);
-        background: -webkit-linear-gradient(#f5ffd9, #d4deb8);
-        background: -ms-linear-gradient(#f5ffd9, #d4deb8);
-        background: -moz-linear-gradient(#f5ffd9, #d4deb8);
-        background: -o-linear-gradient(#f5ffd9, #d4deb8);
-        border: 1px solid #adc7a5;
-        font-size: 11pt;
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine3 {
+    left: 0;
+    top: 171px;
+}
 
-        border-style: solid;
-        border-width: 1px;
-        border-radius: 4px;
-        -webkit-border-radius: 4px;
-        -ms-border-radius: 4px;
-        -moz-border-radius: 4px;
-        -o-border-radius: 4px;
-    }
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine4 {
+    left: 0;
+    top: 147px;
+}
 
-    div.vbt_annotation div.vbt_options ul li:hover
-    {
-        box-shadow: 0px 0px 8px #adc7a5;
-        -webkit-box-shadow: 0px 0px 8px #adc7a5;
-        -ms-box-shadow: 0px 0px 8px #adc7a5;
-        -moz-box-shadow: 0px 0px 8px #adc7a5;
-        -o-box-shadow: 0px 0px 8px #adc7a5;
-        border: 1px solid #adc7a5;
-    }
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine5 {
+    left: 0;
+    top: 124px;
+}
 
-    div.vbt_annotation div.vbt_options ul li > div.vbt_annotation div.vbt_options ul li input:checked
-    {
-        background-color: #adc7a5;
-        border: 1px solid #f5ffd9;
-    }
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine6 {
+    left: 0;
+    top: 101px;
+}
+
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine7 {
+    left: 0;
+    top: 78px;
+}
+
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine8 {
+    left: 0;
+    top: 54px;
+}
+
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine9 {
+    left: 0;
+    top: 31px;
+}
+
+div.vbt_annotation div.vbt_freqLines div.vbt_freqLine10 {
+    left: 0;
+    top: 8px;
+}
+
+div.vbt_annotation div.vbt_options {
+    background-color: #d4deb8;
+    background: linear-gradient(#d4deb8, #adc7a5);
+    background: -webkit-linear-gradient(#d4deb8, #adc7a5);
+    background: -ms-linear-gradient(#d4deb8, #adc7a5);
+    background: -moz-linear-gradient(#d4deb8, #adc7a5);
+    background: -o-linear-gradient(#d4deb8, #adc7a5);
+    border-top: 1px solid #7b903c;
+
+    overflow: hidden;
+}
+
+div.vbt_annotation div.vbt_options button {
+    float: left;
+    margin: 2px;
+}
+
+div.vbt_annotation div.vbt_options ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+div.vbt_annotation div.vbt_options ul li label {
+    position: relative;
+    float: left;
+    margin: 2px;
+    font-size: 11pt;
+    z-index: 2;
+    display: block;
+    padding: 2px 6px;
+
+    border: 1px solid #adc7a5;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+
+    background-color: #f5ffd9;
+    background: linear-gradient(#f5ffd9, #d4deb8);
+    background: -webkit-linear-gradient(#f5ffd9, #d4deb8);
+    background: -ms-linear-gradient(#f5ffd9, #d4deb8);
+    background: -moz-linear-gradient(#f5ffd9, #d4deb8);
+    background: -o-linear-gradient(#f5ffd9, #d4deb8);
+}
+
+div.vbt_annotation div.vbt_options ul li input {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 0;
+    outline: 0 !important;
+    z-index: 1;
+    display: none;
+}
+
+div.vbt_annotation div.vbt_options ul li label:hover {
+    box-shadow: 0px 0px 8px #adc7a5;
+    -webkit-box-shadow: 0px 0px 8px #adc7a5;
+    -ms-box-shadow: 0px 0px 8px #adc7a5;
+    -moz-box-shadow: 0px 0px 8px #adc7a5;
+    -o-box-shadow: 0px 0px 8px #adc7a5;
+    border: 1px solid #adc7a5;
+}
+
+div.vbt_annotation div.vbt_options input[type="radio"]:checked+label,
+div.vbt_annotation div.vbt_options button:active,
+div.vbt_annotation div.vbt_options button.playingAudio {
+    color: #97764A;
+    background-color: #ADC7A5;
+    background: linear-gradient(#ADC7A5, #d4deb8);
+    background: -webkit-linear-gradient(#ADC7A5, #d4deb8);
+    background: -ms-linear-gradient(#ADC7A5, #d4deb8);
+    background: -moz-linear-gradient(#ADC7A5, #d4deb8);
+    background: -o-linear-gradient(#ADC7A5, #d4deb8);
+    border: 1px solid #7b903c;
+}
+
+div.vbt_annotation div.vbt_options input[type="radio"]:checked+label b {
+    color: #97764A;
+}
+
+    /*
+        div.vbt_annotation div.vbt_options {
+            margin: 2px 0 0 0;
+            background-color: #d4deb8;
+            background: linear-gradient(#d4deb8, #adc7a5);
+            background: -webkit-linear-gradient(#d4deb8, #adc7a5);
+            background: -ms-linear-gradient(#d4deb8, #adc7a5);
+            background: -moz-linear-gradient(#d4deb8, #adc7a5);
+            background: -o-linear-gradient(#d4deb8, #adc7a5);
+            border-top: 1px solid #7b903c;
+            padding: 0;
+        }
+
+        div.vbt_annotation div.vbt_options audio {
+            height: 10px;
+            margin: 0;
+        }
+
+        div.vbt_annotation div.vbt_options ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 auto;
+        }
+
+        div.vbt_annotation div.vbt_options ul li {
+            float: left;
+            margin: 3px;
+            font-size: 11pt;
+
+            border: 1px solid #adc7a5;
+            border-radius: 4px;
+            -webkit-border-radius: 4px;
+            -ms-border-radius: 4px;
+            -moz-border-radius: 4px;
+            -o-border-radius: 4px;
+
+            background-color: #f5ffd9;
+            background: linear-gradient(#f5ffd9, #d4deb8);
+            background: -webkit-linear-gradient(#f5ffd9, #d4deb8);
+            background: -ms-linear-gradient(#f5ffd9, #d4deb8);
+            background: -moz-linear-gradient(#f5ffd9, #d4deb8);
+            background: -o-linear-gradient(#f5ffd9, #d4deb8);
+        }
+
+        div.vbt_annotation div.vbt_options ul li:hover {
+            box-shadow: 0px 0px 8px #adc7a5;
+            -webkit-box-shadow: 0px 0px 8px #adc7a5;
+            -ms-box-shadow: 0px 0px 8px #adc7a5;
+            -moz-box-shadow: 0px 0px 8px #adc7a5;
+            -o-box-shadow: 0px 0px 8px #adc7a5;
+            border: 1px solid #adc7a5;
+        }
+
+        div.vbt_annotation div.vbt_options ul li input, div.vbt_annotation div.vbt_options ul li button
+        {
+            padding: 1px;
+        }
+    */
 </style>
 
-<div class="vbt_annotation" style="max-width: 300px; min-width: 241px;"
-     audiomp3="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.mp3?start=26421436&end=26425080"
-     audioogg="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.ogg?start=26421436&end=26425080"
+<ul>
+    <li><a href ng-click="selectedTab='instructions'">Instructions</a></li>
+    <li><a href ng-click="selectedTab='speciesInformation'">Species Information</a></li>
+    <li><a href ng-click="selectedTab='examples'">Examples</a></li>
+    <li><a href ng-click="selectedTab='maps'">Maps</a></li>
+</ul>
+
+<div ng-show="selectedTab=='instructions'">
+    instructions
+</div>
+<div ng-show="selectedTab=='speciesInformation'">
+    speciesInformation
+</div>
+<div ng-show="selectedTab=='examples'">
+    examples
+</div>
+<div ng-show="selectedTab=='maps'">
+    maps
+</div>
+
+
+<div ng-repeat="tourSteps in inputData.virtualBirdTour"></div>
+
+
+<div class="vbt_annotation" id="annotation_t45017"
      directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
-    <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
+    <div class="vbt_image" title="Tag: Australasian Figbird4 --
 Start: 2010 Oct 14 07:20:21 --
 Duration: 2 sec 2 ms excl. padding. --
 Frequency: 1034 - 7838 --
 Sensor: NEJB_NE465">
         <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
-             alt="spectrogram" style="width: 164px;">
+             alt="spectrogram">
+
         <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
     </div>
     <div class="vbt_freqLines">
@@ -146,166 +297,46 @@ Sensor: NEJB_NE465">
         <div class="vbt_freqLine vbt_freqLine1">1</div>
     </div>
     <div class="vbt_options">
+        <audio id="annotation_audio_t45017" preload="auto">
+            <source type="audio/webma" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
+            <source type="audio/webm" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
+            <source type="audio/ogg" src="/experiment_assets/NEJB_NE465_20101014-072021.ogg">
+            <source type="audio/mp3" src="/experiment_assets/NEJB_NE465_20101014-072021.mp3">
+        </audio>
+
+        <button onclick="playAudio()"><i class="icon-play"></i></button>
 
         <ul>
-            <li><input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_yes"
-                       title="This annotation is the species I'm looking for"><label for="annotation_t45017_yes">&#x2714; Yes</label></li>
-            <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_no"
-                        title="This annotation is not the species I'm looking for"><label for="annotation_t45017_no">&#x2718; No</label></li>
-            <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_unsure"
-                        title="I'm not sure if this annotation is the species I'm looking for"><label for="annotation_t45017_unsure"><span style="font-weight:bold;">?</span> Unsure</label></li>
+            <li>
+                <input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017"
+                       class="vbt_response_yes" ng-model="$scope.parent.results"
+                       title="This annotation is the species I'm looking for" value="1">
+                <label for="annotation_t45017_yes">&#x2714; Yes</label>
+            </li>
+            <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017"
+                       class="vbt_response_no"
+                       title="This annotation is not the species I'm looking for" value="0">
+                <label for="annotation_t45017_no">&#x2718; No</label>
+            </li>
+            <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017"
+                       class="vbt_response_unsure"
+                       title="I'm not sure if this annotation is the species I'm looking for" value="2">
+                <label for="annotation_t45017_unsure"><b>?</b> Don't Know</label>
+            </li>
         </ul>
     </div>
 </div>
-
-<div class="vbt_annotation" style="max-width: 300px; min-width: 241px;"
-     audiomp3="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.mp3?start=26421436&end=26425080"
-     audioogg="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.ogg?start=26421436&end=26425080"
-     directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
-    <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
-Start: 2010 Oct 14 07:20:21 --
-Duration: 2 sec 2 ms excl. padding. --
-Frequency: 1034 - 7838 --
-Sensor: NEJB_NE465">
-        <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
-             alt="spectrogram" style="width: 164px;">
-        <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
-    </div>
-    <div class="vbt_freqLines">
-        <div class="vbt_freqLine vbt_freqLine10">10</div>
-        <div class="vbt_freqLine vbt_freqLine9">9</div>
-        <div class="vbt_freqLine vbt_freqLine8">8</div>
-        <div class="vbt_freqLine vbt_freqLine7">7</div>
-        <div class="vbt_freqLine vbt_freqLine6">6</div>
-        <div class="vbt_freqLine vbt_freqLine5">5</div>
-        <div class="vbt_freqLine vbt_freqLine4">4</div>
-        <div class="vbt_freqLine vbt_freqLine3">3</div>
-        <div class="vbt_freqLine vbt_freqLine2">2</div>
-        <div class="vbt_freqLine vbt_freqLine1">1</div>
-    </div>
-    <div class="vbt_options">
-
-        <ul>
-            <li><input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_yes"
-                       title="This annotation is the species I'm looking for"><label for="annotation_t45017_yes">&#x2714; Yes</label></li>
-            <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_no"
-                       title="This annotation is not the species I'm looking for"><label for="annotation_t45017_no">&#x2718; No</label></li>
-            <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_unsure"
-                       title="I'm not sure if this annotation is the species I'm looking for"><label for="annotation_t45017_unsure"><span style="font-weight:bold;">?</span> Unsure</label></li>
-        </ul>
-    </div>
 </div>
 
-<div class="vbt_annotation" style="max-width: 300px; min-width: 241px;"
-     audiomp3="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.mp3?start=26421436&end=26425080"
-     audioogg="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.ogg?start=26421436&end=26425080"
-     directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
-    <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
-Start: 2010 Oct 14 07:20:21 --
-Duration: 2 sec 2 ms excl. padding. --
-Frequency: 1034 - 7838 --
-Sensor: NEJB_NE465">
-        <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
-             alt="spectrogram" style="width: 164px;">
-        <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
-    </div>
-    <div class="vbt_freqLines">
-        <div class="vbt_freqLine vbt_freqLine10">10</div>
-        <div class="vbt_freqLine vbt_freqLine9">9</div>
-        <div class="vbt_freqLine vbt_freqLine8">8</div>
-        <div class="vbt_freqLine vbt_freqLine7">7</div>
-        <div class="vbt_freqLine vbt_freqLine6">6</div>
-        <div class="vbt_freqLine vbt_freqLine5">5</div>
-        <div class="vbt_freqLine vbt_freqLine4">4</div>
-        <div class="vbt_freqLine vbt_freqLine3">3</div>
-        <div class="vbt_freqLine vbt_freqLine2">2</div>
-        <div class="vbt_freqLine vbt_freqLine1">1</div>
-    </div>
-    <div class="vbt_options">
+<script type="text/javascript">
+    function playAudio() {
+        // get audio element
+        var audioElement = event.srcElement.previousElementSibling;
+        if (!audioElement) {
+            audioElement = event.srcElement.parentElement.previousElementSibling;
+        }
 
-        <ul>
-            <li><input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_yes"
-                       title="This annotation is the species I'm looking for"><label for="annotation_t45017_yes">&#x2714; Yes</label></li>
-            <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_no"
-                       title="This annotation is not the species I'm looking for"><label for="annotation_t45017_no">&#x2718; No</label></li>
-            <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_unsure"
-                       title="I'm not sure if this annotation is the species I'm looking for"><label for="annotation_t45017_unsure"><span style="font-weight:bold;">?</span> Unsure</label></li>
-        </ul>
-    </div>
-</div>
-
-<div class="vbt_annotation" style="max-width: 300px; min-width: 241px;"
-     audiomp3="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.mp3?start=26421436&end=26425080"
-     audioogg="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.ogg?start=26421436&end=26425080"
-     directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
-    <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
-Start: 2010 Oct 14 07:20:21 --
-Duration: 2 sec 2 ms excl. padding. --
-Frequency: 1034 - 7838 --
-Sensor: NEJB_NE465">
-        <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
-             alt="spectrogram" style="width: 164px;">
-        <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
-    </div>
-    <div class="vbt_freqLines">
-        <div class="vbt_freqLine vbt_freqLine10">10</div>
-        <div class="vbt_freqLine vbt_freqLine9">9</div>
-        <div class="vbt_freqLine vbt_freqLine8">8</div>
-        <div class="vbt_freqLine vbt_freqLine7">7</div>
-        <div class="vbt_freqLine vbt_freqLine6">6</div>
-        <div class="vbt_freqLine vbt_freqLine5">5</div>
-        <div class="vbt_freqLine vbt_freqLine4">4</div>
-        <div class="vbt_freqLine vbt_freqLine3">3</div>
-        <div class="vbt_freqLine vbt_freqLine2">2</div>
-        <div class="vbt_freqLine vbt_freqLine1">1</div>
-    </div>
-    <div class="vbt_options">
-
-        <ul>
-            <li><input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_yes"
-                       title="This annotation is the species I'm looking for"><label for="annotation_t45017_yes">&#x2714; Yes</label></li>
-            <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_no"
-                       title="This annotation is not the species I'm looking for"><label for="annotation_t45017_no">&#x2718; No</label></li>
-            <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_unsure"
-                       title="I'm not sure if this annotation is the species I'm looking for"><label for="annotation_t45017_unsure"><span style="font-weight:bold;">?</span> Unsure</label></li>
-        </ul>
-    </div>
-</div>
-
-<div class="vbt_annotation" style="max-width: 300px; min-width: 241px;"
-     audiomp3="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.mp3?start=26421436&end=26425080"
-     audioogg="http://sensor.mquter.qut.edu.au/sensors/ByID/b03685fe-6ad5-4776-90b7-e2c271dad3fb.ogg?start=26421436&end=26425080"
-     directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
-    <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
-Start: 2010 Oct 14 07:20:21 --
-Duration: 2 sec 2 ms excl. padding. --
-Frequency: 1034 - 7838 --
-Sensor: NEJB_NE465">
-        <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
-             alt="spectrogram" style="width: 164px;">
-        <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
-    </div>
-    <div class="vbt_freqLines">
-        <div class="vbt_freqLine vbt_freqLine10">10</div>
-        <div class="vbt_freqLine vbt_freqLine9">9</div>
-        <div class="vbt_freqLine vbt_freqLine8">8</div>
-        <div class="vbt_freqLine vbt_freqLine7">7</div>
-        <div class="vbt_freqLine vbt_freqLine6">6</div>
-        <div class="vbt_freqLine vbt_freqLine5">5</div>
-        <div class="vbt_freqLine vbt_freqLine4">4</div>
-        <div class="vbt_freqLine vbt_freqLine3">3</div>
-        <div class="vbt_freqLine vbt_freqLine2">2</div>
-        <div class="vbt_freqLine vbt_freqLine1">1</div>
-    </div>
-    <div class="vbt_options">
-
-        <ul>
-            <li><input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_yes"
-                       title="This annotation is the species I'm looking for"><label for="annotation_t45017_yes">&#x2714; Yes</label></li>
-            <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_no"
-                       title="This annotation is not the species I'm looking for"><label for="annotation_t45017_no">&#x2718; No</label></li>
-            <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017" class="vbt_response_unsure"
-                       title="I'm not sure if this annotation is the species I'm looking for"><label for="annotation_t45017_unsure"><span style="font-weight:bold;">?</span> Unsure</label></li>
-        </ul>
-    </div>
-</div>
+        audioElement.currentTime = 0;
+        audioElement.play();
+    }
+</script>

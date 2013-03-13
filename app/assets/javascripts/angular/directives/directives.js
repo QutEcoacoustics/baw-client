@@ -582,7 +582,66 @@
         };
     });
 
+    bawds.directive('bawMediaPlayer', function() {
+        return {
+            restrict: 'EA',
+            template: '<div></div>',
+            link: function(scope, element, attrs) {
+                var $control = element,
+                    $player = $control.children('div'),
+                    cls = 'pause';
 
+                var updatePlayer = function() {
+                    $player.jPlayer({
+                        // Flash fallback for outdated browser not supporting HTML5 audio/video tags
+                        // http://jplayer.org/download/
+                        swfPath: 'assets/',
+                        supplied: 'mp3,oga,webma',
+                        nativeSupport: true,
+                        oggSupport: true,
+                        solution: 'html, flash',
+                        preload: 'auto',
+                        wmode: 'window',
+                        ready: function () {
+                            $player
+                                .jPlayer("setMedia", {
+                                    mp3: attrs.audiomp3,
+                                    oga:attrs.audiooga,
+                                    webma: attrs.audiowebma
+                                })
+                                .jPlayer(attrs.autoplay === 'true' ? 'play' : 'stop');
+                        },
+                        play: function() {
+                            $control.addClass(cls);
+
+                            if (attrs.pauseothers === 'true') {
+                                $player.jPlayer('pauseOthers');
+                            }
+                        },
+                        pause: function() {
+                            $control.removeClass(cls);
+                        },
+                        stop: function() {
+                            $control.removeClass(cls);
+                        },
+                        ended: function() {
+                            $control.removeClass(cls);
+                        }
+                    })
+                        .end()
+                        .unbind('click').click(function(e) {
+                            $player.jPlayer($control.hasClass(cls) ? 'stop' : 'play');
+                        });
+                };
+
+                scope.$watch(attrs.audio, updatePlayer);
+                updatePlayer();
+            }
+        };
+    });
+
+
+    /* Start map directives */
     /** stolen from angular ui
      * https://github.com/angular-ui/angular-ui/commit/d77bfe74e4ca2c463f76bac4f8b2e1e7464f7773#modules/directives/map/map.js
      */
@@ -709,6 +768,8 @@
     mapOverlayDirective('bawMapCircle', 'center_changed click dblclick mousedown mousemove ' + 'mouseout mouseover mouseup radius_changed rightclick');
 
     mapOverlayDirective('bawMapGroundOverlay', 'click dblclick');
+
+    /* End map directives */
 
 })();
 
