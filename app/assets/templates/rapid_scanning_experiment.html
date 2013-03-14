@@ -10,14 +10,14 @@
 
     <div class="experimentContainer">
 
-        <div id="instructions" >
+        <div id="instructions" ng-show="showInstructions" >
             <div>
                 <img src="/experiment_assets/Instructions.jpg">
             </div>
-            <button>I understand the instructions</button>
+            <button ng-click="start()">I understand the instructions</button>
         </div>
 
-        <div>
+        <div ng-show="!showInstructions">
             <div ng-show="bigScope.step == $index">
 
                 <div>
