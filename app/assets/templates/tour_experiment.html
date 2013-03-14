@@ -18,7 +18,7 @@ div.vbt_annotation {
     margin: 5px;
     cursor: default;
 
-    min-width: 241px;
+    min-width: 253px;
     max-width: 300px;
 }
 
@@ -188,144 +188,267 @@ div.vbt_annotation div.vbt_options input[type="radio"]:checked+label b {
     color: #97764A;
 }
 
-    /*
-        div.vbt_annotation div.vbt_options {
-            margin: 2px 0 0 0;
-            background-color: #d4deb8;
-            background: linear-gradient(#d4deb8, #adc7a5);
-            background: -webkit-linear-gradient(#d4deb8, #adc7a5);
-            background: -ms-linear-gradient(#d4deb8, #adc7a5);
-            background: -moz-linear-gradient(#d4deb8, #adc7a5);
-            background: -o-linear-gradient(#d4deb8, #adc7a5);
-            border-top: 1px solid #7b903c;
-            padding: 0;
-        }
+div.tabPanel {
+    border-top: 1px solid #7b903c;
+    border-bottom: 1px solid #7b903c;
+    width: 100%;
+    height: 350px;
+}
 
-        div.vbt_annotation div.vbt_options audio {
-            height: 10px;
-            margin: 0;
-        }
+ul#tabLinks {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    overflow: hidden;
+}
 
-        div.vbt_annotation div.vbt_options ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0 auto;
-        }
+ul#tabLinks li {
 
-        div.vbt_annotation div.vbt_options ul li {
-            float: left;
-            margin: 3px;
-            font-size: 11pt;
+    float: right;
+    margin: 0 5px 0 0;
+    padding: 3px 5px 3px 5px;
+    border: 1px solid #7a903c;
+    border-bottom-width: 0;
 
-            border: 1px solid #adc7a5;
-            border-radius: 4px;
-            -webkit-border-radius: 4px;
-            -ms-border-radius: 4px;
-            -moz-border-radius: 4px;
-            -o-border-radius: 4px;
+    border-radius: 4px 4px 0 0;
+    -webkit-border-radius: 4px 4px 0 0;
+    -ms-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    -o-border-radius: 4px 4px 0 0;
+}
 
-            background-color: #f5ffd9;
-            background: linear-gradient(#f5ffd9, #d4deb8);
-            background: -webkit-linear-gradient(#f5ffd9, #d4deb8);
-            background: -ms-linear-gradient(#f5ffd9, #d4deb8);
-            background: -moz-linear-gradient(#f5ffd9, #d4deb8);
-            background: -o-linear-gradient(#f5ffd9, #d4deb8);
-        }
+ul#tabLinks li.tabLinkSelected {
+    background-color: #7a903c;
+}
 
-        div.vbt_annotation div.vbt_options ul li:hover {
-            box-shadow: 0px 0px 8px #adc7a5;
-            -webkit-box-shadow: 0px 0px 8px #adc7a5;
-            -ms-box-shadow: 0px 0px 8px #adc7a5;
-            -moz-box-shadow: 0px 0px 8px #adc7a5;
-            -o-box-shadow: 0px 0px 8px #adc7a5;
-            border: 1px solid #adc7a5;
-        }
+ul#tabLinks li.tabLinkSelected a {
+    color: #e9e7c2;
+    text-decoration: none;
+}
 
-        div.vbt_annotation div.vbt_options ul li input, div.vbt_annotation div.vbt_options ul li button
-        {
-            padding: 1px;
-        }
-    */
+img.simpleImage {
+    max-width: 150px;
+    max-height: 150px;
+    margin: 3px;
+
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+}
+
+#page-wrapper {
+    background-image: url('/experiment_assets/IMG_20130312_172416.jpg');
+}
+
+#content-wrapper {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 0 0 4px 4px;
+    -webkit-border-radius: 0 0 4px 4px;
+    -ms-border-radius: 0 0 4px 4px;
+    -moz-border-radius: 0 0 4px 4px;
+    -o-border-radius: 0 0 4px 4px;
+
+}
+#verifyContainer
+{
+    background-color:rgba(212, 222, 184, 0.6);
+    overflow: hidden;
+
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+}
 </style>
 
-<ul>
-    <li><a href ng-click="selectedTab='instructions'">Instructions</a></li>
-    <li><a href ng-click="selectedTab='speciesInformation'">Species Information</a></li>
-    <li><a href ng-click="selectedTab='examples'">Examples</a></li>
-    <li><a href ng-click="selectedTab='maps'">Maps</a></li>
-</ul>
+<h2>{{currentSpecies.commonName}} <em style="font-weight: normal;">{{currentSpecies.scientificName}}</em>
+</h2>
 
-<div ng-show="selectedTab=='instructions'">
-    instructions
-</div>
-<div ng-show="selectedTab=='speciesInformation'">
-    speciesInformation
-</div>
-<div ng-show="selectedTab=='examples'">
-    examples
-</div>
-<div ng-show="selectedTab=='maps'">
-    maps
-</div>
+<div style="border-bottom:1px solid #7a903c; margin-bottom:3px;">
+    <div style="float:right;">
+        <h3 style="padding:0;margin: 1px 0 2px 0;">Currently at {{currentLocation.name}}
+            <em style="font-weight: normal;">({{currentLocation.environmentType}})</em>
+        </h3>
+
+        <div id="locationMap" style="width: 300px;height:300px;"></div>
+    </div>
+
+    <div style="float:right;">
+        <div>
+            <h3 style="padding:0;margin: 1px 0 2px 0;">Photograph</h3>
+            <a ng-href="{{currentSpecies.faunaImageAttributionLink}}"
+               style="padding:0; margin: 2px;display:block;font-size: 10px;font-style: italic;">
+                {{currentSpecies.faunaImageAttribution}}</a>
+            <img class="simpleImage" alt="Species image"
+                 ng-src="{{currentSpecies.faunaImage}}"
+                 title="Image of {{currentSpecies.commonName}}">
+
+        </div>
+        <div>
+            <h3 style="padding:0;margin: 1px 0 2px 0;">Distribution</h3>
+            <a ng-href="{{currentSpecies.distributionImageAttributionLink}}"
+               style="padding:0; margin: 2px;display:block;font-size: 10px;font-style: italic;">
+                {{currentSpecies.distributionImageAttribution}}</a>
+            <img class="simpleImage" alt="Species distribution map"
+                 ng-src="{{currentSpecies.distributionImage}}"
+                 title="Distribution map for {{currentSpecies.commonName}}">
+        </div>
+    </div>
+
+    <div>
+        <div>
+            <h3 style="padding:0;margin: 1px 0 2px 0;">Description</h3>
+            <a ng-href="{{currentSpecies.descriptionAttributionLink}}"
+               style="padding:0; margin: 2px;display:block;font-size: 10px;font-style: italic;">
+                {{currentSpecies.descriptionAttribution}}</a>
+
+            <p>{{currentSpecies.description}} </p>
+        </div>
+    </div>
 
 
-<div ng-repeat="tourSteps in inputData.virtualBirdTour"></div>
+    <div style="overflow:hidden;">
+        <h3 style="padding:0;margin: 1px 0 2px 0;">Examples</h3>
 
-
-<div class="vbt_annotation" id="annotation_t45017"
-     directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
-    <div class="vbt_image" title="Tag: Australasian Figbird4 --
+        <div ng-repeat="example in currentExamples" class="vbt_annotation" id="annotation_t45017"
+             directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
+            <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
 Start: 2010 Oct 14 07:20:21 --
 Duration: 2 sec 2 ms excl. padding. --
 Frequency: 1034 - 7838 --
 Sensor: NEJB_NE465">
-        <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
-             alt="spectrogram">
+                <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
+                     alt="spectrogram">
 
-        <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
+                <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
+            </div>
+            <div class="vbt_freqLines">
+                <div class="vbt_freqLine vbt_freqLine10">10</div>
+                <div class="vbt_freqLine vbt_freqLine9">9</div>
+                <div class="vbt_freqLine vbt_freqLine8">8</div>
+                <div class="vbt_freqLine vbt_freqLine7">7</div>
+                <div class="vbt_freqLine vbt_freqLine6">6</div>
+                <div class="vbt_freqLine vbt_freqLine5">5</div>
+                <div class="vbt_freqLine vbt_freqLine4">4</div>
+                <div class="vbt_freqLine vbt_freqLine3">3</div>
+                <div class="vbt_freqLine vbt_freqLine2">2</div>
+                <div class="vbt_freqLine vbt_freqLine1">1</div>
+            </div>
+        </div>
     </div>
-    <div class="vbt_freqLines">
-        <div class="vbt_freqLine vbt_freqLine10">10</div>
-        <div class="vbt_freqLine vbt_freqLine9">9</div>
-        <div class="vbt_freqLine vbt_freqLine8">8</div>
-        <div class="vbt_freqLine vbt_freqLine7">7</div>
-        <div class="vbt_freqLine vbt_freqLine6">6</div>
-        <div class="vbt_freqLine vbt_freqLine5">5</div>
-        <div class="vbt_freqLine vbt_freqLine4">4</div>
-        <div class="vbt_freqLine vbt_freqLine3">3</div>
-        <div class="vbt_freqLine vbt_freqLine2">2</div>
-        <div class="vbt_freqLine vbt_freqLine1">1</div>
-    </div>
-    <div class="vbt_options">
-        <audio id="annotation_audio_t45017" preload="auto">
-            <source type="audio/webma" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
-            <source type="audio/webm" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
-            <source type="audio/ogg" src="/experiment_assets/NEJB_NE465_20101014-072021.ogg">
-            <source type="audio/mp3" src="/experiment_assets/NEJB_NE465_20101014-072021.mp3">
-        </audio>
 
-        <button onclick="playAudio()"><i class="icon-play"></i></button>
+    <div id="verifyContainer">
+        <h3 style="padding:0;margin: 1px 0 2px 0;">Verify</h3>
 
-        <ul>
-            <li>
-                <input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017"
-                       class="vbt_response_yes" ng-model="$scope.parent.results"
-                       title="This annotation is the species I'm looking for" value="1">
-                <label for="annotation_t45017_yes">&#x2714; Yes</label>
-            </li>
-            <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017"
-                       class="vbt_response_no"
-                       title="This annotation is not the species I'm looking for" value="0">
-                <label for="annotation_t45017_no">&#x2718; No</label>
-            </li>
-            <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017"
-                       class="vbt_response_unsure"
-                       title="I'm not sure if this annotation is the species I'm looking for" value="2">
-                <label for="annotation_t45017_unsure"><b>?</b> Don't Know</label>
-            </li>
-        </ul>
+        <div ng-repeat="verifyAnnotation in currentVerify" class="vbt_annotation" id="annotation_t45017"
+             directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
+            <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
+Start: 2010 Oct 14 07:20:21 --
+Duration: 2 sec 2 ms excl. padding. --
+Frequency: 1034 - 7838 --
+Sensor: NEJB_NE465">
+                <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
+                     alt="spectrogram">
+
+                <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
+            </div>
+            <div class="vbt_freqLines">
+                <div class="vbt_freqLine vbt_freqLine10">10</div>
+                <div class="vbt_freqLine vbt_freqLine9">9</div>
+                <div class="vbt_freqLine vbt_freqLine8">8</div>
+                <div class="vbt_freqLine vbt_freqLine7">7</div>
+                <div class="vbt_freqLine vbt_freqLine6">6</div>
+                <div class="vbt_freqLine vbt_freqLine5">5</div>
+                <div class="vbt_freqLine vbt_freqLine4">4</div>
+                <div class="vbt_freqLine vbt_freqLine3">3</div>
+                <div class="vbt_freqLine vbt_freqLine2">2</div>
+                <div class="vbt_freqLine vbt_freqLine1">1</div>
+            </div>
+            <div class="vbt_options">
+                <audio id="annotation_audio_t45017" preload="auto">
+                    <source type="audio/webma" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
+                    <source type="audio/webm" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
+                    <source type="audio/ogg" src="/experiment_assets/NEJB_NE465_20101014-072021.ogg">
+                    <source type="audio/mp3" src="/experiment_assets/NEJB_NE465_20101014-072021.mp3">
+                </audio>
+
+                <button onclick="playAudio()"><i class="icon-play"></i></button>
+
+                <ul>
+                    <li>
+                        <input id="annotation_t45017_yes" type="radio" name="vbt_annotation_response_t45017"
+                               class="vbt_response_yes" ng-model="$scope.parent.results"
+                               title="This annotation is the species I'm looking for" value="1">
+                        <label for="annotation_t45017_yes">&#x2714; Yes</label>
+                    </li>
+                    <li><input id="annotation_t45017_no" type="radio" name="vbt_annotation_response_t45017"
+                               class="vbt_response_no"
+                               title="This annotation is not the species I'm looking for" value="0">
+                        <label for="annotation_t45017_no">&#x2718; No</label>
+                    </li>
+                    <li><input id="annotation_t45017_unsure" type="radio" name="vbt_annotation_response_t45017"
+                               class="vbt_response_unsure"
+                               title="I'm not sure if this annotation is the species I'm looking for" value="2">
+                        <label for="annotation_t45017_unsure"><b>?</b> Don't Know</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
+<!--
+<h3 style="float:left;margin: 0 0 3px 0;">{{currentSpecies.commonName}} <em style="font-weight: normal;">{{currentSpecies.scientificName}}</em></h3>
+<ul id="tabLinks">
+    <li ng-class="{tabLinkSelected: selectedTab=='instructions'}"><a href ng-click="selectedTab='instructions'">Instructions</a>
+    </li>
+    <li ng-class="{tabLinkSelected: selectedTab=='speciesInformation'}"><a href
+                                                                           ng-click="selectedTab='speciesInformation'">Species
+        Information</a></li>
+    <li ng-class="{tabLinkSelected: selectedTab=='examples'}"><a href ng-click="selectedTab='examples'">Examples</a>
+    </li>
+    <li ng-class="{tabLinkSelected: selectedTab=='maps'}"><a href ng-click="selectedTab='maps'">Maps</a></li>
+</ul>
+
+<div class="tabPanel" ng-show="selectedTab=='instructions'">
+
+    <p>This task involves learning about a particular animal</p>
+</div>
+<div class="tabPanel" ng-show="selectedTab=='speciesInformation'">
+    <img class="simpleImage" alt="Species image"
+         ng-src="{{currentSpecies.faunaImage}}"
+         title="Image of {{currentSpecies.commonName}}">
+    <p>{{currentSpecies.description}} </p>
+
+</div>
+<div class="tabPanel" ng-show="selectedTab=='examples'">
+    examples
+</div>
+<div class="tabPanel" ng-show="selectedTab=='maps'">
+
+    <div style="float:left;">
+        <h3>Current Location</h3>
+        <img class="simpleImage" alt="map of current location" src="{{currentLocationMapClose}}" style="max-width:300px;max-height:300px;">
+        <img class="simpleImage" alt="map of current location" src="{{currentLocationMapFar}}" style="max-width:300px;max-height:300px;">
+    </div>
+    <div style="float:left;">
+        <h3>Species Distribution</h3>
+
+        <img class="simpleImage" alt="Species distribution map"
+             ng-src="{{currentSpecies.distributionImage}}"
+             title="Distribution map for {{currentSpecies.commonName}}">
+    </div>
+
+</div>
+
+
+<div ng-repeat="tourSteps in inputData.virtualBirdTour"></div>
+-->
+
+
 </div>
 
 <script type="text/javascript">
