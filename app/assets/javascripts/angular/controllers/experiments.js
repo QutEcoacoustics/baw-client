@@ -160,8 +160,14 @@
                 $scope.stepResults.startTime  = Date.now();
             };
 
-            $scope.startTimer = function() {
+            $scope.endTimer = function() {
                 $scope.stepResults.endTime  = Date.now();
+            };
+
+            $scope.showInstructions = true;
+            $scope.start = function() {
+                $scope.showInstructions = false;
+                $scope.startTimer();
             };
 
             $scope.SPECTROGRAM_WIDTH = 1080;
