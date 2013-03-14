@@ -11,17 +11,10 @@
         {
             "template": "/assets/tour_experiment.html",
             "locationName": "Peregian Beach",
-            "speciesCommonName": 1,
-            "exampleAnnotationIds": [6, 7, 8],
-            "verifyAnnotationIds": [9644, 2, 3, 4, 5],
+            "speciesCommonName": "Sacred Kingfisher",
+            "exampleAnnotationIds": [9644, 19644, 29644],
+            "verifyAnnotationIds": [9644, 19644, 29644, 39644, 49644],
             "backgroundImagePath": ""
-        },
-        {
-            "template": "/assets/tour_experiment.html",
-            "locationName": "Peregian Beach",
-            "speciesCommonName": 1,
-            "exampleAnnotationIds": [6, 7, 8],
-            "verifyAnnotationIds": [9644, 2, 3, 4, 5]
         }
     ],
     "experimentResultsPostUri": "/experiments",
@@ -65,22 +58,30 @@
     ],
     "species": [
         {
-            "id": 1,
             "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:309069cc-e7e1-454f-9de3-7113400fca49",
             "commonName": "Sacred Kingfisher",
             "scientificName": "Todiramphus sanctus",
-            "faunaImage": "http://bie.ala.org.au/repo/1013/128/1286798/smallRaw.jpg",
-            "distributionImage": ["http://spatial.ala.org.au/layers-service/distribution/map/png/6714",
-                "http://www.birdsinbackyards.net/sites/www.birdsinbackyards.net/files/styles/medium/public/factsheets/images/map/todiramphus-sanctus.gif"],
             "conservationStatus": "Least Concern",
-            "description": "The Sacred Kingfisher is a medium sized kingfisher. It has a turquoise back, turquoise blue rump and tail, buff-white underparts and a broad cream collar. There is a broad black eye stripe extending from bill to nape of neck. Both sexes are similar, although the female is generally lighter with duller upper parts. Young birds are similar to the female, but have varying amounts of rusty-brown edging to feathers on the collar and underparts, and buff edges on the wing coverts. The voice of the Sacred Kingfisher is a loud \"ek ek ek ek\" repeated continuously throughout breeding season. Birds also give a \"kee kee kee\" in excitement and a series of chirring, scolding notes when alarmed."
+            "faunaImage": "http://bie.ala.org.au/repo/1013/128/1286798/smallRaw.jpg",
+            "faunaImageAttribution": "faunaImageAttribution",
+            "faunaImageAttributionLink": "faunaImageAttributionLink",
+            "distributionImage": "http://www.birdsinbackyards.net/sites/www.birdsinbackyards.net/files/styles/medium/public/factsheets/images/map/todiramphus-sanctus.gif",
+            "distributionImageAttribution": "distributionImageAttribution",
+            "distributionImageAttributionLink": "distributionImageAttributionLink",
+            "description": "The Sacred Kingfisher is a medium sized kingfisher. It has a turquoise back, turquoise blue rump and tail, buff-white underparts and a broad cream collar. There is a broad black eye stripe extending from bill to nape of neck. Both sexes are similar, although the female is generally lighter with duller upper parts. Young birds are similar to the female, but have varying amounts of rusty-brown edging to feathers on the collar and underparts, and buff edges on the wing coverts. The voice of the Sacred Kingfisher is a loud \"ek ek ek ek\" repeated continuously throughout breeding season. Birds also give a \"kee kee kee\" in excitement and a series of chirring, scolding notes when alarmed.",
+            "descriptionAttribution": "descriptionAttribution",
+            "descriptionAttributionLink": "descriptionAttributionLink",
+            "notes":{
+                "distributionImage": "http://spatial.ala.org.au/layers-service/distribution/map/png/6714"
+            }
         }
     ],
     "annotations": [
         {
-            "type": "verify",
-            "speciesId": 1,
             "id": 9644,
+            "type": "verify",
+            "speciesCommonName": "Sacred Kingfisher",
+            "locationName": "Peregian Beach",
             "dateStart": "2010-11-28",
             "timeStart": 16229770,
             "freqMax": 3832.91015625,
@@ -89,7 +90,9 @@
             "audioMp3": "/experiment_assets/NEJB_NE465_20101014-072021.mp3",
             "audioOga": "/experiment_assets/NEJB_NE465_20101014-072021.ogg",
             "audioWebm": "/experiment_assets/NEJB_NE465_20101014-072021.webm",
-            "spectrogramImage": "",
+            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080",
+            "spectrogramWidthPx": 164,
+            "spectrogramHeightPx": 256,
             "notes": {
                 "type": "verify - annotation that will be verified; example - example annotation; filler - annotation presented with those to be verified, as a decoy.",
                 "timeStart": "offset from midnight in milliseconds",
@@ -97,10 +100,10 @@
             }
         },
         {
+            "id": 19644,
             "type": "verify",
-            "speciesId": 1,
+            "speciesCommonName": "Sacred Kingfisher",
             "locationName": "Peregian Beach",
-            "id": 9644,
             "dateStart": "2010-11-28",
             "timeStart": 16229770,
             "freqMax": 3832.91015625,
@@ -109,7 +112,80 @@
             "audioMp3": "/experiment_assets/NEJB_NE465_20101014-072021.mp3",
             "audioOga": "/experiment_assets/NEJB_NE465_20101014-072021.ogg",
             "audioWebm": "/experiment_assets/NEJB_NE465_20101014-072021.webm",
-            "spectrogramImage": ""
+            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080",
+            "spectrogramWidthPx": 164,
+            "spectrogramHeightPx": 256,
+            "notes": {
+                "type": "verify - annotation that will be verified; example - example annotation; filler - annotation presented with those to be verified, as a decoy.",
+                "timeStart": "offset from midnight in milliseconds",
+                "duration": "in milliseconds"
+            }
+        },
+        {
+            "id": 29644,
+            "type": "verify",
+            "speciesCommonName": "Sacred Kingfisher",
+            "locationName": "Peregian Beach",
+            "dateStart": "2010-11-28",
+            "timeStart": 16229770,
+            "freqMax": 3832.91015625,
+            "freqMin": 2454.78515625,
+            "duration": 1378,
+            "audioMp3": "/experiment_assets/NEJB_NE465_20101014-072021.mp3",
+            "audioOga": "/experiment_assets/NEJB_NE465_20101014-072021.ogg",
+            "audioWebm": "/experiment_assets/NEJB_NE465_20101014-072021.webm",
+            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080",
+            "spectrogramWidthPx": 164,
+            "spectrogramHeightPx": 256,
+            "notes": {
+                "type": "verify - annotation that will be verified; example - example annotation; filler - annotation presented with those to be verified, as a decoy.",
+                "timeStart": "offset from midnight in milliseconds",
+                "duration": "in milliseconds"
+            }
+        },
+        {
+            "id": 39644,
+            "type": "verify",
+            "speciesCommonName": "Sacred Kingfisher",
+            "locationName": "Peregian Beach",
+            "dateStart": "2010-11-28",
+            "timeStart": 16229770,
+            "freqMax": 3832.91015625,
+            "freqMin": 2454.78515625,
+            "duration": 1378,
+            "audioMp3": "/experiment_assets/NEJB_NE465_20101014-072021.mp3",
+            "audioOga": "/experiment_assets/NEJB_NE465_20101014-072021.ogg",
+            "audioWebm": "/experiment_assets/NEJB_NE465_20101014-072021.webm",
+            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080",
+            "spectrogramWidthPx": 164,
+            "spectrogramHeightPx": 256,
+            "notes": {
+                "type": "verify - annotation that will be verified; example - example annotation; filler - annotation presented with those to be verified, as a decoy.",
+                "timeStart": "offset from midnight in milliseconds",
+                "duration": "in milliseconds"
+            }
+        },
+        {
+            "id": 49644,
+            "type": "verify",
+            "speciesCommonName": "Sacred Kingfisher",
+            "locationName": "Peregian Beach",
+            "dateStart": "2010-11-28",
+            "timeStart": 16229770,
+            "freqMax": 3832.91015625,
+            "freqMin": 2454.78515625,
+            "duration": 1378,
+            "audioMp3": "/experiment_assets/NEJB_NE465_20101014-072021.mp3",
+            "audioOga": "/experiment_assets/NEJB_NE465_20101014-072021.ogg",
+            "audioWebm": "/experiment_assets/NEJB_NE465_20101014-072021.webm",
+            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080",
+            "spectrogramWidthPx": 164,
+            "spectrogramHeightPx": 256,
+            "notes": {
+                "type": "verify - annotation that will be verified; example - example annotation; filler - annotation presented with those to be verified, as a decoy.",
+                "timeStart": "offset from midnight in milliseconds",
+                "duration": "in milliseconds"
+            }
         }
     ]
 

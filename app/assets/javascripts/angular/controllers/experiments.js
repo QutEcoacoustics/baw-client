@@ -204,16 +204,58 @@
 
             $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
+            $scope.locationMap = new google.maps.Map(document.getElementById("locationMap"),
+                {center: new google.maps.LatLng(-24.287027, 134.208984),
+                zoom: 4,
+                mapTypeId: google.maps.MapTypeId.HYBRID});
+
+            $scope.locationMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(-24.287027, 134.208984),
+                map: $scope.locationMap,
+                title:"Australia"
+            });
+
             $scope.stepResults = undefined;
             $scope.$watch(function () {
                 return $scope.bigScope.step;
             }, function (newValue, oldValue) {
                 $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+
+
+                $scope.currentLocation =  $scope.getLocation($scope.stepResults.locationName);
+                $scope.currentLocationName = $scope.currentLocation.name+" - "+$scope.currentLocation.environmentType;
+
+                $scope.currentLocationMapLocal =  $scope.getMapForLocation($scope.stepResults.locationName, 14);
+                $scope.currentLocationMapArea =  $scope.getMapForLocation($scope.stepResults.locationName, 6);
+                $scope.currentLocationMapCountry =  $scope.getMapForLocation($scope.stepResults.locationName, 3);
+
+                $scope.currentSpecies = $scope.getSpeciesInfo($scope.stepResults.speciesCommonName);
+
+                $scope.currentExamples = $scope.annotations.filter(function(element, index, array){
+                    return ($scope.stepResults.exampleAnnotationIds.indexOf(element.id) != -1);
+                });
+
+                $scope.currentVerify = $scope.annotations.filter(function(element, index, array){
+                    return ($scope.stepResults.verifyAnnotationIds.indexOf(element.id) != -1);
+                });
+
+                // change the map
+                $scope.locationMap.setZoom(4);
+                $scope.locationMap.panTo(
+                    new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+
+                // change the marker
+                $scope.locationMarker.setPosition(
+                    new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+                $scope.locationMarker.setTitle($scope.currentLocationName);
+
             });
 
             $scope.selectedTab = "instructions";
 
             $scope.locations = angular.copy($scope.bigScope.spec.locations);
+            $scope.species = angular.copy($scope.bigScope.spec.species);
+            $scope.annotations = angular.copy($scope.bigScope.spec.annotations);
 
             $scope.getLocation = function(name){
                 var found = $scope.locations.filter(function(element, index, array){ return (element.name == name); });
@@ -224,11 +266,29 @@
             };
 
             $scope.getMapForLocation = function(locationName, zoom){
-                var locationInfo = $scope.getLocation(name);
+                var locationInfo = $scope.getLocation(locationName);
                 if(locationInfo){
-                    var locationEncoded = baw.angularCopies.encodeUriQuery(locationInfo.name, true);
-                    return "https://maps.googleapis.com/maps/api/staticmap?sensor=false&size=300x300&maptype=terrain&visible="+locationEncoded;
+                    //var locationEncoded = baw.angularCopies.encodeUriQuery(locationInfo.name, true);
+                    var markerEncoded = baw.angularCopies.encodeUriQuery("color:0x7a903c|label:W|"+locationInfo.lat+","+locationInfo.long, true);
+                    var styleEncoded1 = baw.angularCopies.encodeUriQuery("style=feature:administrative", true);
+                    var styleEncoded2 = baw.angularCopies.encodeUriQuery("style=feature:landscape.natural", true);
+                    var styleEncoded3 = baw.angularCopies.encodeUriQuery("style=feature:water", true);
+                    return "https://maps.googleapis.com/maps/api/staticmap?sensor=false&size=200x200&maptype=hybrid&markers="+markerEncoded+
+                        "&zoom="+zoom;
                 }
+                return null;
+            };
+
+            $scope.getSpeciesInfo = function(speciesCommonName){
+                var found = $scope.species.filter(function(element, index, array){ return (element.commonName == speciesCommonName); });
+                if(found.length == 1){
+                    return found[0];
+                }
+                return null;
+            }
+
+            $scope.getExamples = function(){
+
             };
 
         }]);
