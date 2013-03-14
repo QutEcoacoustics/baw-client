@@ -18,7 +18,7 @@ div.vbt_annotation {
     margin: 5px;
     cursor: default;
 
-    min-width: 241px;
+    min-width: 253px;
     max-width: 300px;
 }
 
@@ -188,86 +188,80 @@ div.vbt_annotation div.vbt_options input[type="radio"]:checked+label b {
     color: #97764A;
 }
 
-    /*
-        div.vbt_annotation div.vbt_options {
-            margin: 2px 0 0 0;
-            background-color: #d4deb8;
-            background: linear-gradient(#d4deb8, #adc7a5);
-            background: -webkit-linear-gradient(#d4deb8, #adc7a5);
-            background: -ms-linear-gradient(#d4deb8, #adc7a5);
-            background: -moz-linear-gradient(#d4deb8, #adc7a5);
-            background: -o-linear-gradient(#d4deb8, #adc7a5);
-            border-top: 1px solid #7b903c;
-            padding: 0;
-        }
+    div.tabPanel
+    {
+        border-top: 1px solid #7b903c;
+        border-bottom: 1px solid #7b903c;
+        width:  100%;
+        height: 350px;
+    }
 
-        div.vbt_annotation div.vbt_options audio {
-            height: 10px;
-            margin: 0;
-        }
+    ul#tabLinks
+    {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: block;
+        overflow: hidden;
+    }
 
-        div.vbt_annotation div.vbt_options ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0 auto;
-        }
+ul#tabLinks li
+{
 
-        div.vbt_annotation div.vbt_options ul li {
-            float: left;
-            margin: 3px;
-            font-size: 11pt;
 
-            border: 1px solid #adc7a5;
-            border-radius: 4px;
-            -webkit-border-radius: 4px;
-            -ms-border-radius: 4px;
-            -moz-border-radius: 4px;
-            -o-border-radius: 4px;
+    float:right;
+    margin:  0 5px 0 0;
+    padding:  3px 5px 3px 5px;
+    border: 1px solid #7a903c;
+    border-bottom-width: 0;
 
-            background-color: #f5ffd9;
-            background: linear-gradient(#f5ffd9, #d4deb8);
-            background: -webkit-linear-gradient(#f5ffd9, #d4deb8);
-            background: -ms-linear-gradient(#f5ffd9, #d4deb8);
-            background: -moz-linear-gradient(#f5ffd9, #d4deb8);
-            background: -o-linear-gradient(#f5ffd9, #d4deb8);
-        }
+    border-radius: 4px 4px 0 0 ;
+    -webkit-border-radius: 4px 4px 0 0;
+    -ms-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    -o-border-radius: 4px 4px 0 0;
+}
 
-        div.vbt_annotation div.vbt_options ul li:hover {
-            box-shadow: 0px 0px 8px #adc7a5;
-            -webkit-box-shadow: 0px 0px 8px #adc7a5;
-            -ms-box-shadow: 0px 0px 8px #adc7a5;
-            -moz-box-shadow: 0px 0px 8px #adc7a5;
-            -o-box-shadow: 0px 0px 8px #adc7a5;
-            border: 1px solid #adc7a5;
-        }
+ul#tabLinks li.tabLinkSelected
+{
+    background-color: #7a903c;
+}
+ul#tabLinks li.tabLinkSelected a
+{
+    color: #e9e7c2;
+    text-decoration: none;
+}
 
-        div.vbt_annotation div.vbt_options ul li input, div.vbt_annotation div.vbt_options ul li button
-        {
-            padding: 1px;
-        }
-    */
 </style>
 
-<ul>
-    <li><a href ng-click="selectedTab='instructions'">Instructions</a></li>
-    <li><a href ng-click="selectedTab='speciesInformation'">Species Information</a></li>
-    <li><a href ng-click="selectedTab='examples'">Examples</a></li>
-    <li><a href ng-click="selectedTab='maps'">Maps</a></li>
+<ul id="tabLinks">
+    <li ng-class="{tabLinkSelected: selectedTab=='instructions'}"><a href ng-click="selectedTab='instructions'" >Instructions</a></li>
+    <li ng-class="{tabLinkSelected: selectedTab=='speciesInformation'}"><a href ng-click="selectedTab='speciesInformation'">Species Information</a></li>
+    <li ng-class="{tabLinkSelected: selectedTab=='examples'}"><a href ng-click="selectedTab='examples'">Examples</a></li>
+    <li ng-class="{tabLinkSelected: selectedTab=='maps'}"><a href ng-click="selectedTab='maps'">Maps</a></li>
 </ul>
 
-<div ng-show="selectedTab=='instructions'">
-    instructions
+<div class="tabPanel" ng-show="selectedTab=='instructions'">
+    <p>This task involves learning about a particular animal</p>
 </div>
-<div ng-show="selectedTab=='speciesInformation'">
+<div class="tabPanel" ng-show="selectedTab=='speciesInformation'">
     speciesInformation
 </div>
-<div ng-show="selectedTab=='examples'">
+<div class="tabPanel" ng-show="selectedTab=='examples'">
     examples
 </div>
-<div ng-show="selectedTab=='maps'">
-    maps
+<div class="tabPanel" ng-show="selectedTab=='maps'">
+    <ul>
+        <li>Broad current location</li>
+        <li>species distribution</li>
+        <li>Closer current location</li>
+    </ul>
+
+<img src=
 </div>
 
+{{getLocation(stepResults.locationName).lat}}
+{{getLocation(stepResults.locationName).long}}
 
 <div ng-repeat="tourSteps in inputData.virtualBirdTour"></div>
 

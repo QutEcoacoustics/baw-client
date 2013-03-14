@@ -195,17 +195,35 @@
         function VirtualBirdTourCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
 
             $scope.bigScope = $scope.$parent;
-            //$scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
-            $scope.inputData = angular.copy($scope.bigScope.spec.inputData);
 
-            var stepResults;
+            $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
+
+            $scope.stepResults = undefined;
             $scope.$watch(function () {
                 return $scope.bigScope.step;
             }, function (newValue, oldValue) {
-                stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+                $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
             });
 
             $scope.selectedTab = "instructions";
+
+            $scope.locations = angular.copy($scope.bigScope.spec.locations);
+
+            $scope.getLocation = function(name){
+                var found = $scope.locations.filter(function(element, index, array){ return (element.name == name); });
+                if(found.length == 1){
+                    return found[0];
+                }
+                return null;
+            };
+
+            $scope.getMapForLocation = function(locationName, zoom){
+                var locationInfo = $scope.getLocation(name);
+                if(locationInfo){
+                    var locationEncoded = baw.angularCopies.encodeUriQuery(locationInfo.name, true);
+                    return "https://maps.googleapis.com/maps/api/staticmap?sensor=false&size=300x300&maptype=terrain&visible="+locationEncoded;
+                }
+            };
 
         }]);
 })();
