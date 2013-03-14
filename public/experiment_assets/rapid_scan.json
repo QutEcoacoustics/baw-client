@@ -1,5 +1,5 @@
 {
-    "experiment": "Rapid Spectrogram Scanning",
+    "experiment": "Rapid Spectrogram Scanning Experiment",
     "instructions": [
         "This is a timed experiment. You are encouraged to balance accurate work with finishing quickly.",
         "This experiment is designed to measure how quickly acoustic events of interest can be detected",
@@ -23,8 +23,8 @@
             "name": "Koala Flash 5x",
             "type": "flashing",
             "audioId": "some-guid",
-            "startTime": 1800,
-            "endTime": 2400,
+            "startTime": 0,
+            "endTime": 600,
             "compression": 1,
             "speed": 1
         },
@@ -33,8 +33,8 @@
             "name": "Koala Flash 2x",
             "type": "flashing",
             "audioId": "some-guid",
-            "startTime": 1800,
-            "endTime": 2400,
+            "startTime": 4800,
+            "endTime": 5400,
             "compression": 1,
             "speed": 0.5
         }

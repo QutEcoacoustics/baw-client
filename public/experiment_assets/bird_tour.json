@@ -1,5 +1,5 @@
 {
-    "experiment": "Virtual bird tour",
+    "experiment": "Virtual bird tour experiment",
     "instructions": [
         "This experiment investigates a method of verifying the labels applied to annotations made on a spectrogram.",
         "Resources are provided to aid in learning to identify the vocalisations (calls) of particular species.",

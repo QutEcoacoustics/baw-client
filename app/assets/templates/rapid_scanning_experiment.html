@@ -18,7 +18,7 @@
         </div>
 
         <div ng-show="!showInstructions">
-            <div ng-show="bigScope.step == $index">
+            <div ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
 
                 <div>
                     <ul>
@@ -26,8 +26,9 @@
                             <p>
                                 {{segment.start}}, {{segment.end}}
                             </p>
-                            <img src="http://sail.usc.edu/Peter/mystery/mystery.jpg"></li>
+                            <img ng-style="{height:'256px', width: SPECTROGRAM_WIDTH + 'px'}" ng-src="{{segment.imageLink}}"></li>
                     </ul>
+                    <button ng-click="end()">Done!</button>
                 </div>
             </div>
         </div>

@@ -20,9 +20,9 @@
          */
             function ExperimentsCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
 
-            $scope.PREFACE_STAGE = "preface";
-            $scope.EXPERIMENT_STAGE = "experiment";
-            $scope.FINAL_STAGE = "conclusion";
+            $scope.PREFACE_STAGE = "Welcome";
+            $scope.EXPERIMENT_STAGE = "Activity";
+            $scope.FINAL_STAGE = "Conclusion";
 
             $scope.results = {
                 allowContact: true,
@@ -142,32 +142,36 @@
 
     app.controller('RapidScanCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
         function RapidScanCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
+            var BASE_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}}&end={2}";
 
-            $scope.bigScope = $scope.$parent;
+            $scope.bigScope = $scope.$parent.$parent;
 
             $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
             $scope.stepResults = undefined;
+            var EXPERIMENT_STEPS = $scope.bigScope.results.steps.length;
             $scope.$watch(function () {
                 return $scope.bigScope.step;
             }, function (newValue, oldValue) {
-                $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+                if (newValue <= EXPERIMENT_STEPS) {
 
-                $scope.flashes = calculateFlashes();
+                    $scope.showInstructions = true;
+
+                    $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+
+                    $scope.flashes = calculateFlashes();
+                }
             });
-
-            $scope.startTimer = function() {
-                $scope.stepResults.startTime  = Date.now();
-            };
-
-            $scope.endTimer = function() {
-                $scope.stepResults.endTime  = Date.now();
-            };
 
             $scope.showInstructions = true;
             $scope.start = function() {
                 $scope.showInstructions = false;
-                $scope.startTimer();
+                $scope.stepResults.startTimeStamp  = (new Date()).toISOString();
+            };
+
+            $scope.end = function() {
+                $scope.stepResults.endTimeStamp  = (new Date()).toISOString();
+                $scope.bigScope.step = $scope.bigScope.step + 1;
             };
 
             $scope.SPECTROGRAM_WIDTH = 1080;
@@ -188,7 +192,7 @@
                     var start = $scope.stepResults.endTime + (i * segmentDuration),
                         end = start + segmentDuration;
 
-                    var imageUrl = "";
+                    var imageUrl = String.format(BASE_URL, $scope.stepResults.guid, start, end);
 
                     segments.push({start: start, end: end, imageLink: imageUrl});
                 }
