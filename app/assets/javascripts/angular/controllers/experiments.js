@@ -142,7 +142,7 @@
 
     app.controller('RapidScanCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
         function RapidScanCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
-            var BASE_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}}&end={2}";
+            var BASE_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}&end={2}";
 
             $scope.bigScope = $scope.$parent.$parent;
 
@@ -189,12 +189,12 @@
 
                 var segments = [];
                 for(var i = 0; i < numberOfSegments; i++) {
-                    var start = $scope.stepResults.endTime + (i * segmentDuration),
+                    var start = $scope.stepResults.startTime + (i * segmentDuration),
                         end = start + segmentDuration;
 
-                    var imageUrl = String.format(BASE_URL, $scope.stepResults.guid, start, end);
+                    var imageUrl = String.format(BASE_URL, $scope.stepResults.audioId, start * 1000, end * 1000);
 
-                    segments.push({start: start, end: end, imageLink: imageUrl});
+                    segments.push({start: start * 1000, end: end * 1000, imageLink: imageUrl});
                 }
 
                 return segments;
@@ -289,7 +289,7 @@
                     return found[0];
                 }
                 return null;
-            }
+            };
 
             $scope.getExamples = function(){
 
