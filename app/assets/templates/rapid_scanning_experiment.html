@@ -2,46 +2,172 @@
 
     <style type="text/css">
         .experimentContainer {
-            width: 100%;
+            width:      100%;
             text-align: center;
+            height: 700px;
         }
+
+        .imageList {
+            list-style: none;
+
+        }
+
+
+        .instructions {
+            font-size: 20px;
+            line-height: normal;
+        }
+        .instructions>div {
+            width: 66%;
+            margin:  0 auto;;
+        }
+
+        .detection {
+            background-color: rgb(251, 255, 223);
+            border-radius: 8px;
+            margin: 5px auto;
+            width: 1086px;
+            height: 30px;
+            font-size: 24px;
+            color: rgb(223, 223, 223);
+            padding-top: 13px;
+        }
+
+        .foundDetection {
+            color:  green;
+            background-color: lightgreen;
+        }
+
+        .countDownBox {
+            background: green;
+        }
+        .countDown {
+            -webkit-animation: collapseWidthLeft 2s linear 0s;
+
+            margin-top: 15px;
+            margin-bottom: 15px;
+            height: 5px;
+            background: #ddffdd;
+        }
+
+        @-webkit-keyframes collapseWidthLeft {
+            from {
+                margin-left: 0%;
+                width: 100%;
+            }
+
+            to {
+                margin-left: 100%;
+                width: 0%;
+            }
+        }
+
 
     </style>
 
-    <div class="experimentContainer">
+    <div class="experimentContainer" >
 
-        <div id="instructions" ng-show="showInstructions" >
+        <div class="instructions" ng-show="showInstructions">
+            <h3>Instructions for part <em>{{bigScope.step}}</em></h3>
+            <h4>{{stepResults.name}}</h4>
             <div>
-                <img src="/experiment_assets/Instructions.jpg">
+                <p>
+                    A series of images will be shown one after another (they will flash).
+                    These images are called spectrograms.
+                </p>
+                <p>
+                    In these images, we are looking for a specific species.
+                    In this experiment we are looking for Koalas. When Koalas vocalise they produce a spectrogram that look like this (Koala calls have green boxes drawn around them):
+                    <img src="/experiment_assets/koala_demo.jpg">
+                    <br />
+                    Study this image carefully before proceeding.
+                </p>
+                <p>
+                    If you see what looks to you like a Koala in one of the images (during the experiment), press the spacebar key on the keyboard.
+                    <br/>
+                    Press the spacebar once per spectrogram image if you see a Koala vocalisation.
+                </p>
+                <p>
+                    You are doing test number {{bigScope.step}} of {{bigScope.spec.experimentSteps.length}}.
+                    <br/>
+                    This test will show each spectrogram image for <em>{{stepResults.speed | number:2}}</em> seconds.
+                    <br/>
+                    The this test will show <em>{{flashes.length}}</em> spectrogram images.
+                </p>
+                <p ng-show="stepResults.extraInstructions">
+                    {{stepResults.extraInstructions}}
+                </p>
+                <p>
+                    The test will start immediately after you press the button below - get ready.
+                </p>
             </div>
-            <button ng-click="start()">I understand the instructions</button>
+            <button ng-click="start()">I understand the instructions, let's go</button>
         </div>
 
-        <div ng-show="!showInstructions">
+        <div style="height:600px; vertical-align: middle;" ng-show="!showInstructions" ui-keypress="{'space':'hit($event)'}" tabindex="1" id="experimentKeyPressDiv">
             <div ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
+                <h4>{{stepResults.name}}</h4>
+                {{stepResults.extraInstructions}}
+                <br/>
+                <br/>
+
 
                 <div>
-                    <ul>
-                        <li ng-repeat="segment in flashes">
-                            <p>
-                                {{segment.start}}, {{segment.end}}
-                            </p>
-                            <img ng-style="{height:'256px', width: SPECTROGRAM_WIDTH + 'px'}" ng-src="{{segment.imageLink}}"></li>
+                    <p ng-hide="showDoneButton" class="instructions">
+                        Press the <em>&lt;space&gt;</em> key on your keyboard when you see a {{stepResults.patternName}} vocalisation
+                    </p>
+
+                    <ul class="imageList">
+                        <li ng-repeat="segment in flashes" ng-show="segment.show">
+
+                            <div class="countDownBox" style="margin: 0 auto;" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}" >
+                                <div id="{{'countDown' + $index}}" ng-style="{ '-webkit-animation': animationText() }" class="countDown" ></div>
+                            </div>
+
+                            <img ng-style="{height:'256px', width: SPECTROGRAM_WIDTH + 'px'}"
+                                 ng-src="{{segment.imageLink}}">
+
+
+
+                            <div class="detection" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}" ng-class="{'foundDetection': segment.detected }">
+                                <p ng-hide="segment.detected" >No detection</P>
+                                <p ng-show="segment.detected" >Detected</P>
+                            </div>
+                            <div style="margin: 0 auto;" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}">
+                                <span style="float:left">Starting time: <span class="relative-chunk-time hint--bottom">{{ft(segment.start)}}</span></span>
+                                <button  ng-click="pauseOrResume()">
+                                    <span ng-hide="paused">Pause</span>
+                                    <span ng-show="paused">Resume</span>
+                                </button>
+                                Duration:  <span class="duration hint--bottom">{{ft(step.speed)}}</span>
+                                <span style="float:right">Ending time: <span class="relative-chunk-time hint--bottom">{{ft(segment.end)}}</span></span>
+                            </div>
+
+                        </li>
                     </ul>
-                    <button ng-click="end()">Done!</button>
+
+                    <div ng-hide="showDoneButton">Progress ({{currentFlash + 1}}/{{flashes.length}})
+                    <progress  value="{{currentFlash + 1}}" max="{{flashes.length}}"></progress>
+                    </div>
+
+                    <div class="class" ng-show="showDoneButton">
+                        <p></p>
+                        <p>Part {{bigScope.step}} of the experiment is done.</p>
+                        <button  ng-click="end()">Go to next part</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!--<div id="flashTest" ng-show="bigScope.step == 2">-->
-            <!--<div id="instructions2" >-->
-                <!--<div>-->
-                    <!--<img src="/experiment_assets/Instructions.jpg">-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div>-->
-                <!--<img src="http://sail.usc.edu/Peter/mystery/mystery.jpg">-->
-            <!--</div>-->
+        <!--<div id="instructions2" >-->
+        <!--<div>-->
+        <!--<img src="/experiment_assets/Instructions.jpg">-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--<img src="http://sail.usc.edu/Peter/mystery/mystery.jpg">-->
+        <!--</div>-->
 
         <!--</div>-->
     </div>
