@@ -132,17 +132,18 @@
                     });
             };
 
-            $scope.prettyResults = function() {
-              return JSON.stringify($scope.results, undefined, 2);
+            $scope.prettyResults = function () {
+                return JSON.stringify($scope.results, undefined, 2);
             };
 
 
         }]);
 
 
-    app.controller('RapidScanCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
-        function RapidScanCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
+    app.controller('RapidScanCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', '$timeout', 'Media', 'AudioEvent', 'Tag',
+        function RapidScanCtrl($scope, $resource, $routeParams, $route, $http, $timeout, Media, AudioEvent, Tag) {
             var BASE_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}&end={2}";
+            $scope.ft = baw.secondsToDurationFormat;
 
             $scope.bigScope = $scope.$parent.$parent;
 
@@ -158,19 +159,96 @@
                     $scope.showInstructions = true;
 
                     $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+                    $scope.stepResults.hits = [];
 
                     $scope.flashes = calculateFlashes();
                 }
             });
 
             $scope.showInstructions = true;
-            $scope.start = function() {
+            $scope.showDoneButton = false;
+            $scope.start = function () {
                 $scope.showInstructions = false;
-                $scope.stepResults.startTimeStamp  = (new Date()).toISOString();
+                $scope.stepResults.startTimeStamp = (new Date()).toISOString();
+
+                $scope.flashes[0].show = true;
+                $scope.currentFlash = 0;
+
+
+                $scope.showDoneButton = false;
+                $scope.tick();
+                $scope.focus();
+                $timeout(function() {
+                    $scope.focus();
+                })
             };
 
-            $scope.end = function() {
-                $scope.stepResults.endTimeStamp  = (new Date()).toISOString();
+            var lastTick, pauseTick;
+            $scope.paused = false;
+            $scope.pauseOrResume = function() {
+                if ($scope.paused) {
+                    $scope.paused = false;
+                    document.getElementById("countDown" + $scope.currentFlash).style.webkitAnimationPlayState = 'running';
+
+                    var diff = lastTick - pauseTick;
+                    pauseTick = 0;
+                    $timeout(function() {
+                        $scope.tick();
+                    }, diff);
+                } else {
+                    $scope.paused = true;
+                    pauseTick = Date.now();
+                    document.getElementById("countDown" + $scope.currentFlash).style.webkitAnimationPlayState = 'paused';
+                }
+            };
+
+            $scope.focus = function() {
+                // bad voodoo
+                document.getElementById('experimentKeyPressDiv').focus();
+            };
+
+            $scope.animationText = function() {
+              return 'collapseWidthLeft ' + $scope.stepResults.speed  + 's linear 0s'
+            };
+
+            var stopTicker;
+            $scope.tick = function () {
+                stopTicker = $timeout(function () {
+                        if($scope.paused) {
+                            // exit early to disable timer
+                            return;
+                        }
+
+                        $scope.flashes[$scope.currentFlash].show = false;
+                        $scope.currentFlash++;
+
+                        $scope.focus();
+
+                        if ($scope.currentFlash >= $scope.flashes.length) {
+                            $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
+                            $scope.showDoneButton = true;
+                            return;
+                        }
+
+                        lastTick = Date.now();
+
+                        $scope.flashes[$scope.currentFlash].show = true;
+
+                        $scope.tick();
+                    },
+                    $scope.stepResults.speed * 1000
+                );
+            };
+
+            $scope.hit = function ($event) {
+                console.log("HIT!");
+                $scope.flashes[$scope.currentFlash].detected = true;
+                $scope.stepResults.hits.push({card: $scope.currentFlash, timeStamp: (new Date()).toISOString()});
+            };
+
+
+            $scope.end = function () {
+                $scope.stepResults.endTimeStamp = (new Date()).toISOString();
                 $scope.bigScope.step = $scope.bigScope.step + 1;
             };
 
@@ -179,22 +257,26 @@
             $scope.flashes = [];
 
             function calculateFlashes() {
-                var duration = $scope.stepResults.endTime - $scope.stepResults.startTime ;
 
-                // work out the number of flash cards that need to be shown
-                var adjustedPPS = PPS * $scope.stepResults.compression;
-                var segmentDuration = $scope.SPECTROGRAM_WIDTH / adjustedPPS;
-
-                var numberOfSegments = duration / segmentDuration;
+                // work out the scale of flash cards that need to be shown
+                var adjustedPPS = PPS * $scope.stepResults.compression,
+                    segmentDuration = $scope.SPECTROGRAM_WIDTH / adjustedPPS;
 
                 var segments = [];
-                for(var i = 0; i < numberOfSegments; i++) {
-                    var start = $scope.stepResults.startTime + (i * segmentDuration),
-                        end = start + segmentDuration;
+                for (var segmentIndex = 0; segmentIndex < $scope.stepResults.segments.length; segmentIndex++) {
+                    var segment = $scope.stepResults.segments[segmentIndex];
+                    var durationSeconds = segment.endTime - segment.startTime;
 
-                    var imageUrl = String.format(BASE_URL, $scope.stepResults.audioId, start * 1000, end * 1000);
+                    var numberOfSegments = durationSeconds / segmentDuration;
 
-                    segments.push({start: start * 1000, end: end * 1000, imageLink: imageUrl});
+                    for (var i = 0; i < numberOfSegments; i++) {
+                        var start = segment.startTime + (i * segmentDuration),
+                            end = start + segmentDuration;
+
+                        var imageUrl = String.format(BASE_URL, segment.audioId, start * 1000, end * 1000);
+
+                        segments.push({start: start, end: end, imageLink: imageUrl, show: false, detected: false});
+                    }
                 }
 
                 return segments;
@@ -210,13 +292,13 @@
 
             $scope.locationMap = new google.maps.Map(document.getElementById("locationMap"),
                 {center: new google.maps.LatLng(-24.287027, 134.208984),
-                zoom: 4,
-                mapTypeId: google.maps.MapTypeId.HYBRID});
+                    zoom: 4,
+                    mapTypeId: google.maps.MapTypeId.HYBRID});
 
             $scope.locationMarker = new google.maps.Marker({
                 position: new google.maps.LatLng(-24.287027, 134.208984),
                 map: $scope.locationMap,
-                title:"Australia"
+                title: "Australia"
             });
 
             $scope.stepResults = undefined;
@@ -226,20 +308,20 @@
                 $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
 
 
-                $scope.currentLocation =  $scope.getLocation($scope.stepResults.locationName);
-                $scope.currentLocationName = $scope.currentLocation.name+" - "+$scope.currentLocation.environmentType;
+                $scope.currentLocation = $scope.getLocation($scope.stepResults.locationName);
+                $scope.currentLocationName = $scope.currentLocation.name + " - " + $scope.currentLocation.environmentType;
 
-                $scope.currentLocationMapLocal =  $scope.getMapForLocation($scope.stepResults.locationName, 14);
-                $scope.currentLocationMapArea =  $scope.getMapForLocation($scope.stepResults.locationName, 6);
-                $scope.currentLocationMapCountry =  $scope.getMapForLocation($scope.stepResults.locationName, 3);
+                $scope.currentLocationMapLocal = $scope.getMapForLocation($scope.stepResults.locationName, 14);
+                $scope.currentLocationMapArea = $scope.getMapForLocation($scope.stepResults.locationName, 6);
+                $scope.currentLocationMapCountry = $scope.getMapForLocation($scope.stepResults.locationName, 3);
 
                 $scope.currentSpecies = $scope.getSpeciesInfo($scope.stepResults.speciesCommonName);
 
-                $scope.currentExamples = $scope.annotations.filter(function(element, index, array){
+                $scope.currentExamples = $scope.annotations.filter(function (element, index, array) {
                     return ($scope.stepResults.exampleAnnotationIds.indexOf(element.id) != -1);
                 });
 
-                $scope.currentVerify = $scope.annotations.filter(function(element, index, array){
+                $scope.currentVerify = $scope.annotations.filter(function (element, index, array) {
                     return ($scope.stepResults.verifyAnnotationIds.indexOf(element.id) != -1);
                 });
 
@@ -261,37 +343,41 @@
             $scope.species = angular.copy($scope.bigScope.spec.species);
             $scope.annotations = angular.copy($scope.bigScope.spec.annotations);
 
-            $scope.getLocation = function(name){
-                var found = $scope.locations.filter(function(element, index, array){ return (element.name == name); });
-                if(found.length == 1){
+            $scope.getLocation = function (name) {
+                var found = $scope.locations.filter(function (element, index, array) {
+                    return (element.name == name);
+                });
+                if (found.length == 1) {
                     return found[0];
                 }
                 return null;
             };
 
-            $scope.getMapForLocation = function(locationName, zoom){
+            $scope.getMapForLocation = function (locationName, zoom) {
                 var locationInfo = $scope.getLocation(locationName);
-                if(locationInfo){
+                if (locationInfo) {
                     //var locationEncoded = baw.angularCopies.encodeUriQuery(locationInfo.name, true);
-                    var markerEncoded = baw.angularCopies.encodeUriQuery("color:0x7a903c|label:W|"+locationInfo.lat+","+locationInfo.long, true);
+                    var markerEncoded = baw.angularCopies.encodeUriQuery("color:0x7a903c|label:W|" + locationInfo.lat + "," + locationInfo.long, true);
                     var styleEncoded1 = baw.angularCopies.encodeUriQuery("style=feature:administrative", true);
                     var styleEncoded2 = baw.angularCopies.encodeUriQuery("style=feature:landscape.natural", true);
                     var styleEncoded3 = baw.angularCopies.encodeUriQuery("style=feature:water", true);
-                    return "https://maps.googleapis.com/maps/api/staticmap?sensor=false&size=200x200&maptype=hybrid&markers="+markerEncoded+
-                        "&zoom="+zoom;
+                    return "https://maps.googleapis.com/maps/api/staticmap?sensor=false&size=200x200&maptype=hybrid&markers=" + markerEncoded +
+                        "&zoom=" + zoom;
                 }
                 return null;
             };
 
-            $scope.getSpeciesInfo = function(speciesCommonName){
-                var found = $scope.species.filter(function(element, index, array){ return (element.commonName == speciesCommonName); });
-                if(found.length == 1){
+            $scope.getSpeciesInfo = function (speciesCommonName) {
+                var found = $scope.species.filter(function (element, index, array) {
+                    return (element.commonName == speciesCommonName);
+                });
+                if (found.length == 1) {
                     return found[0];
                 }
                 return null;
             };
 
-            $scope.getExamples = function(){
+            $scope.getExamples = function () {
 
             };
 

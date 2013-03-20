@@ -10,33 +10,67 @@
     "experimentSteps": [
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "Koala Flash 2x",
+            "name": "Koala flashcards, 10 second exposure, TRAINING ROUND",
             "type": "flashing",
-            "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
-            "startTime": 0,
-            "endTime": 2400,
+            "segments" : [
+                {
+                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
+                    "startTime": 0,
+                    "endTime": 72
+                }
+            ],
             "compression": 1,
-            "speed": 2.0
+            "speed": 10.0,
+            "patternName": "Koala",
+            "extraInstructions": "Results are not counted in this round."
         },
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "Koala Flash 5x",
+            "name": "Koala flashcards, 2 second exposure",
             "type": "flashing",
-            "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
-            "startTime": 0,
-            "endTime": 600,
+            "segments" : [
+                {
+                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
+                    "startTime": 0,
+                    "endTime": 240
+                }
+            ],
             "compression": 1,
-            "speed": 1
+            "speed": 2.0,
+            "patternName": "Koala",
+            "extraInstructions": ""
         },
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "Koala Flash 2x",
+            "name": "Koala flashcards, 1 second exposure",
             "type": "flashing",
-            "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
-            "startTime": 4800,
-            "endTime": 5400,
+            "segments" : [
+                {
+                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
+                    "startTime": 0,
+                    "endTime": 240
+                }
+            ],
             "compression": 1,
-            "speed": 0.5
+            "speed": 1,
+            "patternName": "Koala",
+            "extraInstructions": ""
+        },
+        {
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala flashcards, 0.5 second exposure",
+            "type": "flashing",
+            "segments" : [
+                {
+                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
+                    "startTime": 0,
+                    "endTime": 240
+                }
+            ],
+            "compression": 1,
+            "speed": 0.5,
+            "patternName": "Koala",
+            "extraInstructions": ""
         }
     ],
     "experimentResultsPostUri": "/experiments"
