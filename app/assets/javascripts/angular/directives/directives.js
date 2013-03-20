@@ -398,7 +398,8 @@
      * A directive for binding the model to data off an audio element.
      * Most things are oneway bindings
      */
-    bawds.directive('ngAudio', function () {
+    bawds.directive('ngAudio', ['$parse', function ($parse) {
+
         return {
             restrict: 'A',
             link: function (scope, elements, attributes, controller) {
@@ -407,7 +408,28 @@
                     throw 'Cannot put ngAudio element on an element that is not a <audio />';
                 }
 
-                var events = {'abort': undefined, 'canplay': undefined, 'canplaythrough': undefined,
+                function setCurrentState(event) {
+                    scope.$safeApply2(function () {
+                        if (attributes.ngAudio) {
+                            var expression = $parse(attributes.ngAudio);
+                            var target = expression(scope);
+                            if (!target) {
+                                expression.assign(scope, {});
+                                target = expression(scope);
+                            }
+
+                            target.currentState = event && event.type || 'unknown';
+                            return;
+
+                        }
+                        scope.currentState = event && event.type || 'unknown';
+                    });
+                }
+
+                var events = {
+                    'abort': undefined,
+                    'canplay': undefined,
+                    'canplaythrough': undefined,
                     'durationchange': function (event) {
                         scope.$safeApply2(function () {
                             if (attributes.ngAudio) {
@@ -416,16 +438,29 @@
                                     target.duration = element.duration;
                                     return;
                                 }
-                            }
 
+                            }
                             scope.duration = element.duration;
                         });
-
                     },
-                    'emptied': undefined, 'ended': undefined,
-                    'error': undefined, 'loadeddata': undefined, 'loadedmetadata': undefined, 'loadstart': undefined, 'mozaudioavailable': undefined,
-                    'pause': undefined, 'play': undefined, 'playing': undefined, 'progress': undefined, 'ratechange': undefined, 'seeked': undefined, 'seeking': undefined,
-                    'suspend': undefined, 'timeupdate': undefined, 'volumechange': undefined, 'waiting': undefined};
+                    'emptied': undefined,
+                    'ended': setCurrentState,
+                    'error': undefined,
+                    'loadeddata': undefined,
+                    'loadedmetadata': undefined,
+                    'loadstart': undefined,
+                    'mozaudioavailable': undefined,
+                    'pause': setCurrentState,
+                    'play': setCurrentState,
+                    'playing': setCurrentState,
+                    'progress': undefined,
+                    'ratechange': undefined,
+                    'seeked': undefined,
+                    'seeking': undefined,
+                    'suspend': undefined,
+                    'timeupdate': undefined,
+                    'volumechange': undefined,
+                    'waiting': undefined};
 
                 angular.forEach(events, function (value, key) {
                     if (value) {
@@ -456,7 +491,7 @@
 
             }
         }
-    });
+    }]);
 
     /**
      * A cross record element checker
@@ -582,16 +617,16 @@
         };
     });
 
-    bawds.directive('bawMediaPlayer', function() {
+    bawds.directive('bawMediaPlayer', function () {
         return {
             restrict: 'EA',
             template: '<div></div>',
-            link: function(scope, element, attrs) {
+            link: function (scope, element, attrs) {
                 var $control = element,
                     $player = $control.children('div'),
                     cls = 'pause';
 
-                var updatePlayer = function() {
+                var updatePlayer = function () {
                     $player.jPlayer({
                         // Flash fallback for outdated browser not supporting HTML5 audio/video tags
                         // http://jplayer.org/download/
@@ -606,30 +641,30 @@
                             $player
                                 .jPlayer("setMedia", {
                                     mp3: attrs.audiomp3,
-                                    oga:attrs.audiooga,
+                                    oga: attrs.audiooga,
                                     webma: attrs.audiowebma
                                 })
                                 .jPlayer(attrs.autoplay === 'true' ? 'play' : 'stop');
                         },
-                        play: function() {
+                        play: function () {
                             $control.addClass(cls);
 
                             if (attrs.pauseothers === 'true') {
                                 $player.jPlayer('pauseOthers');
                             }
                         },
-                        pause: function() {
+                        pause: function () {
                             $control.removeClass(cls);
                         },
-                        stop: function() {
+                        stop: function () {
                             $control.removeClass(cls);
                         },
-                        ended: function() {
+                        ended: function () {
                             $control.removeClass(cls);
                         }
                     })
                         .end()
-                        .unbind('click').click(function(e) {
+                        .unbind('click').click(function (e) {
                             $player.jPlayer($control.hasClass(cls) ? 'stop' : 'play');
                         });
                 };
@@ -655,25 +690,25 @@
             var $event = {
                 type: 'map-' + eventName
             };
-                google.maps.event.addListener(googleObject, eventName, function (evt) {
-                    element.triggerHandler(angular.extend({}, $event, evt));
-                    //We create an $apply if it isn't happening. we need better support for this
-                    //We don't want to use timeout because tons of these events fire at once,
-                    //and we only need one $apply
-                    if (!scope.$$phase) scope.$apply();
-                });
+            google.maps.event.addListener(googleObject, eventName, function (evt) {
+                element.triggerHandler(angular.extend({}, $event, evt));
+                //We create an $apply if it isn't happening. we need better support for this
+                //We don't want to use timeout because tons of these events fire at once,
+                //and we only need one $apply
+                if (!scope.$$phase) scope.$apply();
+            });
 
             var $eventOnce = {
                 type: 'map-once-' + eventName
             };
-                google.maps.event.addListenerOnce(googleObject, eventName, function (evt) {
-                    element.triggerHandler(angular.extend({}, $eventOnce, evt));
-                    console.log('addListenerOnce', $eventOnce)
-                    //We create an $apply if it isn't happening. we need better support for this
-                    //We don't want to use timeout because tons of these events fire at once,
-                    //and we only need one $apply
-                    if (!scope.$$phase) scope.$apply();
-                });
+            google.maps.event.addListenerOnce(googleObject, eventName, function (evt) {
+                element.triggerHandler(angular.extend({}, $eventOnce, evt));
+                console.log('addListenerOnce', $eventOnce)
+                //We create an $apply if it isn't happening. we need better support for this
+                //We don't want to use timeout because tons of these events fire at once,
+                //and we only need one $apply
+                if (!scope.$$phase) scope.$apply();
+            });
 
         });
     }
