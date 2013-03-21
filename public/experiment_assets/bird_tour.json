@@ -12,6 +12,14 @@
             "template": "/assets/tour_experiment.html",
             "locationName": "Peregian Beach",
             "speciesCommonName": "Sacred Kingfisher",
+            "exampleAnnotationIds": [13353, 4001,9915],
+            "verifyAnnotationIds": [13353, 4001,9915],
+            "backgroundImagePath": ""
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "locationName": "Peregian Beach",
+            "speciesCommonName": "Sacred Kingfisher",
             "exampleAnnotationIds": [13353, 4001],
             "verifyAnnotationIds": [13353, 4001],
             "backgroundImagePath": ""
@@ -21,12 +29,14 @@
     "locations": [
         {
             "name": "Peregian Beach",
+            "id": 409,
             "lat": -26.469932,
             "long": 153.09229,
             "environmentType": "Coastal Heath"
         },
         {
             "name": "Bimblebox",
+            "id": 628,
             "lat": -23.556582,
             "long": 146.478767,
             "environmentType": "Semi-arid Woodland"
@@ -45,12 +55,14 @@
         },
         {
             "name": "Samford",
+            "id": 397,
             "lat": -27.388907,
             "long": 152.878325,
             "environmentType": "Dry Sclerophyll Forest"
         },
         {
             "name": "St Bees",
+            "id": 3,
             "lat": -20.913738,
             "long": 149.44051,
             "environmentType": "Cloud Forest"
@@ -63,14 +75,14 @@
             "scientificName": "Todiramphus sanctus",
             "conservationStatus": "Least Concern",
             "faunaImage": "http://bie.ala.org.au/repo/1013/128/1286798/smallRaw.jpg",
-            "faunaImageAttribution": "faunaImageAttribution",
-            "faunaImageAttributionLink": "faunaImageAttributionLink",
+            "faunaImageAttribution": "Atlas of Living Australia",
+            "faunaImageAttributionLink": "http://bie.ala.org.au/species/Todiramphus+%28Todiramphus%29+sanctus",
             "distributionImage": "http://www.birdsinbackyards.net/sites/www.birdsinbackyards.net/files/styles/medium/public/factsheets/images/map/todiramphus-sanctus.gif",
-            "distributionImageAttribution": "distributionImageAttribution",
-            "distributionImageAttributionLink": "distributionImageAttributionLink",
+            "distributionImageAttribution": "Birds in Backyards",
+            "distributionImageAttributionLink": "http://www.birdsinbackyards.net/species/Todiramphus-sanctus",
             "description": "The Sacred Kingfisher is a medium sized kingfisher. It has a turquoise back, turquoise blue rump and tail, buff-white underparts and a broad cream collar. There is a broad black eye stripe extending from bill to nape of neck. Both sexes are similar, although the female is generally lighter with duller upper parts. Young birds are similar to the female, but have varying amounts of rusty-brown edging to feathers on the collar and underparts, and buff edges on the wing coverts. The voice of the Sacred Kingfisher is a loud \"ek ek ek ek\" repeated continuously throughout breeding season. Birds also give a \"kee kee kee\" in excitement and a series of chirring, scolding notes when alarmed.",
-            "descriptionAttribution": "descriptionAttribution",
-            "descriptionAttributionLink": "descriptionAttributionLink",
+            "descriptionAttribution": "Birds in Backyards",
+            "descriptionAttributionLink": "http://www.birdsinbackyards.net/species/Todiramphus-sanctus",
             "notes":{
                 "distributionImage": "http://spatial.ala.org.au/layers-service/distribution/map/png/6714"
             }
@@ -87,9 +99,9 @@
             "freqMax": 6106.81620910764,
             "freqMin": 318.691471964121,
             "duration": 3964,
-            "audioMp3": "/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.mp3?start=36441&end=41293",
-            "audioOga": "/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.ogg?start=36441&end=41293",
-            "audioWebm": "/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.webm?start=36441&end=41293",
+            "audioMp3": "http://sensor.mquter.qut.edu.au/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.mp3?start=36441&end=41293",
+            "audioOga": "http://sensor.mquter.qut.edu.au/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.ogg?start=36441&end=41293",
+            "audioWebm": "http://sensor.mquter.qut.edu.au/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.webm?start=36441&end=41293",
             "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=062bb0cd-0531-43aa-bae9-af70a86a3430&start=36441&end=41293",
             "spectrogramWidthPx": 218,
             "spectrogramHeightPx": 256,
@@ -114,12 +126,34 @@
             "freqMax": 5599,
             "freqMin": 2283,
             "duration": 2002,
-            "audioMp3": "/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.mp3?start=81765&end=84764",
-            "audioOga": "/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.ogg?start=81765&end=84764",
-            "audioWebm": "/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.webm?start=81765&end=84764",
-            "spectrogramImage": "/Spectrogram.ashx?height=256&ppms=0.045&ID=bb91440a-2930-47bf-ac33-7ff930f251d1&start=81765&end=84764",
+            "audioMp3": "http://sensor.mquter.qut.edu.au/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.mp3?start=81765&end=84764",
+            "audioOga": "http://sensor.mquter.qut.edu.au/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.ogg?start=81765&end=84764",
+            "audioWebm": "http://sensor.mquter.qut.edu.au/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.webm?start=81765&end=84764",
+            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=bb91440a-2930-47bf-ac33-7ff930f251d1&start=81765&end=84764",
             "spectrogramWidthPx": 135,
             "spectrogramHeightPx": 256
+        },
+        {
+            "id": 9915,
+            "type": "verify",
+            "speciesCommonName": "Australian King Parrot",
+            "locationName": "Samford",
+            "dateStart": "2010-10-14",
+            "timeStart": "06:44:33",
+            "freqMax": 3789.84375,
+            "freqMin": 3057.71484375,
+            "duration": 2911,
+            "audioMp3": "http://sensor.mquter.qut.edu.au/sensors/ByID/b562c8cd-86ba-479e-b499-423f5d68a847.mp3?start=24272718&end=24276517",
+            "audioOga": "http://sensor.mquter.qut.edu.au/sensors/ByID/b562c8cd-86ba-479e-b499-423f5d68a847.ogg?start=24272718&end=24276517",
+            "audioWebm": "http://sensor.mquter.qut.edu.au/sensors/ByID/b562c8cd-86ba-479e-b499-423f5d68a847.webm?start=24272718&end=24276517",
+            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b562c8cd-86ba-479e-b499-423f5d68a847&start=24272718&end=24276517",
+            "spectrogramWidthPx": 171,
+            "spectrogramHeightPx": 256,
+            "boundTopPx":168,
+            "boundLeftPx":20,
+            "boundWidthPx":131,
+            "boundHeightPx":17,
+            "directlink": "http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b562c8cd-86ba-479e-b499-423f5d68a847&subitemtoload=24120000&jumptotimeoffsetms=153162"
         }
     ]
 

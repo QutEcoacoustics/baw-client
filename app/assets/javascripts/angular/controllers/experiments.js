@@ -286,7 +286,7 @@
     app.controller('VirtualBirdTourCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
         function VirtualBirdTourCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
 
-            $scope.bigScope = $scope.$parent;
+            $scope.bigScope = $scope.$parent.$parent;
 
             $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
@@ -306,10 +306,13 @@
                 return $scope.bigScope.step;
             }, function (newValue, oldValue) {
                 $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+                $scope.stepResults.startTimestamp = (new Date()).toISOString();
 
+                $scope.stepResults.responses = {};
+                $scope.stepResults.actions = [];
 
                 $scope.currentLocation = $scope.getLocation($scope.stepResults.locationName);
-                $scope.currentLocationName = $scope.currentLocation.name + " - " + $scope.currentLocation.environmentType;
+                $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType+")";
 
                 $scope.currentLocationMapLocal = $scope.getMapForLocation($scope.stepResults.locationName, 14);
                 $scope.currentLocationMapArea = $scope.getMapForLocation($scope.stepResults.locationName, 6);
@@ -335,6 +338,8 @@
                     new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
                 $scope.locationMarker.setTitle($scope.currentLocationName);
 
+                // user has clicked on Done button
+                $scope.doneButtonClicked = false;
             });
 
             $scope.selectedTab = "instructions";
@@ -377,8 +382,49 @@
                 return null;
             };
 
-            $scope.getExamples = function () {
+            $scope.userHasMadeSelectionForAllVerifyAnnotations = function(){
+                if($scope.doneButtonClicked === true){
+                    // hide done button
+                    return false;
+                }
 
+                var responsesCount = Object.keys($scope.stepResults.responses).length;
+                var totalToVerify = $scope.currentVerify.length;
+                return responsesCount == totalToVerify;
+            };
+
+            $scope.verifyDone = function () {
+                $scope.addAction(null, 'done', 'button click');
+                $scope.doneButtonClicked = true;
+            };
+
+            $scope.nextStep = function () {
+                $scope.addAction(null, 'next', 'button click');
+                $scope.bigScope.step = $scope.bigScope.step + 1;
+            };
+
+            $scope.responseSelected = function(annotationId, response){
+                $scope.addAction(annotationId, response, 'response selected');
+            };
+
+            $scope.playAudio = function(audioElementId){
+                var audioElement = document.getElementById(audioElementId);
+                if (audioElement) {
+                    audioElement.currentTime = 0;
+                    audioElement.play();
+
+                    $scope.addAction(audioElementId, 'play', 'played audio');
+                }
+            };
+
+            $scope.addAction = function(elementId, action, type){
+                var actionObject = {
+                    "elementId":elementId,
+                    "action": action,
+                    "type": type,
+                    "timestamp":(new Date()).toISOString()
+                };
+                $scope.stepResults.actions.push(actionObject);
             };
 
         }]);
