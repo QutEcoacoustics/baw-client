@@ -61,25 +61,21 @@
             <li ng-repeat="step in spec.instructions">{{step}}</li>
             <li>Please do not leave this page, or close your browser during the experiment, your progress will be lost</li>
             <li>
-                Ensure you have read the experiment <a href="/ParticipantInformation.html"
-                                                  ng-click="results.ethicsStatementViewed = true" target="_blank"
-                                                  style="">ethics statement</a>. You will need to click the link.
+                Ensure you have read the experiment <a href="" ng-click="popupEthics()" style="">ethics statement</a>. You will need to click the link.
                 <br/>
-                <label>
+                <label title="This checkbox will automatically check when the ethics statement has been read">
                     <input type="checkbox" ng-checked="results.ethicsStatementViewed" disabled/>
-                    I have visited the ethics page
+                    I have read the <a href="" ng-click="popupEthics()" style="">ethics statement</a>
                 </label>
                 <br/>
                 <label>
                     <input type="checkbox" ng-model="results.consented"/>
-                    I consent to participating in this experiment and I understand I can leave at any time without
-                    penalty
+                    I consent to participating in this experiment and I understand I can leave at any time without penalty
                 </label>
-
                 <br/>
                 <label>
                     <input type="checkbox" ng-model="results.allowContact"/>
-                    I do not wish to be contacted for follow up questions
+                    I consent to be contacted (via email) for follow up questions if it is required
                 </label>
             </li>
             <li>
@@ -90,7 +86,7 @@
             <li>
                 Google Chrome is required for this experiment.
                 <p ng-show="isChrome()" class="isa_info">You are using chrome</p>
-                <p ng-hide="isChrome()" class="isa_error">You are NOT using chrome</p>
+                <p ng-hide="isChrome()" class="isa_error">You are NOT using <a href="http://chrome.google.com" target="_blank">Google Chrome</a></p>
             </li>
         </ul>
 
@@ -104,7 +100,7 @@
     </div>
     <div id="experimentBody" ng-show="stage == EXPERIMENT_STAGE">
         <div class="progress">
-            Progress: {{step}}/{{spec.experimentSteps.length}}  <meter value="{{step}}" max="{{spec.experimentSteps.length}}"></meter>
+            Experiment step {{step}}/{{spec.experimentSteps.length}}  <meter value="{{step}}" max="{{spec.experimentSteps.length}}"></meter>
         </div>
         <div ng-include src="getPath()"></div>
 
@@ -126,7 +122,10 @@
             We'd still really like your experiment data, could please email the information you see below?
             <br/>
             Copy this data:
-            <textarea  readonly> {{prettyResults()}} </textarea>
+            <label>
+                <textarea readonly> {{prettyResults()}} </textarea>
+            </label>
+
             <p>
                 and send to: <a href="mailto:anthony.truskinger@student.qut.edu.au">anthony.truskinger@student.qut.edu.au</a>
             </p>
@@ -136,7 +135,9 @@
 
         <p>Below is a copy of the data we have saved</p>
 
-        <textarea  readonly > {{prettyResults()}} </textarea>
+        <label>
+            <textarea readonly> {{prettyResults()}} </textarea>
+        </label>
 
         <div id="summary"></div>
     </div>

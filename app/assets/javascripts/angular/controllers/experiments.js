@@ -57,6 +57,12 @@
                     alert("downloading test specification failed");
                 });
 
+            $scope.popupEthics = function () {
+                $scope.results.ethicsStatementViewed = true;
+
+                baw.popUpWindow("/ParticipantInformation.html", 1000, 800);
+            };
+
             $scope.login = function () {
                 $scope.$emit('event:auth-loginRequired');
             };
@@ -80,7 +86,7 @@
                     $scope.results.userData = angular.copy($scope.userData);
                 }
                 else {
-                    $scope.errors.push("You must be logged in to participate in this experiment, please log in.")
+                    $scope.errors.push("You must be signed in to participate in this experiment, please sign in.")
                 }
 
                 if (!$scope.isChrome()) {
@@ -142,6 +148,10 @@
 
     app.controller('RapidScanCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', '$timeout', 'Media', 'AudioEvent', 'Tag',
         function RapidScanCtrl($scope, $resource, $routeParams, $route, $http, $timeout, Media, AudioEvent, Tag) {
+            function ts() {
+                return (new Date()).toISOString();
+            }
+
             var BASE_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}&end={2}";
             $scope.ft = baw.secondsToDurationFormat;
 
@@ -160,6 +170,7 @@
 
                     $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
                     $scope.stepResults.hits = [];
+                    $scope.stepResults.pauses = [];
 
                     $scope.flashes = calculateFlashes();
                 }
@@ -169,7 +180,7 @@
             $scope.showDoneButton = false;
             $scope.start = function () {
                 $scope.showInstructions = false;
-                $scope.stepResults.startTimeStamp = (new Date()).toISOString();
+                $scope.stepResults.startTimeStamp = ts();
 
                 $scope.flashes[0].show = true;
                 $scope.currentFlash = 0;
@@ -178,78 +189,155 @@
                 $scope.showDoneButton = false;
                 $scope.tick();
                 $scope.focus();
-                $timeout(function() {
+                $timeout(function () {
                     $scope.focus();
                 })
             };
 
-            var lastTick, pauseTick;
+            $scope.lastTick = $scope.pauseTick = undefined;
             $scope.paused = false;
-            $scope.pauseOrResume = function() {
+            $scope.pauseOrResume = function () {
                 if ($scope.paused) {
                     $scope.paused = false;
-                    document.getElementById("countDown" + $scope.currentFlash).style.webkitAnimationPlayState = 'running';
 
-                    var diff = lastTick - pauseTick;
-                    pauseTick = 0;
-                    $timeout(function() {
-                        $scope.tick();
-                    }, diff);
+
+                    var diff = ($scope.stepResults.speed * 1000) - ($scope.pauseTick - $scope.lastTick);
+                    $scope.pauseTick = 0;
+                    $scope.stepResults.pauses.push({state: "resumed", card: $scope.currentFlash, timeStamp: ts()});
+                   // var tempTimer = $timeout(function () {
+                        $scope.tick(diff);
+                        //$timeout.cancel(tempTimer);
+                   // }, diff);
                 } else {
+                    window.clearTimeout($scope.timeoutId);
                     $scope.paused = true;
-                    pauseTick = Date.now();
-                    document.getElementById("countDown" + $scope.currentFlash).style.webkitAnimationPlayState = 'paused';
+                    $scope.pauseTick = Date.now();
+                    $scope.stepResults.pauses.push({state: "paused", card: $scope.currentFlash, timeStamp: ts()});
                 }
+
+
             };
 
-            $scope.focus = function() {
+            $scope.focus = function () {
                 // bad voodoo
                 document.getElementById('experimentKeyPressDiv').focus();
             };
 
-            $scope.animationText = function() {
-              return 'collapseWidthLeft ' + $scope.stepResults.speed  + 's linear 0s'
+            $scope.animationControl = function () {
+                return $scope.paused ? "paused" : "running";
             };
 
-            var stopTicker;
-            $scope.tick = function () {
-                stopTicker = $timeout(function () {
-                        if($scope.paused) {
-                            // exit early to disable timer
-                            return;
-                        }
+            $scope.animationText = function () {
+                //return 'collapseWidthLeft ' + $scope.stepResults.speed  + 's linear 0s'
+                return $scope.stepResults.speed + 's linear 0s'
+            };
 
-                        $scope.flashes[$scope.currentFlash].show = false;
-                        $scope.currentFlash++;
+//            var stopTicker;
+//            $scope.tick = function () {
+//                $scope.lastTick = Date.now();
+//                $scope.focus();
+//
+//                stopTicker = $timeout(function () {
+//                        if ($scope.paused) {
+//                            // exit early to disable timer
+//                            $timeout.cancel(stopTIcker);
+//                            return;
+//                        }
+//
+//                        $scope.flashes[$scope.currentFlash].show = false;
+//                        $scope.currentFlash++;
+//
+//                        $scope.focus();
+//
+//
+//                        if ($scope.currentFlash >= $scope.flashes.length) {
+//                            $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
+//                            $scope.showDoneButton = true;
+//                            return;
+//                        }
+//
+//                        $scope.lastTick = Date.now();
+//
+//                        $scope.flashes[$scope.currentFlash].show = true;
+//
+//                        //$scope.tick();
+//                    },
+//                    $scope.stepResults.speed * 1000
+//                );
+//            };
 
-                        $scope.focus();
+            $scope.tick = function (delay) {
+                $scope.focus();
+                $scope.lastTick = Date.now();
+                $scope.timeoutId = window.setTimeout(function () {
+                        $scope.$apply(function() {
+                            if ($scope.paused) {
+                                // exit early to disable timer
+                                window.clearTimeout($scope.timeoutId);
+                                return;
+                            }
 
-                        if ($scope.currentFlash >= $scope.flashes.length) {
-                            $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
-                            $scope.showDoneButton = true;
-                            return;
-                        }
+                            $scope.flashes[$scope.currentFlash].show = false;
+                            $scope.currentFlash++;
 
-                        lastTick = Date.now();
+                            $scope.focus();
 
-                        $scope.flashes[$scope.currentFlash].show = true;
 
-                        $scope.tick();
+                            if ($scope.currentFlash >= $scope.flashes.length) {
+                                $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
+                                $scope.showDoneButton = true;
+                                return;
+                            }
+
+                            $scope.lastTick = Date.now();
+
+                            $scope.flashes[$scope.currentFlash].show = true;
+
+                            $scope.tick();
+                        });
                     },
-                    $scope.stepResults.speed * 1000
+                    delay === undefined ? $scope.stepResults.speed * 1000 : delay
                 );
             };
 
             $scope.hit = function ($event) {
-                console.log("HIT!");
-                $scope.flashes[$scope.currentFlash].detected = true;
-                $scope.stepResults.hits.push({card: $scope.currentFlash, timeStamp: (new Date()).toISOString()});
+                var positiveHit = undefined;
+                switch ($event.keyCode) {
+                    // ctrl
+                    case 17:
+                        positiveHit = $event.originalEvent.keyLocation == 2;
+                        break;
+                    // shift
+                    case 16:
+                        positiveHit = $event.originalEvent.keyLocation == 2;
+                        break;
+                    // right arrow key
+                    case 39:
+                        positiveHit = true;
+                        break;
+                    // left arrow key
+                    case 37:
+                        positiveHit = false;
+                        break;
+                }
+
+                if (positiveHit == undefined || $scope.currentFlash >= $scope.flashes.length) {
+                    console.warn("ignored hit");
+                    return;
+                }
+                var result = positiveHit ? "positive" : "negative";
+                console.log("HIT!", $event, result);
+
+                $scope.flashes[$scope.currentFlash].detected = result;
+                $scope.stepResults.hits.push({hit: result, card: $scope.currentFlash, timeStamp: ts()});
             };
 
 
             $scope.end = function () {
-                $scope.stepResults.endTimeStamp = (new Date()).toISOString();
+                $scope.stepResults.endTimeStamp = ts();
+                window.clearTimeout($scope.timeoutId);
                 $scope.bigScope.step = $scope.bigScope.step + 1;
+
             };
 
             $scope.SPECTROGRAM_WIDTH = 1080;
@@ -275,7 +363,7 @@
 
                         var imageUrl = String.format(BASE_URL, segment.audioId, start * 1000, end * 1000);
 
-                        segments.push({start: start, end: end, imageLink: imageUrl, show: false, detected: false});
+                        segments.push({start: start, end: end, imageLink: imageUrl, show: false, detected: null});
                     }
                 }
 

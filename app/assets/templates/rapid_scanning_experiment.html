@@ -1,174 +1,400 @@
 <div ng-controller="RapidScanCtrl">
 
-    <style type="text/css">
-        .experimentContainer {
-            width:      100%;
-            text-align: center;
-            height: 700px;
-        }
+<style type="text/css">
+.experimentContainer {
+    width:       100%;
+    text-align:  center;
+    height:      700px;
+    line-height: normal;
+}
 
-        .imageList {
-            list-style: none;
+.experimentContainer em {
+    font-style:        normal;
+    font-weight:       bolder;
+    font-family:       monospace;
+    color: #464646;
+    font-size:         larger;
+    padding-left:      0.2em;
+    padding-right:     0.2em;
+    padding-top:       0.1em;
 
-        }
+    border-radius:     3px;
+
+    -webkit-animation: animateBg 1.0s linear 0 infinite alternate;
+
+    /*box-shadow: rgb(222, 224, 222) 1px 1px 10px;*/
+    /*background-color: rgba(255,255,255,0.6);*/
+
+}
+
+@-webkit-keyframes animateBg {
+    from {
+        background-color: rgba(255, 255, 255, 0.3);
+        box-shadow:       rgba(253, 255, 253, 0.3) 1px 1px 10px;
+    }
+
+    to {
+        background-color: rgb(255, 255, 255);
+        box-shadow:       rgb(255, 255, 255) 1px 1px 10px;
+    }
+}
+
+.imageList {
+    list-style: none;
+
+}
+
+.instructions {
+    font-size: 16px;
+
+}
+
+.instructions>div {
+    width:      66%;
+    margin:     0 auto;;
+    text-align: left;
+}
+
+.instructions > div img {
+    display: block;
+    margin:  0 auto;
+}
+
+.detection {
+    background-color: rgb(251, 255, 223);
+    border-radius:    8px;
+    margin:           5px 0.4%;
+    width:            49%;
+    display:          inline-block;
+    height:           70px;
+    font-size:        18px;
+    float: left;
+    padding-top:      13px;
+}
+
+.detection p {
+    color: #464646;
+    height: 70px;
+    margin: 0;
+    padding: 0;
+
+}
+
+.foundNegative {
+    background-color: lightskyblue;
+}
+.foundNegative p {
+    color:            blue;
+}
+
+.foundPositive {
+    background-color: lightgreen;
+}
+.foundPositive p {
+    color:            green;
+}
+
+    /*.countDownBox {*/
+    /*background: green;*/
+    /*width: 100px;*/
+    /*height: 100px;*/
+    /*border-radius: 50px;*/
+    /*}*/
+    /*.countDown {*/
+    /*-webkit-animation: collapseWidthLeft 2s linear 0s;*/
+
+    /*width: 100px;*/
+    /*height: 100px;*/
+    /*border-radius: 50px;*/
+
+    /*margin-top: 15px;*/
+    /*margin-bottom: 15px;*/
+    /*height: 5px;*/
+    /*background: #ddffdd;*/
+    /*}*/
+
+    /*@-webkit-keyframes collapseWidthLeft {*/
+    /*from {*/
+    /*margin-left: 0%;*/
+    /*width: 100%;*/
+    /*}*/
+
+    /*to {*/
+    /*margin-left: 100%;*/
+    /*width: 0%;*/
+    /*}*/
+    /*}*/
+
+.spinner {
+    -webkit-mask-box-image: -webkit-radial-gradient(center, ellipse cover, rgba(0, 0, 0, 1) 68%, rgba(0, 0, 0, 0) 69.5%);
+    background:             #eee;
+    width:                  100px;
+    height:                 100px;
+    position:               relative;
+}
+
+.spinner-inner {
+    position:          absolute;
+    top:               0;
+    left:              0;
+    background:        transparent;
+    border-width:      50px;
+    width:             0;
+    height:            0;
+    border-style:      solid;
+    border-color:      transparent;
+    border-top-color:  rgba(200, 200, 200, 1);
+    -webkit-transform: rotate(-45deg);
+    -webkit-animation: inner 15s linear infinite;
+}
+
+.spinner-mask {
+    position:          absolute;
+    top:               1px;
+    left:              0px;
+    background:        transparent;
+    border-width:      50px;
+    width:             0;
+    height:            0;
+    border-style:      solid;
+    border-color:      transparent;
+    border-top-color:  #eee;
+    -webkit-transform: rotate(-45deg);
+    -webkit-animation: mask 15s linear infinite;
+}
+
+.spinner-mask:after, .spinner-mask-two {
+    display:           block;
+    content:           '';
+    opacity:           0;
+    position:          absolute;
+    top:               1px;
+    left:              0px;
+    background:        transparent;
+    border-width:      50px;
+    width:             0;
+    height:            0;
+    border-style:      solid;
+    border-color:      transparent;
+    border-top-color:  rgba(200, 200, 200, 1);
+    -webkit-transform: rotate(45deg);
+    -webkit-animation: mask-two 15s linear infinite;
+}
+
+@-webkit-keyframes inner {
+    0% {
+        -webkit-transform: rotate(-45deg);
+    }
+    25% {
+        border-left-color: transparent;
+    }
+    26% {
+        border-left-color: rgba(200, 200, 200, 1);
+    }
+    50% {
+        border-bottom-color: transparent;
+    }
+    51% {
+        border-bottom-color: rgba(200, 200, 200, 1);
+    }
+    75% {
+        border-right-color: transparent;
+    }
+    76% {
+        border-right-color: rgba(200, 200, 200, 1);
+    }
+    100% {
+        -webkit-transform:   rotate(315deg);
+        border-left-color:   rgba(200, 200, 200, 1);
+        border-bottom-color: rgba(200, 200, 200, 1);
+        border-right-color:  rgba(200, 200, 200, 1);
+    }
+}
+
+@-webkit-keyframes mask {
+    0% {
+        -webkit-transform: rotate(-45deg);
+    }
+    75% {
+        -webkit-transform: rotate(-45deg);
+    }
+    100% {
+        -webkit-transform: rotate(45deg);
+    }
+}
+
+@-webkit-keyframes mask-two {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0;
+    }
+    26% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes whee {
+    from {
+        -webkit-transform: rotate(0deg);
+        -webkit-filter:    sepia() hue-rotate(0deg) contrast(95%);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -webkit-filter:    sepia() hue-rotate(360deg) contrast(95%);
+    }
+}
 
 
-        .instructions {
-            font-size: 20px;
-            line-height: normal;
-        }
-        .instructions>div {
-            width: 66%;
-            margin:  0 auto;;
-        }
+</style>
 
-        .detection {
-            background-color: rgb(251, 255, 223);
-            border-radius: 8px;
-            margin: 5px auto;
-            width: 1086px;
-            height: 30px;
-            font-size: 24px;
-            color: rgb(223, 223, 223);
-            padding-top: 13px;
-        }
+<div class="experimentContainer">
 
-        .foundDetection {
-            color:  green;
-            background-color: lightgreen;
-        }
+    <div class="instructions" ng-show="showInstructions">
+        <h3>Instructions for part <em>{{bigScope.step}}</em></h3>
+        <h4>{{stepResults.name}}</h4>
 
-        .countDownBox {
-            background: green;
-        }
-        .countDown {
-            -webkit-animation: collapseWidthLeft 2s linear 0s;
+        <div>
+            <p>
+                A series of images will be shown one after another - like flash cards.
+                These images are called
+                <a href="http://en.wikipedia.org/wiki/Spectrogram"
+                   target="_blank"
+                   class="hint hint--info hint--bottom"
+                   data-hint="A spectrogram is a time/frequency graph for the visualisation of data – e.g. audio data. ">
+                    spectrograms</a>.
+            </p>
 
-            margin-top: 15px;
-            margin-bottom: 15px;
-            height: 5px;
-            background: #ddffdd;
-        }
+            <p>
+                In these images, we are looking for a specific pattern representative of a target species.
+                In this experiment we are looking for Koalas. When Koalas vocalise they produce a spectrogram that looks
+                like this (the Koala calls have green boxes drawn around them):
+                <img src="/experiment_assets/koala_demo2.jpg">
+                <br/>
+                Study this image carefully before proceeding.
+            </p>
 
-        @-webkit-keyframes collapseWidthLeft {
-            from {
-                margin-left: 0%;
-                width: 100%;
-            }
+            <p>
+                During the experiment, press the spacebar once per spectrogram image if you see one (or more) Koala
+                vocalisations in the image.
+            </p>
 
-            to {
-                margin-left: 100%;
-                width: 0%;
-            }
-        }
+            <p>
+                You are doing test number <em>{{bigScope.step}}</em> of
+                <em>{{bigScope.spec.experimentSteps.length}}</em>.
+                <br/>
+                This test will show each flash card (spectrogram image) for <em>{{stepResults.speed | number:2}}</em>
+                seconds.
+                <br/>
+                This test will show <em>{{flashes.length}}</em> flash cards (spectrogram images).
+            </p>
 
-
-    </style>
-
-    <div class="experimentContainer" >
-
-        <div class="instructions" ng-show="showInstructions">
-            <h3>Instructions for part <em>{{bigScope.step}}</em></h3>
-            <h4>{{stepResults.name}}</h4>
-            <div>
-                <p>
-                    A series of images will be shown one after another (they will flash).
-                    These images are called spectrograms.
-                </p>
-                <p>
-                    In these images, we are looking for a specific species.
-                    In this experiment we are looking for Koalas. When Koalas vocalise they produce a spectrogram that look like this (Koala calls have green boxes drawn around them):
-                    <img src="/experiment_assets/koala_demo.jpg">
-                    <br />
-                    Study this image carefully before proceeding.
-                </p>
-                <p>
-                    If you see what looks to you like a Koala in one of the images (during the experiment), press the spacebar key on the keyboard.
-                    <br/>
-                    Press the spacebar once per spectrogram image if you see a Koala vocalisation.
-                </p>
-                <p>
-                    You are doing test number {{bigScope.step}} of {{bigScope.spec.experimentSteps.length}}.
-                    <br/>
-                    This test will show each spectrogram image for <em>{{stepResults.speed | number:2}}</em> seconds.
-                    <br/>
-                    The this test will show <em>{{flashes.length}}</em> spectrogram images.
-                </p>
-                <p ng-show="stepResults.extraInstructions">
-                    {{stepResults.extraInstructions}}
-                </p>
-                <p>
-                    The test will start immediately after you press the button below - get ready.
-                </p>
-            </div>
-            <button ng-click="start()">I understand the instructions, let's go</button>
-        </div>
-
-        <div style="height:600px; vertical-align: middle;" ng-show="!showInstructions" ui-keypress="{'space':'hit($event)'}" tabindex="1" id="experimentKeyPressDiv">
-            <div ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
-                <h4>{{stepResults.name}}</h4>
+            <p ng-show="stepResults.extraInstructions">
                 {{stepResults.extraInstructions}}
-                <br/>
-                <br/>
+            </p>
+
+            <p>
+                The test will start immediately after you press the button below - get ready.
+            </p>
+        </div>
+        <button ng-click="start()">I understand the instructions, let's go</button>
+    </div>
+
+    <div style="height:600px; vertical-align: middle;" ng-show="!showInstructions"
+         ui-keydown="{'17-ctrl':'hit($event)', '16-shift':'hit($event)', 'left':'hit($event)', 'right':'hit($event)'}"
+         tabindex="1" id="experimentKeyPressDiv">
+        <div ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
+            <h4>{{stepResults.name}}</h4>
+            {{stepResults.extraInstructions}}
+            <br/>
+            <br/>
 
 
-                <div>
-                    <p ng-hide="showDoneButton" class="instructions">
-                        Press the <em>&lt;space&gt;</em> key on your keyboard when you see a {{stepResults.patternName}} vocalisation
-                    </p>
+            <div>
+                <p ng-hide="showDoneButton" class="instructions">
+                    Press the key on your keyboard if you see a {{stepResults.patternName}} vocalisation
+                </p>
 
-                    <ul class="imageList">
-                        <li ng-repeat="segment in flashes" ng-show="segment.show">
+                <ul class="imageList">
+                    <li ng-repeat="segment in flashes" ng-show="segment.show">
 
-                            <div class="countDownBox" style="margin: 0 auto;" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}" >
-                                <div id="{{'countDown' + $index}}" ng-style="{ '-webkit-animation': animationText() }" class="countDown" ></div>
+                        <div style="margin: 0 auto;" class=spinner>
+                            <div class="spinner-inner"
+                                 ng-style="{ '-webkit-animation': 'inner ' + animationText(), '-webkit-animation-play-state':  animationControl()}"
+                                    ></div>
+                            <div class="spinner-mask"
+                                 ng-style="{ '-webkit-animation': 'mask ' + animationText(), '-webkit-animation-play-state':  animationControl() }"
+                                    ></div>
+                            <div class="spinner-mask-two"
+                                 ng-style="{ '-webkit-animation': 'mask-two ' + animationText(), '-webkit-animation-play-state':  animationControl() }"
+                                    ></div>
+                        </div>
+
+                        <!--<div class="countDownBox" style="margin: 0 auto;"  >-->
+                        <!--<div id="{{'countDown' + $index}}" ng-style="{ '-webkit-animation': animationText() }" class="countDown" ></div>-->
+                        <!--</div>-->
+
+                        <img ng-style="{height:'256px', width: SPECTROGRAM_WIDTH + 'px'}"
+                             ng-src="{{segment.imageLink}}">
+
+
+                        <div style="margin: 0 auto;" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}">
+                            <div class="detection" ng-class="{'foundNegative': segment.detected == 'negative'}">
+                                <p ng-hide="segment.detected == 'negative'">I see no {{stepResults.patternName}}
+                                    <br/><em>&lt;left arrow&gt;</em>
+                                </P>
+
+                                <p ng-show="segment.detected == 'negative'">I see no {{stepResults.patternName}}s</P>
                             </div>
+                            <div class="detection" ng-class="{'foundPositive': segment.detected == 'positive' }">
+                                <p ng-hide="segment.detected == 'positive' ">I see a {{stepResults.patternName}}
+                                   <br/><em>&lt;right arrow&gt;</em></P>
 
-                            <img ng-style="{height:'256px', width: SPECTROGRAM_WIDTH + 'px'}"
-                                 ng-src="{{segment.imageLink}}">
-
-
-
-                            <div class="detection" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}" ng-class="{'foundDetection': segment.detected }">
-                                <p ng-hide="segment.detected" >No detection</P>
-                                <p ng-show="segment.detected" >Detected</P>
+                                <p ng-show="segment.detected  == 'positive' ">I saw a {{stepResults.patternName}}</P>
                             </div>
-                            <div style="margin: 0 auto;" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}">
-                                <span style="float:left">Starting time: <span class="relative-chunk-time hint--bottom">{{ft(segment.start)}}</span></span>
-                                <button  ng-click="pauseOrResume()">
-                                    <span ng-hide="paused">Pause</span>
-                                    <span ng-show="paused">Resume</span>
-                                </button>
-                                Duration:  <span class="duration hint--bottom">{{ft(step.speed)}}</span>
-                                <span style="float:right">Ending time: <span class="relative-chunk-time hint--bottom">{{ft(segment.end)}}</span></span>
-                            </div>
+                        </div>
 
-                        </li>
-                    </ul>
+                        <div style="margin: 0 auto;" ng-style="{width: SPECTROGRAM_WIDTH + 'px'}">
+                            <span style="float:left">Starting time: <span class="relative-chunk-time hint--bottom">{{ft(segment.start)}}</span></span>
+                            <button ng-click="pauseOrResume()">
+                                <span ng-hide="paused">Pause</span>
+                                <span ng-show="paused">Resume</span>
+                            </button>
+                            Duration: <span class="duration hint--bottom">{{ft(segment.end - segment.start)}}</span>
+                            <span style="float:right">Ending time: <span class="relative-chunk-time hint--bottom">{{ft(segment.end)}}</span></span>
+                        </div>
 
-                    <div ng-hide="showDoneButton">Progress ({{currentFlash + 1}}/{{flashes.length}})
-                    <progress  value="{{currentFlash + 1}}" max="{{flashes.length}}"></progress>
-                    </div>
+                    </li>
+                </ul>
 
-                    <div class="class" ng-show="showDoneButton">
-                        <p></p>
-                        <p>Part {{bigScope.step}} of the experiment is done.</p>
-                        <button  ng-click="end()">Go to next part</button>
-                    </div>
+                <div ng-hide="showDoneButton">Progress through flash cards ({{currentFlash + 1}}/{{flashes.length}})
+                    <progress value="{{currentFlash + 1}}" max="{{flashes.length}}"></progress>
+                </div>
+
+                <div class="class" ng-show="showDoneButton">
+                    <p></p>
+
+                    <p>Part {{bigScope.step}} of the experiment is done.</p>
+                    <button ng-click="end()">Go to next part</button>
                 </div>
             </div>
         </div>
-
-        <!--<div id="flashTest" ng-show="bigScope.step == 2">-->
-        <!--<div id="instructions2" >-->
-        <!--<div>-->
-        <!--<img src="/experiment_assets/Instructions.jpg">-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--<img src="http://sail.usc.edu/Peter/mystery/mystery.jpg">-->
-        <!--</div>-->
-
-        <!--</div>-->
     </div>
+
+    <!--<div id="flashTest" ng-show="bigScope.step == 2">-->
+    <!--<div id="instructions2" >-->
+    <!--<div>-->
+    <!--<img src="/experiment_assets/Instructions.jpg">-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div>-->
+    <!--<img src="http://sail.usc.edu/Peter/mystery/mystery.jpg">-->
+    <!--</div>-->
+
+    <!--</div>-->
+</div>
 </div>

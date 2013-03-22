@@ -1,11 +1,12 @@
 {
     "experiment": "Rapid Spectrogram Scanning Experiment",
     "instructions": [
-        "This is a timed experiment. You are encouraged to balance accurate work with finishing quickly.",
+        "The purpose of this experiment is to evaluate the effectiveness of mass audio data analysis using human participants",
+        "This is a timed experiment. You are encouraged to work as quickly as you can whilst maintaining accuracy",
         "This experiment is designed to measure how quickly acoustic events of interest can be detected",
-        "There are 3 parts of this experiment to complete",
-        "In total the experiment should take no longer than 30 minutes",
-        "You may use external resources to assist you. We recommend preparing them before the experiment."
+        "There are <<<<<<<<>>>>>>>>>>>> parts of this experiment to complete",
+        "In total the experiment should take no longer than <<<<<<<<<<<<>>>>>>>>>>>> minutes",
+        "You should have no need for external resources during the experiment"
     ],
     "experimentSteps": [
         {
