@@ -218,7 +218,7 @@ img.simpleImage {
 
     overflow: hidden;
 
-    height:  29px;
+    height: 29px;
 }
 
 .annotationActions ul {
@@ -300,18 +300,19 @@ img.simpleImage {
     /* Annotations to verify */
 
 .verifyContainer {
-    background-color: rgba(212, 222, 184, 0.6);
-    overflow: hidden;
 
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-    -ms-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -o-border-radius: 4px;
+    overflow: hidden;
+    /*
+        background-color: rgba(212, 222, 184, 0.6);
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -moz-border-radius: 4px;
+        -o-border-radius: 4px;
+        */
 }
 
-.annotationResponses
-{
+.annotationResponses {
     position: absolute;
     top: 0;
     left: 0;
@@ -319,27 +320,27 @@ img.simpleImage {
     font-size: 16px;
     margin: 0;
     padding: 10px 5px 0 5px;
-    z-index:10;
+    z-index: 10;
     height: 286px;
     color: #7a903c;
 
-/*
-    background-color: #ADC7A5;
-    background: linear-gradient(#ADC7A5, #d4deb8);
-    background: -webkit-linear-gradient(#ADC7A5, #d4deb8);
-    background: -ms-linear-gradient(#ADC7A5, #d4deb8);
-    background: -moz-linear-gradient(#ADC7A5, #d4deb8);
-    background: -o-linear-gradient(#ADC7A5, #d4deb8);
-*/
+    /*
+        background-color: #ADC7A5;
+        background: linear-gradient(#ADC7A5, #d4deb8);
+        background: -webkit-linear-gradient(#ADC7A5, #d4deb8);
+        background: -ms-linear-gradient(#ADC7A5, #d4deb8);
+        background: -moz-linear-gradient(#ADC7A5, #d4deb8);
+        background: -o-linear-gradient(#ADC7A5, #d4deb8);
+    */
     /* rgba(212, 222, 184, 0.5) #D4DEB8 */
     /* rgba(173, 199, 165, 0.5) #ADC7A5 */
 
     /* http://stackoverflow.com/questions/2293910/css3-transparency-gradient */
     background: #ADC7A5; /* Old browsers */
-    background: -webkit-linear-gradient(top,  rgba(173, 199, 165, 0.7) 0%,rgba(212, 222, 184, 0.7) 100%); /* Chrome10+,Safari5.1+ */
+    background: -webkit-linear-gradient(top, rgba(173, 199, 165, 0.7) 0%, rgba(212, 222, 184, 0.7) 100%); /* Chrome10+,Safari5.1+ */
 }
-.annotationResponses ul
-{
+
+.annotationResponses ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -347,112 +348,57 @@ img.simpleImage {
 </style>
 
 <div>
-<div class="sideInfo">
-    <h3 class="sectionTitle">Currently at {{currentLocation.name}}
-        <em class="extraInfo">({{currentLocation.environmentType}})</em>
-    </h3>
+    <div class="sideInfo">
+        <h3 class="sectionTitle">Currently at {{currentLocation.name}}
+            <em class="extraInfo">({{currentLocation.environmentType}})</em>
+        </h3>
 
-    <div id="locationMap"></div>
-</div>
-
-<div class="sideInfo">
-    <div>
-        <h3 class="sectionTitle">Photograph</h3>
-        <a ng-href="{{currentSpecies.faunaImageAttributionLink}}"
-           class="attribution">
-            {{currentSpecies.faunaImageAttribution}}</a>
-        <img class="simpleImage" alt="Species image"
-             ng-src="{{currentSpecies.faunaImage}}"
-             title="Image of {{currentSpecies.commonName}}">
-
+        <div id="locationMap"></div>
     </div>
-    <div>
-        <h3 class="sectionTitle">Distribution</h3>
-        <a ng-href="{{currentSpecies.distributionImageAttributionLink}}"
-           class="attribution">
-            {{currentSpecies.distributionImageAttribution}}</a>
-        <img class="simpleImage" alt="Species distribution map"
-             ng-src="{{currentSpecies.distributionImage}}"
-             title="Distribution map for {{currentSpecies.commonName}}">
-    </div>
-</div>
 
-<div>
-    <div>
-        <h2 class="sectionTitle">{{currentSpecies.commonName}} <em
-                class="extraInfo">{{currentSpecies.scientificName}}</em>
-            <em class="extraInfo backgroundExtraInfo">(Conservation Status:
-                {{currentSpecies.conservationStatus}})</em></h2>
-        <a ng-href="{{currentSpecies.descriptionAttributionLink}}"
-           class="attribution">
-            {{currentSpecies.descriptionAttribution}}</a>
-
-        <p>{{currentSpecies.description}} </p>
-    </div>
-</div>
-
-
-<div class="exampleContainer">
-    <h3 class="sectionTitle">Examples</h3>
-
-    <div ng-repeat="currentAnnotation in currentExamples" class="annotation" id="annotation{{currentAnnotation.id}}"
-         directhref="{{currentAnnotation.directlink}}">
-
-        <div class="annotationImage" style="width: {{currentAnnotation.spectrogramWidthPx}}px">
-            <img ng-src="{{currentAnnotation.spectrogramImage}}" alt="spectrogram">
-
-            <div class="annotationEventBound"
-                 style="top: {{currentAnnotation.boundTopPx}}px; left: {{currentAnnotation.boundLeftPx}}px;  width: {{currentAnnotation.boundWidthPx}}px; height: {{currentAnnotation.boundHeightPx}}px;">
-            </div>
-        </div>
-
-        <div class="frequencyLines">
-            <div class="frequencyLine10">10</div>
-            <div class="frequencyLine09">9</div>
-            <div class="frequencyLine08">8</div>
-            <div class="frequencyLine07">7</div>
-            <div class="frequencyLine06">6</div>
-            <div class="frequencyLine05">5</div>
-            <div class="frequencyLine04">4</div>
-            <div class="frequencyLine03">3</div>
-            <div class="frequencyLine02">2</div>
-            <div class="frequencyLine01">1</div>
-        </div>
-
-        <div class="annotationActions">
-            <audio ng-audio="verifyAnnotation.audioInfo" id="annotationAudio{{currentAnnotation.id}}" preload="auto">
-                <source type="audio/webma" ng-src="{{currentAnnotation.audioWebm}}">
-                <source type="audio/webm" ng-src="{{currentAnnotation.audioWebm}}">
-                <source type="audio/ogg" ng-src="{{currentAnnotation.audioOga}}">
-                <source type="audio/mp3" ng-src="{{currentAnnotation.audioMp3}}">
-            </audio>
-            <ul>
-                <li>
-                    <button onclick="playAudio('annotationAudio{{currentAnnotation.id}}')"><i class="icon-play"></i>
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="verifyContainer">
-    <h3 class="sectionTitle">Verify</h3>
-
-    <div ng-repeat="currentAnnotation in currentVerify" class="annotation" id="annotation{{currentAnnotation.id}}"
-         directhref="{{currentAnnotation.directlink}}">
-
-        <div class="annotationResponses">
-            <p>A total of <b>{{currentAnnotation.otherPeopleTotal}}</b> other people have also given their
-                opinion on whether this annotation is a <b>{{currentSpecies.commonName}}</b>. Of those, </p>
-            <ul>
-                <li><b>{{currentAnnotation.otherPeopleYes}}</b> answered &#x2714; Yes,</li>
-                <li><b>{{currentAnnotation.otherPeopleNo}}</b> answered &#x2718; No,</li>
-                <li>and <b>{{currentAnnotation.otherPeopleUnsure}}</b> were <b>?</b> Unsure.</li>
-            </ul>
-        </div>
-
+    <div class="sideInfo">
         <div>
+            <h3 class="sectionTitle">Photograph</h3>
+            <a ng-href="{{currentSpecies.faunaImageAttributionLink}}"
+               class="attribution">From:
+                {{currentSpecies.faunaImageAttribution}}</a>
+            <img class="simpleImage" alt="Species image"
+                 ng-src="{{currentSpecies.faunaImage}}"
+                 title="Image of {{currentSpecies.commonName}}">
+
+        </div>
+        <div>
+            <h3 class="sectionTitle">Distribution</h3>
+            <a ng-href="{{currentSpecies.distributionImageAttributionLink}}"
+               class="attribution">From:
+                {{currentSpecies.distributionImageAttribution}}</a>
+            <img class="simpleImage" alt="Species distribution map"
+                 ng-src="{{currentSpecies.distributionImage}}"
+                 title="Distribution map for {{currentSpecies.commonName}}">
+        </div>
+    </div>
+
+    <div>
+        <div>
+            <h2 class="sectionTitle" style="margin-top:8px;">{{currentSpecies.commonName}} <em
+                    class="extraInfo">{{currentSpecies.scientificName}}</em>
+                <em class="extraInfo backgroundExtraInfo">(Conservation Status:
+                    {{currentSpecies.conservationStatus}})</em></h2>
+            <a ng-href="{{currentSpecies.descriptionAttributionLink}}"
+               class="attribution">From:
+                {{currentSpecies.descriptionAttribution}}</a>
+
+            <p>{{currentSpecies.description}} </p>
+        </div>
+    </div>
+
+
+    <div class="exampleContainer">
+        <h3 class="sectionTitle">Examples</h3>
+
+        <div ng-repeat="currentAnnotation in currentExamples" class="annotation" id="annotation{{currentAnnotation.id}}"
+             directhref="{{currentAnnotation.directlink}}">
+
             <div class="annotationImage" style="width: {{currentAnnotation.spectrogramWidthPx}}px">
                 <img ng-src="{{currentAnnotation.spectrogramImage}}" alt="spectrogram">
 
@@ -484,147 +430,102 @@ img.simpleImage {
                 </audio>
                 <ul>
                     <li>
-                        <button onclick="playAudio('annotationAudio{{currentAnnotation.id}}')"><i class="icon-play"></i>
+                        <button ng-click="playAudio('annotationAudio'+currentAnnotation.id, 'example')"><i class="icon-play"></i>
                         </button>
-                    </li>
-                    <li>
-                        <input id="annotationVerifyResponse{{currentAnnotation.id}}Yes" type="radio"
-                               name="annotationVerifyResponse{{currentAnnotation.id}}"
-                               class="annotationVerifyResponseYes" ng-model="$scope.parent.results"
-                               title="This annotation is the species I'm looking for" value="yes">
-                        <label for="annotationVerifyResponse{{currentAnnotation.id}}Yes">&#x2714; Yes</label>
-                    </li>
-                    <li><input id="annotationVerifyResponse{{currentAnnotation.id}}No" type="radio"
-                               name="annotationVerifyResponse{{currentAnnotation.id}}"
-                               class="annotationVerifyResponseNo"
-                               title="This annotation is not the species I'm looking for" value="no">
-                        <label for="annotationVerifyResponse{{currentAnnotation.id}}No">&#x2718; No</label>
-                    </li>
-                    <li><input id="annotationVerifyResponse{{currentAnnotation.id}}Unsure" type="radio"
-                               name="annotationVerifyResponse{{currentAnnotation.id}}"
-                               class="annotationVerifyResponseUnsure"
-                               title="I'm not sure if this annotation is the species I'm looking for or not"
-                               value="unsure">
-                        <label for="annotationVerifyResponse{{currentAnnotation.id}}Unsure"><b>?</b> Unsure</label>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
 
+    <div class="verifyContainer">
+        <h3 class="sectionTitle">Verify</h3>
 
-    <div ng-repeat="verifyAnnotation in currentVerify" class="vbt_annotation" id="annotation_t45017"
-         directhref="http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b03685fe-6ad5-4776-90b7-e2c271dad3fb&subitemtoload=26280000&jumptotimeoffsetms=141880">
-        <div class="vbt_image" style="width:164px;" title="Tag: Australasian Figbird4 --
-Start: 2010 Oct 14 07:20:21 --
-Duration: 2 sec 2 ms excl. padding. --
-Frequency: 1034 - 7838 --
-Sensor: NEJB_NE465">
-            <img src="http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b03685fe-6ad5-4776-90b7-e2c271dad3fb&start=26421436&end=26425080"
-                 alt="spectrogram">
+        <div ng-repeat="currentAnnotation in currentVerify" class="annotation" id="annotation{{currentAnnotation.id}}"
+             directhref="{{currentAnnotation.directlink}}">
 
-            <div class="vbt_event_bound" style="top: 74px; left: 20px;  width: 124px; height: 158px;"></div>
+            <div ng-show="doneButtonClicked" class="annotationResponses">
+                <p>A total of <b>{{currentAnnotation.otherPeopleTotal}}</b> other people have also given their
+                    opinion on whether this annotation is a <b>{{currentSpecies.commonName}}</b>. Of those, </p>
+                <ul>
+                    <li><b>{{currentAnnotation.otherPeopleYes}}</b> answered &#x2714; Yes,</li>
+                    <li><b>{{currentAnnotation.otherPeopleNo}}</b> answered &#x2718; No,</li>
+                    <li>and <b>{{currentAnnotation.otherPeopleUnsure}}</b> were <b>?</b> Unsure.</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="annotationImage" style="width: {{currentAnnotation.spectrogramWidthPx}}px">
+                    <img ng-src="{{currentAnnotation.spectrogramImage}}" alt="spectrogram">
+
+                    <div class="annotationEventBound"
+                         style="top: {{currentAnnotation.boundTopPx}}px; left: {{currentAnnotation.boundLeftPx}}px;  width: {{currentAnnotation.boundWidthPx}}px; height: {{currentAnnotation.boundHeightPx}}px;">
+                    </div>
+                </div>
+
+                <div class="frequencyLines">
+                    <div class="frequencyLine10">10</div>
+                    <div class="frequencyLine09">9</div>
+                    <div class="frequencyLine08">8</div>
+                    <div class="frequencyLine07">7</div>
+                    <div class="frequencyLine06">6</div>
+                    <div class="frequencyLine05">5</div>
+                    <div class="frequencyLine04">4</div>
+                    <div class="frequencyLine03">3</div>
+                    <div class="frequencyLine02">2</div>
+                    <div class="frequencyLine01">1</div>
+                </div>
+
+                <div class="annotationActions">
+                    <audio ng-audio="verifyAnnotation.audioInfo" id="annotationAudio{{currentAnnotation.id}}"
+                           preload="auto">
+                        <source type="audio/webma" ng-src="{{currentAnnotation.audioWebm}}">
+                        <source type="audio/webm" ng-src="{{currentAnnotation.audioWebm}}">
+                        <source type="audio/ogg" ng-src="{{currentAnnotation.audioOga}}">
+                        <source type="audio/mp3" ng-src="{{currentAnnotation.audioMp3}}">
+                    </audio>
+                    <ul>
+                        <li>
+                            <button ng-click="playAudio('annotationAudio'+currentAnnotation.id, 'toVerify')"><i
+                                    class="icon-play"></i></button>
+                        </li>
+                        <li>
+                            <input id="annotationVerifyResponse{{currentAnnotation.id}}Yes" type="radio"
+                                   name="annotationVerifyResponse{{currentAnnotation.id}}"
+                                   class="annotationVerifyResponseYes"
+                                   ng-click="responseSelected(currentAnnotation.id, 'yes')"
+                                   ng-model="$parent.stepResults.responses[currentAnnotation.id]"
+                                   title="This annotation is the species I'm looking for" value="yes">
+                            <label for="annotationVerifyResponse{{currentAnnotation.id}}Yes">&#x2714; Yes</label>
+                        </li>
+                        <li><input id="annotationVerifyResponse{{currentAnnotation.id}}No" type="radio"
+                                   name="annotationVerifyResponse{{currentAnnotation.id}}"
+                                   class="annotationVerifyResponseNo"
+                                   ng-click="responseSelected(currentAnnotation.id, 'no')"
+                                   ng-model="$parent.stepResults.responses[currentAnnotation.id]"
+                                   title="This annotation is not the species I'm looking for" value="no">
+                            <label for="annotationVerifyResponse{{currentAnnotation.id}}No">&#x2718; No</label>
+                        </li>
+                        <li><input id="annotationVerifyResponse{{currentAnnotation.id}}Unsure" type="radio"
+                                   name="annotationVerifyResponse{{currentAnnotation.id}}"
+                                   class="annotationVerifyResponseUnsure"
+                                   ng-click="responseSelected(currentAnnotation.id, 'unsure')"
+                                   ng-model="$parent.stepResults.responses[currentAnnotation.id]"
+                                   title="I'm not sure if this annotation is the species I'm looking for or not"
+                                   value="unsure">
+                            <label for="annotationVerifyResponse{{currentAnnotation.id}}Unsure"><b>?</b> Unsure</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="vbt_freqLines">
-            <div class="vbt_freqLine vbt_freqLine10">10</div>
-            <div class="vbt_freqLine vbt_freqLine9">9</div>
-            <div class="vbt_freqLine vbt_freqLine8">8</div>
-            <div class="vbt_freqLine vbt_freqLine7">7</div>
-            <div class="vbt_freqLine vbt_freqLine6">6</div>
-            <div class="vbt_freqLine vbt_freqLine5">5</div>
-            <div class="vbt_freqLine vbt_freqLine4">4</div>
-            <div class="vbt_freqLine vbt_freqLine3">3</div>
-            <div class="vbt_freqLine vbt_freqLine2">2</div>
-            <div class="vbt_freqLine vbt_freqLine1">1</div>
-        </div>
-        <div class="vbt_options">
-            <audio ng-audio="verifyAnnotation.audioInfo" id="annotation_audio_t45017" preload="auto">
-                <source type="audio/webma" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
-                <source type="audio/webm" src="/experiment_assets/NEJB_NE465_20101014-072021.webm">
-                <source type="audio/ogg" src="/experiment_assets/NEJB_NE465_20101014-072021.ogg">
-                <source type="audio/mp3" src="/experiment_assets/NEJB_NE465_20101014-072021.mp3">
-            </audio>
+    </div>
 
-
-            <button onclick="playAudio()"><i class="icon-play"></i></button>
-
-            <div ng-show="verifyAnnotation.audioInfo.currentState == 'play'"
-                 style="background-color: red;width: 30px;height: 30px;"></div>
-            <div ng-show="verifyAnnotation.audioInfo.currentState == 'playing'"
-                 style="background-color: blue;width: 30px;height: 30px;"></div>
-            <div ng-show="verifyAnnotation.audioInfo.currentState == 'paused'"
-                 style="background-color: green;width: 30px;height: 30px;"></div>
-            <div ng-show="verifyAnnotation.audioInfo.currentState == 'ended'"
-                 style="background-color: #ffff00;width: 30px;height: 30px;"></div>
-
-
-            <ul>
-
-            </ul>
-        </div>
+    <div style="width:55px;height:20px;margin: 0 auto;">
+        <button ng-show="userHasMadeSelectionForAllVerifyAnnotations()" ng-click="verifyDone()">Done
+        </button>
+        <button ng-show="doneButtonClicked" style="display:block;width: 55px;margin: 0 auto;" ng-click="nextStep()">Next
+        </button>
     </div>
 </div>
 </div>
-<!--
-<h3 style="float:left;margin: 0 0 3px 0;">{{currentSpecies.commonName}} <em style="font-weight: normal;">{{currentSpecies.scientificName}}</em></h3>
-<ul id="tabLinks">
-    <li ng-class="{tabLinkSelected: selectedTab=='instructions'}"><a href ng-click="selectedTab='instructions'">Instructions</a>
-    </li>
-    <li ng-class="{tabLinkSelected: selectedTab=='speciesInformation'}"><a href
-                                                                           ng-click="selectedTab='speciesInformation'">Species
-        Information</a></li>
-    <li ng-class="{tabLinkSelected: selectedTab=='examples'}"><a href ng-click="selectedTab='examples'">Examples</a>
-    </li>
-    <li ng-class="{tabLinkSelected: selectedTab=='maps'}"><a href ng-click="selectedTab='maps'">Maps</a></li>
-</ul>
-
-<div class="tabPanel" ng-show="selectedTab=='instructions'">
-
-    <p>This task involves learning about a particular animal</p>
-</div>
-<div class="tabPanel" ng-show="selectedTab=='speciesInformation'">
-    <img class="simpleImage" alt="Species image"
-         ng-src="{{currentSpecies.faunaImage}}"
-         title="Image of {{currentSpecies.commonName}}">
-    <p>{{currentSpecies.description}} </p>
-
-</div>
-<div class="tabPanel" ng-show="selectedTab=='examples'">
-    examples
-</div>
-<div class="tabPanel" ng-show="selectedTab=='maps'">
-
-    <div style="float:left;">
-        <h3>Current Location</h3>
-        <img class="simpleImage" alt="map of current location" src="{{currentLocationMapClose}}" style="max-width:300px;max-height:300px;">
-        <img class="simpleImage" alt="map of current location" src="{{currentLocationMapFar}}" style="max-width:300px;max-height:300px;">
-    </div>
-    <div style="float:left;">
-        <h3>Species Distribution</h3>
-
-        <img class="simpleImage" alt="Species distribution map"
-             ng-src="{{currentSpecies.distributionImage}}"
-             title="Distribution map for {{currentSpecies.commonName}}">
-    </div>
-
-</div>
-
-
-<div ng-repeat="tourSteps in inputData.virtualBirdTour"></div>
--->
-
-
-</div>
-
-<script type="text/javascript">
-    function playAudio(id) {
-        // get audio element
-        var audioElement = event.srcElement.previousElementSibling;
-        if (!audioElement) {
-            audioElement = event.srcElement.parentElement.previousElementSibling;
-        }
-
-        audioElement.currentTime = 0;
-        audioElement.play();
-    }
-</script>
