@@ -185,14 +185,37 @@
                 $scope.flashes[0].show = true;
                 $scope.currentFlash = 0;
 
+                $scope.countDown = 5;
 
                 $scope.showDoneButton = false;
-                $scope.tick();
-                $scope.focus();
-                $timeout(function () {
-                    $scope.focus();
-                })
+
+                // actually start it after countdown
+                countDown();
+
             };
+
+            function countDown() {
+                window.setTimeout(function () {
+                        $scope.$apply(function () {
+                            $scope.countDown = $scope.countDown - 1;
+
+                            if ($scope.countDown == 0){
+
+                                // eventually start it!
+                                $scope.tick();
+                                $scope.focus();
+                                $timeout(function () {
+                                    $scope.focus();
+                                })
+                            }
+                            else {
+                                countDown();
+                            }
+                        });
+                    },
+                    1000)
+            }
+
 
             $scope.lastTick = $scope.pauseTick = undefined;
             $scope.paused = false;
@@ -204,10 +227,10 @@
                     var diff = ($scope.stepResults.speed * 1000) - ($scope.pauseTick - $scope.lastTick);
                     $scope.pauseTick = 0;
                     $scope.stepResults.pauses.push({state: "resumed", card: $scope.currentFlash, timeStamp: ts()});
-                   // var tempTimer = $timeout(function () {
-                        $scope.tick(diff);
-                        //$timeout.cancel(tempTimer);
-                   // }, diff);
+                    // var tempTimer = $timeout(function () {
+                    $scope.tick(diff);
+                    //$timeout.cancel(tempTimer);
+                    // }, diff);
                 } else {
                     window.clearTimeout($scope.timeoutId);
                     $scope.paused = true;
@@ -224,7 +247,7 @@
             };
 
             $scope.animationControl = function () {
-                return $scope.paused ? "paused" : "running";
+                return $scope.paused || $scope.countDown ? "paused" : "running";
             };
 
             $scope.animationText = function () {
@@ -270,7 +293,7 @@
                 $scope.focus();
                 $scope.lastTick = Date.now();
                 $scope.timeoutId = window.setTimeout(function () {
-                        $scope.$apply(function() {
+                        $scope.$apply(function () {
                             if ($scope.paused) {
                                 // exit early to disable timer
                                 window.clearTimeout($scope.timeoutId);
@@ -400,7 +423,7 @@
                 $scope.stepResults.actions = [];
 
                 $scope.currentLocation = $scope.getLocation($scope.stepResults.locationName);
-                $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType+")";
+                $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType + ")";
 
                 $scope.currentLocationMapLocal = $scope.getMapForLocation($scope.stepResults.locationName, 14);
                 $scope.currentLocationMapArea = $scope.getMapForLocation($scope.stepResults.locationName, 6);
@@ -470,8 +493,8 @@
                 return null;
             };
 
-            $scope.userHasMadeSelectionForAllVerifyAnnotations = function(){
-                if($scope.doneButtonClicked === true){
+            $scope.userHasMadeSelectionForAllVerifyAnnotations = function () {
+                if ($scope.doneButtonClicked === true) {
                     // hide done button
                     return false;
                 }
@@ -491,11 +514,11 @@
                 $scope.bigScope.step = $scope.bigScope.step + 1;
             };
 
-            $scope.responseSelected = function(annotationId, response){
+            $scope.responseSelected = function (annotationId, response) {
                 $scope.addAction(annotationId, response, 'response selected');
             };
 
-            $scope.playAudio = function(audioElementId){
+            $scope.playAudio = function (audioElementId) {
                 var audioElement = document.getElementById(audioElementId);
                 if (audioElement) {
                     audioElement.currentTime = 0;
@@ -505,12 +528,12 @@
                 }
             };
 
-            $scope.addAction = function(elementId, action, type){
+            $scope.addAction = function (elementId, action, type) {
                 var actionObject = {
-                    "elementId":elementId,
+                    "elementId": elementId,
                     "action": action,
                     "type": type,
-                    "timestamp":(new Date()).toISOString()
+                    "timestamp": (new Date()).toISOString()
                 };
                 $scope.stepResults.actions.push(actionObject);
             };
