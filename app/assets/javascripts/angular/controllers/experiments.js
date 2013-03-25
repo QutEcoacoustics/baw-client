@@ -180,7 +180,7 @@
             $scope.showDoneButton = false;
             $scope.start = function () {
                 $scope.showInstructions = false;
-                $scope.stepResults.startTimeStamp = ts();
+                $scope.stepResults.preCountDownStartTimeStamp = ts();
 
                 $scope.flashes[0].show = true;
                 $scope.currentFlash = 0;
@@ -202,6 +202,7 @@
                             if ($scope.countDown == 0){
 
                                 // eventually start it!
+                                $scope.stepResults.startTimeStamp = ts();
                                 $scope.tick();
                                 $scope.focus();
                                 $timeout(function () {
@@ -254,40 +255,6 @@
                 //return 'collapseWidthLeft ' + $scope.stepResults.speed  + 's linear 0s'
                 return $scope.stepResults.speed + 's linear 0s'
             };
-
-//            var stopTicker;
-//            $scope.tick = function () {
-//                $scope.lastTick = Date.now();
-//                $scope.focus();
-//
-//                stopTicker = $timeout(function () {
-//                        if ($scope.paused) {
-//                            // exit early to disable timer
-//                            $timeout.cancel(stopTIcker);
-//                            return;
-//                        }
-//
-//                        $scope.flashes[$scope.currentFlash].show = false;
-//                        $scope.currentFlash++;
-//
-//                        $scope.focus();
-//
-//
-//                        if ($scope.currentFlash >= $scope.flashes.length) {
-//                            $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
-//                            $scope.showDoneButton = true;
-//                            return;
-//                        }
-//
-//                        $scope.lastTick = Date.now();
-//
-//                        $scope.flashes[$scope.currentFlash].show = true;
-//
-//                        //$scope.tick();
-//                    },
-//                    $scope.stepResults.speed * 1000
-//                );
-//            };
 
             $scope.tick = function (delay) {
                 $scope.focus();
