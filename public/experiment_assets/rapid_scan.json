@@ -2,13 +2,19 @@
     "experiment": "Rapid Spectrogram Scanning Experiment",
     "instructions": [
         "The purpose of this experiment is to evaluate the effectiveness of mass audio data analysis using human participants",
-        "We have a lot of recorded audio and we need your help to analyse it. We want to measure how fast a participant (like you) can sift through our data to find interesting events. In this case, we will be searching for Koala calls.",
+        "We have a lot of recorded audio and we need your help to analyse it. <br/> We want to measure how fast a participant (like you) can sift through our data to find interesting events. In this case, we will be searching for Koala calls.",
         "This experiment is designed to measure how quickly acoustic events of interest can be detected",
         "This is a timed experiment. You are encouraged to work as quickly as you can whilst maintaining accuracy",
 
         "There are <<<<<<<<>>>>>>>>>>>> parts of this experiment to complete",
         "In total the experiment should take no longer than <<<<<<<<<<<<>>>>>>>>>>>> minutes",
-        "You should have no need for external resources (images, audio recordings, or field guides) during the experiment"
+        "You should have no need for external resources (images, audio recordings, or field guides) during the experiment",
+        "If you have any trouble completing this experiment please contact: <br />Anthony Truskinger<br /><a href='mailto:anthony.truskinger@student.qut.edu.au' >anthony.truskinger@student.qut.edu.au</a> <br/> 07 31389340 "
+    ],
+    "speeds": [
+        2,
+        1,
+        0.5
     ],
     "experimentSteps": [
         {
@@ -25,11 +31,12 @@
             "compression": 1,
             "speed": 10.0,
             "patternName": "Koala",
-            "extraInstructions": "Results are not counted in this round."
+            "extraInstructions": "Results are not counted in this round.",
+            "randomiseOrder" : false
         },
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "Koala flashcards, 2 second exposure",
+            "name": "Koala flashcards - Set A",
             "type": "flashing",
             "segments" : [
                 {
@@ -39,13 +46,14 @@
                 }
             ],
             "compression": 1,
-            "speed": 2.0,
+            "speed": "random",
             "patternName": "Koala",
-            "extraInstructions": ""
+            "extraInstructions": "",
+            "randomiseOrder" : true
         },
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "Koala flashcards, 1 second exposure",
+            "name": "Koala flashcards - Set B",
             "type": "flashing",
             "segments" : [
                 {
@@ -55,13 +63,14 @@
                 }
             ],
             "compression": 1,
-            "speed": 1,
+            "speed": "random",
             "patternName": "Koala",
-            "extraInstructions": ""
+            "extraInstructions": "",
+            "randomiseOrder" : true
         },
         {
             "template": "/assets/rapid_scanning_experiment.html",
-            "name": "Koala flashcards, 0.5 second exposure",
+            "name": "Koala flashcards - Set C",
             "type": "flashing",
             "segments" : [
                 {
@@ -71,10 +80,12 @@
                 }
             ],
             "compression": 1,
-            "speed": 0.5,
+            "speed": "random",
             "patternName": "Koala",
-            "extraInstructions": ""
+            "extraInstructions": "",
+            "randomiseOrder" : true
         }
     ],
-    "experimentResultsPostUri": "/experiments"
+    "experimentResultsPostUri": "/experiments",
+    "surveyLink": "http://www.survey.com/blah/blah/blah"
 }

@@ -38,7 +38,6 @@
             $scope.resultsSending = false;
             $scope.resultsSentSuccessfully = undefined;
 
-            // todo: populate user information
 
             // download experiment protocol
             var experiment = $routeParams.experiment == "tour" ? '/experiment_assets/bird_tour.json' : '/experiment_assets/rapid_scan.json';
@@ -49,7 +48,7 @@
 
                     if ($routeParams.cheat) {
                         $scope.stage = $routeParams.cheat;
-                        if ($scope.stage = $scope.EXPERIMENT_STAGE) {
+                        if ($scope.stage == $scope.EXPERIMENT_STAGE) {
                             $scope.step = 1;
                         }
                     }
@@ -78,9 +77,9 @@
                     $scope.errors.push("You must consent to participate in this experiment.");
                 }
 
-                if ($scope.results.ethicsStatementViewed !== true) {
-                    $scope.errors.push("You must view the ethics statement before continuing (click on the link please).")
-                }
+//                if ($scope.results.ethicsStatementViewed !== true) {
+//                    $scope.errors.push("You must view the ethics statement before continuing (click on the link please).")
+//                }
 
                 if ($scope.loggedIn && $scope.userData) {
                     $scope.results.userData = angular.copy($scope.userData);
@@ -126,6 +125,8 @@
                 // send back results to server
                 $scope.resultsSending = true;
                 $scope.resultsSentSuccessfully = undefined;
+
+
                 $http.post('/experiments', $scope.results)
                     .success(function (data, status, headers, config) {
 
@@ -159,6 +160,40 @@
 
             $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
+            // randomise data sets and speeds
+            angular.forEach($scope.bigScope.results.steps, function(value, index){
+                // pick a speed to use on this dataset
+                if (value.speed == "random") {
+                    // randomise list
+                    baw.shuffle($scope.bigScope.spec.speeds);
+
+                    value.speed = $scope.bigScope.spec.speeds.pop();
+                    value._random = "true";
+                }
+
+            });
+
+            // make sure datasets appear in decreasing exposure order
+            $scope.bigScope.results.steps.sort(function compare(a, b) {
+                if (a.speed === b.speed) {
+                    return 0;
+                }
+                else if (a.speed >= b.speed) {
+                    return -1;
+                }
+                else {
+                    return 1;
+                }
+            });
+
+            // print order for sanity
+            var prettyString = "Experimental step order";
+            angular.forEach($scope.bigScope.results.steps, function(value, index) {
+                prettyString +=  String.format("\nIndex: {0}, Speed: {1}, Title: {2}", index, value.speed, value.name);
+            });
+            console.warn(prettyString);
+
+
             $scope.stepResults = undefined;
             var EXPERIMENT_STEPS = $scope.bigScope.results.steps.length;
             $scope.$watch(function () {
@@ -169,10 +204,11 @@
                     $scope.showInstructions = true;
 
                     $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
-                    $scope.stepResults.hits = [];
-                    $scope.stepResults.pauses = [];
 
-                    $scope.flashes = calculateFlashes();
+                    $scope.stepResults.flashes = calculateFlashes();
+                    //$scope.stepResults.flashes.hits = [];
+                    //$scope.stepResults.flashes.pauses = [];
+
                 }
             });
 
@@ -182,7 +218,7 @@
                 $scope.showInstructions = false;
                 $scope.stepResults.preCountDownStartTimeStamp = ts();
 
-                $scope.flashes[0].show = true;
+                $scope.stepResults.flashes[0].show = true;
                 $scope.currentFlash = 0;
 
                 $scope.countDown = 5;
@@ -199,7 +235,7 @@
                         $scope.$apply(function () {
                             $scope.countDown = $scope.countDown - 1;
 
-                            if ($scope.countDown == 0){
+                            if ($scope.countDown == 0) {
 
                                 // eventually start it!
                                 $scope.stepResults.startTimeStamp = ts();
@@ -227,7 +263,7 @@
 
                     var diff = ($scope.stepResults.speed * 1000) - ($scope.pauseTick - $scope.lastTick);
                     $scope.pauseTick = 0;
-                    $scope.stepResults.pauses.push({state: "resumed", card: $scope.currentFlash, timeStamp: ts()});
+                    $scope.stepResults.flashes[$scope.currentFlash].pauses.push({state: "resumed", timeStamp: ts()});
                     // var tempTimer = $timeout(function () {
                     $scope.tick(diff);
                     //$timeout.cancel(tempTimer);
@@ -236,7 +272,7 @@
                     window.clearTimeout($scope.timeoutId);
                     $scope.paused = true;
                     $scope.pauseTick = Date.now();
-                    $scope.stepResults.pauses.push({state: "paused", card: $scope.currentFlash, timeStamp: ts()});
+                    $scope.stepResults.flashes[$scope.currentFlash].pauses.push({state: "paused", timeStamp: ts()});
                 }
 
 
@@ -267,13 +303,13 @@
                                 return;
                             }
 
-                            $scope.flashes[$scope.currentFlash].show = false;
+                            $scope.stepResults.flashes[$scope.currentFlash].show = false;
                             $scope.currentFlash++;
 
                             $scope.focus();
 
 
-                            if ($scope.currentFlash >= $scope.flashes.length) {
+                            if ($scope.currentFlash >= $scope.stepResults.flashes.length) {
                                 $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
                                 $scope.showDoneButton = true;
                                 return;
@@ -281,7 +317,7 @@
 
                             $scope.lastTick = Date.now();
 
-                            $scope.flashes[$scope.currentFlash].show = true;
+                            $scope.stepResults.flashes[$scope.currentFlash].show = true;
 
                             $scope.tick();
                         });
@@ -311,15 +347,16 @@
                         break;
                 }
 
-                if (positiveHit == undefined || $scope.currentFlash >= $scope.flashes.length) {
+                if (positiveHit == undefined || $scope.currentFlash >= $scope.stepResults.flashes.length) {
                     console.warn("ignored hit");
                     return;
                 }
                 var result = positiveHit ? "positive" : "negative";
                 console.log("HIT!", $event, result);
 
-                $scope.flashes[$scope.currentFlash].detected = result;
-                $scope.stepResults.hits.push({hit: result, card: $scope.currentFlash, timeStamp: ts()});
+                var f = $scope.stepResults.flashes[$scope.currentFlash];
+                f.detected = result;
+                f.hits.push({hit: result, timeStamp: ts()});
             };
 
 
@@ -332,7 +369,7 @@
 
             $scope.SPECTROGRAM_WIDTH = 1080;
             var PPS = 45;
-            $scope.flashes = [];
+            //$scope.stepResults.flashes = [];
 
             function calculateFlashes() {
 
@@ -353,8 +390,27 @@
 
                         var imageUrl = String.format(BASE_URL, segment.audioId, start * 1000, end * 1000);
 
-                        segments.push({start: start, end: end, imageLink: imageUrl, show: false, detected: null});
+                        segments.push({
+                                start: start,
+                                end: end,
+                                imageLink: imageUrl,
+                                show: false,
+                                detected: null,
+                                hits: [],
+                                pauses: []
+                            }
+                        );
                     }
+                }
+
+                if ($scope.stepResults.randomiseOrder) {
+                    baw.shuffle(segments);
+                }
+
+                // give flash cards index, so we always know order
+                // has to happen after shuffle
+                for (var counter = 0; counter < segments.length; counter++) {
+                    segments[counter].index = counter;
                 }
 
                 return segments;
