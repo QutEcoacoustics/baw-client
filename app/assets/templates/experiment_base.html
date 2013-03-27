@@ -79,12 +79,12 @@
             <li ng-repeat="step in spec.instructions" ng-bind-html-unsafe="step"></li>
             <li>Please do not leave this page, or close your browser during the experiment, your progress will be lost</li>
             <li>
-                Ensure you have read the experiment <a href="" ng-click="popupEthics()" style="">ethics statement</a>. <!-- You will need to click the link.-->
+                Ensure you have read the experiment <a href="/ParticipantInformation.html" target="_blank"  ng-click="popupEthics($event)" style="">ethics statement</a>. <!-- You will need to click the link.-->
                 <ul>
                     <li>
                         <!--<label title="This checkbox will automatically check when the ethics statement has been read">-->
                             <!--<input type="checkbox" ng-checked="results.ethicsStatementViewed" disabled/>-->
-                            I have read the <a href="" ng-click="popupEthics()" style="">ethics statement</a>
+                            I have read the <a href="/ParticipantInformation.html" target="_blank" ng-click="popupEthics($event)" style="">ethics statement</a>
                         <!--</label>-->
                     </li>
                     <li>

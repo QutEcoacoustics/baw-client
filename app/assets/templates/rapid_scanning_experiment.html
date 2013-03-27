@@ -1,4 +1,4 @@
-<div ng-controller="RapidScanCtrl">
+<div ng-controller="RapidScanCtrl" xmlns="http://www.w3.org/1999/html">
 
 <style type="text/css">
 .experimentContainer {
@@ -6,7 +6,7 @@
     text-align:  center;
     height:      800px;
     line-height: normal;
-    margin-top:  15px;
+    margin-top:  22px;
 }
 
 .experimentContainer p {
@@ -105,13 +105,13 @@
 .grunt {
     position: absolute;
     top: 190px;
-    left:  30px;
+    left:  28px;
 }
 
 .inhale {
     position: absolute;
     top:  60px;
-    left: 523px;;
+    left: 527px;;
 }
 
 .arrow_box {
@@ -146,13 +146,15 @@
 
 
 .experimentContainer .header {
-    height: 60px;
+    height: 65px;
 }
 
 .countDownTimer {
     position: absolute;
     right:    0px;
-    top:      -105px;
+    top:      -120px;
+    width:  100px;
+    height:  120px;
 }
 
 .spectrogramImage {
@@ -160,6 +162,7 @@
     margin:             5px auto;
     height:             256px;
     background-image:   -webkit-gradient(radial, center center, 0, center center, 506, color-stop(0, #FFFFFF), color-stop(1, #ABABAB));
+    display: block;
 }
 
 .spectrogramImage p {
@@ -241,7 +244,7 @@
     background:             #eee;
     width:                  100px;
     height:                 100px;
-    /*position: relative;*/
+    position: relative;
 }
 
 .spinner-inner {
@@ -254,7 +257,7 @@
     height:            0;
     border-style:      solid;
     border-color:      transparent;
-    border-top-color:  rgba(200, 200, 200, 1);
+    border-top-color: rgb(72, 129, 54);/*rgba(200, 200, 200, 1);*/
     -webkit-transform: rotate(-45deg);
     -webkit-animation: inner 15s linear infinite;
 }
@@ -287,7 +290,7 @@
     height:            0;
     border-style:      solid;
     border-color:      transparent;
-    border-top-color:  rgba(200, 200, 200, 1);
+    border-top-color:  rgb(72, 129, 54);/*rgba(200, 200, 200, 1);*/
     -webkit-transform: rotate(45deg);
     -webkit-animation: mask-two 15s linear infinite;
 }
@@ -300,25 +303,26 @@
         border-left-color: transparent;
     }
     26% {
-        border-left-color: rgba(200, 200, 200, 1);
+
+        border-left-color: rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
     }
     50% {
         border-bottom-color: transparent;
     }
     51% {
-        border-bottom-color: rgba(200, 200, 200, 1);
+        border-bottom-color: rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
     }
     75% {
         border-right-color: transparent;
     }
     76% {
-        border-right-color: rgba(200, 200, 200, 1);
+        border-right-color: rgba(72, 129, 54, 1);
     }
     100% {
         -webkit-transform:   rotate(315deg);
-        border-left-color:   rgba(200, 200, 200, 1);
-        border-bottom-color: rgba(200, 200, 200, 1);
-        border-right-color:  rgba(200, 200, 200, 1);
+        border-left-color:   rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
+        border-bottom-color: rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
+        border-right-color:  rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
     }
 }
 
@@ -367,7 +371,7 @@
 
     <div class="instructions" ng-show="showInstructions">
         <h3>Instructions for part <em>{{bigScope.step}}</em></h3>
-        <h4>{{stepResults.name}}</h4>
+        <h4>{{stepResults.name}}, exposure <em>{{stepResults.speed.speed}}</em>s</h4>
 
         <div>
             <p>
@@ -388,8 +392,8 @@
             <div class="demoSpectrogram">
                 <img class="baseImage" src="/experiment_assets/koala_demo3.jpg">
                 <img class="overlay" src="/experiment_assets/overlays.png" >
-                <span class="grunt arrow_box">grunt</span>
-                <span class="inhale arrow_box">inhale</span>
+                <span class="grunt arrow_box">snore</span>
+                <span class="inhale arrow_box">snort</span>
             </div>
             <p>
             Study this image carefully before proceeding.
@@ -400,7 +404,7 @@
                 Koala
                 vocalisations are present in the image or not.
                 <br/>
-                To indicate that you have not saw any Koalas press the <em>&lt;left arrow&gt;</em> key.
+                To indicate that you have not seen any Koalas press the <em>&lt;left arrow&gt;</em> key.
                 <br/>
                 To indicate that you saw one or more Koalas press the <em>&lt;right arrow&gt;</em> key.
             </p>
@@ -409,14 +413,15 @@
                 You are doing test number <em>{{bigScope.step}}</em> of
                 <em>{{bigScope.spec.experimentSteps.length}}</em>.
                 <br/>
-                This test will show each flash card (spectrogram image) for <em>{{stepResults.speed | number:2}}</em>
+                This test will show each flash card (spectrogram image) for <em style="font-weight: bolder; font-size: xx-large">{{stepResults.speed.speed | number:2}}</em>
                 seconds.
                 <br/>
                 This test will show <em>{{stepResults.flashes.length}}</em> flash cards (spectrogram images).
             </p>
 
-            <p ng-show="stepResults.extraInstructions">
+            <p ng-show="stepResults.extraInstructions || stepResults.speed.notes">
                 {{stepResults.extraInstructions}}
+                <span ng-bind-html-unsafe="stepResults.speed.notes"> </span>
             </p>
 
             <p>
@@ -431,8 +436,9 @@
          tabindex="1" id="experimentKeyPressDiv">
         <div ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
             <div class="header">
-                <h4>{{stepResults.name}}</h4>
+                <h4>{{stepResults.name}}, exposure {{stepResults.speed.speed}}s</h4>
                 {{stepResults.extraInstructions}}
+                <p ng-bind-html-unsafe="stepResults.speed.notes"> </p>
             </div>
 
             <div>
@@ -441,7 +447,9 @@
                         ng-repeat="segment in stepResults.flashes" ng-show="segment.show"
                         ng-style="{width: SPECTROGRAM_WIDTH + 'px'}">
 
-                        <div class="spinner countDownTimer">
+                        <div class="countDownTimer">
+                            <div>Flash timer</div>
+                        <div class="spinner">
                             <div class="spinner-inner"
                                  ng-style="{ '-webkit-animation': 'inner ' + animationText(), '-webkit-animation-play-state':  animationControl()}"
                                     ></div>
@@ -451,6 +459,7 @@
                             <div class="spinner-mask-two"
                                  ng-style="{ '-webkit-animation': 'mask-two ' + animationText(), '-webkit-animation-play-state':  animationControl() }"
                                     ></div>
+                        </div>
                         </div>
 
 
@@ -507,13 +516,19 @@
                 </ul>
 
                 <div ng-hide="showDoneButton">Progress through flash cards ({{currentFlash + 1}}/{{stepResults.flashes.length}})
-                    <progress value="{{currentFlash + 1}}" max="{{stepResults.flashes.length}}"></progress>
+                    <meter value="{{currentFlash + 1}}" max="{{stepResults.flashes.length}}"></meter>
                 </div>
 
                 <div class="class" ng-show="showDoneButton">
-                    <p></p>
 
-                    <p>Part {{bigScope.step}} of the experiment is done.</p>
+                    <p>
+                        Part {{bigScope.step}} of the experiment is done.
+                    </p>
+
+                    <p>
+                        You can pause here to take a break if you like.
+                    </p>
+
                     <button ng-click="end()">Go to next part</button>
                 </div>
             </div>

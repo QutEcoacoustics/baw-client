@@ -1,0 +1,129 @@
+{
+    "1A": {
+        "count": 0,
+        "speedCode": 1,
+        "dataSetCode": "A",
+        "speeds": [    0.5    , 1    , 2    ],
+        "dataSets": ["DS1", "DS2", "DS3"]
+    },
+    "2A": {
+        "count": 0,
+        "speedCode": 2,
+        "dataSetCode": "A",
+        "speeds": [    0.5    , 2    , 1    ],
+        "dataSets": ["DS1", "DS2", "DS3"]
+    },
+    "3A": {
+        "count": 0,
+        "speedCode": 3,
+        "dataSetCode": "A",
+        "speeds": [    1    , 0.5    , 2    ],
+        "dataSets": ["DS1", "DS2", "DS3"]
+    },
+    "4A": {
+        "count": 0,
+        "speedCode": 4,
+        "dataSetCode": "A",
+        "speeds": [    1    , 2    , 0.5    ],
+        "dataSets": ["DS1", "DS2", "DS3"]
+    },
+    "5A": {
+        "count": 0,
+        "speedCode": 5,
+        "dataSetCode": "A",
+        "speeds": [    2    , 0.5    , 1    ],
+        "dataSets": ["DS1", "DS2", "DS3"]
+    },
+    "6A": {
+        "count": 0,
+        "speedCode": 6,
+        "dataSetCode": "A",
+        "speeds": [    2    , 1    , 0.5    ],
+        "dataSets": ["DS1", "DS2", "DS3"]
+    },
+    "1B": {
+        "count": 0,
+        "speedCode": 1,
+        "dataSetCode": "B",
+        "speeds": [    0.5    , 1    , 2    ],
+        "dataSets": ["DS3", "DS1", "DS2"]
+    },
+    "2B": {
+        "count": 0,
+        "speedCode": 2,
+        "dataSetCode": "B",
+        "speeds": [    0.5    , 2    , 1    ],
+        "dataSets": ["DS3", "DS1", "DS2"]
+    },
+    "3B": {
+        "count": 0,
+        "speedCode": 3,
+        "dataSetCode": "B",
+        "speeds": [    1    , 0.5    , 2    ],
+        "dataSets": ["DS3", "DS1", "DS2"]
+    },
+    "4B": {
+        "count": 0,
+        "speedCode": 4,
+        "dataSetCode": "B",
+        "speeds": [    1    , 2    , 0.5    ],
+        "dataSets": ["DS3", "DS1", "DS2"]
+    },
+    "5B": {
+        "count": 0,
+        "speedCode": 5,
+        "dataSetCode": "B",
+        "speeds": [    2    , 0.5    , 1    ],
+        "dataSets": ["DS3", "DS1", "DS2"]
+    },
+    "6B": {
+        "count": 0,
+        "speedCode": 6,
+        "dataSetCode": "B",
+        "speeds": [    2    , 1    , 0.5    ],
+        "dataSets": ["DS3", "DS1", "DS2"]
+    },
+    "1C": {
+        "count": 0,
+        "speedCode": 1,
+        "dataSetCode": "C",
+        "speeds": [    0.5    , 1    , 2    ],
+        "dataSets": ["DS2", "DS3", "DS1"]
+    },
+    "2C": {
+        "count": 0,
+        "speedCode": 2,
+        "dataSetCode": "C",
+        "speeds": [    0.5    , 2    , 1    ],
+        "dataSets": ["DS2", "DS3", "DS1"]
+    },
+    "3C": {
+        "count": 0,
+        "speedCode": 3,
+        "dataSetCode": "C",
+        "speeds": [    1    , 0.5    , 2    ],
+        "dataSets": ["DS2", "DS3", "DS1"]
+    },
+    "4C": {
+        "count": 0,
+        "speedCode": 4,
+        "dataSetCode": "C",
+        "speeds": [    1    , 2    , 0.5    ],
+        "dataSets": ["DS2", "DS3", "DS1"]
+    },
+    "5C": {
+        "count": 0,
+        "speedCode": 5,
+        "dataSetCode": "C",
+        "speeds": [    2    , 0.5    , 1    ],
+        "dataSets": ["DS2", "DS3", "DS1"]
+    },
+    "6C": {
+        "count": 0,
+        "speedCode": 6,
+        "dataSetCode": "C",
+        "speeds": [    2    , 1    , 0.5    ],
+        "dataSets": ["DS2", "DS3", "DS1"]
+    }
+
+}

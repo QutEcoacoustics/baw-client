@@ -41,6 +41,7 @@
 
             // download experiment protocol
             var experiment = $routeParams.experiment == "tour" ? '/experiment_assets/bird_tour.json' : '/experiment_assets/rapid_scan.json';
+            var experiment = experiment += "?antiCache=" + Date.now().toString();
             $http.get(experiment).
                 success(function (data, status, headers, config) {
                     $scope.spec = data;
@@ -52,11 +53,45 @@
                             $scope.step = 1;
                         }
                     }
+
+                    if ($scope.spec.additionalResources) {
+                        downloadOtherResources();
+                    }
+
                 }).error(function (data, status, headers, config) {
                     alert("downloading test specification failed");
                 });
 
-            $scope.popupEthics = function () {
+            function downloadOtherResources() {
+                var maxAttempts = 5;
+
+                function downloadRecursive(attemptsLeft, resource, storeProperty) {
+                    if (attemptsLeft >= 0) {
+                        $http.get(resource + "?antiCache=" + Date.now().toString())
+                            .success(function (data, status, headers, config) {
+                                $scope.spec.additionalResources[storeProperty] = data;
+
+                                console.info("Downloading resource " + resource + " succeeded.", data);
+                            })
+                            .error(function (data, status, headers, config) {
+                                console.error("Downloading resource " + resource + " failed. Attempt " + (maxAttempts - attemptsLeft) + " of " + maxAttempts);
+
+                                downloadRecursive(attemptsLeft--, resource, storeProperty);
+                            });
+                    }
+                    else {
+                        console.error("Downloading resource " + resource + " failed after " + maxAttempts + "attempts");
+                    }
+                }
+
+                angular.forEach($scope.spec.additionalResources, function (value, key) {
+                    downloadRecursive(maxAttempts, value, key);
+                });
+            }
+
+            $scope.popupEthics = function ($event) {
+                $event.preventDefault();
+
                 $scope.results.ethicsStatementViewed = true;
 
                 baw.popUpWindow("/ParticipantInformation.html", 1000, 800);
@@ -89,7 +124,16 @@
                 }
 
                 if (!$scope.isChrome()) {
-                    $scope.errors.push("You must be using the Google Chrome web browser to continue")
+                    $scope.errors.push("You must be using the Google Chrome web browser to continue.")
+                }
+
+                var allDownloaded = true;
+                angular.forEach($scope.spec.additionalResources, function (value, key) {
+                    allDownloaded = allDownloaded && angular.isObject(value);
+                });
+
+                if (!allDownloaded) {
+                    $scope.errors.push("Resources for the experiment are still downloading. Try again in a moment.");
                 }
 
                 if ($scope.errors.length > 0) {
@@ -126,6 +170,16 @@
                 $scope.resultsSending = true;
                 $scope.resultsSentSuccessfully = undefined;
 
+                // filter results
+                var blackList = $scope.blackList;
+                var tempResult = JSON.stringify($scope.results, function (key, value) {
+                    if (key !== "" && blackList.indexOf(key) >= 0) {
+                        return undefined;
+                    }
+
+                    return value;
+                });
+                $scope.results = JSON.parse(tempResult);
 
                 $http.post('/experiments', $scope.results)
                     .success(function (data, status, headers, config) {
@@ -157,40 +211,112 @@
             $scope.ft = baw.secondsToDurationFormat;
 
             $scope.bigScope = $scope.$parent.$parent;
+            $scope.bigScope.blackList = $scope.bigScope.blackList || [];
+            $scope.bigScope.blackList = $scope.bigScope.blackList.concat(
+                [
+                    'notes',
+                    '$$hashKey',
+                    "template",
+                    "notes",
+                    "extraInstructions",
+                    "imageLink",
+                    "show"
 
-            $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
+                ]
+            );
 
-            // randomise data sets and speeds
-            angular.forEach($scope.bigScope.results.steps, function(value, index){
-                // pick a speed to use on this dataset
-                if (value.speed == "random") {
-                    // randomise list
-                    baw.shuffle($scope.bigScope.spec.speeds);
+            //$scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
+            $scope.bigScope.results.version = $scope.bigScope.spec.version;
 
-                    value.speed = $scope.bigScope.spec.speeds.pop();
-                    value._random = "true";
-                }
-
-            });
-
-            // make sure datasets appear in decreasing exposure order
-            $scope.bigScope.results.steps.sort(function compare(a, b) {
-                if (a.speed === b.speed) {
-                    return 0;
-                }
-                else if (a.speed >= b.speed) {
-                    return -1;
-                }
-                else {
-                    return 1;
+            // use the downloaded stats to configure the experiment
+            // find minimum
+            var minCount = null;
+            angular.forEach($scope.bigScope.spec.additionalResources.experimentCombinationCounts, function (value, key) {
+                var c = value.count;
+                if (minCount === null || c < minCount) {
+                    minCount = c;
                 }
             });
+
+            // extract minimums
+            var lowestCodes = [];
+            angular.forEach($scope.bigScope.spec.additionalResources.experimentCombinationCounts, function (value, key) {
+                var c = value.count;
+                if (c === minCount) {
+                    lowestCodes.push(key);
+                }
+            });
+
+            // randomly pick from the lowest group
+            var lowestCode;
+            if (lowestCodes.length != 1) {
+                var keys;
+
+                if (lowestCodes.length == 0) {
+                    keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
+                } else {
+                    keys = lowestCodes;
+                }
+                var rand = Math.floor(Math.random() * keys.length);
+                lowestCode = keys[rand];
+            }
+            else {
+                lowestCode = lowestCodes[1];
+            }
+
+            if (lowestCode.length !== 2) {
+                throw "Experiment configuration incorrect";
+            }
+
+            // record experiment setup in results
+            $scope.bigScope.results.code = lowestCode;
+            var countSpec = $scope.bigScope.spec.additionalResources.experimentCombinationCounts[lowestCode];
+            console.log("Experiment " + lowestCode + " chosen", countSpec);
+
+            // now copy in the steps and configure the speeds
+            $scope.bigScope.results.steps = [];
+            for (var stepIndex = 0; stepIndex < countSpec.dataSets.length; stepIndex++) {
+                // find the speed obj
+                var dsId = countSpec.dataSets[stepIndex];
+                var dataSet = angular.copy(
+                    $scope.bigScope.spec.experimentSteps.filter(function (value) {
+                        return value.id === dsId;
+                    })[0]
+                );
+
+                // find the step obj
+                var sId = countSpec.speeds[stepIndex];
+                var speed = angular.copy(
+                    $scope.bigScope.spec.speeds.filter(function (value) {
+                        return value.speed === sId;
+                    })[0]
+                );
+
+                // merge speed and step
+                dataSet.speed = speed;
+
+                // insert into results
+                $scope.bigScope.results.steps.push(dataSet);
+            }
+
+            // lastly, insert training round at start
+            var trainingStep = angular.copy(
+                $scope.bigScope.spec.experimentSteps.filter(function (value) {
+                    return value.id === "training";
+                })[0]);
+            $scope.bigScope.results.steps.unshift(trainingStep);
 
             // print order for sanity
+            // also attach to results for later sanity
             var prettyString = "Experimental step order";
-            angular.forEach($scope.bigScope.results.steps, function(value, index) {
-                prettyString +=  String.format("\nIndex: {0}, Speed: {1}, Title: {2}", index, value.speed, value.name);
+            var order = "";
+            $scope.bigScope.results.order = [];
+            angular.forEach($scope.bigScope.results.steps, function (value, index) {
+                $scope.bigScope.results.order.push({index: index, speed: value.speed.speed, id: value.id});
+                prettyString += String.format("\nIndex: {0}, Speed: {1}, Id: {2}", index, value.speed.speed, value.id);
+                order += value.speed.speed + "\t";
             });
+            console.warn(order);
             console.warn(prettyString);
 
 
@@ -221,7 +347,7 @@
                 $scope.stepResults.flashes[0].show = true;
                 $scope.currentFlash = 0;
 
-                $scope.countDown = 5;
+                $scope.countDown = $scope.bigScope.spec.countDown;
 
                 $scope.showDoneButton = false;
 
@@ -289,7 +415,7 @@
 
             $scope.animationText = function () {
                 //return 'collapseWidthLeft ' + $scope.stepResults.speed  + 's linear 0s'
-                return $scope.stepResults.speed + 's linear 0s'
+                return $scope.stepResults.speed.speed + 's linear 0s'
             };
 
             $scope.tick = function (delay) {
@@ -322,7 +448,7 @@
                             $scope.tick();
                         });
                     },
-                    delay === undefined ? $scope.stepResults.speed * 1000 : delay
+                    delay === undefined ? $scope.stepResults.speed.speed * 1000 : delay
                 );
             };
 
