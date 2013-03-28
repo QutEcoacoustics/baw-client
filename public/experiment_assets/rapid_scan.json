@@ -46,11 +46,13 @@
             "name": "Koala flashcards - Set A",
             "type": "flashing",
             "segments" : [
-                {
-                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
-                    "startTime": 0,
-                    "endTime": 240
-                }
+                {"audioId": "C41C8E9D-5D6A-458D-A6DB-81929D2C9DD2", "startTime":    0	    , "endTime": 120},
+                {"audioId": "0E86CDB0-68CD-4F43-BCDD-C0B36469809F", "startTime":    0	    , "endTime": 120},
+                {"audioId": "427C85E3-11AA-482B-8C39-2BC7BC3F3352", "startTime":    0	    , "endTime": 240},
+                {"audioId": "DE1063BB-01E6-4C56-882C-98E084F14EA0", "startTime":    0	    , "endTime": 240},
+                {"audioId": "567B993D-0439-484C-BE7F-DD8A7C6688F3", "startTime":    0	    , "endTime": 120},
+                {"audioId": "BEDA5E61-81E8-4F53-A195-D5964F3000CF", "startTime":    0	    , "endTime": 240},
+                {"audioId": "81770AF6-5017-4A83-A365-6A9742F487CC", "startTime":    0	    , "endTime": 240}
             ],
             "compression": 1,
             "speed": "random",
@@ -64,11 +66,14 @@
             "name": "Koala flashcards - Set B",
             "type": "flashing",
             "segments" : [
-                {
-                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
-                    "startTime": 0,
-                    "endTime": 240
-                }
+                {"audioId": "146C15AC-D201-49C3-9B2B-BC7C76181AB1", "startTime":    0	    , "endTime": 120},
+                {"audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3", "startTime":    0	    , "endTime": 240},
+                {"audioId": "76A04D45-05AC-4A4B-B8F1-FFFDE8FC99A6", "startTime":    33120	, "endTime": 33360},
+                {"audioId": "0C226A73-25D2-4A95-BF9B-0FD66BD76BF4", "startTime":    0	    , "endTime": 120},
+                {"audioId": "E7DBBD4E-6B82-4719-BD8C-79D2AB14B921", "startTime":    0	    , "endTime": 120},
+                {"audioId": "3654723B-6E93-438B-8127-DDB7239B1E83", "startTime":    0	    , "endTime": 240},
+                {"audioId": "AE8DE97E-CEA4-4D53-9BAC-1C687CA66D43", "startTime":    0	    , "endTime": 120},
+                {"audioId": "B1BFAA13-2F35-469E-9FEA-D9D1847A4B29", "startTime":    0	    , "endTime": 120}
             ],
             "compression": 1,
             "speed": "random",
@@ -82,11 +87,12 @@
             "name": "Koala flashcards - Set C",
             "type": "flashing",
             "segments" : [
-                {
-                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
-                    "startTime": 0,
-                    "endTime": 240
-                }
+                {"audioId": "E8E34C43-A67F-4DFC-B368-F8265A78C898", "startTime":    0	    , "endTime": 240},
+                {"audioId": "01331441-AD7D-4DC6-8982-D526E04BAF5D", "startTime":    0	    , "endTime": 240},
+                {"audioId": "8B6A019F-5828-4FBC-8037-D42AA8D3FA05", "startTime":    0	    , "endTime": 240},
+                {"audioId": "4BCA2B53-828F-4552-ABA3-7029F33D9703", "startTime":    0	    , "endTime": 120},
+                {"audioId": "88635FDB-A13A-4F22-8E08-CF5736F24207", "startTime":    0	    , "endTime": 240},
+                {"audioId": "DF6D35CC-9009-46C1-921A-7FB22D9D24C4", "startTime":    0	    , "endTime": 240}
             ],
             "compression": 1,
             "speed": "random",

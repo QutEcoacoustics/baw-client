@@ -424,17 +424,20 @@
                 <span ng-bind-html-unsafe="stepResults.speed.notes"> </span>
             </p>
 
-            <p>
+            <p ng-show="downloading() < stepResults.flashes.length" >
+                The expriment is downloading, please wait: <progress value="{{downloading()}}" max="{{stepResults.flashes.length}}"></progress></p>
+            <p ng-show="downloading() == stepResults.flashes.length">
+
                 The test will start immediately after you press the button below - get ready.
             </p>
         </div>
-        <button ng-click="start()">I understand the instructions, let's go</button>
+        <button ng-disabled="downloading()"  ng-click="start()">I understand the instructions, let's go</button>
     </div>
 
     <div style="height:600px; vertical-align: middle;" ng-show="!showInstructions"
          ui-keydown="{'17-ctrl':'hit($event)', '16-shift':'hit($event)', 'left':'hit($event)', 'right':'hit($event)', 'space': 'pauseOrResume($event)'}"
          tabindex="1" id="experimentKeyPressDiv">
-        <div ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
+        <div id="{{'step_' +($index + 1)}}" ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
             <div class="header">
                 <h4>{{stepResults.name}}, exposure {{stepResults.speed.speed}}s</h4>
                 {{stepResults.extraInstructions}}
@@ -476,7 +479,7 @@
                         </div>
                         <img class="spectrogramImage" ng-show="countDown == 0"
                              ng-style="{width: SPECTROGRAM_WIDTH + 'px'}"
-                             ng-src="{{segment.imageLink}}">
+                             ng-src="{{segment.imageLink}}" > <!-- baw-image-loaded="segment.downloaded"-->
 
                         <div>
                             <span style="float:left">Starting time: <span class="relative-chunk-time hint--bottom">{{ft(segment.start)}}</span></span>

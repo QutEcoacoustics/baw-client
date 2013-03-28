@@ -503,7 +503,7 @@
 
 
         return {
-            restict: 'A',
+            restrict: 'A',
             link: function radioInputType(scope, element, attr) {
                 // make the name unique, if not defined
                 if (baw.angularCopies.isUndefined(attr.name)) {
@@ -598,6 +598,38 @@
             }
         }
     });
+
+    bawds.directive('bawImageLoaded',['$timeout', '$parse', function($timeout, $parse) {
+       return {
+           restrict: 'A',
+           link: function(scope, elements, attr) {
+               var element = elements[0];
+               if (element.nodeName !== "IMG") {
+                   throw 'Cannot put ngAudio element on an element that is not a <audio />';
+               }
+
+               var getter = $parse(attr.bawImageLoaded);
+               var assigner = getter.assign;
+
+               assigner(scope, element.complete);
+
+               element.onload = function() {
+                   assigner(scope, element.complete);
+               };
+
+               function checkLater() {
+                   $timeout(function(){
+                       assigner(scope, element.complete);
+
+                       //if (element.complete) {
+                        checkLater();
+                       //}
+                   }, 1000);
+               }
+
+           }
+       }
+    }]);
 
     bawds.directive('bawInjectTransformers', function () {
         return {

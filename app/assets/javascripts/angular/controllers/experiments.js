@@ -220,7 +220,8 @@
                     "notes",
                     "extraInstructions",
                     "imageLink",
-                    "show"
+                    "show",
+                    "downloaded"
 
                 ]
             );
@@ -337,6 +338,21 @@
 
                 }
             });
+
+            $scope.totalDownloaded = 0;
+            $scope.downloading = function() {
+              var total = 0;
+//                angular.forEach($scope.stepResults.flashes, function(value, index) {
+//                    if(value.downloaded === true) {
+//                        total += 1;
+//                    }
+//                });
+
+                return $("#step_"+$scope.bigScope.step +" img").toArray().every(function(value) {return value.complete});
+
+                $scope.totalDownloaded = total;
+                return total;
+            };
 
             $scope.showInstructions = true;
             $scope.showDoneButton = false;
@@ -523,7 +539,8 @@
                                 show: false,
                                 detected: null,
                                 hits: [],
-                                pauses: []
+                                pauses: [],
+                                downloaded: null
                             }
                         );
                     }
