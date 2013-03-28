@@ -1,6 +1,13 @@
 class Api::SessionsController < Devise::SessionsController
   skip_authorization_check :only => [:ping]
+  # from: http://stackoverflow.com/questions/12873957/devise-log-after-auth-failure/12877182#12877182
+  after_filter :log_failed_login, :only => :new
 
+
+  #
+  # NOTE: new and create will not be used by external providers.
+  # See callbacks controller.
+  #
 
 =begin
   e.g.
@@ -21,12 +28,15 @@ class Api::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
+
     # turn off session storage for json and xml
     # http://stackoverflow.com/questions/10717667/prevent-session-creation-on-rails-3-2-2-for-restful-api/10723769#10723769
     auth_options.deep_merge!({:store => !(request.format.xml? || request.format.json?)})
     resource = warden.authenticate!(auth_options)
     set_flash_message(:notice, :signed_in) if is_navigational_format?
     sign_in(resource_name, resource)
+
+    Rails.logger.info "\n***\nSuccessful login by : #{request.filtered_parameters["user"]}\n***\n"
 
     respond_to do |format|
       format.html do
@@ -41,6 +51,14 @@ class Api::SessionsController < Devise::SessionsController
       end
     end
 
+  end
+
+  def log_failed_login
+    Rails.logger.info "\n***\nFailed login by : #{request.filtered_parameters["user"]}\n***\n" if failed_login?
+  end
+
+  def failed_login?
+    (options = env["warden.options"]) && options[:action] == "unauthenticated"
   end
 
   # DELETE (or GET depending on devise setting) /resource/sign_out
