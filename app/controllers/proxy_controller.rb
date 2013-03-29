@@ -6,7 +6,7 @@ class ProxyController < ApplicationController
   skip_load_resource :only => [:default]
 
   def default
-    http_proxy = 'http://wproxy.qut.edu.au:3128/'# BawSite::Application.config.custom_proxy
+    http_proxy = BawSite::Application.config.custom_proxy
 
     conn = Faraday.new(:url => params[:url]) do |faraday|
       faraday.request  :url_encoded             # form-encode POST params
