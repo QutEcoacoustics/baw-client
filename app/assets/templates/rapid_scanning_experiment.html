@@ -208,37 +208,6 @@
     color: green;
 }
 
-    /*.countDownBox {*/
-    /*background: green;*/
-    /*width: 100px;*/
-    /*height: 100px;*/
-    /*border-radius: 50px;*/
-    /*}*/
-    /*.countDown {*/
-    /*-webkit-animation: collapseWidthLeft 2s linear 0s;*/
-
-    /*width: 100px;*/
-    /*height: 100px;*/
-    /*border-radius: 50px;*/
-
-    /*margin-top: 15px;*/
-    /*margin-bottom: 15px;*/
-    /*height: 5px;*/
-    /*background: #ddffdd;*/
-    /*}*/
-
-    /*@-webkit-keyframes collapseWidthLeft {*/
-    /*from {*/
-    /*margin-left: 0%;*/
-    /*width: 100%;*/
-    /*}*/
-
-    /*to {*/
-    /*margin-left: 100%;*/
-    /*width: 0%;*/
-    /*}*/
-    /*}*/
-
 .spinner {
     -webkit-mask-box-image: -webkit-radial-gradient(center, ellipse cover, rgba(0, 0, 0, 1) 68%, rgba(0, 0, 0, 0) 69.5%);
     background:             #eee;
@@ -437,7 +406,8 @@
     <div style="height:600px; vertical-align: middle;" ng-show="!showInstructions"
          ui-keydown="{'17-ctrl':'hit($event)', '16-shift':'hit($event)', 'left':'hit($event)', 'right':'hit($event)', 'space': 'pauseOrResume($event)'}"
          tabindex="1" id="experimentKeyPressDiv">
-        <div id="{{'step_' +($index + 1)}}" ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
+        <div id="{{'step_' +($index + 1)}}" >
+             <!--ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">-->
             <div class="header">
                 <h4>{{stepResults.name}}, exposure {{stepResults.speed.speed}}s</h4>
                 {{stepResults.extraInstructions}}
@@ -477,6 +447,7 @@
                                 {{countDown}}
                             </P>
                         </div>
+                        <ul></ul>
                         <img class="spectrogramImage" ng-show="countDown == 0"
                              ng-style="{width: SPECTROGRAM_WIDTH + 'px'}"
                              ng-src="{{segment.imageLink}}" > <!-- baw-image-loaded="segment.downloaded"-->
