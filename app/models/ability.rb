@@ -9,6 +9,8 @@ class Ability
     # The first one is the action you're setting the permission for, the second one
     # is the class of object you're setting it on.
 
+    # public actions ?
+
 
 
     user ||= User.new # guest user (not logged in)

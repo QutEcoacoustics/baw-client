@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   ##authorize! :discontinue, @product
   ## ----------------------------------
 
+
   #check_authorization :unless => :devise_controller?
   #load_and_authorize_resource  :unless => :devise_controller?
   rescue_from CanCan::AccessDenied do |exception|
