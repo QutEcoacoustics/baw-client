@@ -265,7 +265,7 @@
                 lowestCode = lowestCodes[1];
             }
 
-            if (lowestCode.length !== 2) {
+            if (!lowestCode || lowestCode.length !== 2) {
                 throw "Experiment configuration incorrect";
             }
 
