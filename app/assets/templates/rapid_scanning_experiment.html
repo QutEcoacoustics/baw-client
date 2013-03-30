@@ -60,30 +60,28 @@
     text-align: left;
 }
 
-/*.instructions > div img {*/
+    /*.instructions > div img {*/
     /*display: block;*/
     /*margin:  0 auto;*/
-/*}*/
+    /*}*/
 
 .demoSpectrogram {
     position: relative;
-    width: 100%;
+    width:    100%;
 
 }
 
 .demoSpectrogram span {
-    color: #f3f3f3;
-    font-size: x-large;
+    color:       #f3f3f3;
+    font-size:   x-large;
     font-weight: bold;
-    padding: 0.05em 0.2em;
+    padding:     0.05em 0.2em;
     text-shadow: black 0px 0px 5px;
-
-
 
 }
 
 .demoSpectrogram *:not(.baseImage) {
-    -webkit-animation: fadeIn 4.0s ease-in-out  0.25s infinite alternate;
+    -webkit-animation: fadeIn 4.0s ease-in-out 0.25s infinite alternate;
 }
 
 @-webkit-keyframes fadeIn {
@@ -97,21 +95,21 @@
 
 .overlay {
     position: absolute;
-    top:  0;
-    left: 0;
+    top:      0;
+    left:     0;
 
 }
 
 .grunt {
     position: absolute;
-    top: 190px;
-    left:  28px;
+    top:      190px;
+    left:     28px;
 }
 
 .inhale {
     position: absolute;
-    top:  60px;
-    left: 527px;;
+    top:      60px;
+    left:     527px;;
 }
 
 .arrow_box {
@@ -119,31 +117,32 @@
     /*background: rgba(0, 255, 0, 1.0);*/
     border: 2px solid #00ff00;
 }
+
 .arrow_box:after, .arrow_box:before {
-    top: 100%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
+    top:            100%;
+    border:         solid transparent;
+    content:        " ";
+    height:         0;
+    width:          0;
+    position:       absolute;
     pointer-events: none;
 }
 
 .arrow_box:after {
-    border-color: rgba(111, 213, 100, 0);
+    border-color:     rgba(111, 213, 100, 0);
     border-top-color: rgba(111, 213, 100, 0.5);
-    border-width: 10px;
-    left: 50%;
-    margin-left: -10px;
-}
-.arrow_box:before {
-    border-color: rgba(0, 255, 0, 0);
-    border-top-color: #00ff00;
-    border-width: 13px;
-    left: 50%;
-    margin-left: -13px;
+    border-width:     10px;
+    left:             50%;
+    margin-left:      -10px;
 }
 
+.arrow_box:before {
+    border-color:     rgba(0, 255, 0, 0);
+    border-top-color: #00ff00;
+    border-width:     13px;
+    left:             50%;
+    margin-left:      -13px;
+}
 
 .experimentContainer .header {
     height: 65px;
@@ -153,8 +152,8 @@
     position: absolute;
     right:    0px;
     top:      -120px;
-    width:  100px;
-    height:  120px;
+    width:    100px;
+    height:   120px;
 }
 
 .spectrogramImage {
@@ -162,7 +161,7 @@
     margin:             5px auto;
     height:             256px;
     background-image:   -webkit-gradient(radial, center center, 0, center center, 506, color-stop(0, #FFFFFF), color-stop(1, #ABABAB));
-    display: block;
+    display:            block;
 }
 
 .spectrogramImage p {
@@ -208,43 +207,12 @@
     color: green;
 }
 
-    /*.countDownBox {*/
-    /*background: green;*/
-    /*width: 100px;*/
-    /*height: 100px;*/
-    /*border-radius: 50px;*/
-    /*}*/
-    /*.countDown {*/
-    /*-webkit-animation: collapseWidthLeft 2s linear 0s;*/
-
-    /*width: 100px;*/
-    /*height: 100px;*/
-    /*border-radius: 50px;*/
-
-    /*margin-top: 15px;*/
-    /*margin-bottom: 15px;*/
-    /*height: 5px;*/
-    /*background: #ddffdd;*/
-    /*}*/
-
-    /*@-webkit-keyframes collapseWidthLeft {*/
-    /*from {*/
-    /*margin-left: 0%;*/
-    /*width: 100%;*/
-    /*}*/
-
-    /*to {*/
-    /*margin-left: 100%;*/
-    /*width: 0%;*/
-    /*}*/
-    /*}*/
-
 .spinner {
     -webkit-mask-box-image: -webkit-radial-gradient(center, ellipse cover, rgba(0, 0, 0, 1) 68%, rgba(0, 0, 0, 0) 69.5%);
     background:             #eee;
     width:                  100px;
     height:                 100px;
-    position: relative;
+    position:               relative;
 }
 
 .spinner-inner {
@@ -257,7 +225,7 @@
     height:            0;
     border-style:      solid;
     border-color:      transparent;
-    border-top-color: rgb(72, 129, 54);/*rgba(200, 200, 200, 1);*/
+    border-top-color:  rgb(72, 129, 54); /*rgba(200, 200, 200, 1);*/
     -webkit-transform: rotate(-45deg);
     -webkit-animation: inner 15s linear infinite;
 }
@@ -290,7 +258,7 @@
     height:            0;
     border-style:      solid;
     border-color:      transparent;
-    border-top-color:  rgb(72, 129, 54);/*rgba(200, 200, 200, 1);*/
+    border-top-color:  rgb(72, 129, 54); /*rgba(200, 200, 200, 1);*/
     -webkit-transform: rotate(45deg);
     -webkit-animation: mask-two 15s linear infinite;
 }
@@ -304,13 +272,13 @@
     }
     26% {
 
-        border-left-color: rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
+        border-left-color: rgba(72, 129, 54, 1); /*rgba(200, 200, 200, 1);*/
     }
     50% {
         border-bottom-color: transparent;
     }
     51% {
-        border-bottom-color: rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
+        border-bottom-color: rgba(72, 129, 54, 1); /*rgba(200, 200, 200, 1);*/
     }
     75% {
         border-right-color: transparent;
@@ -320,9 +288,9 @@
     }
     100% {
         -webkit-transform:   rotate(315deg);
-        border-left-color:   rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
-        border-bottom-color: rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
-        border-right-color:  rgba(72, 129, 54, 1);/*rgba(200, 200, 200, 1);*/
+        border-left-color:   rgba(72, 129, 54, 1); /*rgba(200, 200, 200, 1);*/
+        border-bottom-color: rgba(72, 129, 54, 1); /*rgba(200, 200, 200, 1);*/
+        border-right-color:  rgba(72, 129, 54, 1); /*rgba(200, 200, 200, 1);*/
     }
 }
 
@@ -391,12 +359,12 @@
 
             <div class="demoSpectrogram">
                 <img class="baseImage" src="/experiment_assets/koala_demo3.jpg">
-                <img class="overlay" src="/experiment_assets/overlays.png" >
+                <img class="overlay" src="/experiment_assets/overlays.png">
                 <span class="grunt arrow_box">snore</span>
                 <span class="inhale arrow_box">snort</span>
             </div>
             <p>
-            Study this image carefully before proceeding.
+                Study this image carefully before proceeding.
             </p>
 
             <p>
@@ -413,7 +381,8 @@
                 You are doing test number <em>{{bigScope.step}}</em> of
                 <em>{{bigScope.spec.experimentSteps.length}}</em>.
                 <br/>
-                This test will show each flash card (spectrogram image) for <em style="font-weight: bolder; font-size: xx-large">{{stepResults.speed.speed | number:2}}</em>
+                This test will show each flash card (spectrogram image) for <em
+                    style="font-weight: bolder; font-size: xx-large">{{stepResults.speed.speed | number:2}}</em>
                 seconds.
                 <br/>
                 This test will show <em>{{stepResults.flashes.length}}</em> flash cards (spectrogram images).
@@ -424,45 +393,50 @@
                 <span ng-bind-html-unsafe="stepResults.speed.notes"> </span>
             </p>
 
-            <p ng-show="downloading() < stepResults.flashes.length" >
-                The expriment is downloading, please wait: <progress value="{{downloading()}}" max="{{stepResults.flashes.length}}"></progress></p>
+            <p ng-show="downloading() < stepResults.flashes.length">
+                The expriment is downloading, please wait:
+                <progress value="{{downloading()}}" max="{{stepResults.flashes.length}}"></progress>
+            </p>
             <p ng-show="downloading() == stepResults.flashes.length">
 
                 The test will start immediately after you press the button below - get ready.
             </p>
         </div>
-        <button ng-disabled="downloading()"  ng-click="start()">I understand the instructions, let's go</button>
+        <button ng-disabled="downloading()" ng-click="start()">I understand the instructions, let's go</button>
     </div>
 
     <div style="height:600px; vertical-align: middle;" ng-show="!showInstructions"
          ui-keydown="{'17-ctrl':'hit($event)', '16-shift':'hit($event)', 'left':'hit($event)', 'right':'hit($event)', 'space': 'pauseOrResume($event)'}"
          tabindex="1" id="experimentKeyPressDiv">
-        <div id="{{'step_' +($index + 1)}}" ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">
+        <div id="{{'step_' +($index + 1)}}">
+            <!--ng-repeat="step in bigScope.spec.experimentSteps" ng-show="bigScope.step == $index + 1">-->
             <div class="header">
                 <h4>{{stepResults.name}}, exposure {{stepResults.speed.speed}}s</h4>
                 {{stepResults.extraInstructions}}
-                <p ng-bind-html-unsafe="stepResults.speed.notes"> </p>
+                <p ng-bind-html-unsafe="stepResults.speed.notes"></p>
             </div>
 
             <div>
-                <ul class="imageList" ng-class="clear-pseudo">
-                    <li ng-class="clear-pseudo" style="margin: 1em auto; position: relative"
-                        ng-repeat="segment in stepResults.flashes" ng-show="segment.show"
-                        ng-style="{width: SPECTROGRAM_WIDTH + 'px'}">
+                <div class="imageList"
+                     ng-class="clear-pseudo"
+                     style="margin: 1em auto; position: relative"
+                     ng-style="{width: SPECTROGRAM_WIDTH + 'px'}" >
+
+                        <!--ng-repeat="segment in stepResults.flashes" ng-show="segment.show"-->
 
                         <div class="countDownTimer">
                             <div>Flash timer</div>
-                        <div class="spinner">
-                            <div class="spinner-inner"
-                                 ng-style="{ '-webkit-animation': 'inner ' + animationText(), '-webkit-animation-play-state':  animationControl()}"
-                                    ></div>
-                            <div class="spinner-mask"
-                                 ng-style="{ '-webkit-animation': 'mask ' + animationText(), '-webkit-animation-play-state':  animationControl() }"
-                                    ></div>
-                            <div class="spinner-mask-two"
-                                 ng-style="{ '-webkit-animation': 'mask-two ' + animationText(), '-webkit-animation-play-state':  animationControl() }"
-                                    ></div>
-                        </div>
+                            <div class="spinner">
+                                <div class="spinner-inner"
+                                     ng-style="{ '-webkit-animation': 'inner ' + animationText(), '-webkit-animation-play-state':  animationControl()}"
+                                        ></div>
+                                <div class="spinner-mask"
+                                     ng-style="{ '-webkit-animation': 'mask ' + animationText(), '-webkit-animation-play-state':  animationControl() }"
+                                        ></div>
+                                <div class="spinner-mask-two"
+                                     ng-style="{ '-webkit-animation': 'mask-two ' + animationText(), '-webkit-animation-play-state':  animationControl() }"
+                                        ></div>
+                            </div>
                         </div>
 
 
@@ -477,9 +451,14 @@
                                 {{countDown}}
                             </P>
                         </div>
-                        <img class="spectrogramImage" ng-show="countDown == 0"
-                             ng-style="{width: SPECTROGRAM_WIDTH + 'px'}"
-                             ng-src="{{segment.imageLink}}" > <!-- baw-image-loaded="segment.downloaded"-->
+                        <ul>
+                            <li ng-repeat="segment in stepResults.flashes">
+                                <img class="spectrogramImage" ng-show="countDown == 0"
+                                     ng-style="{width: SPECTROGRAM_WIDTH + 'px'}"
+                                     ng-src="{{segment.imageLink}}">
+                            </li>
+                        </ul>
+                        <!-- baw-image-loaded="segment.downloaded"-->
 
                         <div>
                             <span style="float:left">Starting time: <span class="relative-chunk-time hint--bottom">{{ft(segment.start)}}</span></span>
@@ -515,10 +494,11 @@
                             <span ng-show="paused">Resume</span>
                         </button>
 
-                    </li>
-                </ul>
 
-                <div ng-hide="showDoneButton">Progress through flash cards ({{currentFlash + 1}}/{{stepResults.flashes.length}})
+                </div>
+
+                <div ng-hide="showDoneButton">Progress through flash cards ({{currentFlash +
+                    1}}/{{stepResults.flashes.length}})
                     <meter value="{{currentFlash + 1}}" max="{{stepResults.flashes.length}}"></meter>
                 </div>
 
