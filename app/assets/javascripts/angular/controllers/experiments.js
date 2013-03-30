@@ -41,7 +41,7 @@
 
             // download experiment protocol
             var experiment = $routeParams.experiment == "tour" ? '/experiment_assets/bird_tour.json' : '/experiment_assets/rapid_scan.json';
-            var experiment = experiment += "?antiCache=" + Date.now().toString();
+            experiment += "?antiCache=" + Date.now().toString();
             $http.get(experiment).
                 success(function (data, status, headers, config) {
                     $scope.spec = data;
@@ -262,10 +262,10 @@
                 lowestCode = keys[rand];
             }
             else {
-                lowestCode = lowestCodes[1];
+                lowestCode = lowestCodes[0];
             }
 
-            if (lowestCode.length !== 2) {
+            if (!lowestCode || lowestCode.length !== 2) {
                 throw "Experiment configuration incorrect";
             }
 
@@ -362,6 +362,7 @@
 
                 $scope.stepResults.flashes[0].show = true;
                 $scope.currentFlash = 0;
+                $scope.segment = $scope.flashes[$scope.currentFlash];
 
                 $scope.countDown = $scope.bigScope.spec.countDown;
 
@@ -447,6 +448,7 @@
 
                             $scope.stepResults.flashes[$scope.currentFlash].show = false;
                             $scope.currentFlash++;
+                            $scope.segment = $stepResults.flashes[$scope.currentFlash];
 
                             $scope.focus();
 
