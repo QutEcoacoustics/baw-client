@@ -161,6 +161,7 @@
             });
 
 
+            $scope.prettyResults = "";
             $scope.finishExperiment = function () {
 
                 $scope.step = 0;
@@ -179,7 +180,10 @@
 
                     return value;
                 });
+
                 $scope.results = JSON.parse(tempResult);
+
+                $scope.prettyResults = JSON.stringify($scope.results, undefined, 2);
 
                 $http.post('/experiments', $scope.results)
                     .success(function (data, status, headers, config) {
@@ -192,12 +196,6 @@
                         $scope.resultsSentSuccessfully = false;
                     });
             };
-
-            $scope.prettyResults = function () {
-                return JSON.stringify($scope.results, undefined, 2);
-            };
-
-
         }]);
 
 
@@ -333,26 +331,37 @@
                     $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
 
                     $scope.stepResults.flashes = calculateFlashes();
-                    //$scope.stepResults.flashes.hits = [];
-                    //$scope.stepResults.flashes.pauses = [];
 
+                    // start checking for images that are downloading
+                    console.info("starting download loop...");
+                    downloading();
                 }
             });
 
             $scope.totalDownloaded = 0;
-            $scope.downloading = function() {
+            function downloading() {
               var total = 0;
-//                angular.forEach($scope.stepResults.flashes, function(value, index) {
-//                    if(value.downloaded === true) {
-//                        total += 1;
-//                    }
-//                });
 
-                return $("#step_"+$scope.bigScope.step +" img").toArray().every(function(value) {return value.complete});
+                total = $(".imageList img")
+                    .toArray()
+                    .reduce(
+                        function(prev, value, index, array) {
+                            return prev + value.complete
+                        },
+                        0
+                    );
 
                 $scope.totalDownloaded = total;
+
+                if ($scope.stepResults.flashes.length != $scope.totalDownloaded) {
+                    $timeout(downloading, 250);
+                }
+                else {
+                    console.info("finished download.");
+                }
+
                 return total;
-            };
+            }
 
             $scope.showInstructions = true;
             $scope.showDoneButton = false;
@@ -362,7 +371,7 @@
 
                 $scope.stepResults.flashes[0].show = true;
                 $scope.currentFlash = 0;
-                $scope.segment = $scope.flashes[$scope.currentFlash];
+                $scope.segment = $scope.stepResults.flashes[$scope.currentFlash];
 
                 $scope.countDown = $scope.bigScope.spec.countDown;
 
@@ -382,10 +391,11 @@
 
                                 // eventually start it!
                                 $scope.stepResults.startTimeStamp = ts();
+
                                 $scope.tick();
-                                $scope.focus();
+                                focus();
                                 $timeout(function () {
-                                    $scope.focus();
+                                    focus();
                                 })
                             }
                             else {
@@ -401,10 +411,11 @@
             $scope.paused = false;
             $scope.pauseOrResume = function () {
                 if ($scope.paused) {
+                    var diff = $scope.remainingTime - ($scope.pauseTick - $scope.lastTick);
+
                     $scope.paused = false;
 
-
-                    var diff = ($scope.stepResults.speed * 1000) - ($scope.pauseTick - $scope.lastTick);
+                    console.warn("resuming with delay:" + diff);
                     $scope.pauseTick = 0;
                     $scope.stepResults.flashes[$scope.currentFlash].pauses.push({state: "resumed", timeStamp: ts()});
                     // var tempTimer = $timeout(function () {
@@ -412,45 +423,82 @@
                     //$timeout.cancel(tempTimer);
                     // }, diff);
                 } else {
-                    window.clearTimeout($scope.timeoutId);
-                    $scope.paused = true;
                     $scope.pauseTick = Date.now();
+
+                    //window.clearTimeout($scope.timeoutId);
+                    $timeout.cancel($scope.timeoutId);
+
+                    $scope.paused = true;
                     $scope.stepResults.flashes[$scope.currentFlash].pauses.push({state: "paused", timeStamp: ts()});
                 }
 
 
             };
 
-            $scope.focus = function () {
+            function focus() {
                 // bad voodoo
                 document.getElementById('experimentKeyPressDiv').focus();
-            };
+            }
 
             $scope.animationControl = function () {
                 return $scope.paused || $scope.countDown ? "paused" : "running";
             };
 
-            $scope.animationText = function () {
+
+            $scope.animationText = "";
+            function animationTextUpdate(enable) {
                 //return 'collapseWidthLeft ' + $scope.stepResults.speed  + 's linear 0s'
-                return $scope.stepResults.speed.speed + 's linear 0s'
-            };
+
+                // this is how we reset the animation
+                if (!enable) {
+                    $scope.animationText = "";
+                }
+
+                $scope.animationText =  $scope.stepResults.speed.speed + 's linear 0s infinite'
+            }
 
             $scope.tick = function (delay) {
-                $scope.focus();
+                focus();
+
+//                // need to record ticks, except for when resuming...
+//                // because tick technically only happen when it 'ticks'
+//                // and not when resuming from pause
+//                if (!delay) {
+//
+//                }
+
+                var actualDelay = delay === undefined ? $scope.stepResults.speed.speed * 1000 : delay;
+                $scope.remainingTime = actualDelay;
                 $scope.lastTick = Date.now();
-                $scope.timeoutId = window.setTimeout(function () {
-                        $scope.$apply(function () {
-                            if ($scope.paused) {
-                                // exit early to disable timer
-                                window.clearTimeout($scope.timeoutId);
-                                return;
-                            }
 
+                animationTextUpdate(true);
+
+                //$scope.timeoutId = window.setTimeout(function () {
+                $scope.timeoutId = $timeout(function() {
+                        if ($scope.paused) {
+                            // exit early to disable timer
+                            //window.clearTimeout($scope.timeoutId);
+                            $timeout.cancel($scope.timeoutId);
+                            return;
+                        }
+
+                        // this seems like a huge waste... but I can't figure out how to do this better
+//                        $scope.$apply(function() {
+//                           animationTextUpdate(false);
+//                        });
+
+                        //$scope.$apply(function () {
+                            animationTextUpdate(true);
+
+                            // hide the old image
                             $scope.stepResults.flashes[$scope.currentFlash].show = false;
-                            $scope.currentFlash++;
-                            $scope.segment = $stepResults.flashes[$scope.currentFlash];
 
-                            $scope.focus();
+                            // increment the flashcard
+                            $scope.currentFlash++;
+                            // bind a new data object
+                            $scope.segment = $scope.stepResults.flashes[$scope.currentFlash];
+
+                            focus();
 
 
                             if ($scope.currentFlash >= $scope.stepResults.flashes.length) {
@@ -459,14 +507,14 @@
                                 return;
                             }
 
-                            $scope.lastTick = Date.now();
+                            //$scope.lastTick = Date.now();
 
                             $scope.stepResults.flashes[$scope.currentFlash].show = true;
 
                             $scope.tick();
-                        });
+                        //});
                     },
-                    delay === undefined ? $scope.stepResults.speed.speed * 1000 : delay
+                    actualDelay
                 );
             };
 
@@ -496,7 +544,7 @@
                     return;
                 }
                 var result = positiveHit ? "positive" : "negative";
-                console.log("HIT!", $event, result);
+                console.log("HIT!" /*, $event*/, result);
 
                 var f = $scope.stepResults.flashes[$scope.currentFlash];
                 f.detected = result;

@@ -1,6 +1,6 @@
 {
     "experiment": "Rapid Spectrogram Scanning Experiment",
-    "version": 0.95,
+    "version": 0.96,
     "countDown": 10,
     "additionalResources" : {
         "experiment_combination_counts": "/experiment_assets/rapid_scan_counts.json"
@@ -18,8 +18,8 @@
     ],
     "speeds": [
         { "speed": 2, "notes" : ""},
-        { "speed": 1, "notes" : ""},
-        { "speed": 0.5, "notes" : "<strong>Warning this test is extremely difficult. Do not be discouraged; there are other, easier, tests.</strong>"}
+        { "speed": 1, "notes" : "<strong>Warning this test is extremely difficult. Do not be discouraged; there are other, easier, tests.</strong>"},
+        { "speed": 0.75, "notes" : ""}
     ],
     "experimentSteps": [
         {
