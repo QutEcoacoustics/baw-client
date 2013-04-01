@@ -1,15 +1,36 @@
 {
     "experiment": "Virtual bird tour experiment",
+    "version": 0.02,
     "instructions": [
         "This experiment investigates a method of verifying the labels applied to annotations made on a spectrogram.",
         "Resources are provided to aid in learning to identify the vocalisations (calls) of particular species.",
-        "Your task is to select 'Yes', 'No', or 'Unsure' for each unlabeled spectrogram annotation that need to be classified.",
+        "Your task is to select 'Yes', 'No', or 'Unsure' for each unlabelled spectrogram annotation that need to be classified.",
         "There are six locations in this experiment. Information about the species of interest is provided for each location. There are 12 parts in total.",
         "Each of the six parts should take about 5 minutes to complete. The entire process should take around 30 minutes."
     ],
+    "surveyLink": "nowhere-yet",
     "experimentSteps": [
         {
             "template": "/assets/tour_experiment.html",
+            "stepType": "transition",
+            "fromLocationName": null,
+            "toLocationName": "Peregian Beach"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "transition",
+            "fromLocationName": "Peregian Beach",
+            "toLocationName": "Bimblebox"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "transition",
+            "fromLocationName": "Bimblebox",
+            "toLocationName": "Mt Carbine"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "activity",
             "locationName": "Peregian Beach",
             "speciesCommonName": "Sacred Kingfisher",
             "exampleAnnotationIds": [13353, 4001,9915],
@@ -18,6 +39,7 @@
         },
         {
             "template": "/assets/tour_experiment.html",
+            "stepType": "activity",
             "locationName": "Peregian Beach",
             "speciesCommonName": "Sacred Kingfisher",
             "exampleAnnotationIds": [13353, 4001],
@@ -26,20 +48,25 @@
         }
     ],
     "experimentResultsPostUri": "/experiments",
+    "orderedLocations":[
+        "Peregian Beach", "Bimblebox", "Mt Carbine"
+    ],
     "locations": [
         {
             "name": "Peregian Beach",
             "id": 409,
             "lat": -26.469932,
             "long": 153.09229,
-            "environmentType": "Coastal Heath"
+            "environmentType": "Coastal Heath",
+            "environmentDescription": "Peregian Beach"
         },
         {
             "name": "Bimblebox",
             "id": 628,
             "lat": -23.556582,
             "long": 146.478767,
-            "environmentType": "Semi-arid Woodland"
+            "environmentType": "Semi-arid Woodland",
+            "environmentDescription": "Bimblebox"
         },
         {
             "name": "Cape Tribulation",
@@ -51,7 +78,8 @@
             "name": "Mt Carbine",
             "lat": -16.538952,
             "long": 145.121655,
-            "environmentType": "Open Savannah"
+            "environmentType": "Open Savannah",
+            "environmentDescription": "Mt Carbine"
         },
         {
             "name": "Samford",

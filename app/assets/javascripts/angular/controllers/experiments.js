@@ -340,16 +340,16 @@
 
             $scope.totalDownloaded = 0;
             function downloading() {
-              var total = 0;
+                var total = 0;
 
                 total = $(".imageList img")
                     .toArray()
                     .reduce(
-                        function(prev, value, index, array) {
-                            return prev + value.complete
-                        },
-                        0
-                    );
+                    function (prev, value, index, array) {
+                        return prev + value.complete
+                    },
+                    0
+                );
 
                 $scope.totalDownloaded = total;
 
@@ -454,7 +454,7 @@
                     $scope.animationText = "";
                 }
 
-                $scope.animationText =  $scope.stepResults.speed.speed + 's linear 0s infinite'
+                $scope.animationText = $scope.stepResults.speed.speed + 's linear 0s infinite'
             }
 
             $scope.tick = function (delay) {
@@ -474,7 +474,7 @@
                 animationTextUpdate(true);
 
                 //$scope.timeoutId = window.setTimeout(function () {
-                $scope.timeoutId = $timeout(function() {
+                $scope.timeoutId = $timeout(function () {
                         if ($scope.paused) {
                             // exit early to disable timer
                             //window.clearTimeout($scope.timeoutId);
@@ -488,30 +488,30 @@
 //                        });
 
                         //$scope.$apply(function () {
-                            animationTextUpdate(true);
+                        animationTextUpdate(true);
 
-                            // hide the old image
-                            $scope.stepResults.flashes[$scope.currentFlash].show = false;
+                        // hide the old image
+                        $scope.stepResults.flashes[$scope.currentFlash].show = false;
 
-                            // increment the flashcard
-                            $scope.currentFlash++;
-                            // bind a new data object
-                            $scope.segment = $scope.stepResults.flashes[$scope.currentFlash];
+                        // increment the flashcard
+                        $scope.currentFlash++;
+                        // bind a new data object
+                        $scope.segment = $scope.stepResults.flashes[$scope.currentFlash];
 
-                            focus();
+                        focus();
 
 
-                            if ($scope.currentFlash >= $scope.stepResults.flashes.length) {
-                                $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
-                                $scope.showDoneButton = true;
-                                return;
-                            }
+                        if ($scope.currentFlash >= $scope.stepResults.flashes.length) {
+                            $scope.stepResults.endFlashesTimeStamp = (new Date()).toISOString();
+                            $scope.showDoneButton = true;
+                            return;
+                        }
 
-                            //$scope.lastTick = Date.now();
+                        //$scope.lastTick = Date.now();
 
-                            $scope.stepResults.flashes[$scope.currentFlash].show = true;
+                        $scope.stepResults.flashes[$scope.currentFlash].show = true;
 
-                            $scope.tick();
+                        $scope.tick();
                         //});
                     },
                     actualDelay
@@ -613,10 +613,17 @@
     app.controller('VirtualBirdTourCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
         function VirtualBirdTourCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
 
+            // set up scope
             $scope.bigScope = $scope.$parent.$parent;
-
             $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
+            $scope.locations = angular.copy($scope.bigScope.spec.locations);
+            $scope.species = angular.copy($scope.bigScope.spec.species);
+            $scope.annotations = angular.copy($scope.bigScope.spec.annotations);
+
+            $scope.transitionMarkers = [];
+
+            // set up current location map
             $scope.locationMap = new google.maps.Map(document.getElementById("locationMap"),
                 {center: new google.maps.LatLng(-24.287027, 134.208984),
                     zoom: 4,
@@ -628,52 +635,140 @@
                 title: "Australia"
             });
 
+            // transition map
+            $scope.transitionMap = new google.maps.Map(document.getElementById("transitionMap"),
+                {center: new google.maps.LatLng(-24.287027, 134.208984),
+                    zoom: 4,
+                    mapTypeId: google.maps.MapTypeId.HYBRID});
+
+            // steps and results
             $scope.stepResults = undefined;
             $scope.$watch(function () {
                 return $scope.bigScope.step;
             }, function (newValue, oldValue) {
                 $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
-                $scope.stepResults.startTimestamp = (new Date()).toISOString();
 
-                $scope.stepResults.responses = {};
                 $scope.stepResults.actions = [];
 
-                $scope.currentLocation = $scope.getLocation($scope.stepResults.locationName);
-                $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType + ")";
+                if ($scope.stepResults.stepType == "activity") {
+                    // show the species information and annotation verification activity.
 
-                $scope.currentLocationMapLocal = $scope.getMapForLocation($scope.stepResults.locationName, 14);
-                $scope.currentLocationMapArea = $scope.getMapForLocation($scope.stepResults.locationName, 6);
-                $scope.currentLocationMapCountry = $scope.getMapForLocation($scope.stepResults.locationName, 3);
+                    $scope.stepResults.startTimestamp = (new Date()).toISOString();
 
-                $scope.currentSpecies = $scope.getSpeciesInfo($scope.stepResults.speciesCommonName);
+                    $scope.stepResults.responses = {};
 
-                $scope.currentExamples = $scope.annotations.filter(function (element, index, array) {
-                    return ($scope.stepResults.exampleAnnotationIds.indexOf(element.id) != -1);
-                });
+                    $scope.currentLocation = $scope.getLocation($scope.stepResults.locationName);
+                    $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType + ")";
 
-                $scope.currentVerify = $scope.annotations.filter(function (element, index, array) {
-                    return ($scope.stepResults.verifyAnnotationIds.indexOf(element.id) != -1);
-                });
+                    $scope.currentLocationMapLocal = $scope.getMapForLocation($scope.stepResults.locationName, 14);
+                    $scope.currentLocationMapArea = $scope.getMapForLocation($scope.stepResults.locationName, 6);
+                    $scope.currentLocationMapCountry = $scope.getMapForLocation($scope.stepResults.locationName, 3);
 
-                // change the map
-                $scope.locationMap.setZoom(4);
-                $scope.locationMap.panTo(
-                    new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+                    $scope.currentSpecies = $scope.getSpeciesInfo($scope.stepResults.speciesCommonName);
 
-                // change the marker
-                $scope.locationMarker.setPosition(
-                    new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
-                $scope.locationMarker.setTitle($scope.currentLocationName);
+                    $scope.currentExamples = $scope.annotations.filter(function (element, index, array) {
+                        return ($scope.stepResults.exampleAnnotationIds.indexOf(element.id) != -1);
+                    });
 
-                // user has clicked on Done button
-                $scope.doneButtonClicked = false;
+                    $scope.currentVerify = $scope.annotations.filter(function (element, index, array) {
+                        return ($scope.stepResults.verifyAnnotationIds.indexOf(element.id) != -1);
+                    });
+
+                    // change the map
+                    $scope.locationMap.setZoom(4);
+                    $scope.locationMap.panTo(
+                        new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+
+                    // change the marker
+                    $scope.locationMarker.setPosition(
+                        new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+                    $scope.locationMarker.setTitle($scope.currentLocationName);
+
+                    // user has clicked on Done button
+                    $scope.doneButtonClicked = false;
+                } else if ($scope.stepResults.stepType == "transition") {
+                    // show the large map, and move from one location to the next
+
+                    $scope.showContinueButton = false;
+
+                    var fromLocation = null;
+                    var fromLatLng = null;
+                    var fromDetails = null;
+
+                    var toLocation = null;
+                    var toLatLng = null;
+                    var toDetails = null;
+
+                    if ($scope.stepResults.fromLocationName) {
+                        // show the from location info window, pan to the location
+                        fromLocation = $scope.getLocation($scope.stepResults.fromLocationName);
+                        fromLatLng = new google.maps.LatLng(fromLocation.lat, fromLocation.long);
+
+                        fromDetails = $scope.getTransitionMarkerDetails($scope.stepResults.fromLocationName);
+
+                        $scope.showMarkerInfo($scope.transitionMap, fromDetails.marker, fromDetails.content);
+
+                        fromDetails.marker.setIcon({
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 10
+                        });
+
+                        $scope.transitionMap.panTo(fromLatLng);
+                        $scope.transitionMap.setZoom(4);
+                    }else{
+                        // first waypoint, start at middle of australia
+                        $scope.transitionMap.panTo(new google.maps.LatLng(-24.287027, 134.208984));
+                        $scope.transitionMap.setZoom(4);
+                    }
+
+                    // stay at current location for a short time, then move.
+
+
+
+                    if ($scope.stepResults.toLocationName) {
+
+                        var t = setTimeout(function(){
+                            // show the from location info window, pan to the location
+                            toLocation = $scope.getLocation($scope.stepResults.toLocationName);
+                            toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
+
+                            toDetails = $scope.getTransitionMarkerDetails($scope.stepResults.toLocationName);
+
+                            $scope.showMarkerInfo($scope.transitionMap, toDetails.marker, toDetails.content);
+
+                            toDetails.marker.setIcon({
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 10
+                            });
+
+                            $scope.transitionMap.panTo(toLatLng);
+                            $scope.transitionMap.setZoom(4);
+
+                            $scope.$safeApply2(function(){
+                                $scope.showContinueButton = true;
+                            });
+                        },3000);
+                    }else{
+                        // last waypoint, show a message of some sort
+
+                    }
+                }
             });
 
-            $scope.selectedTab = "instructions";
+            $scope.addMarkerClick = function (map, marker, content) {
+                google.maps.event.addListener(marker, 'click', function () {
+                    $scope.showMarkerInfo(map, marker, content);
+                });
+            };
 
-            $scope.locations = angular.copy($scope.bigScope.spec.locations);
-            $scope.species = angular.copy($scope.bigScope.spec.species);
-            $scope.annotations = angular.copy($scope.bigScope.spec.annotations);
+            $scope.showMarkerInfo = function (map, marker, content) {
+                if (!$scope.transitionMapInfoWindow) {
+                    $scope.transitionMapInfoWindow = new google.maps.InfoWindow({maxWidth: 200});
+                }
+
+                $scope.transitionMapInfoWindow.setContent(content);
+                $scope.transitionMapInfoWindow.open(map, marker);
+            }
 
             $scope.getLocation = function (name) {
                 var found = $scope.locations.filter(function (element, index, array) {
@@ -710,7 +805,7 @@
             };
 
             $scope.userHasMadeSelectionForAllVerifyAnnotations = function () {
-                if ($scope.doneButtonClicked === true) {
+                if ($scope.doneButtonClicked === true || !$scope.stepResults.responses) {
                     // hide done button
                     return false;
                 }
@@ -753,6 +848,88 @@
                 };
                 $scope.stepResults.actions.push(actionObject);
             };
+
+            $scope.showTransitionMap = function () {
+                return $scope.stepResults.stepType == "transition";
+            };
+
+            $scope.getTransitionLocations = function () {
+                return $scope.bigScope.results.steps.filter(function (element, index, array) {
+                    return (element.stepType == "transition");
+                });
+            };
+
+            $scope.getTransitionMarkerDetails = function(locationName){
+                var found = $scope.transitionMarkers.filter(function (element, index, array) {
+                    return (element.locationName == locationName);
+                });
+                if (found.length == 1) {
+                    return found[0];
+                }
+                return null;
+            };
+
+            // create and store all locations for transition map
+            // get array of steps that are transitions, then create all markers and arrows
+            var transitionLocations = $scope.getTransitionLocations();
+            for (var orderedLocationIndex = 0; transitionLocations.length > orderedLocationIndex; orderedLocationIndex++) {
+
+                var currentOrderedLocation = transitionLocations[orderedLocationIndex];
+
+                if (currentOrderedLocation.toLocationName) {
+                    var toLocation = $scope.getLocation(currentOrderedLocation.toLocationName);
+                    var toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
+                    var toContent = '<div><h1>' + toLocation.name +
+                        '</h1><p><em>' + toLocation.environmentType +
+                        '</em></p><p>' + toLocation.environmentDescription +
+                        '</p></div>';
+                    var toMarker = new google.maps.Marker({
+                        position: toLatLng,
+                        map: $scope.transitionMap,
+                        title: toLocation.name
+                    });
+
+                    $scope.addMarkerClick($scope.transitionMap, toMarker, toContent);
+                    $scope.transitionMarkers.push({locationName: currentOrderedLocation.toLocationName,latLng: toLatLng, marker: toMarker, content: toContent});
+                }
+
+                if (currentOrderedLocation.fromLocationName && currentOrderedLocation.toLocationName) {
+                    var fromLocation = $scope.getLocation(currentOrderedLocation.fromLocationName);
+                    var fromLatLng = new google.maps.LatLng(fromLocation.lat, fromLocation.long);
+
+                    var toLocation = $scope.getLocation(currentOrderedLocation.toLocationName);
+                    var toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
+
+                    var arrowSymbol = {
+                        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                        strokeColor: "#eeee00"
+                    };
+
+                    var lineSymbol = {
+                        path: 'M 0,-1 0,1',
+                        strokeColor: "#eeee00",
+                        strokeOpacity: 1,
+                        scale: 4
+                    };
+
+                    var line = new google.maps.Polyline({
+                        path: [fromLatLng, toLatLng],
+                        icons: [
+                            {
+                                icon: lineSymbol,
+                                offset: '0',
+                                repeat: '20px'
+                            },
+                            {
+                                icon: arrowSymbol,
+                                offset: '100%'
+                            }
+                        ],
+                        map: $scope.transitionMap
+                    });
+                }
+
+            }
 
         }]);
 })();

@@ -70,6 +70,13 @@
     height: 300px;
 }
 
+#transitionMap {
+    width: 100%;
+    min-height: 400px;
+    max-height:800px;
+    margin: 6px 0 10px 0;
+}
+
 img.simpleImage {
     max-width: 150px;
     max-height: 150px;
@@ -347,7 +354,16 @@ img.simpleImage {
 }
 </style>
 
-<div>
+<div ng-show="showTransitionMap()">
+    <h2 class="sectionTitle" style="margin-top:8px;">Travelling to the next waypoint...</h2>
+    <div id="transitionMap"></div>
+    <div style="width:55px;height:20px;margin: 0 auto;">
+        <button style="display:block;width: 70px;margin: 0 auto;" ng-click="nextStep()" ng-show="showContinueButton">Continue
+        </button>
+    </div>
+</div>
+
+<div ng-hide="showTransitionMap()">
     <div class="sideInfo">
         <h3 class="sectionTitle">Currently at {{currentLocation.name}}
             <em class="extraInfo">({{currentLocation.environmentType}})</em>
@@ -396,7 +412,7 @@ img.simpleImage {
     <div class="exampleContainer">
         <h3 class="sectionTitle">Examples</h3>
 
-        <div ng-repeat="currentAnnotation in currentExamples" class="annotation" id="annotation{{currentAnnotation.id}}"
+        <div ng-repeat="currentAnnotation in currentExamples" class="annotation" id="annotationExample{{currentAnnotation.id}}"
              directhref="{{currentAnnotation.directlink}}">
 
             <div class="annotationImage" style="width: {{currentAnnotation.spectrogramWidthPx}}px">
@@ -441,7 +457,7 @@ img.simpleImage {
     <div class="verifyContainer">
         <h3 class="sectionTitle">Verify</h3>
 
-        <div ng-repeat="currentAnnotation in currentVerify" class="annotation" id="annotation{{currentAnnotation.id}}"
+        <div ng-repeat="currentAnnotation in currentVerify" class="annotation" id="annotationVerify{{currentAnnotation.id}}"
              directhref="{{currentAnnotation.directlink}}">
 
             <div ng-show="doneButtonClicked" class="annotationResponses">
@@ -528,4 +544,6 @@ img.simpleImage {
         </button>
     </div>
 </div>
+
+
 </div>
