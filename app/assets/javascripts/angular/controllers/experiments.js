@@ -273,7 +273,10 @@
                 var keys;
 
                 if (lowestCodes.length == 0) {
-                    keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
+                    console.warn("no lowest codes", lowestCodes, $scope.bigScope.spec.additionalResources);
+                    throw "No lowest codes..";
+                    //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
+                    //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
                 } else {
                     keys = lowestCodes;
                 }
