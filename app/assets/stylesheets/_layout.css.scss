@@ -333,7 +333,7 @@ pre {
 /* Form Validation Styles
 ------------------------------------------------------------------------------*/
 input, textarea{
-  background-color: nth($master-background, 2);
+  background-color: white;
 }
 
 input.ng-invalid.ng-dirty, textarea.ng-invalid.ng-dirty,  {
@@ -353,7 +353,7 @@ input.ng-pristine.ng-valid, textarea.ng-pristine.ng-valid {
 input.ng-pristine.ng-invalid, textarea.ng-pristine.ng-invalid {
   border: 1px solid nth($primary-color, 3);
   @include vendor-prefix(box-shadow, 0px 0px 8px nth($primary-color, 3));
-  background-color: nth($primary-color, 3);
+  background-color: #FFFFFF; /*nth($primary-color, 3);*/
 }
 
 /* List Styles

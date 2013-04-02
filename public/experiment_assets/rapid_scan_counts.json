@@ -1,10 +1,10 @@
 {
   "1A": {
-    "count": 10,
+    "count": 0,
     "speedCode": 1,
     "dataSetCode": "A",
     "speeds": [
-      0.75,
+      5,
       1,
       2
     ],
@@ -15,11 +15,11 @@
     ]
   },
   "2A": {
-    "count": 10,
+    "count": 0,
     "speedCode": 2,
     "dataSetCode": "A",
     "speeds": [
-      0.75,
+      5,
       2,
       1
     ],
@@ -30,12 +30,12 @@
     ]
   },
   "3A": {
-    "count": 10,
+    "count": 0,
     "speedCode": 3,
     "dataSetCode": "A",
     "speeds": [
       1,
-      0.75,
+      5,
       2
     ],
     "dataSets": [
@@ -45,13 +45,13 @@
     ]
   },
   "4A": {
-    "count": 10,
+    "count": 1,
     "speedCode": 4,
     "dataSetCode": "A",
     "speeds": [
       1,
       2,
-      0.75
+      5
     ],
     "dataSets": [
       "DS1",
@@ -60,12 +60,12 @@
     ]
   },
   "5A": {
-    "count": 10,
+    "count": 0,
     "speedCode": 5,
     "dataSetCode": "A",
     "speeds": [
       2,
-      0.75,
+      5,
       1
     ],
     "dataSets": [
@@ -75,13 +75,13 @@
     ]
   },
   "6A": {
-    "count": 10,
+    "count": 0,
     "speedCode": 6,
     "dataSetCode": "A",
     "speeds": [
       2,
       1,
-      0.75
+      5
     ],
     "dataSets": [
       "DS1",
@@ -90,11 +90,11 @@
     ]
   },
   "1B": {
-    "count": 10,
+    "count": 0,
     "speedCode": 1,
     "dataSetCode": "B",
     "speeds": [
-      0.75,
+      5,
       1,
       2
     ],
@@ -105,11 +105,11 @@
     ]
   },
   "2B": {
-    "count": 10,
+    "count": 0,
     "speedCode": 2,
     "dataSetCode": "B",
     "speeds": [
-      0.75,
+      5,
       2,
       1
     ],
@@ -120,12 +120,12 @@
     ]
   },
   "3B": {
-    "count": 10,
+    "count": 0,
     "speedCode": 3,
     "dataSetCode": "B",
     "speeds": [
       1,
-      0.75,
+      5,
       2
     ],
     "dataSets": [
@@ -135,13 +135,13 @@
     ]
   },
   "4B": {
-    "count": 8,
+    "count": 0,
     "speedCode": 4,
     "dataSetCode": "B",
     "speeds": [
       1,
       2,
-      0.75
+      5
     ],
     "dataSets": [
       "DS3",
@@ -150,12 +150,12 @@
     ]
   },
   "5B": {
-    "count": 10,
+    "count": 0,
     "speedCode": 5,
     "dataSetCode": "B",
     "speeds": [
       2,
-      0.75,
+      5,
       1
     ],
     "dataSets": [
@@ -165,13 +165,13 @@
     ]
   },
   "6B": {
-    "count": 9,
+    "count": 0,
     "speedCode": 6,
     "dataSetCode": "B",
     "speeds": [
       2,
       1,
-      0.75
+      5
     ],
     "dataSets": [
       "DS3",
@@ -180,11 +180,11 @@
     ]
   },
   "1C": {
-    "count": 10,
+    "count": 0,
     "speedCode": 1,
     "dataSetCode": "C",
     "speeds": [
-      0.75,
+      5,
       1,
       2
     ],
@@ -195,11 +195,11 @@
     ]
   },
   "2C": {
-    "count": 10,
+    "count": 0,
     "speedCode": 2,
     "dataSetCode": "C",
     "speeds": [
-      0.75,
+      5,
       2,
       1
     ],
@@ -210,12 +210,12 @@
     ]
   },
   "3C": {
-    "count": 9,
+    "count": 0,
     "speedCode": 3,
     "dataSetCode": "C",
     "speeds": [
       1,
-      0.75,
+      5,
       2
     ],
     "dataSets": [
@@ -225,13 +225,13 @@
     ]
   },
   "4C": {
-    "count": 10,
+    "count": 0,
     "speedCode": 4,
     "dataSetCode": "C",
     "speeds": [
       1,
       2,
-      0.75
+      5
     ],
     "dataSets": [
       "DS2",
@@ -240,12 +240,12 @@
     ]
   },
   "5C": {
-    "count": 10,
+    "count": 0,
     "speedCode": 5,
     "dataSetCode": "C",
     "speeds": [
       2,
-      0.75,
+      5,
       1
     ],
     "dataSets": [
@@ -255,13 +255,13 @@
     ]
   },
   "6C": {
-    "count": 9,
+    "count": 0,
     "speedCode": 6,
     "dataSetCode": "C",
     "speeds": [
       2,
       1,
-      0.75
+      5
     ],
     "dataSets": [
       "DS2",

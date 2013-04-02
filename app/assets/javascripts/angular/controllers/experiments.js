@@ -116,15 +116,36 @@
 //                    $scope.errors.push("You must view the ethics statement before continuing (click on the link please).")
 //                }
 
-                if ($scope.loggedIn && $scope.userData) {
-                    $scope.results.userData = angular.copy($scope.userData);
+//                if ($scope.loggedIn && $scope.userData) {
+//                    $scope.results.userData = angular.copy($scope.userData);
+//                }
+//                else {
+//                    $scope.errors.push("You must be signed in to participate in this experiment, please sign in.")
+//                }
+
+                if ($scope.results.name
+                    && $scope.results.name.length > 0
+                    && $scope.detailsForm.fullName.$valid
+                    ) {
+
                 }
                 else {
-                    $scope.errors.push("You must be signed in to participate in this experiment, please sign in.")
+                    $scope.errors.push("You must enter your name before continuing");
                 }
 
+                if ($scope.results.email
+                    && $scope.results.email.length > 0
+                    && $scope.detailsForm.email.$valid
+                    ) {
+
+                }
+                else {
+                    $scope.errors.push("You must enter a valid email address before continuing");
+                }
+
+
                 if (!$scope.isChrome()) {
-                    $scope.errors.push("You must be using the Google Chrome web browser to continue.")
+                    $scope.errors.push("You must be using the Google Chrome web browser to continue.");
                 }
 
                 var allDownloaded = true;

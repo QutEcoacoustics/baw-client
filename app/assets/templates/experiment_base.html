@@ -33,6 +33,12 @@
             background-image: url("/experiment_assets/error.png");
         }
 
+
+        label input[type="text"], label input[type="email"] {
+            width: 300px;
+
+        }
+
         .progress {
             margin-top: -35px;
             text-align: center;
@@ -101,10 +107,25 @@
                     </li>
                 </ul>
             </li>
+            <!--<li>-->
+                <!--You need to be signed in to participate in this experiment. Registration is very easy.-->
+                <!--<div ng-hide="loggedIn" class="isa_warning">You are not signed in yet. <a ng-click="login()">Click</a> to sign in.</div>-->
+                <!--<div ng-show="loggedIn" class="isa_info">You are signed in as {{userData.email}} </div>-->
+            <!--</li>-->
             <li>
-                You need to be signed in to participate in this experiment. Registration is very easy.
-                <div ng-hide="loggedIn" class="isa_warning">You are not signed in yet. <a ng-click="login()">Click</a> to sign in.</div>
-                <div ng-show="loggedIn" class="isa_info">You are signed in as {{userData.email}} </div>
+                We'd like your contact details. We need to track who participates in the experiment.
+                <br />We will not distribute your details to anyone. These details will be deleted after the experiment.
+                <form name="detailsForm">
+                    <label>
+                        <span >Full name</span>
+                        <input type="text" required name="fullName" ng-minlength="1" ng-model="results.name" />
+                    </label>
+                    <br/>
+                    <label>
+                        <span >Email</span>
+                        <input type="email" name="email" required ng-model="results.email" />
+                    </label>
+                </form>
             </li>
             <li>
                 Google Chrome is required for this experiment.
