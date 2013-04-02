@@ -2,13 +2,16 @@ require 'fileutils'
 require 'modules/JSON_patch'
 
 class ExperimentsController < ApplicationController
+  skip_before_filter :authenticate_user!, only: [:create]
+  skip_authorization_check only: [:create]
+  skip_authorize_resource only: [:create]
+  skip_load_resource only: [:create]
 
   def index
     respond_to do |format|
       format.json { render json: [], status: :forbidden }
     end
   end
-
 
   def show
     respond_to do |format|
@@ -97,6 +100,23 @@ class ExperimentsController < ApplicationController
   end
 
 
+
+
+  def update
+    respond_to do |format|
+      format.json { render json: [], status: :forbidden }
+    end
+  end
+
+
+  def destroy
+    respond_to do |format|
+      format.json { render json: [], status: :forbidden }
+    end
+  end
+
+  private
+
   def update_rapid_scan_counts(code)
     # open file
     filename                                   = File.join(EXPERIMENTS_ASSETS_DIRECTORY, RAPID_SCAN_COUNTS)
@@ -114,19 +134,6 @@ class ExperimentsController < ApplicationController
 
     File.open(filename, 'w') { |file| file.write json_output }
 
-  end
-
-  def update
-    respond_to do |format|
-      format.json { render json: [], status: :forbidden }
-    end
-  end
-
-
-  def destroy
-    respond_to do |format|
-      format.json { render json: [], status: :forbidden }
-    end
   end
 
 end
