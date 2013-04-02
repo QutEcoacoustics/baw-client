@@ -250,6 +250,7 @@
 
         // Navigator is the persona global object
         if (navigator) {
+            if(navigator.id){
             navigator.id.watch({
                 loggedInUser: null,
                 onlogin: function (assertion) {
@@ -266,6 +267,7 @@
                 // Also, make sure loggedInUser will get set to null on the next page load.
                 onlogout: signOut
             });
+        }
         }
         else {
             console.error("Unable to start Persona authentication binding. This is usually caused by a lack of internet.")

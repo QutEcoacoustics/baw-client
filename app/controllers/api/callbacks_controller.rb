@@ -112,31 +112,37 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
   end
 
   def open_id
+    Rails.logger.debug("Open_id data: #{request.env["omniauth.auth"].as_json}; Params: #{params}")
     canonical_data = open_id_info(request.env["omniauth.auth"])
     success_complete(canonical_data)
   end
 
   def facebook
+    Rails.logger.debug("Facebook data: #{request.env["omniauth.auth"].as_json}; Params: #{params}")
     canonical_data = facebook_info(request.env["omniauth.auth"])
     success_complete(canonical_data)
   end
 
   def twitter
+    Rails.logger.debug("Twitter data: #{request.env["omniauth.auth"].as_json}; Params: #{params}")
     canonical_data = twitter_info(request.env["omniauth.auth"])
     success_complete(canonical_data)
   end
 
   def github
+    Rails.logger.debug("Github data: #{request.env["omniauth.auth"].as_json}; Params: #{params}")
     canonical_data = github_info(request.env["omniauth.auth"])
     success_complete(canonical_data)
   end
 
   def windowslive
+    Rails.logger.debug("Windows Live data: #{request.env["omniauth.auth"].as_json}; Params: #{params}")
     canonical_data = windows_live_info(request.env["omniauth.auth"])
     success_complete(canonical_data)
   end
 
   def linked_in
+    Rails.logger.debug("Linked In data: #{request.env["omniauth.auth"].as_json}; Params: #{params}")
     canonical_data = linked_in_info(request.env["omniauth.auth"])
     success_complete(canonical_data)
   end
@@ -242,7 +248,7 @@ class Api::CallbacksController < Devise::OmniauthCallbacksController
 
     # create a unique, dummy email, since twitter doesn't provide one
     # set dummy email to true, so that this email is never shown
-    fake_email = raw['uid'].gsub(/[^0-9a-zA-Z]/, '_')+'.twitter@example.com'
+    fake_email = raw['uid'].gsub(/[^0-9a-zA-Z]/, '_')+'.twitter@'+BawSite::Application.config.custom_base_domain
 
     {
         authorization:
