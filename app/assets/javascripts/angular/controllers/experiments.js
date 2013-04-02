@@ -831,7 +831,7 @@
                     return false;
                 }
 
-                var responsesCount = Object.keys($scope.stepResults.responses).length;
+                var responsesCount = $scope.stepResults.responses.length;
                 var totalToVerify = $scope.currentVerify.length;
                 return responsesCount == totalToVerify;
             };
