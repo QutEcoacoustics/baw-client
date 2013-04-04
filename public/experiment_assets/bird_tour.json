@@ -1,6 +1,6 @@
 {
     "experiment": "Virtual bird tour experiment",
-    "version": 0.02,
+    "version": 0.03,
     "instructions": [
         "This experiment investigates a method of verifying the labels applied to annotations made on a spectrogram.",
         "Resources are provided to aid in learning to identify the vocalisations (calls) of particular species.",
@@ -9,29 +9,18 @@
         "Each of the six parts should take about 5 minutes to complete. The entire process should take around 30 minutes."
     ],
     "surveyLink": "nowhere-yet",
+    "experimentResultsPostUri": "/experiments",
     "experimentSteps": [
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "transition",
             "fromLocationName": null,
-            "toLocationName": "Peregian Beach"
-        },
-        {
-            "template": "/assets/tour_experiment.html",
-            "stepType": "transition",
-            "fromLocationName": "Peregian Beach",
-            "toLocationName": "Bimblebox"
-        },
-        {
-            "template": "/assets/tour_experiment.html",
-            "stepType": "transition",
-            "fromLocationName": "Bimblebox",
-            "toLocationName": "Mt Carbine"
+            "toLocationName": "Peregian"
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Peregian Beach",
+            "locationName": "Peregian",
             "speciesCommonName": "Sacred Kingfisher",
             "exampleAnnotationIds": [13353, 4001,9915],
             "verifyAnnotationIds": [13353, 4001,9915],
@@ -39,61 +28,80 @@
         },
         {
             "template": "/assets/tour_experiment.html",
+            "stepType": "transition",
+            "fromLocationName": "Peregian",
+            "toLocationName": "Simpson-Strzelecki Dunefields"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Peregian Beach",
+            "locationName": "Simpson-Strzelecki Dunefields",
             "speciesCommonName": "Sacred Kingfisher",
-            "exampleAnnotationIds": [13353, 4001],
-            "verifyAnnotationIds": [13353, 4001],
+            "exampleAnnotationIds": [13353, 4001,9915],
+            "verifyAnnotationIds": [13353, 4001,9915],
             "backgroundImagePath": ""
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "transition",
+            "fromLocationName": "Simpson-Strzelecki Dunefields",
+            "toLocationName": "Samford"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "activity",
+            "locationName": "Samford",
+            "speciesCommonName": "Sacred Kingfisher",
+            "exampleAnnotationIds": [13353, 4001,9915],
+            "verifyAnnotationIds": [13353, 4001,9915],
+            "backgroundImagePath": ""
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "transition",
+            "fromLocationName": "Samford",
+            "toLocationName": null
         }
-    ],
-    "experimentResultsPostUri": "/experiments",
-    "orderedLocations":[
-        "Peregian Beach", "Bimblebox", "Mt Carbine"
     ],
     "locations": [
         {
-            "name": "Peregian Beach",
+            "name": "Peregian",
             "id": 409,
             "lat": -26.469932,
             "long": 153.09229,
+            "backgroundImageName": "Coastal Heathland.jpg",
+            "backgroundImageAttribution": "Toni_Broome",
+            "backgroundImageAttributionLink": "http://www.flickr.com/photos/21324128@N02/5706117001/",
             "environmentType": "Coastal Heath",
-            "environmentDescription": "Peregian Beach"
+            "environmentDescription": "An open or closed coastal heathland dominated by a diverse shrub layer and a variable ground layer of sedges, lilies and grasses. The heathland is found on well-drained siliceous sands and is often wind-pruned due to extreme exposure to wind and salt-spray.",
+            "environmentDescriptionAttribution": "Victorian Government Department of Sustainability and Environment",
+            "environmentDescriptionAttributionLink": "http://www.dse.vic.gov.au/conservation-and-environment/native-vegetation-groups-for-victoria/simplified-native-vegetation-groups/native-vegetation-group-16-heathlands"
         },
         {
-            "name": "Bimblebox",
-            "id": 628,
-            "lat": -23.556582,
-            "long": 146.478767,
-            "environmentType": "Semi-arid Woodland",
-            "environmentDescription": "Bimblebox"
-        },
-        {
-            "name": "Cape Tribulation",
-            "lat": -16.097557,
-            "long": 145.453005,
-            "environmentType": "Rainforest"
-        },
-        {
-            "name": "Mt Carbine",
-            "lat": -16.538952,
-            "long": 145.121655,
-            "environmentType": "Open Savannah",
-            "environmentDescription": "Mt Carbine"
+            "name": "Simpson-Strzelecki Dunefields",
+            "id": 783,
+            "lat": -28.631541,
+            "long": 139.939728,
+            "backgroundImageName": "Arid Grasslands.jpg",
+            "backgroundImageAttribution": "Dionne's Images",
+            "backgroundImageAttributionLink": "http://www.flickr.com/photos/rubygold4/4839361927/",
+            "environmentType": "Arid Grassland",
+            "environmentDescription": "The Simpson–Strzelecki Dunefields comprises long parallel sand dunes, fringing dunefields, extensive sand plains, dry watercourses and saltpans. Vegetation is predominantly spinifex hummock grasslands with sparse acacia shrublands and some narrow river red gum and coolibah riverine woodlands.Grassy shrublands predominate in southern areas,especially in New South Wales. Land use comprises Aboriginal land, conservation reserves and pastoral leases.",
+            "environmentDescriptionAttribution": "Australian Government Department of Sustainability, Environment, Water, Population and Communities",
+            "environmentDescriptionAttributionLink": "http://www.environment.gov.au/land/publications/acris/pubs/bioregion-simpson-strzelecki-dunefields.pdf"
         },
         {
             "name": "Samford",
             "id": 397,
             "lat": -27.388907,
             "long": 152.878325,
-            "environmentType": "Dry Sclerophyll Forest"
-        },
-        {
-            "name": "St Bees",
-            "id": 3,
-            "lat": -20.913738,
-            "long": 149.44051,
-            "environmentType": "Cloud Forest"
+            "backgroundImageName": "Dry Sclerophyll Forest.jpg",
+            "backgroundImageAttribution": "Samford Ecological Research Centre",
+            "backgroundImageAttributionLink": "http://www.serf.qut.edu.au/",
+            "environmentType": "Dry Sclerophyll Forest",
+            "environmentDescription": "Sclerophyll means hard-leaf, and describes the leathery foliage of understorey plants in eucalypt forests generally adapted to dryer conditions, with a rainfall less than 1,000 mm per year. Dry sclerophyll forests are adapted to these dryer conditions and to high fire frequencies. They usually have a multi-levelled overstorey of eucalypts of different ages, relating to fires that occur once every 5 to 25 years in low rainfall areas, and a sparse understorey of small trees, hard-leaved shrubs and bracken fern or grasses. Trees are slower to grow in dryer conditions, and the overstorey of mature dry sclerophyll forests often does not reach more than 30 metres in height.",
+            "environmentDescriptionAttribution": "Forest Education Foundation",
+            "environmentDescriptionAttributionLink": "http://www.forest-education.com/index.php/tasmania/C222/"
         }
     ],
     "species": [
@@ -114,6 +122,38 @@
             "notes":{
                 "distributionImage": "http://spatial.ala.org.au/layers-service/distribution/map/png/6714"
             }
+        },
+        {
+            "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:d3c27152-9e37-49df-837c-051262010644",
+            "commonName": "Red-browed Pardalote",
+            "scientificName": "Pardalotus (Pardalotinus) rubricatus",
+            "conservationStatus": "Least Concern",
+            "locationName": "Simpson-Strzelecki Dunefields",
+            "faunaImage": "http://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Red-browed_Pardalote_new04.JPG/273px-Red-browed_Pardalote_new04.JPG",
+            "faunaImageAttribution": "Aviceda",
+            "faunaImageAttributionLink": "http://en.wikipedia.org/wiki/File:Red-browed_Pardalote_new04.JPG",
+            "distributionImage": "http://spatial.ala.org.au/layers-service/distribution/map/png/6117",
+            "distributionImageAttribution": "Birdlife International",
+            "distributionImageAttributionLink": "http://bie.ala.org.au/species/urn:lsid:biodiversity.org.au:afd.taxon:d3c27152-9e37-49df-837c-051262010644",
+            "description": "The Red-browed Pardalote (Pardalotus rubricatus) occupies the northern two-thirds of Australia. It is a fraction larger than the Forty-spotted Pardalote, at 10 to 12 cm, and is the least conspicuously coloured, being paler and combining the spotted skull-cap of the Spotted Pardalote with the striped wings of the Striated Pardalote. It is rare in the eastern part of its range but common in the northwest, where it prefers dry woodlands, mulga, and the trees along creek beds. The red-browed pardalote builds its nest underground at the end of a tunnel.",
+            "descriptionAttribution": "Wikipedia Article Contributors",
+            "descriptionAttributionLink": "http://en.wikipedia.org/wiki/Red-browed_Pardalote"
+        },
+        {
+            "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:deadd198-f163-43cc-ab48-ab597f68ed9a",
+            "commonName": "Chirruping Wedgebill",
+            "scientificName": "Psophodes (Sphenostoma) cristatus",
+            "conservationStatus": "Least Concern",
+            "locationName": "Simpson-Strzelecki Dunefields",
+            "faunaImage": "http://www.arthurgrosset.com/ozbirds/photos/psocri19441.jpg",
+            "faunaImageAttribution": "Arthur Grosset",
+            "faunaImageAttributionLink": "http://www.arthurgrosset.com/ozbirds/chirrupingwedgebill.html",
+            "distributionImage": "http://spatial.ala.org.au/layers-service/distribution/map/png/6374",
+            "distributionImageAttribution": "Birdlife International",
+            "distributionImageAttributionLink": "http://bie.ala.org.au/species/Psophodes+%28Sphenostoma%29+cristatus",
+            "description": "It is pale brown with a tall, slim crest, white edges to the wing feathers and a long, rounded tail with white tips. Its bill is dark and a chunky wedge shape. The immature is similar but has a pale orange bill.",
+            "descriptionAttribution": "Arthur Grosset",
+            "descriptionAttributionLink": "http://www.arthurgrosset.com/ozbirds/chirrupingwedgebill.html"
         }
     ],
     "annotations": [
