@@ -637,8 +637,20 @@
     app.controller('VirtualBirdTourCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
         function VirtualBirdTourCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
 
+            function ts() {
+                return (new Date()).toISOString();
+            }
+
+            var BASE_SPECTROGRAM_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}&end={2}";
+            var BASE_EXTERNAL_AUDIO_URL = "http://sensor.mquter.qut.edu.au/AudioReading.ashx?ID={0}&Type={3}&start={1}&end={2}";
+            var BASE_LOCAL_AUDIO_URL = "/experiment_assets/bird_tour/{0}_{1}_{2}.{3}"; // for webm
+
             // set up scope
             $scope.bigScope = $scope.$parent.$parent;
+
+            // set version
+            $scope.bigScope.results.version = $scope.bigScope.spec.version;
+
             $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
             $scope.locations = angular.copy($scope.bigScope.spec.locations);
@@ -684,19 +696,11 @@
                     $scope.currentLocation = $scope.getLocation($scope.stepResults.locationName);
                     $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType + ")";
 
-                    $scope.currentLocationMapLocal = $scope.getMapForLocation($scope.stepResults.locationName, 14);
-                    $scope.currentLocationMapArea = $scope.getMapForLocation($scope.stepResults.locationName, 6);
-                    $scope.currentLocationMapCountry = $scope.getMapForLocation($scope.stepResults.locationName, 3);
-
                     $scope.currentSpecies = $scope.getSpeciesInfo($scope.stepResults.speciesCommonName);
 
-                    $scope.currentExamples = $scope.annotations.filter(function (element, index, array) {
-                        return ($scope.stepResults.exampleAnnotationIds.indexOf(element.id) != -1);
-                    });
+                    $scope.currentExamples = $scope.getExamplesForSpecies($scope.currentSpecies);
 
-                    $scope.currentVerify = $scope.annotations.filter(function (element, index, array) {
-                        return ($scope.stepResults.verifyAnnotationIds.indexOf(element.id) != -1);
-                    });
+                    $scope.currentVerify = $scope.getItemToVerifyForSpecies($scope.currentSpecies);
 
                     // change the map
                     $scope.locationMap.setZoom(4);
@@ -738,25 +742,28 @@
                         });
 
                         $scope.transitionMap.panTo(fromLatLng);
-                        $scope.transitionMap.setZoom(4);
-                    }else{
+                        $scope.transitionMap.setZoom(6);
+                    } else {
                         // first waypoint, start at middle of australia
                         $scope.transitionMap.panTo(new google.maps.LatLng(-24.287027, 134.208984));
-                        $scope.transitionMap.setZoom(4);
+                        $scope.transitionMap.setZoom(6);
                     }
 
                     // stay at current location for a short time, then move.
 
 
-
                     if ($scope.stepResults.toLocationName) {
 
-                        var t = setTimeout(function(){
+                        var t = setTimeout(function () {
                             // show the from location info window, pan to the location
                             toLocation = $scope.getLocation($scope.stepResults.toLocationName);
                             toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
 
                             toDetails = $scope.getTransitionMarkerDetails($scope.stepResults.toLocationName);
+
+                            // change the background image
+                            angular.element(document.getElementById('page-wrapper'))
+                                .css("background-image", "url('/experiment_assets/bird_tour/" + toLocation.backgroundImageName + "')");
 
                             $scope.showMarkerInfo($scope.transitionMap, toDetails.marker, toDetails.content);
 
@@ -766,18 +773,77 @@
                             });
 
                             $scope.transitionMap.panTo(toLatLng);
-                            $scope.transitionMap.setZoom(4);
+                            $scope.transitionMap.setZoom(6);
 
-                            $scope.$safeApply2(function(){
+                            $scope.$safeApply2(function () {
                                 $scope.showContinueButton = true;
                             });
-                        },3000);
-                    }else{
+                        }, 3000);
+                    } else {
                         // last waypoint, show a message of some sort
 
                     }
                 }
             });
+
+            $scope.getLowestCountItem = function(containingObject){
+                // find minimum
+                var minCount = null;
+                angular.forEach(containingObject, function (value, key) {
+                    var c = value.count;
+                    if (minCount === null || c < minCount) {
+                        minCount = c;
+                    }
+                });
+
+                // extract minimums
+                var lowestCodes = [];
+                angular.forEach(containingObject, function (value, key) {
+                    var c = value.count;
+                    if (c === minCount) {
+                        lowestCodes.push(key);
+                    }
+                });
+
+                // randomly pick from the lowest group
+                var lowestCode;
+                if (lowestCodes.length != 1) {
+                    var keys;
+
+                    if (lowestCodes.length == 0) {
+                        console.error("no lowest codes", lowestCodes, containingObject);
+                        throw "No lowest codes..";
+                        //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
+                        //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
+                    } else {
+                        keys = lowestCodes;
+                    }
+                    var rand = Math.floor(Math.random() * keys.length);
+                    lowestCode = keys[rand];
+                }
+                else {
+                    lowestCode = lowestCodes[0];
+                }
+
+                if (!lowestCode) {
+                    console.error("Experiment configuration incorrect", lowestCode, containingObject);
+                    throw "Experiment configuration incorrect";
+                }
+
+                return lowestCode;
+            };
+
+            $scope.getExamplesForSpecies = function(speciesCommonName){
+                $scope.annotations.filter(function (element, index, array) {
+                    return element.type == 'example' && element.speciesCommonName == speciesCommonName;
+                });
+            };
+
+            $scope.getItemToVerifyForSpecies = function(speciesCommonName){
+                $scope.annotations.filter(function (element, index, array) {
+                    return element.type == 'toVerify' && element.speciesCommonName == speciesCommonName;
+                });
+            };
 
             $scope.addMarkerClick = function (map, marker, content) {
                 google.maps.event.addListener(marker, 'click', function () {
@@ -787,7 +853,7 @@
 
             $scope.showMarkerInfo = function (map, marker, content) {
                 if (!$scope.transitionMapInfoWindow) {
-                    $scope.transitionMapInfoWindow = new google.maps.InfoWindow({maxWidth: 200});
+                    $scope.transitionMapInfoWindow = new google.maps.InfoWindow({maxWidth: 600});
                 }
 
                 $scope.transitionMapInfoWindow.setContent(content);
@@ -883,7 +949,7 @@
                 });
             };
 
-            $scope.getTransitionMarkerDetails = function(locationName){
+            $scope.getTransitionMarkerDetails = function (locationName) {
                 var found = $scope.transitionMarkers.filter(function (element, index, array) {
                     return (element.locationName == locationName);
                 });
@@ -914,7 +980,7 @@
                     });
 
                     $scope.addMarkerClick($scope.transitionMap, toMarker, toContent);
-                    $scope.transitionMarkers.push({locationName: currentOrderedLocation.toLocationName,latLng: toLatLng, marker: toMarker, content: toContent});
+                    $scope.transitionMarkers.push({locationName: currentOrderedLocation.toLocationName, latLng: toLatLng, marker: toMarker, content: toContent});
                 }
 
                 if (currentOrderedLocation.fromLocationName && currentOrderedLocation.toLocationName) {
@@ -954,6 +1020,44 @@
                 }
 
             }
+
+
+            // use the downloaded stats to configure the experiment
+            // find least-used location order
+
+            var locationOrderId = $scope.getLowestCountItem($scope.bigScope.spec.additionalResources.experimentCombinationCounts.locations);
+
+            var locationSpeciesOrder = {};
+            locationSpeciesOrder.locations = $scope.bigScope.spec.additionalResources.experimentCombinationCounts.locations[locationOrderId].locations;
+            locationSpeciesOrder.species = {};
+
+            angular.forEach($scope.bigScope.spec.additionalResources.experimentCombinationCounts.species, function (value, key) {
+                var currentSpeciesInfo = $scope.bigScope.spec.additionalResources.experimentCombinationCounts.species[key];
+                var speciesOrderLowestCountId = $scope.getLowestCountItem(value);
+                locationSpeciesOrder.species[key] = currentSpeciesInfo[speciesOrderLowestCountId].species;
+            });
+
+
+            /*
+             // record location order for experiment in results
+             $scope.bigScope.results.locationOrder = locationOrder;
+             var locationSpec = $scope.bigScope.spec.additionalResources.experimentCombinationCounts.locations[locationOrder];
+             console.log("Experiment " + locationOrder + " chosen", locationSpec);
+
+             // find the least used species order for each location
+             var speciesOrders = {};
+             angular.forEach(locationSpec.locations, function (locationLetter, index) {
+             angular.forEach($scope.bigScope.spec.additionalResources.experimentCombinationCounts.species[value], function (value, key) {
+             speciesOrders[locationLetter] = $scope.getLowestCountItem(key);
+             });
+             });
+
+
+
+             $scope.bigScope.results.locationSpeciesOrder = speciesOrders;
+             var locationSpec = $scope.bigScope.spec.additionalResources.experimentCombinationCounts.locations[locationOrder];
+             console.log("Experiment " + locationOrder + " chosen", countSpec);
+             */
 
         }]);
 })();

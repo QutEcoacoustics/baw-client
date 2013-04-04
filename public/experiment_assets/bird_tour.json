@@ -1,6 +1,6 @@
 {
     "experiment": "Virtual bird tour experiment",
-    "version": 0.03,
+    "version": 0.04,
     "instructions": [
         "This experiment investigates a method of verifying the labels applied to annotations made on a spectrogram.",
         "Resources are provided to aid in learning to identify the vocalisations (calls) of particular species.",
@@ -10,6 +10,9 @@
     ],
     "surveyLink": "nowhere-yet",
     "experimentResultsPostUri": "/experiments",
+    "additionalResources" : {
+        "experiment_combination_counts": "/experiment_assets/bird_tour_counts.json"
+    },
     "experimentSteps": [
         {
             "template": "/assets/tour_experiment.html",
@@ -20,11 +23,12 @@
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Peregian",
-            "speciesCommonName": "Sacred Kingfisher",
-            "exampleAnnotationIds": [13353, 4001,9915],
-            "verifyAnnotationIds": [13353, 4001,9915],
-            "backgroundImagePath": ""
+            "locationName": "Peregian"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "activity",
+            "locationName": "Peregian"
         },
         {
             "template": "/assets/tour_experiment.html",
@@ -35,11 +39,12 @@
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Simpson-Strzelecki Dunefields",
-            "speciesCommonName": "Sacred Kingfisher",
-            "exampleAnnotationIds": [13353, 4001,9915],
-            "verifyAnnotationIds": [13353, 4001,9915],
-            "backgroundImagePath": ""
+            "locationName": "Simpson-Strzelecki Dunefields"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "activity",
+            "locationName": "Simpson-Strzelecki Dunefields"
         },
         {
             "template": "/assets/tour_experiment.html",
@@ -50,11 +55,12 @@
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Samford",
-            "speciesCommonName": "Sacred Kingfisher",
-            "exampleAnnotationIds": [13353, 4001,9915],
-            "verifyAnnotationIds": [13353, 4001,9915],
-            "backgroundImagePath": ""
+            "locationName": "Samford"
+        },
+        {
+            "template": "/assets/tour_experiment.html",
+            "stepType": "activity",
+            "locationName": "Samford"
         },
         {
             "template": "/assets/tour_experiment.html",
@@ -65,6 +71,7 @@
     ],
     "locations": [
         {
+            "locationOrderIdentifier": "A",
             "name": "Peregian",
             "id": 409,
             "lat": -26.469932,
@@ -78,6 +85,7 @@
             "environmentDescriptionAttributionLink": "http://www.dse.vic.gov.au/conservation-and-environment/native-vegetation-groups-for-victoria/simplified-native-vegetation-groups/native-vegetation-group-16-heathlands"
         },
         {
+            "locationOrderIdentifier": "B",
             "name": "Simpson-Strzelecki Dunefields",
             "id": 783,
             "lat": -28.631541,
@@ -91,6 +99,7 @@
             "environmentDescriptionAttributionLink": "http://www.environment.gov.au/land/publications/acris/pubs/bioregion-simpson-strzelecki-dunefields.pdf"
         },
         {
+            "locationOrderIdentifier": "C",
             "name": "Samford",
             "id": 397,
             "lat": -27.388907,
@@ -106,24 +115,6 @@
     ],
     "species": [
         {
-            "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:309069cc-e7e1-454f-9de3-7113400fca49",
-            "commonName": "Sacred Kingfisher",
-            "scientificName": "Todiramphus sanctus",
-            "conservationStatus": "Least Concern",
-            "faunaImage": "http://bie.ala.org.au/repo/1013/128/1286798/smallRaw.jpg",
-            "faunaImageAttribution": "Atlas of Living Australia",
-            "faunaImageAttributionLink": "http://bie.ala.org.au/species/Todiramphus+%28Todiramphus%29+sanctus",
-            "distributionImage": "http://www.birdsinbackyards.net/sites/www.birdsinbackyards.net/files/styles/medium/public/factsheets/images/map/todiramphus-sanctus.gif",
-            "distributionImageAttribution": "Birds in Backyards",
-            "distributionImageAttributionLink": "http://www.birdsinbackyards.net/species/Todiramphus-sanctus",
-            "description": "The Sacred Kingfisher is a medium sized kingfisher. It has a turquoise back, turquoise blue rump and tail, buff-white underparts and a broad cream collar. There is a broad black eye stripe extending from bill to nape of neck. Both sexes are similar, although the female is generally lighter with duller upper parts. Young birds are similar to the female, but have varying amounts of rusty-brown edging to feathers on the collar and underparts, and buff edges on the wing coverts. The voice of the Sacred Kingfisher is a loud \"ek ek ek ek\" repeated continuously throughout breeding season. Birds also give a \"kee kee kee\" in excitement and a series of chirring, scolding notes when alarmed.",
-            "descriptionAttribution": "Birds in Backyards",
-            "descriptionAttributionLink": "http://www.birdsinbackyards.net/species/Todiramphus-sanctus",
-            "notes":{
-                "distributionImage": "http://spatial.ala.org.au/layers-service/distribution/map/png/6714"
-            }
-        },
-        {
             "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:d3c27152-9e37-49df-837c-051262010644",
             "commonName": "Red-browed Pardalote",
             "scientificName": "Pardalotus (Pardalotinus) rubricatus",
@@ -137,7 +128,8 @@
             "distributionImageAttributionLink": "http://bie.ala.org.au/species/urn:lsid:biodiversity.org.au:afd.taxon:d3c27152-9e37-49df-837c-051262010644",
             "description": "The Red-browed Pardalote (Pardalotus rubricatus) occupies the northern two-thirds of Australia. It is a fraction larger than the Forty-spotted Pardalote, at 10 to 12 cm, and is the least conspicuously coloured, being paler and combining the spotted skull-cap of the Spotted Pardalote with the striped wings of the Striated Pardalote. It is rare in the eastern part of its range but common in the northwest, where it prefers dry woodlands, mulga, and the trees along creek beds. The red-browed pardalote builds its nest underground at the end of a tunnel.",
             "descriptionAttribution": "Wikipedia Article Contributors",
-            "descriptionAttributionLink": "http://en.wikipedia.org/wiki/Red-browed_Pardalote"
+            "descriptionAttributionLink": "http://en.wikipedia.org/wiki/Red-browed_Pardalote",
+            "annotationIds":[]
         },
         {
             "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:deadd198-f163-43cc-ab48-ab597f68ed9a",
@@ -158,70 +150,73 @@
     ],
     "annotations": [
         {
-            "id": 13353,
-            "type": "verify",
-            "speciesCommonName": "Kookaburra",
-            "locationName": "Samford",
-            "dateStart": "2011-03-26",
-            "timeStart": "15:00:36",
-            "freqMax": 6106.81620910764,
-            "freqMin": 318.691471964121,
-            "duration": 3964,
-            "audioMp3": "http://sensor.mquter.qut.edu.au/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.mp3?start=36441&end=41293",
-            "audioOga": "http://sensor.mquter.qut.edu.au/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.ogg?start=36441&end=41293",
-            "audioWebm": "http://sensor.mquter.qut.edu.au/sensors/ByID/062bb0cd-0531-43aa-bae9-af70a86a3430.webm?start=36441&end=41293",
-            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=062bb0cd-0531-43aa-bae9-af70a86a3430&start=36441&end=41293",
-            "spectrogramWidthPx": 218,
-            "spectrogramHeightPx": 256,
-            "boundTopPx":178,
+            "id": 102150,
+            "audioId": "FAD1F855-57BE-4B49-A115-9E047DA8055D",
+            "dateStart": "2012-06-29",
+            "timeStart": "09:59:48",
+            "offsetStart": 2423853,
+            "dateEnd": "2012-06-29",
+            "timeEnd": "09:59:508",
+            "offsetEnd": 2425431,
+            "freqMax":9259.27734375,
+            "freqMin": 172.265625,
+            "isRef": true,
+            "site":"Stud Creek 2",
+            "type": "example",
+            "speciesCommonName": "Red-browed Pardalote",
+            "locationName": "Simpson-Strzelecki Dunefields",
+            "spectrogramWidthPx": 108,
+            "boundTopPx":41,
             "boundLeftPx":20,
-            "boundWidthPx":189,
-            "boundHeightPx":64,
-            "directlink": "http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=062bb0cd-0531-43aa-bae9-af70a86a3430&subitemtoload=0&jumptotimeoffsetms=36885",
-            "notes": {
-                "type": "verify - annotation that will be verified; example - example annotation; filler - annotation presented with those to be verified, as a decoy.",
-                "timeStart": "offset from midnight in milliseconds",
-                "duration": "in milliseconds"
-            }
+            "boundWidthPx":68,
+            "boundHeightPx":211,
+            "directlink": "http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=FAD1F855-57BE-4B49-A115-9E047DA8055D&subitemtoload=2160000&jumptotimeoffsetms=263853"
         },
         {
-            "id": 4001,
-            "type": "verify",
-            "speciesCommonName": "Sacred Kingfisher",
-            "locationName": "Samford",
-            "dateStart": "2010-09-29",
-            "timeStart": "13:31:22",
-            "freqMax": 5599,
-            "freqMin": 2283,
-            "duration": 2002,
-            "audioMp3": "http://sensor.mquter.qut.edu.au/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.mp3?start=81765&end=84764",
-            "audioOga": "http://sensor.mquter.qut.edu.au/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.ogg?start=81765&end=84764",
-            "audioWebm": "http://sensor.mquter.qut.edu.au/sensors/ByID/bb91440a-2930-47bf-ac33-7ff930f251d1.webm?start=81765&end=84764",
-            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=bb91440a-2930-47bf-ac33-7ff930f251d1&start=81765&end=84764",
-            "spectrogramWidthPx": 135,
-            "spectrogramHeightPx": 256
+            "id": 102150,
+            "audioId": "FAD1F855-57BE-4B49-A115-9E047DA8055D",
+            "dateStart": "2012-06-29",
+            "timeStart": "09:59:48",
+            "offsetStart": 2423853,
+            "dateEnd": "2012-06-29",
+            "timeEnd": "09:59:508",
+            "offsetEnd": 2425431,
+            "freqMax":9259.27734375,
+            "freqMin": 172.265625,
+            "isRef": true,
+            "site":"Stud Creek 2",
+            "type": "example",
+            "speciesCommonName": "Red-browed Pardalote",
+            "locationName": "Simpson-Strzelecki Dunefields",
+            "spectrogramWidthPx": 108,
+            "boundTopPx":41,
+            "boundLeftPx":20,
+            "boundWidthPx":68,
+            "boundHeightPx":211,
+            "directlink": "http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=FAD1F855-57BE-4B49-A115-9E047DA8055D&subitemtoload=2160000&jumptotimeoffsetms=263853"
         },
         {
-            "id": 9915,
-            "type": "verify",
-            "speciesCommonName": "Australian King Parrot",
-            "locationName": "Samford",
-            "dateStart": "2010-10-14",
-            "timeStart": "06:44:33",
-            "freqMax": 3789.84375,
-            "freqMin": 3057.71484375,
-            "duration": 2911,
-            "audioMp3": "http://sensor.mquter.qut.edu.au/sensors/ByID/b562c8cd-86ba-479e-b499-423f5d68a847.mp3?start=24272718&end=24276517",
-            "audioOga": "http://sensor.mquter.qut.edu.au/sensors/ByID/b562c8cd-86ba-479e-b499-423f5d68a847.ogg?start=24272718&end=24276517",
-            "audioWebm": "http://sensor.mquter.qut.edu.au/sensors/ByID/b562c8cd-86ba-479e-b499-423f5d68a847.webm?start=24272718&end=24276517",
-            "spectrogramImage": "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?height=256&ppms=0.045&ID=b562c8cd-86ba-479e-b499-423f5d68a847&start=24272718&end=24276517",
-            "spectrogramWidthPx": 171,
-            "spectrogramHeightPx": 256,
-            "boundTopPx":168,
+            "id": 102150,
+            "audioId": "FAD1F855-57BE-4B49-A115-9E047DA8055D",
+            "dateStart": "2012-06-29",
+            "timeStart": "09:59:48",
+            "offsetStart": 2423853,
+            "dateEnd": "2012-06-29",
+            "timeEnd": "09:59:508",
+            "offsetEnd": 2425431,
+            "freqMax":9259.27734375,
+            "freqMin": 172.265625,
+            "isRef": true,
+            "site":"Stud Creek 2",
+            "type": "toVerify",
+            "speciesCommonName": "Red-browed Pardalote",
+            "locationName": "Simpson-Strzelecki Dunefields",
+            "spectrogramWidthPx": 108,
+            "boundTopPx":41,
             "boundLeftPx":20,
-            "boundWidthPx":131,
-            "boundHeightPx":17,
-            "directlink": "http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=b562c8cd-86ba-479e-b499-423f5d68a847&subitemtoload=24120000&jumptotimeoffsetms=153162"
+            "boundWidthPx":68,
+            "boundHeightPx":211,
+            "directlink": "http://sensor.mquter.qut.edu.au/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=FAD1F855-57BE-4B49-A115-9E047DA8055D&subitemtoload=2160000&jumptotimeoffsetms=263853"
         }
     ]
 
