@@ -1,4 +1,4 @@
-<div ng-controller="VirtualBirdTourCtrl">
+<div ng-controller="VirtualBirdTourCtrl" id="virtualBirdTourContainer">
 <style type="text/css">
     /*
 
@@ -348,6 +348,29 @@ img.simpleImage {
     padding: 0;
     margin: 0;
 }
+
+/* transition map */
+
+#transitionMap h1 {
+    margin: 10px 0;
+}
+
+#transitionMap h2 {
+    margin: 5px 0;
+}
+
+#transitionMap p {
+    margin: 3px;
+}
+
+.mapAttribution {
+    padding: 0;
+    display: block;
+    font-size: 10px;
+    font-style: italic;
+    color: grey;
+}
+
 </style>
 
 <div ng-show="showTransitionMap()">
@@ -372,7 +395,7 @@ img.simpleImage {
         <div>
             <h3 class="sectionTitle">Photograph</h3>
             <a ng-href="{{currentSpecies.faunaImageAttributionLink}}"
-               class="attribution">From:
+               class="attribution">Source:
                 {{currentSpecies.faunaImageAttribution}}</a>
             <img class="simpleImage" alt="Species image"
                  ng-src="{{currentSpecies.faunaImage}}"
@@ -382,7 +405,7 @@ img.simpleImage {
         <div>
             <h3 class="sectionTitle">Distribution</h3>
             <a ng-href="{{currentSpecies.distributionImageAttributionLink}}"
-               class="attribution">From:
+               class="attribution">Source:
                 {{currentSpecies.distributionImageAttribution}}</a>
             <img class="simpleImage" alt="Species distribution map"
                  ng-src="{{currentSpecies.distributionImage}}"
@@ -397,7 +420,7 @@ img.simpleImage {
                 <em class="extraInfo backgroundExtraInfo">(Conservation Status:
                     {{currentSpecies.conservationStatus}})</em></h2>
             <a ng-href="{{currentSpecies.descriptionAttributionLink}}"
-               class="attribution">From:
+               class="attribution">Source:
                 {{currentSpecies.descriptionAttribution}}</a>
 
             <p>{{currentSpecies.description}} </p>
@@ -506,7 +529,7 @@ img.simpleImage {
                                    name="annotationVerifyResponse{{currentAnnotation.id}}"
                                    class="annotationVerifyResponseYes"
                                    ng-click="responseSelected(currentAnnotation.id, 'yes')"
-                                   ng-model="$parent.stepResults.responses[currentAnnotation.id]"
+                                   ng-model="$parent.currentStepResults.responses[currentAnnotation.id]"
                                    title="This annotation is the species I'm looking for" value="yes">
                             <label for="annotationVerifyResponse{{currentAnnotation.id}}Yes">&#x2714; Yes</label>
                         </li>
@@ -514,7 +537,7 @@ img.simpleImage {
                                    name="annotationVerifyResponse{{currentAnnotation.id}}"
                                    class="annotationVerifyResponseNo"
                                    ng-click="responseSelected(currentAnnotation.id, 'no')"
-                                   ng-model="$parent.stepResults.responses[currentAnnotation.id]"
+                                   ng-model="$parent.currentStepResults.responses[currentAnnotation.id]"
                                    title="This annotation is not the species I'm looking for" value="no">
                             <label for="annotationVerifyResponse{{currentAnnotation.id}}No">&#x2718; No</label>
                         </li>
@@ -522,7 +545,7 @@ img.simpleImage {
                                    name="annotationVerifyResponse{{currentAnnotation.id}}"
                                    class="annotationVerifyResponseUnsure"
                                    ng-click="responseSelected(currentAnnotation.id, 'unsure')"
-                                   ng-model="$parent.stepResults.responses[currentAnnotation.id]"
+                                   ng-model="$parent.currentStepResults.responses[currentAnnotation.id]"
                                    title="I'm not sure if this annotation is the species I'm looking for or not"
                                    value="unsure">
                             <label for="annotationVerifyResponse{{currentAnnotation.id}}Unsure"><b>?</b> Unsure</label>

@@ -273,8 +273,8 @@
                 var keys;
 
                 if (lowestCodes.length == 0) {
-                    console.warn("no lowest codes", lowestCodes, $scope.bigScope.spec.additionalResources);
-                    throw "No lowest codes..";
+                    console.error("no lowest codes", lowestCodes, $scope.bigScope.spec.additionalResources);
+                    throw "No lowest codes.";
                     //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
                     //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
                 } else {
@@ -637,156 +637,117 @@
     app.controller('VirtualBirdTourCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'Media', 'AudioEvent', 'Tag',
         function VirtualBirdTourCtrl($scope, $resource, $routeParams, $route, $http, Media, AudioEvent, Tag) {
 
-            function ts() {
-                return (new Date()).toISOString();
-            }
+            /*
+             "A12B12C12": {
+             "count": 0,
+             "items": [
+             { "location":"A", "species": [1, 2] },
+             { "location":"B", "species": [1, 2] },
+             { "location":"C", "species": [1, 2] }
+             ]
+             }
+             */
+
+            //================
+            // initialisation
+            //=================
 
             var BASE_SPECTROGRAM_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}&end={2}";
             var BASE_EXTERNAL_AUDIO_URL = "http://sensor.mquter.qut.edu.au/AudioReading.ashx?ID={0}&Type={3}&start={1}&end={2}";
             var BASE_LOCAL_AUDIO_URL = "/experiment_assets/bird_tour/{0}_{1}_{2}.{3}"; // for webm
 
-            // set up scope
+            var STEP_TYPE_TRANSITION = 'transition';
+            var STEP_TYPE_ACTIVITY = 'activity';
+
+            var MAP_LINE_COLOUR = 'yellow';
+
+            var ANNOTATION_TYPE_TO_VERIFY = 'toVerify';
+            var ANNOTATION_TYPE_EXAMPLE = 'example';
+
+            var BASE_ZOOM = 6;
+
+            var PPMS = 0.04306640625;
+            var SPECTROGRAM_PADDING_MS = Math.floor(20 / PPMS);
+
             $scope.bigScope = $scope.$parent.$parent;
+            $scope.bigScope.blackList = $scope.bigScope.blackList || [];
+            $scope.bigScope.blackList = $scope.bigScope.blackList.concat(
+                [
+                    'notes',
+                    '$$hashKey',
+                    "template",
+                    "notes",
+                    "extraInstructions",
+                    "imageLink",
+                    "show",
+                    "downloaded"
 
-            // set version
+                ]
+            );
+
             $scope.bigScope.results.version = $scope.bigScope.spec.version;
-
-            $scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
 
             $scope.locations = angular.copy($scope.bigScope.spec.locations);
             $scope.species = angular.copy($scope.bigScope.spec.species);
             $scope.annotations = angular.copy($scope.bigScope.spec.annotations);
 
             $scope.transitionMarkers = [];
+            $scope.currentStepResults = undefined;
+            $scope.transitionMapInfoWindow = new google.maps.InfoWindow({maxWidth: 600});
+            $scope.doneButtonClicked = false;
 
-            // set up current location map
-            $scope.locationMap = new google.maps.Map(document.getElementById("locationMap"),
-                {center: new google.maps.LatLng(-24.287027, 134.208984),
-                    zoom: 4,
-                    mapTypeId: google.maps.MapTypeId.HYBRID});
+            //================
+            // define functions for template
+            //=================
 
-            $scope.locationMarker = new google.maps.Marker({
-                position: new google.maps.LatLng(-24.287027, 134.208984),
-                map: $scope.locationMap,
-                title: "Australia"
-            });
-
-            // transition map
-            $scope.transitionMap = new google.maps.Map(document.getElementById("transitionMap"),
-                {center: new google.maps.LatLng(-24.287027, 134.208984),
-                    zoom: 4,
-                    mapTypeId: google.maps.MapTypeId.HYBRID});
-
-            // steps and results
-            $scope.stepResults = undefined;
-            $scope.$watch(function () {
-                return $scope.bigScope.step;
-            }, function (newValue, oldValue) {
-                $scope.stepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
-
-                $scope.stepResults.actions = [];
-
-                if ($scope.stepResults.stepType == "activity") {
-                    // show the species information and annotation verification activity.
-
-                    $scope.stepResults.startTimestamp = (new Date()).toISOString();
-
-                    $scope.stepResults.responses = {};
-
-                    $scope.currentLocation = $scope.getLocation($scope.stepResults.locationName);
-                    $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType + ")";
-
-                    $scope.currentSpecies = $scope.getSpeciesInfo($scope.stepResults.speciesCommonName);
-
-                    $scope.currentExamples = $scope.getExamplesForSpecies($scope.currentSpecies);
-
-                    $scope.currentVerify = $scope.getItemToVerifyForSpecies($scope.currentSpecies);
-
-                    // change the map
-                    $scope.locationMap.setZoom(4);
-                    $scope.locationMap.panTo(
-                        new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
-
-                    // change the marker
-                    $scope.locationMarker.setPosition(
-                        new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
-                    $scope.locationMarker.setTitle($scope.currentLocationName);
-
-                    // user has clicked on Done button
-                    $scope.doneButtonClicked = false;
-                } else if ($scope.stepResults.stepType == "transition") {
-                    // show the large map, and move from one location to the next
-
-                    $scope.showContinueButton = false;
-
-                    var fromLocation = null;
-                    var fromLatLng = null;
-                    var fromDetails = null;
-
-                    var toLocation = null;
-                    var toLatLng = null;
-                    var toDetails = null;
-
-                    if ($scope.stepResults.fromLocationName) {
-                        // show the from location info window, pan to the location
-                        fromLocation = $scope.getLocation($scope.stepResults.fromLocationName);
-                        fromLatLng = new google.maps.LatLng(fromLocation.lat, fromLocation.long);
-
-                        fromDetails = $scope.getTransitionMarkerDetails($scope.stepResults.fromLocationName);
-
-                        $scope.showMarkerInfo($scope.transitionMap, fromDetails.marker, fromDetails.content);
-
-                        fromDetails.marker.setIcon({
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 10
-                        });
-
-                        $scope.transitionMap.panTo(fromLatLng);
-                        $scope.transitionMap.setZoom(6);
-                    } else {
-                        // first waypoint, start at middle of australia
-                        $scope.transitionMap.panTo(new google.maps.LatLng(-24.287027, 134.208984));
-                        $scope.transitionMap.setZoom(6);
-                    }
-
-                    // stay at current location for a short time, then move.
-
-
-                    if ($scope.stepResults.toLocationName) {
-
-                        var t = setTimeout(function () {
-                            // show the from location info window, pan to the location
-                            toLocation = $scope.getLocation($scope.stepResults.toLocationName);
-                            toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
-
-                            toDetails = $scope.getTransitionMarkerDetails($scope.stepResults.toLocationName);
-
-                            // change the background image
-                            angular.element(document.getElementById('page-wrapper'))
-                                .css("background-image", "url('/experiment_assets/bird_tour/" + toLocation.backgroundImageName + "')");
-
-                            $scope.showMarkerInfo($scope.transitionMap, toDetails.marker, toDetails.content);
-
-                            toDetails.marker.setIcon({
-                                path: google.maps.SymbolPath.CIRCLE,
-                                scale: 10
-                            });
-
-                            $scope.transitionMap.panTo(toLatLng);
-                            $scope.transitionMap.setZoom(6);
-
-                            $scope.$safeApply2(function () {
-                                $scope.showContinueButton = true;
-                            });
-                        }, 3000);
-                    } else {
-                        // last waypoint, show a message of some sort
-
-                    }
+            $scope.userHasMadeSelectionForAllVerifyAnnotations = function () {
+                if ($scope.doneButtonClicked === true || !$scope.currentStepResults || !$scope.currentStepResults.responses) {
+                    // hide done button
+                    return false;
                 }
-            });
 
-            $scope.getLowestCountItem = function(containingObject){
+                var responsesCount = $scope.currentStepResults.responses.length;
+                var totalToVerify = $scope.currentVerify.length;
+                return responsesCount == totalToVerify;
+            };
+
+            $scope.verifyDone = function () {
+                $scope.addAction(null, 'done', 'button click');
+                $scope.doneButtonClicked = true;
+            };
+
+            $scope.nextStep = function () {
+                $scope.addAction(null, 'next', 'button click');
+                $scope.bigScope.step = $scope.bigScope.step + 1;
+            };
+
+            $scope.responseSelected = function (annotationId, response) {
+                $scope.addAction(annotationId, response, 'response selected');
+            };
+
+            $scope.playAudio = function (audioElementId) {
+                var audioElement = document.getElementById(audioElementId);
+                if (audioElement) {
+                    audioElement.currentTime = 0;
+                    audioElement.play();
+
+                    $scope.addAction(audioElementId, 'play', 'played audio');
+                }
+            };
+
+            $scope.showTransitionMap = function () {
+                return $scope.currentStepResults && $scope.currentStepResults.stepType == STEP_TYPE_TRANSITION;
+            };
+
+            //================
+            // define functions for controller
+            //=================
+
+            $scope.getTimestamp = function () {
+                return (new Date()).toISOString();
+            };
+
+            $scope.getLowestCountItem = function (containingObject) {
                 // find minimum
                 var minCount = null;
                 angular.forEach(containingObject, function (value, key) {
@@ -811,10 +772,8 @@
                     var keys;
 
                     if (lowestCodes.length == 0) {
-                        console.error("no lowest codes", lowestCodes, containingObject);
+                        console.error("[Bird Tour Experiment] no lowest codes", lowestCodes, containingObject);
                         throw "No lowest codes..";
-                        //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
-                        //keys = Object.keys($scope.bigScope.spec.additionalResources.experimentCombinationCounts);
                     } else {
                         keys = lowestCodes;
                     }
@@ -826,22 +785,39 @@
                 }
 
                 if (!lowestCode) {
-                    console.error("Experiment configuration incorrect", lowestCode, containingObject);
+                    console.error("[Bird Tour Experiment] configuration incorrect", lowestCode, containingObject);
                     throw "Experiment configuration incorrect";
                 }
 
                 return lowestCode;
             };
 
-            $scope.getExamplesForSpecies = function(speciesCommonName){
-                $scope.annotations.filter(function (element, index, array) {
-                    return element.type == 'example' && element.speciesCommonName == speciesCommonName;
-                });
+            $scope.getExamplesForSpecies = function (speciesCommonName) {
+                var annotations = angular.copy($scope.annotations.filter(function (element, index, array) {
+                    return element.type == ANNOTATION_TYPE_EXAMPLE && element.speciesCommonName == speciesCommonName;
+                }));
+
+                $scope.addMediaUrlsToAnnotations(annotations);
+
+                return annotations;
             };
 
-            $scope.getItemToVerifyForSpecies = function(speciesCommonName){
-                $scope.annotations.filter(function (element, index, array) {
-                    return element.type == 'toVerify' && element.speciesCommonName == speciesCommonName;
+            $scope.getItemToVerifyForSpecies = function (speciesCommonName) {
+                var annotations =  angular.copy($scope.annotations.filter(function (element, index, array) {
+                    return element.type == ANNOTATION_TYPE_TO_VERIFY && element.speciesCommonName == speciesCommonName;
+                }));
+
+                $scope.addMediaUrlsToAnnotations(annotations);
+
+                return annotations;
+            };
+
+            $scope.addMediaUrlsToAnnotations = function(annotations){
+                angular.forEach(annotations, function(value, key) {
+                    value.spectrogramImage = String.format(BASE_SPECTROGRAM_URL,
+                        value.audioId,
+                        Math.max(0, value.offsetStart - SPECTROGRAM_PADDING_MS),
+                        value.offsetEnd + SPECTROGRAM_PADDING_MS);
                 });
             };
 
@@ -852,13 +828,9 @@
             };
 
             $scope.showMarkerInfo = function (map, marker, content) {
-                if (!$scope.transitionMapInfoWindow) {
-                    $scope.transitionMapInfoWindow = new google.maps.InfoWindow({maxWidth: 600});
-                }
-
                 $scope.transitionMapInfoWindow.setContent(content);
                 $scope.transitionMapInfoWindow.open(map, marker);
-            }
+            };
 
             $scope.getLocation = function (name) {
                 var found = $scope.locations.filter(function (element, index, array) {
@@ -894,40 +866,16 @@
                 return null;
             };
 
-            $scope.userHasMadeSelectionForAllVerifyAnnotations = function () {
-                if ($scope.doneButtonClicked === true || !$scope.stepResults.responses) {
-                    // hide done button
-                    return false;
+            $scope.getLocationByOrderIdentifier = function (orderId) {
+                var found = $scope.locations.filter(function (element, index, array) {
+                    return (element.locationOrderIdentifier == orderId);
+                });
+                if (found.length == 1) {
+                    return found[0];
                 }
-
-                var responsesCount = $scope.stepResults.responses.length;
-                var totalToVerify = $scope.currentVerify.length;
-                return responsesCount == totalToVerify;
+                return null;
             };
 
-            $scope.verifyDone = function () {
-                $scope.addAction(null, 'done', 'button click');
-                $scope.doneButtonClicked = true;
-            };
-
-            $scope.nextStep = function () {
-                $scope.addAction(null, 'next', 'button click');
-                $scope.bigScope.step = $scope.bigScope.step + 1;
-            };
-
-            $scope.responseSelected = function (annotationId, response) {
-                $scope.addAction(annotationId, response, 'response selected');
-            };
-
-            $scope.playAudio = function (audioElementId) {
-                var audioElement = document.getElementById(audioElementId);
-                if (audioElement) {
-                    audioElement.currentTime = 0;
-                    audioElement.play();
-
-                    $scope.addAction(audioElementId, 'play', 'played audio');
-                }
-            };
 
             $scope.addAction = function (elementId, action, type) {
                 var actionObject = {
@@ -936,18 +884,9 @@
                     "type": type,
                     "timestamp": (new Date()).toISOString()
                 };
-                $scope.stepResults.actions.push(actionObject);
+                $scope.currentStepResults.actions.push(actionObject);
             };
 
-            $scope.showTransitionMap = function () {
-                return $scope.stepResults.stepType == "transition";
-            };
-
-            $scope.getTransitionLocations = function () {
-                return $scope.bigScope.results.steps.filter(function (element, index, array) {
-                    return (element.stepType == "transition");
-                });
-            };
 
             $scope.getTransitionMarkerDetails = function (locationName) {
                 var found = $scope.transitionMarkers.filter(function (element, index, array) {
@@ -959,72 +898,37 @@
                 return null;
             };
 
-            // create and store all locations for transition map
-            // get array of steps that are transitions, then create all markers and arrows
-            var transitionLocations = $scope.getTransitionLocations();
-            for (var orderedLocationIndex = 0; transitionLocations.length > orderedLocationIndex; orderedLocationIndex++) {
+            $scope.createMap = function (elementId, lat, longitude, zoom) {
+                return new google.maps.Map(
+                    document.getElementById(elementId),
+                    {
+                        center: new google.maps.LatLng(lat, longitude),
+                        zoom: zoom,
+                        mapTypeId: google.maps.MapTypeId.HYBRID
+                    }
+                );
+            };
 
-                var currentOrderedLocation = transitionLocations[orderedLocationIndex];
+            $scope.createMarker = function (map, lat, longitude, title) {
+                return new google.maps.Marker({
+                    position: new google.maps.LatLng(lat, longitude),
+                    map: map,
+                    title: title
+                });
+            };
 
-                if (currentOrderedLocation.toLocationName) {
-                    var toLocation = $scope.getLocation(currentOrderedLocation.toLocationName);
-                    var toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
-                    var toContent = '<div><h1>' + toLocation.name +
-                        '</h1><p><em>' + toLocation.environmentType +
-                        '</em></p><p>' + toLocation.environmentDescription +
-                        '</p></div>';
-                    var toMarker = new google.maps.Marker({
-                        position: toLatLng,
-                        map: $scope.transitionMap,
-                        title: toLocation.name
-                    });
+            //================
+            // perform set up
+            //=================
 
-                    $scope.addMarkerClick($scope.transitionMap, toMarker, toContent);
-                    $scope.transitionMarkers.push({locationName: currentOrderedLocation.toLocationName, latLng: toLatLng, marker: toMarker, content: toContent});
-                }
+            // create and init maps and markers
+            $scope.locationMap = $scope.createMap('locationMap', -24.287027, 134.208984, 4);
+            $scope.transitionMap = $scope.createMap('transitionMap', -24.287027, 134.208984, 4);
+            $scope.locationMarker = $scope.createMarker($scope.locationMap, -24.287027, 134.208984, 'Australia');
 
-                if (currentOrderedLocation.fromLocationName && currentOrderedLocation.toLocationName) {
-                    var fromLocation = $scope.getLocation(currentOrderedLocation.fromLocationName);
-                    var fromLatLng = new google.maps.LatLng(fromLocation.lat, fromLocation.long);
-
-                    var toLocation = $scope.getLocation(currentOrderedLocation.toLocationName);
-                    var toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
-
-                    var arrowSymbol = {
-                        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                        strokeColor: "#eeee00"
-                    };
-
-                    var lineSymbol = {
-                        path: 'M 0,-1 0,1',
-                        strokeColor: "#eeee00",
-                        strokeOpacity: 1,
-                        scale: 4
-                    };
-
-                    var line = new google.maps.Polyline({
-                        path: [fromLatLng, toLatLng],
-                        icons: [
-                            {
-                                icon: lineSymbol,
-                                offset: '0',
-                                repeat: '20px'
-                            },
-                            {
-                                icon: arrowSymbol,
-                                offset: '100%'
-                            }
-                        ],
-                        map: $scope.transitionMap
-                    });
-                }
-
-            }
-
-
+            // get order for locations and species
             // use the downloaded stats to configure the experiment
             // find least-used location order
-
             var locationOrderId = $scope.getLowestCountItem($scope.bigScope.spec.additionalResources.experimentCombinationCounts.locations);
 
             var locationSpeciesOrder = {};
@@ -1037,27 +941,290 @@
                 locationSpeciesOrder.species[key] = currentSpeciesInfo[speciesOrderLowestCountId].species;
             });
 
+            $scope.bigScope.results.locationSpeciesOrder = locationSpeciesOrder;
+            console.log('[Bird Tour Experiment] location and species order.', JSON.stringify(locationSpeciesOrder, undefined, 4));
 
-            /*
-             // record location order for experiment in results
-             $scope.bigScope.results.locationOrder = locationOrder;
-             var locationSpec = $scope.bigScope.spec.additionalResources.experimentCombinationCounts.locations[locationOrder];
-             console.log("Experiment " + locationOrder + " chosen", locationSpec);
+            //================
+            // now copy in the steps and configure the locations and species
+            //=================
 
-             // find the least used species order for each location
-             var speciesOrders = {};
-             angular.forEach(locationSpec.locations, function (locationLetter, index) {
-             angular.forEach($scope.bigScope.spec.additionalResources.experimentCombinationCounts.species[value], function (value, key) {
-             speciesOrders[locationLetter] = $scope.getLowestCountItem(key);
-             });
-             });
+            $scope.bigScope.results.steps = [];
+
+            for (var locationStepIndex = 0; locationStepIndex < locationSpeciesOrder.locations.length; locationStepIndex++) {
+
+                var locationId = locationSpeciesOrder.locations[locationStepIndex];
+
+                // add the transition step
+                var transitionStep = angular.copy(
+                    $scope.bigScope.spec.experimentSteps.filter(function (value) {
+                        return value.stepType === STEP_TYPE_TRANSITION;
+                    })[0]
+                );
+                if (locationStepIndex == 0) {
+                    transitionStep.fromLocation = null;
+                } else {
+                    var prevLocationId = locationSpeciesOrder.locations[locationStepIndex - 1];
+                    transitionStep.fromLocation = $scope.getLocationByOrderIdentifier(prevLocationId);
+                }
+
+                // always add the to location
+                transitionStep.toLocation = $scope.getLocationByOrderIdentifier(locationId);
+
+                $scope.bigScope.results.steps.push(transitionStep);
+
+                if (transitionStep.toLocation) {
+                    // add the species steps
+                    for (var speciesStepIndex = 0; speciesStepIndex < locationSpeciesOrder.species[locationId].length; speciesStepIndex++) {
+
+                        var speciesOrderId = locationSpeciesOrder.species[locationId][speciesStepIndex];
+
+                        var speciesStep = angular.copy(
+                            $scope.bigScope.spec.experimentSteps.filter(function (value) {
+                                return value.stepType === STEP_TYPE_ACTIVITY;
+                            })[0]
+                        );
+                        speciesStep.location = transitionStep.toLocation;
+                        speciesStep.species = angular.copy($scope.bigScope.spec.species.filter(function (value) {
+                            return value.locationName === speciesStep.location.name && value.locationSpeciesOrderIdentifier == speciesOrderId;
+                        })[0]);
+
+                        $scope.bigScope.results.steps.push(speciesStep);
+                    }
+                }
+
+                // if this is the last location, add an additional transition at the end
+                if (locationStepIndex == locationSpeciesOrder.locations.length - 1) {
+                    var lastStep = angular.copy(transitionStep);
+                    lastStep.fromLocation = angular.copy(lastStep.toLocation);
+                    lastStep.toLocation = null;
+                    $scope.bigScope.results.steps.push(lastStep);
+                }
+            }
+
+            // print order for sanity
+            $scope.bigScope.results.order = [];
+            angular.forEach($scope.bigScope.results.steps, function (value, index) {
+
+                if (value.stepType == STEP_TYPE_TRANSITION) {
+                    $scope.bigScope.results.order.push({
+                        index: index,
+                        fromLocationName: value.fromLocation ? value.fromLocation.name : null,
+                        fromLocationOrderIdentifier: value.fromLocation ? value.fromLocation.locationOrderIdentifier : null,
+                        toLocationName: value.toLocation ? value.toLocation.name : null,
+                        toLocationOrderIdentifier: value.toLocation ? value.toLocation.locationOrderIdentifier : null
+                    });
+                } else if (value.stepType == STEP_TYPE_ACTIVITY) {
+                    $scope.bigScope.results.order.push({
+                        index: index,
+                        locationName: value.location ? value.location.name : null,
+                        locationOrderIdentifier: value.location ? value.location.locationOrderIdentifier : null,
+                        speciesCommonName: value.species ? value.species.commonName : null,
+                        locationSpeciesOrderIdentifier: value.species ? value.species.locationSpeciesOrderIdentifier : null
+                    });
+                } else {
+                    console.error("[Bird Tour Experiment] Invalid value for stepType.", value);
+                }
+            });
+            console.info('[Bird Tour Experiment] step order', JSON.stringify($scope.bigScope.results.order, undefined, 4));
+
+            var stepCount = $scope.bigScope.results.steps.length;
+
+            $scope.$watch(function () {
+                return $scope.bigScope.step;
+            }, function (newValue, oldValue) {
+                if (newValue <= stepCount) {
+                    $scope.currentStepResults = $scope.bigScope.results.steps[$scope.bigScope.step - 1];
+
+                    $scope.currentStepResults.actions = [];
+
+                    if ($scope.currentStepResults.stepType == STEP_TYPE_ACTIVITY) {
+                        // show the species information and annotation verification activity.
+
+                        $scope.currentStepResults.startTimestamp = $scope.getTimestamp();
+                        $scope.currentStepResults.responses = {};
+
+                        $scope.currentLocation = $scope.getLocation($scope.currentStepResults.location.name);
+                        $scope.currentSpecies = $scope.getSpeciesInfo($scope.currentStepResults.species.commonName);
+
+                        $scope.currentLocationName = $scope.currentLocation.name + " (" + $scope.currentLocation.environmentType + ")";
+
+                        $scope.currentExamples = $scope.getExamplesForSpecies($scope.currentSpecies.commonName);
+                        $scope.currentVerify = $scope.getItemToVerifyForSpecies($scope.currentSpecies.commonName);
+
+                        // change the map
+                        $scope.locationMap.setZoom(BASE_ZOOM);
+                        $scope.locationMap.panTo(
+                            new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+
+                        // change the marker
+                        $scope.locationMarker.setPosition(
+                            new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+                        $scope.locationMarker.setTitle($scope.currentLocationName);
+
+                        // user has clicked on Done button
+                        $scope.doneButtonClicked = false;
+                    } else if ($scope.currentStepResults.stepType == STEP_TYPE_TRANSITION) {
+                        // show the large map, and move from one location to the next
+
+                        $scope.showContinueButton = false;
+
+                        var fromLocation = null;
+                        var fromLatLng = null;
+                        var fromDetails = null;
+
+                        var toLocation = null;
+                        var toLatLng = null;
+                        var toDetails = null;
+
+                        if ($scope.currentStepResults.fromLocation) {
+                            // show the from location info window, pan to the location
+                            fromLocation = $scope.getLocation($scope.currentStepResults.fromLocation.name);
+                            fromLatLng = new google.maps.LatLng(fromLocation.lat, fromLocation.long);
+
+                            fromDetails = $scope.getTransitionMarkerDetails($scope.currentStepResults.fromLocation.name);
+
+                            $scope.showMarkerInfo($scope.transitionMap, fromDetails.marker, fromDetails.content);
+
+                            $scope.transitionMap.panTo(fromLatLng);
+                            $scope.transitionMap.setZoom(BASE_ZOOM);
+                        } else {
+                            // first waypoint, start at middle of australia
+                            $scope.transitionMap.panTo(new google.maps.LatLng(-24.287027, 134.208984));
+                            $scope.transitionMap.setZoom(BASE_ZOOM);
+                        }
+
+                        // stay at current location for a short time, then move.
 
 
+                        if ($scope.currentStepResults.toLocation) {
 
-             $scope.bigScope.results.locationSpeciesOrder = speciesOrders;
-             var locationSpec = $scope.bigScope.spec.additionalResources.experimentCombinationCounts.locations[locationOrder];
-             console.log("Experiment " + locationOrder + " chosen", countSpec);
-             */
+                            var t = setTimeout(function () {
+                                // show the from location info window, pan to the location
+                                toLocation = $scope.getLocation($scope.currentStepResults.toLocation.name);
+                                toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
+
+                                toDetails = $scope.getTransitionMarkerDetails($scope.currentStepResults.toLocation.name);
+
+                                // change the background image
+                                angular.element(document.getElementById('page-wrapper'))
+                                    .css("background-image", "url('/experiment_assets/bird_tour/" + toLocation.backgroundImageName + "')");
+
+                                $scope.showMarkerInfo($scope.transitionMap, toDetails.marker, toDetails.content);
+
+                                $scope.transitionMap.panTo(toLatLng);
+                                $scope.transitionMap.setZoom(BASE_ZOOM);
+
+                                $scope.$safeApply2(function () {
+                                    $scope.showContinueButton = true;
+                                });
+                            }, 3000);
+                        } else {
+                            // last waypoint, show a message of some sort
+
+                        }
+                    }
+                }
+            });
+
+
+            //================
+            // create and store all locations for transition map
+            //=================
+
+            // get array of steps that are transitions, then create all markers and arrows
+            var transitionLocations = $scope.bigScope.results.steps.filter(function (element, index, array) {
+                return (element.stepType == STEP_TYPE_TRANSITION && element.toLocation);
+            });
+
+
+            for (var orderedLocationIndex = 0; transitionLocations.length > orderedLocationIndex; orderedLocationIndex++) {
+                var currentOrderedLocation = transitionLocations[orderedLocationIndex];
+
+                var fromLocation = null;
+                var fromLatLng = null;
+
+                var toLocation = null;
+                var toLatLng = null;
+
+                if (currentOrderedLocation.toLocation) {
+                    toLocation = $scope.getLocation(currentOrderedLocation.toLocation.name);
+                    toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
+                    var toContent = String.format(
+                        '<div><h1>{0}</h1>' +
+                            '<p>{1}</p>' +
+                            '<a href="{3}" class="mapAttribution">Source: {2}</a>' +
+                            '<h2>{4}</h2>' +
+                            '<p>{5}</p>' +
+                            '<a href="{7}" class="mapAttribution">Source: {6}</a>' +
+                            '</div>',
+                        toLocation.name,
+                        toLocation.locationDescription, toLocation.locationDescriptionAttribution, toLocation.locationDescriptionAttributionLink,
+                        toLocation.environmentType,
+                        toLocation.environmentDescription, toLocation.environmentDescriptionAttribution, toLocation.environmentDescriptionAttributionLink
+                    );
+                    var toMarker = new google.maps.Marker({
+                        position: toLatLng,
+                        map: $scope.transitionMap,
+                        title: toLocation.name,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 5,
+                            fillOpacity: 0.7,
+                            fillColor: MAP_LINE_COLOUR,
+                            strokeOpacity: 0.7,
+                            strokeColor: MAP_LINE_COLOUR
+                        }
+                    });
+
+                    $scope.addMarkerClick($scope.transitionMap, toMarker, toContent);
+                    $scope.transitionMarkers.push({locationName: currentOrderedLocation.toLocation.name, latLng: toLatLng, marker: toMarker, content: toContent});
+
+                }
+
+                if (currentOrderedLocation.fromLocation && currentOrderedLocation.toLocation) {
+                    fromLocation = $scope.getLocation(currentOrderedLocation.fromLocation.name);
+                    fromLatLng = new google.maps.LatLng(fromLocation.lat, fromLocation.long);
+
+                    toLocation = $scope.getLocation(currentOrderedLocation.toLocation.name);
+                    toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
+
+                    var arrowSymbol = {
+                        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                        strokeColor: MAP_LINE_COLOUR,
+                        strokeOpacity: 0.7
+                    };
+
+                    var lineSymbol = {
+                        path: 'M 0,-1 0,1',
+                        strokeColor: MAP_LINE_COLOUR,
+                        strokeOpacity: 0.7,
+                        scale: 4
+                    };
+
+                    var line = new google.maps.Polyline({
+                        path: [fromLatLng, toLatLng],
+                        strokeOpacity: 0,
+                        icons: [
+                            {
+                                icon: lineSymbol,
+                                offset: '0',
+                                repeat: '20px'
+                            },
+                            {
+                                icon: arrowSymbol,
+                                offset: '50%'
+                            },
+                            {
+                                icon: arrowSymbol,
+                                offset: '100%'
+                            }
+                        ],
+                        map: $scope.transitionMap
+                    });
+                }
+
+            }
+
 
         }]);
 })();

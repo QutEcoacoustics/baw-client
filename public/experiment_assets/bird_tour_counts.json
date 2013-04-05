@@ -1,7 +1,7 @@
 {
     "locations": {
         "ABC": {
-            "count": 0,
+            "count": 1,
             "locations": ["A", "B", "C"]
         },
         "BCA": {
@@ -9,11 +9,11 @@
             "locations": ["B", "C", "A"]
         },
         "CAB": {
-            "count": 0,
+            "count": 1,
             "locations": ["C", "A", "B"]
         },
         "ACB": {
-            "count": 0,
+            "count": 1,
             "locations": ["A", "C", "B"]
         },
         "BAC": {
@@ -21,7 +21,7 @@
             "locations": ["B", "A", "C"]
         },
         "CBA": {
-            "count": 0,
+            "count": 1,
             "locations": ["C", "B", "A"]
         }
     },
@@ -42,7 +42,7 @@
                 "species": [1, 2]
             },
             "21": {
-                "count": 0,
+                "count": 1,
                 "species": [2, 1]
             }
         },

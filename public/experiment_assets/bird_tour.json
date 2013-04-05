@@ -4,9 +4,9 @@
     "instructions": [
         "This experiment investigates a method of verifying the labels applied to annotations made on a spectrogram.",
         "Resources are provided to aid in learning to identify the vocalisations (calls) of particular species.",
-        "Your task is to select 'Yes', 'No', or 'Unsure' for each unlabelled spectrogram annotation that need to be classified.",
-        "There are six locations in this experiment. Information about the species of interest is provided for each location. There are 12 parts in total.",
-        "Each of the six parts should take about 5 minutes to complete. The entire process should take around 30 minutes."
+        "Your task is to select 'Yes', 'No', or 'Unsure' for each unlabelled spectrogram annotation that needs to be classified.",
+        "There are three locations in this experiment,a nd two species at each location. Information is provided for each species.",
+        "This experiment may take around 30 minutes to complete."
     ],
     "surveyLink": "nowhere-yet",
     "experimentResultsPostUri": "/experiments",
@@ -17,56 +17,62 @@
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "transition",
-            "fromLocationName": null,
-            "toLocationName": "Peregian"
+            "fromLocation": null,
+            "toLocation": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Peregian"
+            "location": {},
+            "species": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Peregian"
+            "location": {},
+            "species": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "transition",
-            "fromLocationName": "Peregian",
-            "toLocationName": "Simpson-Strzelecki Dunefields"
+            "fromLocation": {},
+            "toLocation": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Simpson-Strzelecki Dunefields"
+            "location": {},
+            "species": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Simpson-Strzelecki Dunefields"
+            "location": {},
+            "species": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "transition",
-            "fromLocationName": "Simpson-Strzelecki Dunefields",
-            "toLocationName": "Samford"
+            "fromLocation": {},
+            "toLocation": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Samford"
+            "location": {},
+            "species": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "activity",
-            "locationName": "Samford"
+            "location": {},
+            "species": {}
         },
         {
             "template": "/assets/tour_experiment.html",
             "stepType": "transition",
-            "fromLocationName": "Samford",
-            "toLocationName": null
+            "fromLocation": {},
+            "toLocation": null
         }
     ],
     "locations": [
@@ -76,11 +82,14 @@
             "id": 409,
             "lat": -26.469932,
             "long": 153.09229,
+            "locationDescription": "Peregian Beach is a small seaside town on the Sunshine Coast, Queensland, Australia, at the southernmost point of the Noosa region. 'Peregian' is an Aboriginal word for emu. The population is about 2200 and is a popular surfing location.",
+            "locationDescriptionAttribution": "Wikipedia",
+            "locationDescriptionAttributionLink": "http://en.wikipedia.org/wiki/Peregian_Beach,_Queensland",
             "backgroundImageName": "Coastal Heathland.jpg",
             "backgroundImageAttribution": "Toni_Broome",
             "backgroundImageAttributionLink": "http://www.flickr.com/photos/21324128@N02/5706117001/",
-            "environmentType": "Coastal Heath",
-            "environmentDescription": "An open or closed coastal heathland dominated by a diverse shrub layer and a variable ground layer of sedges, lilies and grasses. The heathland is found on well-drained siliceous sands and is often wind-pruned due to extreme exposure to wind and salt-spray.",
+            "environmentType": "Coastal Heathland",
+            "environmentDescription": "A coastal heathland dominated by a diverse shrub layer and a variable ground layer of sedges, lilies and grasses. The heathland is found on well-drained siliceous sands and is often wind-pruned due to extreme exposure to wind and salt-spray.",
             "environmentDescriptionAttribution": "Victorian Government Department of Sustainability and Environment",
             "environmentDescriptionAttributionLink": "http://www.dse.vic.gov.au/conservation-and-environment/native-vegetation-groups-for-victoria/simplified-native-vegetation-groups/native-vegetation-group-16-heathlands"
         },
@@ -90,11 +99,14 @@
             "id": 783,
             "lat": -28.631541,
             "long": 139.939728,
+            "locationDescription": "The Simpson–Strzelecki Dunefields comprises long parallel sand dunes, fringing dunefields, extensive sand plains, dry watercourses and saltpans. Land use comprises Aboriginal land, conservation reserves and pastoral leases.",
+            "locationDescriptionAttribution": "Australian Government Department of Sustainability, Environment, Water, Population and Communities",
+            "locationDescriptionAttributionLink": "http://www.environment.gov.au/land/publications/acris/pubs/bioregion-simpson-strzelecki-dunefields.pdf",
             "backgroundImageName": "Arid Grasslands.jpg",
             "backgroundImageAttribution": "Dionne's Images",
             "backgroundImageAttributionLink": "http://www.flickr.com/photos/rubygold4/4839361927/",
             "environmentType": "Arid Grassland",
-            "environmentDescription": "The Simpson–Strzelecki Dunefields comprises long parallel sand dunes, fringing dunefields, extensive sand plains, dry watercourses and saltpans. Vegetation is predominantly spinifex hummock grasslands with sparse acacia shrublands and some narrow river red gum and coolibah riverine woodlands.Grassy shrublands predominate in southern areas,especially in New South Wales. Land use comprises Aboriginal land, conservation reserves and pastoral leases.",
+            "environmentDescription": "Vegetation is predominantly spinifex hummock grasslands with sparse acacia shrublands and some narrow river red gum and coolibah riverine woodlands.Grassy shrublands predominate in southern areas, especially in New South Wales.",
             "environmentDescriptionAttribution": "Australian Government Department of Sustainability, Environment, Water, Population and Communities",
             "environmentDescriptionAttributionLink": "http://www.environment.gov.au/land/publications/acris/pubs/bioregion-simpson-strzelecki-dunefields.pdf"
         },
@@ -104,6 +116,9 @@
             "id": 397,
             "lat": -27.388907,
             "long": 152.878325,
+            "locationDescription": "Samford is a valley community located in South East Queensland, Australia. It is roughly 21 km north west of Brisbane. The hilly area was first settled in the mid-1850s. Samford has a sub-tropical climate with very hot humid summers and mild, dry, sunny winters. Most rain falls during the height of summer, between November and February.",
+            "locationDescriptionAttribution": "Wikipedia",
+            "locationDescriptionAttributionLink": "http://en.wikipedia.org/wiki/Samford,_Queensland",
             "backgroundImageName": "Dry Sclerophyll Forest.jpg",
             "backgroundImageAttribution": "Samford Ecological Research Centre",
             "backgroundImageAttributionLink": "http://www.serf.qut.edu.au/",
@@ -115,6 +130,7 @@
     ],
     "species": [
         {
+            "locationSpeciesOrderIdentifier": 1,
             "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:d3c27152-9e37-49df-837c-051262010644",
             "commonName": "Red-browed Pardalote",
             "scientificName": "Pardalotus (Pardalotinus) rubricatus",
@@ -132,6 +148,7 @@
             "annotationIds":[]
         },
         {
+            "locationSpeciesOrderIdentifier": 2,
             "lsid": "urn:lsid:biodiversity.org.au:afd.taxon:deadd198-f163-43cc-ab48-ab597f68ed9a",
             "commonName": "Chirruping Wedgebill",
             "scientificName": "Psophodes (Sphenostoma) cristatus",
