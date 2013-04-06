@@ -68,8 +68,7 @@
 
 #transitionMap {
     width: 100%;
-    min-height: 400px;
-    height:600px;
+    height: 500px;
     margin: 6px 0 10px 0;
 }
 
@@ -88,6 +87,14 @@ img.simpleImage {
 .sectionTitle {
     padding: 0;
     margin: 1px 0 2px 0;
+
+}
+
+.verifyInstructions {
+    font-size: 20px;
+    border-top: 1px solid #7b903c;
+    padding: 3px 0 0 0;
+    text-align: center;
 }
 
 .attribution {
@@ -349,7 +356,7 @@ img.simpleImage {
     margin: 0;
 }
 
-/* transition map */
+    /* transition map */
 
 #transitionMap h1 {
     margin: 10px 0;
@@ -374,10 +381,52 @@ img.simpleImage {
 </style>
 
 <div ng-show="showTransitionMap()">
-    <h2 class="sectionTitle" style="margin-top:8px;">Travelling to the next waypoint...</h2>
+
+    <h2 class="sectionTitle" style="margin-top:8px;">
+        <span ng-show="firstStop()">Welcome to this virtual bird walk!</span>
+        <span ng-show="middleStops()">On to the next waypoint!</span>
+    </h2>
+
+    <div ng-show="firstStop()">
+        <br>
+
+        <p style="text-align:center;font-size: 14px;">
+            Hello! Welcome to this virtual bird tour. The tour consists of
+            {{results.locationSpeciesOrder.locations.length}} waypoints.
+            The first waypoint is {{results.steps[step - 1].toLocation.name}}.
+            The map below shows your movement from one waypoint to the next.
+            The order we'll be moving in is shown by the lines on the map.
+            There are arrows on the lines that show the direction of movement.
+            At each waypoint, we'll pause and look around. We'll learn about two
+            birds at each waypoint. There will be information about the bird,
+            and you'll be able to demonstrate what you know. For each bird, we
+            have some audio recordings that may or may not contain the call of the bird.
+            <br>
+            Click "Move to Waypoint" to continue.
+            Read about {{results.steps[step - 1].toLocation.name}}, then click "Continue the Virtual Bird Tour"
+            underneath the map!
+        </p>
+    </div>
+
+    <p ng-show="middleStops()">
+        On to the next waypoint! We're going to {{results.steps[step - 1].toLocation.name}} next.
+        Click "Move to Waypoint" to continue.
+        Read about {{results.steps[step - 1].toLocation.name}}, then click "Continue the Virtual Bird Tour" underneath
+        the map!
+    </p>
+
+    <div style="width:140px;height:20px;margin: 0 auto;">
+        <button style="display:block;margin: 0 auto;" ng-click="moveToWaypoint()" ng-hide="showContinueButton">
+            Move to Waypoint
+        </button>
+    </div>
+    <br>
+
     <div id="transitionMap"></div>
-    <div style="width:55px;height:20px;margin: 0 auto;">
-        <button style="display:block;width: 70px;margin: 0 auto;" ng-click="nextStep()" ng-show="showContinueButton">Continue
+
+    <div style="width:130px;height:20px;margin: 0 auto;">
+        <button style="display:block;margin: 0 auto;" ng-click="nextStep()" ng-show="showContinueButton">
+            Continue the Virtual Bird Tour
         </button>
     </div>
 </div>
@@ -431,7 +480,8 @@ img.simpleImage {
     <div class="exampleContainer">
         <h3 class="sectionTitle">Examples</h3>
 
-        <div ng-repeat="currentAnnotation in currentExamples" class="annotation" id="annotationExample{{currentAnnotation.id}}"
+        <div ng-repeat="currentAnnotation in currentExamples" class="annotation"
+             id="annotationExample{{currentAnnotation.id}}"
              directhref="{{currentAnnotation.directlink}}">
 
             <div class="annotationImage" style="width: {{currentAnnotation.spectrogramWidthPx}}px">
@@ -460,12 +510,14 @@ img.simpleImage {
                        preload="auto">
                     <source type="audio/webma" ng-src="{{currentAnnotation.audioWebm}}">
                     <source type="audio/webm" ng-src="{{currentAnnotation.audioWebm}}">
+                    <source type="audio/oga" ng-src="{{currentAnnotation.audioOga}}">
                     <source type="audio/ogg" ng-src="{{currentAnnotation.audioOga}}">
                     <source type="audio/mp3" ng-src="{{currentAnnotation.audioMp3}}">
                 </audio>
                 <ul>
                     <li>
-                        <button ng-click="playAudio('annotationAudio'+currentAnnotation.id, 'example')"><i class="icon-play"></i>
+                        <button ng-click="playAudio('annotationAudio'+currentAnnotation.id, 'example')"><i
+                                class="icon-play"></i>
                         </button>
                     </li>
                 </ul>
@@ -474,9 +526,20 @@ img.simpleImage {
     </div>
 
     <div class="verifyContainer">
-        <h3 class="sectionTitle">Verify</h3>
+        <h3 class="sectionTitle verifyInstructions">Are there {{currentSpecies.commonName}}
+            calls in these audio recordings?</h3>
 
-        <div ng-repeat="currentAnnotation in currentVerify" class="annotation" id="annotationVerify{{currentAnnotation.id}}"
+        <p style="margin:3px 0 3px 0;text-align:center;">
+            Tell us your opinion by responding
+            <em>'Yes'</em> if you think the audio recording does contain a {{currentSpecies.commonName}} call;
+            <em>'No'</em> if you think there is no {{currentSpecies.commonName}} call in the audio recording;
+            <em>'Unsure'</em> if you can't tell either way.
+            <br>You need to record an answer for each audio recording. Click "Done" underneath the audio recordings when you are satisfied with your
+            answers to see what other people's opinions were. Then click "Next" to move on.<br>
+        </p>
+
+        <div ng-repeat="currentAnnotation in currentVerify" class="annotation"
+             id="annotationVerify{{currentAnnotation.id}}"
              directhref="{{currentAnnotation.directlink}}">
 
             <div ng-show="doneButtonClicked" class="annotationResponses">
@@ -529,7 +592,7 @@ img.simpleImage {
                                    name="annotationVerifyResponse{{currentAnnotation.id}}"
                                    class="annotationVerifyResponseYes"
                                    ng-click="responseSelected(currentAnnotation.id, 'yes')"
-                                   ng-model="$parent.currentStepResults.responses[currentAnnotation.id]"
+                                   ng-model="$parent.currentStepResults.responses['response'+currentAnnotation.id]"
                                    title="This annotation is the species I'm looking for" value="yes">
                             <label for="annotationVerifyResponse{{currentAnnotation.id}}Yes">&#x2714; Yes</label>
                         </li>
@@ -537,7 +600,7 @@ img.simpleImage {
                                    name="annotationVerifyResponse{{currentAnnotation.id}}"
                                    class="annotationVerifyResponseNo"
                                    ng-click="responseSelected(currentAnnotation.id, 'no')"
-                                   ng-model="$parent.currentStepResults.responses[currentAnnotation.id]"
+                                   ng-model="$parent.currentStepResults.responses['response'+currentAnnotation.id]"
                                    title="This annotation is not the species I'm looking for" value="no">
                             <label for="annotationVerifyResponse{{currentAnnotation.id}}No">&#x2718; No</label>
                         </li>
@@ -545,7 +608,7 @@ img.simpleImage {
                                    name="annotationVerifyResponse{{currentAnnotation.id}}"
                                    class="annotationVerifyResponseUnsure"
                                    ng-click="responseSelected(currentAnnotation.id, 'unsure')"
-                                   ng-model="$parent.currentStepResults.responses[currentAnnotation.id]"
+                                   ng-model="$parent.currentStepResults.responses['response'+currentAnnotation.id]"
                                    title="I'm not sure if this annotation is the species I'm looking for or not"
                                    value="unsure">
                             <label for="annotationVerifyResponse{{currentAnnotation.id}}Unsure"><b>?</b> Unsure</label>

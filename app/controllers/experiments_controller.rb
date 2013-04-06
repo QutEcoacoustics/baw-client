@@ -47,40 +47,14 @@ class ExperimentsController < ApplicationController
       success = true
 
       if params[:experiment] && params[:experiment] == 'Virtual bird tour experiment'
-
-        responses_store = {}
-        responses_file  = File.join(EXPERIMENTS_SAVE_DIRECTORY, 'responses.json')
-
-        # load the existing file (if the file exists)
-        if File.exists? responses_file
-          responses_store = JSON.parse(IO.read(responses_file))
+        if params[:code]
+          update_bird_tour_counts(params[:code])
+        else
+          raise "No code found in json packet for update_bird_tour_counts!"
         end
-
-        # pull out the responses for each annotations, and increment the response counts
-        params[:steps].each do |step|
-          step[:responses].each do |annotationId, response|
-            unless responses_store.keys.any? { |key| key.include? annotationId }
-              # add the annotation id to the store if it is not already in there
-              responses_store[annotationId] = { 'no' => 0, 'yes' => 0, 'unsure' => 0 }
-            end
-
-            # increment the response count for each response given: yes, no, or unsure.
-            responses_store[annotationId][response.to_s] += 1
-          end
-        end
-
-        # overwrite the file
-
-        FileUtils.makedirs EXPERIMENTS_SAVE_DIRECTORY
-        File.open(responses_file, 'w') { |file|
-          file.write responses_store.to_json
-        }
-
       end
 
       if params[:experiment] && params[:experiment] == 'Rapid Spectrogram Scanning Experiment'
-
-
         if params[:code]
           update_rapid_scan_counts(params[:code])
         else
@@ -100,7 +74,10 @@ class ExperimentsController < ApplicationController
   end
 
 
-
+  def load
+    # get current bird tour counts
+    load_bird_tour_counts()
+  end
 
   def update
     respond_to do |format|
@@ -133,6 +110,40 @@ class ExperimentsController < ApplicationController
     json_output                                = JSON.pretty_generate(counts)
 
     File.open(filename, 'w') { |file| file.write json_output }
+
+  end
+
+  def update_bird_tour_counts()
+    responses_store = {}
+    responses_file  = File.join(EXPERIMENTS_SAVE_DIRECTORY, 'bird_tour_annotation_responses.json')
+
+    # load the existing file (if the file exists)
+    if File.exists? responses_file
+      responses_store = JSON.parse(IO.read(responses_file))
+    end
+
+    # pull out the responses for each annotations, and increment the response counts
+    params[:steps].each do |step|
+      step[:responses].each do |annotationId, response|
+        unless responses_store.keys.any? { |key| key.include? annotationId }
+          # add the annotation id to the store if it is not already in there
+          responses_store[annotationId] = { 'no' => 0, 'yes' => 0, 'unsure' => 0 }
+        end
+
+        # increment the response count for each response given: yes, no, or unsure.
+        responses_store[annotationId][response.to_s] += 1
+      end
+    end
+
+    # overwrite the file
+
+    FileUtils.makedirs EXPERIMENTS_SAVE_DIRECTORY
+    File.open(responses_file, 'w') { |file|
+      file.write responses_store.to_json
+    }
+  end
+
+  def load_bird_tour_counts()
 
   end
 
