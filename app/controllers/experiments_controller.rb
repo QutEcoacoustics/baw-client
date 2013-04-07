@@ -173,11 +173,12 @@ class ExperimentsController < ApplicationController
         new_annotation_id = annotation_id.gsub('response','')
         unless counts.keys.any? { |key| key == new_annotation_id }
           # add the annotation id to the store if it is not already in there
-          counts[new_annotation_id] = { 'no' => 0, 'yes' => 0, 'unsure' => 0 }
+          counts[new_annotation_id] = { 'no' => 0, 'yes' => 0, 'unsure' => 0, 'total' => 0 }
         end
 
         # increment the response count for each response given: yes, no, or unsure.
         counts[new_annotation_id][response.to_s] += 1
+        counts[new_annotation_id]['total'] += 1
       end
       end
     end

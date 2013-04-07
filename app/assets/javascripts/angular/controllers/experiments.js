@@ -894,6 +894,29 @@
 
             $scope.addResponseCounts = function(annotations){
                 angular.forEach(annotations, function (value, key) {
+
+                    var response_counts = $scope.annotationResponseCounts[value.id];
+
+                    if(response_counts){
+                        value.otherPeopleTotal = response_counts.total ? response_counts.total : 0;
+                        value.otherPeopleYes = response_counts.yes ? response_counts.yes : 0;
+                        value.otherPeopleNo = response_counts.no ? response_counts.no : 0;
+                        value.otherPeopleUnsure = response_counts.unsure ? response_counts.unsure : 0;
+
+                        console.log(value);
+                    }else{
+                        value.otherPeopleTotal = 0;
+                        value.otherPeopleYes = 0;
+                        value.otherPeopleNo = 0;
+                        value.otherPeopleUnsure = 0;
+                    }
+                    /*
+
+
+                    $scope.annotationResponseCounts
+*/
+
+
                     /*
                     .filter(function (element, index, array) {
                         return element.type == ANNOTATION_TYPE_EXAMPLE && element.speciesCommonName == speciesCommonName;
@@ -1088,7 +1111,7 @@
             console.log('[Bird Tour Experiment] location and species order.', JSON.stringify(locationSpeciesOrder, undefined, 4));
 
             // store annotation response counts
-            $scope.annotatonResponseCounts = $scope.bigScope.spec.additionalResources.annotationsResponseCounts;
+            $scope.annotationResponseCounts = $scope.bigScope.spec.additionalResources.annotationsResponseCounts;
 
             //================
             // now copy in the steps and configure the locations and species
