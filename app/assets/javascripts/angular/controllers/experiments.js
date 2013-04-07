@@ -737,7 +737,7 @@
                 $scope.bigScope.step = $scope.bigScope.step + 1;
 
                 // remove background image
-                if($scope.bigScope.results.steps === $scope.bigScope.step){
+                if($scope.bigScope.results.steps.length === $scope.bigScope.step){
                     angular.element(document.getElementById('page-wrapper')).css("background-image", '');
                 }
             };
@@ -842,6 +842,7 @@
                 // record order
                 for(var exampleAnnotationIndex = 0;exampleAnnotationIndex < annotations.length;exampleAnnotationIndex++){
                     $scope.currentStepResults.annotationExampleOrder.push({
+                        'index': exampleAnnotationIndex,
                         'step': $scope.step,
                         'annotationId': annotations[exampleAnnotationIndex].id,
                         'locationName': $scope.currentLocation.name,
@@ -859,12 +860,15 @@
 
                 $scope.addMediaUrlsToAnnotations(annotations);
 
+                $scope.addResponseCounts(annotations);
+
                 // random order
                 baw.shuffle(annotations);
 
                 // record order
                 for(var verifyAnnotationIndex = 0;verifyAnnotationIndex < annotations.length;verifyAnnotationIndex++){
                     $scope.currentStepResults.annotationVerifyOrder.push({
+                        'index': verifyAnnotationIndex,
                         'step': $scope.step,
                         'annotationId': annotations[verifyAnnotationIndex].id,
                         'locationName': $scope.currentLocation.name,
@@ -885,6 +889,17 @@
                     value.audioWebm = String.format(BASE_LOCAL_AUDIO_URL, value.audioId, startMs, endMs, 'webm');
                     value.audioOga = String.format(BASE_EXTERNAL_AUDIO_URL, value.audioId, startMs, endMs, 'ogg');
                     value.audioMp3 = String.format(BASE_EXTERNAL_AUDIO_URL, value.audioId, startMs, endMs, 'mp3');
+                });
+            };
+
+            $scope.addResponseCounts = function(annotations){
+                angular.forEach(annotations, function (value, key) {
+                    /*
+                    .filter(function (element, index, array) {
+                        return element.type == ANNOTATION_TYPE_EXAMPLE && element.speciesCommonName == speciesCommonName;
+                    }
+                    $scope.annotatonResponseCounts['id']
+                    */
                 });
             };
 
@@ -1029,7 +1044,7 @@
 
                         // change the background image
                         angular.element(document.getElementById('page-wrapper'))
-                            .css("background-image", "url('/experiment_assets/bird_tour/" + toLocation.backgroundImageName + "')");
+                            .css("background-image", "url('" + $scope.getImagePath(toLocation.backgroundImageName) + "')");
 
                         $scope.showMarkerInfo($scope.transitionMap, toDetails.marker, toDetails.content);
 
@@ -1039,6 +1054,10 @@
                         $scope.showContinueButton = true;
                     }
                 }
+            };
+
+            $scope.getImagePath = function(imageFileName){
+                return '/experiment_assets/bird_tour/' + imageFileName;
             };
 
             //================
@@ -1067,6 +1086,9 @@
 
             $scope.bigScope.results.locationSpeciesOrder = locationSpeciesOrder;
             console.log('[Bird Tour Experiment] location and species order.', JSON.stringify(locationSpeciesOrder, undefined, 4));
+
+            // store annotation response counts
+            $scope.annotatonResponseCounts = $scope.bigScope.spec.additionalResources.annotationsResponseCounts;
 
             //================
             // now copy in the steps and configure the locations and species
@@ -1221,16 +1243,19 @@
                     toLatLng = new google.maps.LatLng(toLocation.lat, toLocation.long);
                     var toContent = String.format(
                         '<div><h1>{0}</h1>' +
+                            '<div style="float:right;margin:00 5px 5px;"><img style="width:200px;" src="{8}"><a href="{10}" class="mapAttribution" target="_blank">Source: {9}</a></div>' +
                             '<p>{1}</p>' +
-                            '<a href="{3}" class="mapAttribution">Source: {2}</a>' +
+                            '<a href="{3}" class="mapAttribution" target="_blank">Source: {2}</a>' +
                             '<h2>{4}</h2>' +
                             '<p>{5}</p>' +
-                            '<a href="{7}" class="mapAttribution">Source: {6}</a>' +
+                            '<a href="{7}" class="mapAttribution"  target="_blank">Source: {6}</a>' +
                             '</div>',
                         toLocation.name,
                         toLocation.locationDescription, toLocation.locationDescriptionAttribution, toLocation.locationDescriptionAttributionLink,
                         toLocation.environmentType,
-                        toLocation.environmentDescription, toLocation.environmentDescriptionAttribution, toLocation.environmentDescriptionAttributionLink
+                        toLocation.environmentDescription, toLocation.environmentDescriptionAttribution, toLocation.environmentDescriptionAttributionLink,
+                        $scope.getImagePath(toLocation.backgroundImageName),
+                        toLocation.backgroundImageAttribution, toLocation.backgroundImageAttributionLink
                     );
                     var toMarker = new google.maps.Marker({
                         position: toLatLng,

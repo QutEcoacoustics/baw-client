@@ -11,7 +11,8 @@
     "surveyLink": "nowhere-yet",
     "experimentResultsPostUri": "/experiments",
     "additionalResources" : {
-        "experiment_combination_counts": "/experiment_assets/bird_tour_counts.json"
+        "experiment_combination_counts": "/experiment_assets/bird_tour_counts.json",
+        "annotations_response_counts": "/experiment_assets/bird_tour_annotation_counts.json"
     },
     "experimentSteps": [
         {
@@ -137,7 +138,7 @@
             "distributionImageAttribution": "Birdlife International",
             "distributionImageAttributionLink": "http://bie.ala.org.au/species/urn:lsid:biodiversity.org.au:afd.taxon:d3c27152-9e37-49df-837c-051262010644",
             "description": "The Red-browed Pardalote (Pardalotus rubricatus) occupies the northern two-thirds of Australia. It is a fraction larger than the Forty-spotted Pardalote, at 10 to 12 cm, and is the least conspicuously coloured, being paler and combining the spotted skull-cap of the Spotted Pardalote with the striped wings of the Striated Pardalote. It is rare in the eastern part of its range but common in the northwest, where it prefers dry woodlands, mulga, and the trees along creek beds. The red-browed pardalote builds its nest underground at the end of a tunnel.",
-            "descriptionAttribution": "Wikipedia Article Contributors",
+            "descriptionAttribution": "Wikipedia",
             "descriptionAttributionLink": "http://en.wikipedia.org/wiki/Red-browed_Pardalote",
             "annotationIds":[]
         },

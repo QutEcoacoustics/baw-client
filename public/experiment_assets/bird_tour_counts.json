@@ -1,60 +1,102 @@
 {
-    "locations": {
-        "ABC": {
-            "count": 1,
-            "locations": ["A", "B", "C"]
-        },
-        "BCA": {
-            "count": 0,
-            "locations": ["B", "C", "A"]
-        },
-        "CAB": {
-            "count": 1,
-            "locations": ["C", "A", "B"]
-        },
-        "ACB": {
-            "count": 1,
-            "locations": ["A", "C", "B"]
-        },
-        "BAC": {
-            "count": 0,
-            "locations": ["B", "A", "C"]
-        },
-        "CBA": {
-            "count": 1,
-            "locations": ["C", "B", "A"]
-        }
+  "locations": {
+    "ABC": {
+      "count": 1,
+      "locations": [
+        "A",
+        "B",
+        "C"
+      ]
     },
-    "species": {
-        "A": {
-            "12": {
-                "count": 0,
-                "species": [1, 2]
-            },
-            "21": {
-                "count": 0,
-                "species": [2, 1]
-            }
-        },
-        "B": {
-            "12": {
-                "count": 0,
-                "species": [1, 2]
-            },
-            "21": {
-                "count": 1,
-                "species": [2, 1]
-            }
-        },
-        "C": {
-            "12": {
-                "count": 0,
-                "species": [1, 2]
-            },
-            "21": {
-                "count": 0,
-                "species": [2, 1]
-            }
-        }
+    "BCA": {
+      "count": 1,
+      "locations": [
+        "B",
+        "C",
+        "A"
+      ]
+    },
+    "CAB": {
+      "count": 1,
+      "locations": [
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    "ACB": {
+      "count": 1,
+      "locations": [
+        "A",
+        "C",
+        "B"
+      ]
+    },
+    "BAC": {
+      "count": 0,
+      "locations": [
+        "B",
+        "A",
+        "C"
+      ]
+    },
+    "CBA": {
+      "count": 1,
+      "locations": [
+        "C",
+        "B",
+        "A"
+      ]
     }
+  },
+  "species": {
+    "A": {
+      "12": {
+        "count": 15,
+        "species": [
+          1,
+          2
+        ]
+      },
+      "21": {
+        "count": 15,
+        "species": [
+          2,
+          1
+        ]
+      }
+    },
+    "B": {
+      "12": {
+        "count": 31,
+        "species": [
+          1,
+          2
+        ]
+      },
+      "21": {
+        "count": 15,
+        "species": [
+          2,
+          1
+        ]
+      }
+    },
+    "C": {
+      "12": {
+        "count": 15,
+        "species": [
+          1,
+          2
+        ]
+      },
+      "21": {
+        "count": 15,
+        "species": [
+          2,
+          1
+        ]
+      }
+    }
+  }
 }

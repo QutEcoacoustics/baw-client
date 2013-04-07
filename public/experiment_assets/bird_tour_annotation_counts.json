@@ -1,0 +1,52 @@
+{
+  "response1021502": {
+    "no": 0,
+    "yes": 1,
+    "unsure": 0
+  },
+  "response1021503": {
+    "no": 1,
+    "yes": 0,
+    "unsure": 0
+  },
+  "response102150": {
+    "no": 0,
+    "yes": 0,
+    "unsure": 1
+  },
+  "response1021501": {
+    "no": 0,
+    "yes": 0,
+    "unsure": 1
+  },
+  "response1021504": {
+    "no": 1,
+    "yes": 0,
+    "unsure": 0
+  },
+  "1021502": {
+    "no": 2,
+    "yes": 0,
+    "unsure": 1
+  },
+  "1021501": {
+    "no": 2,
+    "yes": 1,
+    "unsure": 0
+  },
+  "102150": {
+    "no": 1,
+    "yes": 0,
+    "unsure": 2
+  },
+  "1021504": {
+    "no": 2,
+    "yes": 0,
+    "unsure": 1
+  },
+  "1021503": {
+    "no": 1,
+    "yes": 1,
+    "unsure": 1
+  }
+}
