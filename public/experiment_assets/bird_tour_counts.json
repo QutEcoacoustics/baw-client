@@ -1,7 +1,7 @@
 {
   "locations": {
     "ABC": {
-      "count": 1,
+      "count": 0,
       "locations": [
         "A",
         "B",
@@ -17,7 +17,7 @@
       ]
     },
     "CAB": {
-      "count": 1,
+      "count": 0,
       "locations": [
         "C",
         "A",
@@ -25,7 +25,7 @@
       ]
     },
     "ACB": {
-      "count": 1,
+      "count": 0,
       "locations": [
         "A",
         "C",
@@ -33,7 +33,7 @@
       ]
     },
     "BAC": {
-      "count": 1,
+      "count": 0,
       "locations": [
         "B",
         "A",
@@ -41,7 +41,7 @@
       ]
     },
     "CBA": {
-      "count": 1,
+      "count": 0,
       "locations": [
         "C",
         "B",
@@ -52,14 +52,14 @@
   "species": {
     "A": {
       "12": {
-        "count": 1,
+        "count": 0,
         "species": [
           1,
           2
         ]
       },
       "21": {
-        "count": 1,
+        "count": 0,
         "species": [
           2,
           1
@@ -68,14 +68,14 @@
     },
     "B": {
       "12": {
-        "count": 1,
+        "count": 0,
         "species": [
           1,
           2
         ]
       },
       "21": {
-        "count": 1,
+        "count": 0,
         "species": [
           2,
           1
@@ -84,14 +84,14 @@
     },
     "C": {
       "12": {
-        "count": 1,
+        "count": 0,
         "species": [
           1,
           2
         ]
       },
       "21": {
-        "count": 1,
+        "count": 0,
         "species": [
           2,
           1

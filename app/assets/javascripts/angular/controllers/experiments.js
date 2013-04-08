@@ -660,8 +660,10 @@
             //=================
 
             var BASE_SPECTROGRAM_URL = "http://sensor.mquter.qut.edu.au/Spectrogram.ashx?ID={0}&start={1}&end={2}";
+            var BASE_LOCAL_SPECTROGRAM_URL = "/experiment_assets/bird_tour/media/{0}_{1}_{2}.jpg";
+
             var BASE_EXTERNAL_AUDIO_URL = "http://sensor.mquter.qut.edu.au/AudioReading.ashx?ID={0}&Type={3}&start={1}&end={2}";
-            var BASE_LOCAL_AUDIO_URL = "/experiment_assets/bird_tour/audio/{0}_{1}_{2}.{3}"; // for webm
+            var BASE_LOCAL_AUDIO_URL = "/experiment_assets/bird_tour/media/{0}_{1}_{2}.{3}"; // for webm
 
             var STEP_TYPE_TRANSITION = 'transition';
             var STEP_TYPE_ACTIVITY = 'activity';
@@ -854,8 +856,11 @@
             };
 
             $scope.getItemToVerifyForSpecies = function (speciesCommonName) {
+
+                var speciesInfo = $scope.getSpeciesInfo(speciesCommonName);
+
                 var annotations = angular.copy($scope.annotations.filter(function (element, index, array) {
-                    return element.type == ANNOTATION_TYPE_TO_VERIFY && element.speciesCommonName == speciesCommonName;
+                    return element.type == ANNOTATION_TYPE_TO_VERIFY && speciesInfo.annotationIds.indexOf(element.id) !== -1;
                 }));
 
                 $scope.addMediaUrlsToAnnotations(annotations);
@@ -885,7 +890,7 @@
                     var startMs = Math.max(0, value.offsetStart - SPECTROGRAM_PADDING_MS);
                     var endMs = value.offsetEnd + SPECTROGRAM_PADDING_MS;
 
-                    value.spectrogramImage = String.format(BASE_SPECTROGRAM_URL, value.audioId, startMs, endMs);
+                    value.spectrogramImage = String.format(BASE_LOCAL_SPECTROGRAM_URL, value.audioId, startMs, endMs);
                     value.audioWebm = String.format(BASE_LOCAL_AUDIO_URL, value.audioId, startMs, endMs, 'webm');
                     value.audioOga = String.format(BASE_EXTERNAL_AUDIO_URL, value.audioId, startMs, endMs, 'ogg');
                     value.audioMp3 = String.format(BASE_EXTERNAL_AUDIO_URL, value.audioId, startMs, endMs, 'mp3');
