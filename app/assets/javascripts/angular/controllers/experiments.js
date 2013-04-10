@@ -668,7 +668,6 @@
             var STEP_TYPE_TRANSITION = 'transition';
             var STEP_TYPE_ACTIVITY = 'activity';
 
-            var MAP_LINE_COLOUR = 'yellow';
 
             var ANNOTATION_TYPE_TO_VERIFY = 'toVerify';
             var ANNOTATION_TYPE_EXAMPLE = 'example';
@@ -739,7 +738,7 @@
                 $scope.bigScope.step = $scope.bigScope.step + 1;
 
                 // remove background image
-                if($scope.bigScope.results.steps.length === $scope.bigScope.step){
+                if ($scope.bigScope.results.steps.length === $scope.bigScope.step) {
                     angular.element(document.getElementById('page-wrapper')).css("background-image", '');
                 }
             };
@@ -778,6 +777,32 @@
                 $scope.moveAndShowToLocation();
             };
 
+            $scope.ensureMapDisplayedCorrectlyNoTimeout = function (map, latLng, zoom, marker, markerContent, markerTitle) {
+
+                google.maps.event.trigger(map, 'resize');
+
+                map.panTo(latLng);
+                map.setZoom(zoom);
+
+
+                if (marker && markerContent) {
+                    $scope.showMarkerInfo(map, marker, markerContent);
+                }
+
+                if (marker && markerTitle) {
+                    marker.setPosition(latLng);
+                    marker.setTitle(markerTitle);
+                }
+            };
+
+            $scope.ensureMapDisplayedCorrectly = function (map, latLng, zoom, marker, markerContent, markerTitle) {
+                var timeoutId = setTimeout(function () {
+                    $scope.$safeApply2(function () {
+                        $scope.ensureMapDisplayedCorrectlyNoTimeout(map, latLng, zoom, marker, markerContent, markerTitle);
+                    });
+                }, 600);
+            };
+
             //================
             // define functions for controller
             //=================
@@ -787,6 +812,7 @@
             };
 
             $scope.getLowestCountItem = function (containingObject) {
+                console.log('called $scope.getLowestCountItem', containingObject);
                 // find minimum
                 var minCount = null;
                 angular.forEach(containingObject, function (value, key) {
@@ -842,7 +868,7 @@
                 baw.shuffle(annotations);
 
                 // record order
-                for(var exampleAnnotationIndex = 0;exampleAnnotationIndex < annotations.length;exampleAnnotationIndex++){
+                for (var exampleAnnotationIndex = 0; exampleAnnotationIndex < annotations.length; exampleAnnotationIndex++) {
                     $scope.currentStepResults.annotationExampleOrder.push({
                         'index': exampleAnnotationIndex,
                         'step': $scope.step,
@@ -871,7 +897,7 @@
                 baw.shuffle(annotations);
 
                 // record order
-                for(var verifyAnnotationIndex = 0;verifyAnnotationIndex < annotations.length;verifyAnnotationIndex++){
+                for (var verifyAnnotationIndex = 0; verifyAnnotationIndex < annotations.length; verifyAnnotationIndex++) {
                     $scope.currentStepResults.annotationVerifyOrder.push({
                         'index': verifyAnnotationIndex,
                         'step': $scope.step,
@@ -897,37 +923,47 @@
                 });
             };
 
-            $scope.addResponseCounts = function(annotations){
+            $scope.addResponseCounts = function (annotations) {
                 angular.forEach(annotations, function (value, key) {
 
                     var response_counts = $scope.annotationResponseCounts[value.id];
 
-                    if(response_counts){
+                    if (response_counts) {
                         value.otherPeopleTotal = response_counts.total ? response_counts.total : 0;
                         value.otherPeopleYes = response_counts.yes ? response_counts.yes : 0;
                         value.otherPeopleNo = response_counts.no ? response_counts.no : 0;
                         value.otherPeopleUnsure = response_counts.unsure ? response_counts.unsure : 0;
 
-                        console.log(value);
-                    }else{
+                        //console.log(value);
+                    } else {
                         value.otherPeopleTotal = 0;
                         value.otherPeopleYes = 0;
                         value.otherPeopleNo = 0;
                         value.otherPeopleUnsure = 0;
                     }
-                    /*
 
 
-                    $scope.annotationResponseCounts
-*/
-
-
-                    /*
-                    .filter(function (element, index, array) {
-                        return element.type == ANNOTATION_TYPE_EXAMPLE && element.speciesCommonName == speciesCommonName;
+                    if (value.otherPeopleTotal > 0) {
+                        // now calculate percentages
+                        value.otherPeopleYes = value.otherPeopleYes / value.otherPeopleTotal * 100;
+                        value.otherPeopleNo = value.otherPeopleNo / value.otherPeopleTotal * 100;
+                        value.otherPeopleUnsure = value.otherPeopleUnsure / value.otherPeopleTotal * 100;
                     }
-                    $scope.annotatonResponseCounts['id']
-                    */
+
+
+                    /*
+
+
+                     $scope.annotationResponseCounts
+                     */
+
+
+                    /*
+                     .filter(function (element, index, array) {
+                     return element.type == ANNOTATION_TYPE_EXAMPLE && element.speciesCommonName == speciesCommonName;
+                     }
+                     $scope.annotatonResponseCounts['id']
+                     */
                 });
             };
 
@@ -1008,20 +1044,20 @@
                 return null;
             };
 
-            $scope.createMap = function (elementId, lat, longitude, zoom) {
+            $scope.createMap = function (elementId, LatLng, zoom) {
                 return new google.maps.Map(
                     document.getElementById(elementId),
                     {
-                        center: new google.maps.LatLng(lat, longitude),
+                        center: LatLng,
                         zoom: zoom,
                         mapTypeId: google.maps.MapTypeId.HYBRID
                     }
                 );
             };
 
-            $scope.createMarker = function (map, lat, longitude, title) {
+            $scope.createMarker = function (map, LatLng, title) {
                 return new google.maps.Marker({
-                    position: new google.maps.LatLng(lat, longitude),
+                    position: LatLng,
                     map: map,
                     title: title
                 });
@@ -1042,14 +1078,14 @@
 
                         fromDetails = $scope.getTransitionMarkerDetails($scope.currentStepResults.fromLocation.name);
 
-                        $scope.showMarkerInfo($scope.transitionMap, fromDetails.marker, fromDetails.content);
 
-                        $scope.transitionMap.panTo(fromLatLng);
-                        $scope.transitionMap.setZoom(BASE_ZOOM);
+                        $scope.ensureMapDisplayedCorrectly($scope.transitionMap, fromLatLng, BASE_ZOOM,
+                            fromDetails.marker, fromDetails.content);
+
                     } else {
                         // first waypoint, start at middle of australia
                         $scope.transitionMap.panTo(new google.maps.LatLng(-24.287027, 134.208984));
-                        $scope.transitionMap.setZoom(BASE_ZOOM);
+                        $scope.transitionMap.setZoom(4);
                     }
                 }
             };
@@ -1074,28 +1110,28 @@
                         angular.element(document.getElementById('page-wrapper'))
                             .css("background-image", "url('" + $scope.getImagePath(toLocation.backgroundImageName) + "')");
 
-                        $scope.showMarkerInfo($scope.transitionMap, toDetails.marker, toDetails.content);
-
-                        $scope.transitionMap.panTo(toLatLng);
-                        $scope.transitionMap.setZoom(BASE_ZOOM);
+                        $scope.ensureMapDisplayedCorrectly($scope.transitionMap, toLatLng, BASE_ZOOM,
+                            toDetails.marker, toDetails.content);
 
                         $scope.showContinueButton = true;
                     }
                 }
             };
 
-            $scope.getImagePath = function(imageFileName){
+            $scope.getImagePath = function (imageFileName) {
                 return '/experiment_assets/bird_tour/' + imageFileName;
             };
+
 
             //================
             // perform set up
             //=================
 
             // create and init maps and markers
-            $scope.locationMap = $scope.createMap('locationMap', -24.287027, 134.208984, 4);
-            $scope.transitionMap = $scope.createMap('transitionMap', -24.287027, 134.208984, 4);
-            $scope.locationMarker = $scope.createMarker($scope.locationMap, -24.287027, 134.208984, 'Australia');
+            var middleAustralia = new google.maps.LatLng(-24.287027, 134.208984);
+            $scope.transitionMap = $scope.createMap('transitionMap', middleAustralia, CURRENT_LOCATION_ZOOM);
+            $scope.locationMap = $scope.createMap('locationMap', middleAustralia, CURRENT_LOCATION_ZOOM);
+            $scope.locationMarker = $scope.createMarker($scope.locationMap, middleAustralia, $scope.currentLocationName);
 
             // get order for locations and species
             // use the downloaded stats to configure the experiment
@@ -1228,14 +1264,10 @@
                         $scope.currentVerify = $scope.getItemToVerifyForSpecies($scope.currentSpecies.commonName);
 
                         // change the map
-                        $scope.locationMap.setZoom(CURRENT_LOCATION_ZOOM);
-                        $scope.locationMap.panTo(
-                            new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
+                        var theNewLocation = new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long);
 
-                        // change the marker
-                        $scope.locationMarker.setPosition(
-                            new google.maps.LatLng($scope.currentLocation.lat, $scope.currentLocation.long));
-                        $scope.locationMarker.setTitle($scope.currentLocationName);
+                        $scope.ensureMapDisplayedCorrectly($scope.locationMap, theNewLocation, CURRENT_LOCATION_ZOOM,
+                            $scope.locationMarker, null, $scope.currentLocationName);
 
                         // user has clicked on Done button
                         $scope.doneButtonClicked = false;
@@ -1251,6 +1283,10 @@
             //================
             // create and store all locations for transition map
             //=================
+
+            var MAP_LINE_COLOUR = 'yellow';
+            var MAP_POINT_COLOUR = '#FF7F50';
+            var MAP_LINE_ARROW_COLOUR = '#FFA500';
 
             // get array of steps that are transitions, then create all markers and arrows
             var transitionLocations = $scope.bigScope.results.steps.filter(function (element, index, array) {
@@ -1292,10 +1328,9 @@
                         icon: {
                             path: google.maps.SymbolPath.CIRCLE,
                             scale: 5,
-                            fillOpacity: 0.7,
-                            fillColor: MAP_LINE_COLOUR,
-                            strokeOpacity: 0.7,
-                            strokeColor: MAP_LINE_COLOUR
+                            fillOpacity: 1,
+                            //fillColor: MAP_POINT_COLOUR,
+                            strokeColor: MAP_POINT_COLOUR
                         }
                     });
 
@@ -1313,15 +1348,18 @@
 
                     var arrowSymbol = {
                         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                        strokeColor: MAP_LINE_COLOUR,
-                        strokeOpacity: 0.7
+                        strokeColor: MAP_LINE_ARROW_COLOUR,
+                        fillColor: MAP_LINE_ARROW_COLOUR,
+                        fillOpacity: 1,
+                        strokeOpacity: 1,
+                        strokeWeight: 1
                     };
 
                     var lineSymbol = {
                         path: 'M 0,-1 0,1',
                         strokeColor: MAP_LINE_COLOUR,
-                        strokeOpacity: 0.7,
-                        scale: 4
+                        strokeOpacity: 1,
+                        strokeWeight: 2
                     };
 
                     var line = new google.maps.Polyline({
@@ -1339,7 +1377,7 @@
                             },
                             {
                                 icon: arrowSymbol,
-                                offset: '100%'
+                                offset: '95%'
                             }
                         ],
                         map: $scope.transitionMap
