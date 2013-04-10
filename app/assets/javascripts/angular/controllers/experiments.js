@@ -682,15 +682,25 @@
             $scope.bigScope.blackList = $scope.bigScope.blackList || [];
             $scope.bigScope.blackList = $scope.bigScope.blackList.concat(
                 [
-                    'notes',
-                    '$$hashKey',
-                    "template",
-                    "notes",
-                    "extraInstructions",
-                    "imageLink",
-                    "show",
-                    "downloaded"
-
+                    'faunaImage',
+                    'faunaImageAttribution',
+                    'faunaImageAttributionLink',
+                    'distributionImage',
+                    'distributionImageAttribution',
+                    'distributionImageAttributionLink',
+                    'description',
+                    'descriptionAttribution',
+                    'descriptionAttributionLink',
+                    "locationDescription",
+                    "locationDescriptionAttribution",
+                    "locationDescriptionAttributionLink",
+                    "backgroundImageName",
+                    "backgroundImageAttribution",
+                    "backgroundImageAttributionLink",
+                    "environmentType",
+                    "environmentDescription",
+                    "environmentDescriptionAttribution",
+                    "environmentDescriptionAttributionLink"
                 ]
             );
 

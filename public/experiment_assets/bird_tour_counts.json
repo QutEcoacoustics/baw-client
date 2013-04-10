@@ -1,7 +1,7 @@
 {
   "locations": {
     "ABC": {
-      "count": 0,
+      "count": 1,
       "locations": [
         "A",
         "B",
@@ -25,7 +25,7 @@
       ]
     },
     "ACB": {
-      "count": 0,
+      "count": 1,
       "locations": [
         "A",
         "C",
@@ -52,14 +52,14 @@
   "species": {
     "A": {
       "12": {
-        "count": 0,
+        "count": 1,
         "species": [
           1,
           2
         ]
       },
       "21": {
-        "count": 0,
+        "count": 1,
         "species": [
           2,
           1
@@ -68,14 +68,14 @@
     },
     "B": {
       "12": {
-        "count": 0,
+        "count": 1,
         "species": [
           1,
           2
         ]
       },
       "21": {
-        "count": 0,
+        "count": 1,
         "species": [
           2,
           1
@@ -84,14 +84,14 @@
     },
     "C": {
       "12": {
-        "count": 0,
+        "count": 1,
         "species": [
           1,
           2
         ]
       },
       "21": {
-        "count": 0,
+        "count": 1,
         "species": [
           2,
           1

@@ -31,6 +31,8 @@ class ExperimentsController < ApplicationController
   BIRD_TOUR_COUNTS           = 'bird_tour_counts.json'
   ANNOTATION_RESPONSE_COUNTS = 'bird_tour_annotation_counts.json'
 
+  EXPERIMENTS_SAVE_BIRD_TOUR_DIRECTORY = File.join(EXPERIMENTS_SAVE_DIRECTORY, 'bird_tour')
+
   def create
     success = nil
 
@@ -42,9 +44,24 @@ class ExperimentsController < ApplicationController
 
     if success.nil?
       FileUtils.makedirs EXPERIMENTS_SAVE_DIRECTORY
-      File.open(File.join(EXPERIMENTS_SAVE_DIRECTORY, Time.now.to_f.to_s + '.json'), 'w') { |file|
-        file.write post_data
-      }
+      FileUtils.makedirs EXPERIMENTS_SAVE_BIRD_TOUR_DIRECTORY
+
+      if params[:experiment] && params[:experiment] == 'Virtual bird tour experiment'
+
+        File.open(File.join(EXPERIMENTS_SAVE_BIRD_TOUR_DIRECTORY, Time.now.to_f.to_s + '.json'), 'w') { |file|
+          file.write post_data
+        }
+
+      elsif params[:experiment] && params[:experiment] == 'Rapid Spectrogram Scanning Experiment'
+
+        File.open(File.join(EXPERIMENTS_SAVE_DIRECTORY, Time.now.to_f.to_s + '.json'), 'w') { |file|
+          file.write post_data
+        }
+      else
+        raise "Did not save results. Did not get matching experiment name."
+      end
+
+
 
       success = true
 
