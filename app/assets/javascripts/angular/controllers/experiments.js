@@ -66,7 +66,7 @@
                 var maxAttempts = 5;
 
                 function downloadRecursive(attemptsLeft, resource, storeProperty) {
-                    if (attemptsLeft >= 0) {
+                    if (attemptsLeft > 0) {
                         $http.get(resource + "?antiCache=" + Date.now().toString())
                             .success(function (data, status, headers, config) {
                                 $scope.spec.additionalResources[storeProperty] = data;

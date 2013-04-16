@@ -347,7 +347,14 @@ img.simpleImage {
 
     /* http://stackoverflow.com/questions/2293910/css3-transparency-gradient */
     background: #ADC7A5; /* Old browsers */
-    background: -webkit-linear-gradient(top, rgba(173, 199, 165, 0.7) 0%, rgba(212, 222, 184, 0.7) 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-linear-gradient(top, rgba(173,199,165,0.7) 0%, rgba(212,222,184,0.7) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(173,199,165,0.7)), color-stop(100%,rgba(212,222,184,0.7))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(173,199,165,0.7) 0%,rgba(212,222,184,0.7) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(173,199,165,0.7) 0%,rgba(212,222,184,0.7) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(173,199,165,0.7) 0%,rgba(212,222,184,0.7) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(173,199,165,0.7) 0%,rgba(212,222,184,0.7) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3adc7a5', endColorstr='#b3d4deb8',GradientType=0 ); /* IE6-9 */
+
 }
 
 .annotationResponses ul {
