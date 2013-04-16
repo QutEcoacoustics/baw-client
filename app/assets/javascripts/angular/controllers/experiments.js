@@ -27,7 +27,8 @@
             $scope.results = {
                 allowContact: true,
                 consented: false,
-                ethicsStatementViewed: false
+                ethicsStatementViewed: false,
+                pageHit: (new Date()).toISOString()
             };
             $scope.errors = [];
             $scope.spec = {

@@ -54,7 +54,7 @@ class ExperimentsController < ApplicationController
 
       elsif params[:experiment] && params[:experiment] == 'Rapid Spectrogram Scanning Experiment'
 
-        File.open(File.join(EXPERIMENTS_SAVE_DIRECTORY, Time.now.to_f.to_s + '.json'), 'w') { |file|
+        File.open(File.join(EXPERIMENTS_SAVE_DIRECTORY, 'b' + Time.now.to_f.to_s + '.json'), 'w') { |file|
           file.write post_data
         }
       else
