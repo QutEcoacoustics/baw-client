@@ -238,7 +238,6 @@
                     "template",
                     "notes",
                     "extraInstructions",
-                    "imageLink",
                     "show",
                     "downloaded"
 
@@ -609,6 +608,7 @@
                         segments.push({
                                 start: start,
                                 end: end,
+                                audioId: segment.audioId,
                                 imageLink: imageUrl,
                                 show: false,
                                 detected: null,
