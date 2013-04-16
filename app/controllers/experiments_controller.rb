@@ -162,7 +162,7 @@ class ExperimentsController < ApplicationController
       if counts['species'].has_key?(species_key)
         current = counts['species'][species_key][species_value]['count']
         current = current + 1
-        counts['species'][species_key][species_value]['count'] += current
+        counts['species'][species_key][species_value]['count'] = current
       end
     }
 
