@@ -157,7 +157,7 @@
 
 .countDownTimer {
     position: absolute;
-    right: 0px;
+    right: 30px;
     top: -120px;
     width: 100px;
     height: 120px;
@@ -379,9 +379,18 @@
                 Koala
                 vocalisations are present in the image or not.
                 <br/>
-                To indicate that you have not seen any Koalas press the <em>&lt;left arrow&gt;</em> key.
-                <br/>
-                To indicate that you saw one or more Koalas press the <em>&lt;right arrow&gt;</em> key.
+                <span ng-switch on="bigScope.results.yesOnly">
+                    <span ng-switch-when="false">
+                        To indicate that you have not seen any Koalas press the <em>&lt;left arrow&gt;</em> key.
+                        <br/>
+                        To indicate that you saw one or more Koalas press the <em>&lt;right arrow&gt;</em> key.
+                    </span>
+                    <span ng-switch-when="true">
+                        To indicate that you saw one or more Koalas press the <em>&lt;right arrow&gt;</em> key.
+                        <br/>
+                        To un-indicate (change your answer) press the <em>&lt;left arrow&gt;</em> key.
+                    </span>
+                </span>
             </p>
 
             <p>
@@ -471,10 +480,10 @@
                     <!-- baw-image-loaded="segment.downloaded"-->
 
                     <div>
-                        <span style="float:left">Starting time: <span class="relative-chunk-time hint--bottom">{{ft(segment.start)}}</span></span>
+                        <span style="float:left">Starting time: <span class="relative-chunk-time hint--right">{{ft(segment.start)}}</span></span>
 
                         Duration: <span class="duration hint--bottom">{{ft(segment.end - segment.start)}}</span>
-                        <span style="float:right">Ending time: <span class="relative-chunk-time hint--bottom">{{ft(segment.end)}}</span></span>
+                        <span style="float:right">Ending time: <span class="relative-chunk-time hint--left">{{ft(segment.end)}}</span></span>
                     </div>
 
                     <p ng-hide="showDoneButton" class="instructions">
@@ -482,15 +491,17 @@
                         vocalisation
                     </p>
 
-                    <div class="clear-pseudo">
-                        <div class="detection" ng-class="{'foundNegative': segment.detected == 'negative'}">
+                    <div class="clear-pseudo" ng-switch on="bigScope.results.yesOnly">
+                        <div ng-switch-when="false" class="detection" ng-class="{'foundNegative': segment.detected == 'negative'}">
                             <p ng-hide="segment.detected == 'negative'">I see no {{stepResults.patternName}}s
                                 <br/><em>&lt;left arrow&gt;</em>
                             </p>
 
                             <p ng-show="segment.detected == 'negative'">I see no {{stepResults.patternName}}s</P>
                         </div>
-                        <div class="detection" ng-class="{'foundPositive': segment.detected == 'positive' }">
+                        <div class="detection"
+                             ng-class="{'foundPositive': segment.detected == 'positive' }"
+                             ng-style="{'float':bigScope.results.yesOnly && 'none' || undefined}"   >
                             <p ng-hide="segment.detected == 'positive' ">I see a {{stepResults.patternName}}
                                 <br/><em>&lt;right arrow&gt;</em></P>
 

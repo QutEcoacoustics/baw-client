@@ -21,6 +21,7 @@
         { "speed": 1, "notes" : "<strong>Warning this test is extremely difficult. Do not be discouraged; there are other, easier, tests.</strong>"},
         { "speed": 5, "notes" : "This test will be slow. Please be patient :-)"}
     ],
+    "yesOnly": false,
     "experimentSteps": [
         {
             "id": "training",

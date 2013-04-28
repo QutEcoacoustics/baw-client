@@ -1,0 +1,213 @@
+{
+    "experiment": "Rapid Spectrogram Scanning Extended Experiment",
+    "version": 0.1,
+    "countDown": 5,
+    "additionalResources" : {
+        "experiment_combination_counts": "/experiment_assets/rapid_scan_long_counts.json"
+    },
+    "instructions": [
+        "The purpose of this experiment is to evaluate the effectiveness of mass audio data analysis using human participants",
+        "We have a lot of recorded audio and we need your help to analyse it. <br/> We want to measure how fast a participant (like you) can sift through our data to find interesting events. In this case, we will be searching for Koala calls.",
+        "This experiment is designed to measure how quickly acoustic events of interest can be detected",
+        "This is a timed experiment. You are encouraged to work as quickly as you can whilst maintaining accuracy",
+
+        "<strong>THIS IS AN EXTENDED EXPERIMENT. DO NOT COMPLETE IT UNLESS ASKED TO DO SO.</strong>",
+        "In total the experiment should take just under 70 minutes",
+        "You should have no need for external resources (images, audio recordings, or field guides) during the experiment",
+        "If you have any trouble completing this experiment please contact: <br />Anthony Truskinger<br /><a href='mailto:anthony.truskinger@student.qut.edu.au' >anthony.truskinger@student.qut.edu.au</a> <br/> 07 3138 9340"
+    ],
+    "speeds": [
+        { "speed": 2, "notes" : ""}
+    ],
+    "yesOnly": true,
+    "experimentSteps": [
+        {
+            "id": "training",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala flashcards, TRAINING ROUND",
+            "type": "flashing",
+            "segments" : [
+                {
+                    "audioId": "230FA545-DCC9-46AC-B87F-1F9AD5C3DEC3",
+                    "startTime": 0,
+                    "endTime": 72
+                }
+            ],
+            "compression": 1,
+            "speed": {"speed": 10.0, "notes": ""},
+            "patternName": "Koala",
+            "extraInstructions": "Results are not counted in this round.",
+            "randomiseOrder": false
+        },
+        {
+            "id": "DS10",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set A",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    0	    , "endTime": 3600}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS11",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set B",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    3600	    , "endTime": 7200}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS12",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set C",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    7200	    , "endTime": 10800}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS13",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set D",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    10800	    , "endTime": 14400}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS14",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set E",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    14400	    , "endTime": 18000}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS15",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set F",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    18000	    , "endTime": 21600}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS16",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set G",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    21600	    , "endTime": 25200}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS17",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set H",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    25200	    , "endTime": 28800}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS18",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set I",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    28800	    , "endTime": 32400}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS19",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set J",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    32400	    , "endTime": 36000}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS20",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 150 flashcards / 60min - Set K",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    36000	    , "endTime": 39600}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 5 minutes",
+            "randomiseOrder" : false
+        },
+        {
+            "id": "DS21",
+            "template": "/assets/rapid_scanning_experiment.html",
+            "name": "Koala - 140 flashcards / 56min - Set L",
+            "type": "flashing",
+            "segments" : [
+                {"audioId": "EB9BD59D-C198-44EC-AB80-FA7078AD3D17", "startTime":    39600	    , "endTime": 42960}
+            ],
+            "compression": 1,
+            "speed": "random",
+            "patternName": "Koala",
+            "extraInstructions": "This section will last for 4.67 minutes",
+            "randomiseOrder" : false
+        }
+    ],
+    "experimentResultsPostUri": "/experiments",
+    "surveyLink": "http://survey.qut.edu.au/f/176572/2045/"
+}

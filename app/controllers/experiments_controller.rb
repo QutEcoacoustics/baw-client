@@ -57,6 +57,11 @@ class ExperimentsController < ApplicationController
         File.open(File.join(EXPERIMENTS_SAVE_DIRECTORY, 'b' + Time.now.to_f.to_s + '.json'), 'w') { |file|
           file.write post_data
         }
+      elsif params[:experiment] && params[:experiment] == 'Rapid Spectrogram Scanning Extended Experiment'
+
+        File.open(File.join(EXPERIMENTS_SAVE_DIRECTORY, 'e' + Time.now.to_f.to_s + '.json'), 'w') { |file|
+          file.write post_data
+        }
       else
         raise "Did not save results. Did not get matching experiment name."
       end
@@ -87,6 +92,10 @@ class ExperimentsController < ApplicationController
         end
 
       end
+
+      # there's only one case for the extended experiment, so don't bother updating the counts
+
+    # end if.success
     end
 
     respond_to do |format|

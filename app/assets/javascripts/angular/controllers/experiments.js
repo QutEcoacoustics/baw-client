@@ -28,7 +28,8 @@
                 allowContact: true,
                 consented: false,
                 ethicsStatementViewed: false,
-                pageHit: (new Date()).toISOString()
+                pageHit: (new Date()).toISOString(),
+
             };
             $scope.errors = [];
             $scope.spec = {
@@ -41,7 +42,14 @@
 
 
             // download experiment protocol
-            var experiment = $routeParams.experiment == "tour" ? '/experiment_assets/bird_tour.json' : '/experiment_assets/rapid_scan.json';
+            var experiment;
+            if ($routeParams.experiment == "tour") {
+                experiment = '/experiment_assets/bird_tour.json';
+            } else if ($routeParams.experiment == "rapidScanExtended") {
+                experiment = '/experiment_assets/rapid_scan_long.json';
+            } else {
+                experiment = '/experiment_assets/rapid_scan.json';
+            }
             experiment += "?antiCache=" + Date.now().toString();
             $http.get(experiment).
                 success(function (data, status, headers, config) {
@@ -247,6 +255,8 @@
 
             //$scope.bigScope.results.steps = angular.copy($scope.bigScope.spec.experimentSteps);
             $scope.bigScope.results.version = $scope.bigScope.spec.version;
+            $scope.bigScope.results.yesOnly = $scope.bigScope.spec.yesOnly;
+
 
             // use the downloaded stats to configure the experiment
             // find minimum
