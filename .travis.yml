@@ -25,6 +25,7 @@ before_install:
   - mp3splt -version
   - sox --version
   #- wvunpack --help # can't run this, coz it returns an non-zero exit code (WTF?)
+  - gem install bundler --no-ri --no-rdoc # just in case bundler needs to update
   - echo "Before install done."
 script:
 #  - ls -la
