@@ -1,0 +1,12 @@
+{
+    "name": "baw-client",
+    "description": "The angular client for the QUT Bioacoustics server",
+    "devDependencies": {
+        "phantomjs" : "*",
+        "karma" : "*",
+        "karma-junit-reporter" : "*",
+        "karma-jasmine" : "*",
+        "karma-ng-scenario" : "*"
+    },
+    "private": true
+}

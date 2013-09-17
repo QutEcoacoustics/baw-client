@@ -1,35 +1,14 @@
-language: ruby
-bundler_args: --without development
-rvm:
-  - 1.9.3
-#  - 1.9.2
-#  - 1.8.7
-#  - jruby-18mode # JRuby in 1.8 mode
-#  - jruby-19mode # JRuby in 1.9 mode
-#  - rbx-18mode
-#  - rbx-19mode 
-branches:
-  only:
-    - 'master'
-gemfile:
-  - Gemfile
-before_install:
-  - echo "Installing audio tools."
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 16126D3A3E5C1192
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq libav-tools ffmpeg mp3splt sox wavpack --fix-missing
-  - echo "Testing for audio tools."
-  - avconv -version
-  - ffmpeg -version
-  - mp3splt -version
-  - sox --version
-  #- wvunpack --help # can't run this, coz it returns an non-zero exit code (WTF?)
-  - gem install bundler --no-ri --no-rdoc # just in case bundler needs to update
-  - echo "Before install done."
+language: node_js
+node_js:
+  - 0.1
+
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - npm install --quiet -g karma
+  - ./scripts/web-server.js > /dev/null &
+  - sleep 1 # give server time to start
+
 script:
-#  - ls -la
-  - RAILS_ENV=test bundle exec rake db:migrate --trace
-  - RAILS_ENV=test bundle exec rake --trace
-notifications:
-  webhooks: http://build.ecosounds.org/build
+  - karma start config/karma.conf.js --no-auto-watch --single-run --reporters=dots --browsers=Firefox
+  - karma start config/karma-e2e.conf.js --reporters=dots --browsers=Firefox
