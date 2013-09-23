@@ -6,6 +6,12 @@
   <meta name="description" content="" />
 
   <!-- todo add back in assets -->
+  <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
+  <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
+
+  <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
+  <script type="text/javascript" src="<%= file %>"></script><% }); %>
+  
   <!--<script src="https://login.persona.org/include.js"></script>-->
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWT_qg_GDQVSlQB9O_1CEQf8l4bErP5Ek&sensor=false"></script>
 
@@ -112,7 +118,7 @@
 </div>
 
 <footer>
-  Bio-Acoustic Workbench, an open source eScience initiative.
+  Bio-Acoustic Workbench, an open source eScience initiative. v<%= version %>
 </footer>
 </body>
 </html>
