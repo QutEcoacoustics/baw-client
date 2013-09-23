@@ -1,0 +1,73 @@
+<div id="content" data-ng-controller="SiteCtrl">
+    <h2>Site</h2>
+
+    <p>{{editing | boolToWords:'Editing site.':'The details for a site.'}}</p>
+
+    <a href="/sites">Sites</a>
+
+    <p>
+        <a ng-hide="editing" ng-href="{{links.edit}}">edit</a>
+    </p>
+
+    <div ng-hide="editing">
+        <h3>{{site.name}}</h3>
+
+        <p>
+            Projects: <span ng-repeat="p in site.projects"> <a ng-href="/projects/{{p.id}}">{{p.name}}</a>{{!$last | boolToWords:', '}}</span>
+        </p>
+
+        <p>
+            <a ng-href="{{downloadAnnotationLink}}" target="_blank" >Download</a> all annotations from this site.
+        </p>
+
+
+        <p>
+            <img src="http://maps.googleapis.com/maps/api/staticmap?center={{site.latitude}},{{site.longitude}}&zoom=12&size=250x250&maptype=hybrid&sensor=false">
+        </p>
+        <p ng-bind="site.latitude" ></p>
+        <p ng-bind="site.longitude" ></p>
+
+        <p>Number of recordings: {{site.audioRecordings.length}}
+
+        <ul>
+        <li ng-repeat="ar in audioRecordings" >
+         <a ng-href="/listen/{{ar.uuid}}">{{ar.recordedDate}},&nbsp;{{ar.durationSeconds}}</a>
+        </li>
+    </ul>
+
+        <pre>{{site.notes}}</pre>
+
+        <h4>Images</h4>
+        <a target="_blank" ng-repeat="photo in site.photos" ng-href="{{photo.uri}}">
+            <img class="large-image" ng-src="{{photo.uri}}" />
+        </a>
+    </div>
+
+    <div ng-show="editing">
+        <form id="site_edit_form" novalidate>
+            <label>
+                <span>Name</span>
+                <input type="text" ng-model="site.name" required maxlength="50">
+            </label>
+            <label>
+                <span>Latitude</span>
+                <input type="number" ng-model="site.latitude" required maxlength="15">
+            </label>
+            <label>
+                <span>Longitude</span>
+                <input type="number" ng-model="site.longitude" required maxlength="15">
+            </label>
+            <label>
+                <span>Notes</span>
+                <textarea baw-json-binding ng-model="site.notes"></textarea>
+            </label>
+
+            <br><br>
+            <button ng-click="update(site)">Save</button>
+            <button ng-click="reset()">Reset</button>
+            <button><a ng-href="{{links.details}}">Cancel</a></button>
+            <button ng-click="delete()">Delete</button>
+        </form>
+    </div>
+    <baw-record-information ng-model="site" ></baw-record-information>
+</div>

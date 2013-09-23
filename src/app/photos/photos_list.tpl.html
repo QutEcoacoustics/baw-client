@@ -1,0 +1,20 @@
+<div id="content" data-ng-controller="PhotosCtrl">
+    <h1>Photo List</h1>
+
+    <p>These are the available photos.</p>
+
+    <a href="/">Home</a>
+
+    <ul class="item-list">
+        <li data-ng-repeat="photo in photos">
+            <div class="item-text">
+                <h3><a data-ng-href="/photos/{{photo.id}}" title="source: {{photo.uri}}">{{photo.description}}</a></h3>
+                <p>({{photo.copyright}})</p>
+                <small>Updated {{photo.updatedAt}}</small>
+            </div>
+            <div class="item-image">
+                <img class="tile-image" ng-src="{{photo.uri}}" >
+            </div>
+        </li>
+    </ul>
+</div>

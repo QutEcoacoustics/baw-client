@@ -1,0 +1,9 @@
+<div id="content" data-ng-controller="UserCtrl">
+    <h2>{{user.displayName}}</h2>
+
+<p>Display Name: {{user.displayName}}</p>
+    <p>User Name: {{user.userName}}</p>
+    <p>Last updated: {{lastModifiedDisplay}}</p>
+    <p ng-hide="{{user.isFakeEmail}}">If we need to contact you, we'll email you on {{user.email}}.</p>
+    <p ng-show="{{user.isFakeEmail}}">We do not have your email address stored.</p>
+    </div>

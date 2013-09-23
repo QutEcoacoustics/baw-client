@@ -1,0 +1,11 @@
+<div id="content" data-ng-controller="RecordingCtrl">
+    <h2>Audio Recording</h2>
+
+    <p>The details for an audio recording.</p>
+
+    <a href="/recordings">Audio Recordings</a>
+    <a href="/">Home</a>
+<h3>Audio Recording {{recording.id}}</h3>
+<img src="/media/{{recording.uuid}}_0_10_0_11025_256_g.png" />
+<a data-ng-href="/media/{{recording.uuid}}_0_10_0_11025.webm">audio</a>
+</div>
