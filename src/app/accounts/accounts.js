@@ -1,8 +1,6 @@
-"use strict";
-
-
 ;
 (function (undefined) {
+    "use strict";
     var app = angular.module('bawApp.controllers');
 
     app.controller('AccountsCtrl', ['$scope', '$resource', '$routeParams',

@@ -160,14 +160,14 @@ module.exports = function ( grunt ) {
        * The `build_css` target concatenates compiled CSS and vendor CSS
        * together.
        */
-      build_css: {
-        src: [
-          '<%= vendor_files.css %>',
-          '<%= recess.build.dest %>',
-          '<%= compass.build.dest %>'
-        ],
-        dest: '<%= compass.build.dest %>'
-      },
+       // build_css: {
+       //   src: [
+       //     '<%= vendor_files.css %>',
+       //     /*'<%= recess.build.dest %>',*/
+       //     /*'<%= compass.build.dest %>'*/
+       //   ],
+       //   dest: '<%= compass.cssDir %>'
+       // },
       /**
        * The `compile_js` target is the concatenation of our application source
        * code and all specified vendor source code into a single file.
@@ -404,8 +404,8 @@ module.exports = function ( grunt ) {
           '<%= html2js.common.dest %>',
           '<%= html2js.app.dest %>',
           '<%= vendor_files.css %>',
-          '<%= recess.build.dest %>',
-          '<%= compass.build.dest %>'
+          /*'<%= recess.build.dest %>',*/
+          /*'<%= compass.dist %>'*/
         ]
       },
 
@@ -591,7 +591,7 @@ module.exports = function ( grunt ) {
    */
   grunt.registerTask( 'build', [
     'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', /*'recess:build',*/ 'compass:build',
-    'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
+    /*'concat:build_css',*/ 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
     'karma:continuous' 
   ]);

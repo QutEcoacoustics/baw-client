@@ -1,0 +1,25 @@
+/**
+ * This is the main application stylesheet. It should include or import all
+ * stylesheets used throughout the application as this is the only stylesheet in
+ * the Grunt configuration that is automatically processed.
+ */
+
+/**
+* First, we include jlong's Twitter Bootstrap SCSS files. Only the ones used in the
+* project should be imported as the rest are just wasting space.
+*/
+
+@import '../../vendor/sass-bootstrap/lib/bootstrap.scss';
+
+
+
+@import "base.scss";
+@import "dynamic";
+
+@import "layout";
+
+
+@import "time_formats";
+
+//@import "partials/*";
+

@@ -1,5 +1,10 @@
 @import 'base';
 
+.hint {
+  // dummy class to get rid of warning
+  background-color: white;
+}
+
 @mixin arrow-border-color($color, $isInsideSelector: "true") {
   @each $position in top, bottom, left, right {
   // if the current mixin is called from within a selector, use a '&'. Otherwise not.
