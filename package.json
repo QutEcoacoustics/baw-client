@@ -1,7 +1,7 @@
 {
   "author": "Anthony Truskinger",
   "name": "baw-client",
-  "version": "",
+  "version": "0.0.3",
   "description": "The AngularJS client for the QUT Bioacoustics server",
   "licenses": {
     "type": "Apache",
@@ -28,6 +28,7 @@
     "grunt-coffeelint": "0.0.6",
     "grunt-conventional-changelog": "~0.1.1",
     "grunt-bump": "0.0.6"
+
   },
   "private": true
 }

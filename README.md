@@ -4,7 +4,7 @@ baw-client
 The AngularJS client for the bioacoustic workbench
 
 
-# Install instructions
+## Install instructions
 	$ npm -g install grunt-cli karma bower
 
 cd to your cloned directory and then
@@ -15,17 +15,18 @@ cd to your cloned directory and then
 
 To add new bower packages
 
-	$ bower install
+	$ bower install xxxx --save-dep
 
+You'll also have to configure `build.config.js` when adding any new packages to vendor directory.
 	
 
-To develop:
+## To develop:
 
 	$ grunt watch
 
 and browse to `localhost:8080`
 
-To build:
+## To build:
 
 	$ grunt compile
 

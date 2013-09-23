@@ -2,18 +2,22 @@
 <html ng-app="baw">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= content_for?(:title) ? yield(:title) : "Baw Site" %></title>
+  <title>Bioacoustics Workbench</title>
   <meta name="description" content="" />
 
   <!-- todo add back in assets -->
-  <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
-  <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
+  <!-- compiled CSS -->
+    <% styles.forEach( function ( file ) { %>
+    <!--<link rel="stylesheet" type="text/css" href="<%= file %>" />-->
+  <% }); %>
+  <link rel="stylesheet" type="text/css" href="<%= mainStyle %>" />
 
   <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
-  <script type="text/javascript" src="<%= file %>"></script><% }); %>
+    <script type="text/javascript" src="<%= file %>"></script>
+  <% }); %>
   
   <!--<script src="https://login.persona.org/include.js"></script>-->
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWT_qg_GDQVSlQB9O_1CEQf8l4bErP5Ek&sensor=false"></script>
+  <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWT_qg_GDQVSlQB9O_1CEQf8l4bErP5Ek&sensor=false"></script>-->
 
 
 

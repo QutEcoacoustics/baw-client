@@ -270,7 +270,7 @@
         }
         }
         else {
-            console.error("Unable to start Persona authentication binding. This is usually caused by a lack of internet.")
+            console.error("Unable to start Persona authentication binding. This is usually caused by a lack of internet.");
         }
 
         function openIdLogin(url) {

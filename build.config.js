@@ -62,15 +62,19 @@ module.exports = {
    */
   vendor_files: {
     js: [
+      'vendor/jquery/jquery.js',
       'vendor/angular/angular.js',
       'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
       'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
       'vendor/angular-ui-router/release/angular-ui-router.js',
-      'vendor/angular-ui-utils/modules/route/route.js'
+      'vendor/angular-ui-utils/modules/route/route.js',
+      'vendor/modernizr-latest.js',
+      'vendor/underscore/underscore.js'
     ],
     css: [
+        'vendor/hint.css/hint.css'
     ],
     assets: [
     ]
-  },
+  }
 };
