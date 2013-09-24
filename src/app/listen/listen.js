@@ -1,8 +1,4 @@
-"use strict";
 
-
-;
-(function (undefined) {
     var app = angular.module('bawApp.controllers');
 
     app.controller('ListenCtrl', ['$scope', '$resource', '$routeParams', '$route', 'Media', 'AudioEvent', 'Tag',
@@ -272,4 +268,3 @@
 
 
         }]);
-})();

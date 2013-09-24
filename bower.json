@@ -9,7 +9,8 @@
     "angular-ui-utils": "latest",
     "sass-bootstrap": "~3.0.0",
     "hint.css": "~1.3.0",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "angular-resource": "~1.0.8"
   },
   "dependencies": {}
 }

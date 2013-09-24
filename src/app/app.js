@@ -65,7 +65,7 @@ var bawApp = (function (undefined) {
             'bawApp.controllers',
             'http-auth-interceptor',    /* the auth module    */
             'angular-auth',             /* the auth module    */
-            'rails'                     /* a module designed to rewrite object keys */
+            'rails'                     /* a module designed to rewrite object keys on JSON objects */
         ]);
 
     app.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
