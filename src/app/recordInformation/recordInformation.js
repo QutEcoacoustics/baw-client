@@ -1,5 +1,6 @@
-"use strict";
+angular.module('bawApp.recordInformation', [])
 
+.controller('RecordInformationCtrl', null);
 //function RecordInformationCtrl($scope, $element, $attrs, $transclude, $resource) {
 //
 //    console.log($scope);

@@ -19,6 +19,7 @@ module.exports = {
    * main HTML file, `less` is our main stylesheet, and `unit` contains our
    * app's unit tests.
    */
+  /* AT: my hacky addition here is explicitly setting controllerModule.js so it is included first */
   app_files: {
     js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
     jsunit: [ 'src/**/*.spec.js' ],
@@ -69,6 +70,8 @@ module.exports = {
       'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
       'vendor/angular-ui-router/release/angular-ui-router.js',
       'vendor/angular-ui-utils/modules/route/route.js',
+      // TODO: the following line is dodgy and bloats the app
+        'vendor/angular-ui-utils/modules/**/*.js', '!vendor/angular-ui-utils/modules/**/*Spec.js',
       'vendor/modernizr/modernizr-latest.js',
       'vendor/underscore/underscore.js'
     ],

@@ -1,6 +1,8 @@
-"use strict";
+angular.module('bawApp.home', [])
 
-function HomeCtrl($scope, $resource, $routeParams, Project) {
+    .controller('HomeCtrl', ['$scope', '$resource', '$routeParams', 'Project',
+
+        function HomeCtrl($scope, $resource, $routeParams, Project) {
 //// TODO: disabled - authentication required for home page - BAD!
 //// TODO: properly package this mess ... way too much in this controller
 //    // to get projects to display
@@ -69,6 +71,5 @@ function HomeCtrl($scope, $resource, $routeParams, Project) {
 //        //  Fit these bounds to the map
 //        $scope.projectMap.fitBounds (bounds);
 //    };
-}
-
-HomeCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Project'];
+        }
+    ]);

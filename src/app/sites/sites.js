@@ -1,4 +1,6 @@
-"use strict";
+angular.module('sites', [])
+
+.controller('SitesCtrl', ['$scope', '$resource', 'Site',
 
 function SitesCtrl($scope, $resource, Site) {
     $scope.sitesResource = $resource('/sites', {});
@@ -7,17 +9,10 @@ function SitesCtrl($scope, $resource, Site) {
     $scope.links = function(key) {
         return SitesCtrl.linkList(this.site.id)[key];
     };
-}
+}])
 
-SitesCtrl.linkList = function (id) {
-    return {
-        edit: '/sites/' + id + '/edit',
-        details: '/sites/' + id
-    };
-};
-
-SitesCtrl.$inject = ['$scope', '$resource', 'Site'];
-
+.controller('SiteCtrl',
+        ['$scope', '$resource', '$routeParams', 'Project', 'Site', 'AudioRecording', 'AudioEvent',
 function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording, AudioEvent) {
     var siteResource = Site;
     var routeArgs = {siteId: $routeParams.siteId};
@@ -68,5 +63,4 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
         });
     };
 }
-
-SiteCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Project', 'Site', 'AudioRecording', 'AudioEvent'];
+]);

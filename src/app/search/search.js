@@ -1,12 +1,12 @@
-"use strict";
+angular.module('bawApp.search', [])
 
+.controller('SearchesCtrl', ['$scope', '$resource', 'Search',
 function SearchesCtrl($scope, $resource, Search) {
 //    $scope.sitesResource = $resource('/sites', {}, { get: { method:'GET', params:{}, isArray: true }});
 //    $scope.sites = $scope.sitesResource.get();
-}
+}])
 
-SearchesCtrl.$inject = ['$scope', '$resource', 'Search'];
-
+.controller('SearchCtrl', ['$scope', '$resource', 'Search',
 
 function SearchCtrl($scope, $resource, Search) {
 //    $scope.sitesResource = $resource('/sites', {}, { get: { method:'GET', params:{}, isArray: true }});
@@ -32,6 +32,4 @@ function SearchCtrl($scope, $resource, Search) {
     $scope.selectedAudioRecordings =[];
 
 
-}
-
-SearchCtrl.$inject = ['$scope', '$resource', 'Search'];
+}]);

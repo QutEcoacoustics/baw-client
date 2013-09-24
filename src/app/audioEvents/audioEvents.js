@@ -1,29 +1,23 @@
-"use strict";
+angular.module('bawApp.audioEvents', [])
 
-function AudioEventsCtrl($scope, $resource, Project) {
-    $scope.audioEventsResource = $resource('/audioEvents', {});
-    $scope.audioEvents = $scope.audioEventsResource.query();
+    .controller('AudioEventsCtrl', ['$scope', '$resource', 'AudioEvent',
+        function AudioEventsCtrl($scope, $resource, Project) {
+            $scope.audioEventsResource = $resource('/audioEvents', {});
+            $scope.audioEvents = $scope.audioEventsResource.query();
 
-    $scope.links = function(key) {
-        return AudioEventsCtrl.linkList(this.audioEvent.id)[key];
-    };
+            $scope.links = function (key) {
+                return AudioEventsCtrl.linkList(this.audioEvent.id)[key];
+            };
 
-    $scope.delete = function(id) {
-        alert("deleting audio event {0}!".format(id));
-    };
-}
+            $scope.delete = function (id) {
+                alert("deleting audio event {0}!".format(id));
+            };
+        }])
 
-AudioEventsCtrl.linkList = function (id) {
-    return {
-        edit: '/audioEvents/' + id + '/edit',
-        details: '/audioEvents/' + id
-    };
-};
+    .controller('AudioEventCtrl',
+        ['$scope', '$resource', '$routeParams', 'AudioEvent',
+            function AudioEventCtrl($scope, $resource, $routeParams, AudioEvent) {
 
-AudioEventsCtrl.$inject = ['$scope', '$resource', 'AudioEvent'];
+            }]);
 
-function AudioEventCtrl($scope, $resource, $routeParams, AudioEvent) {
 
-}
-
-AudioEventCtrl.$inject = ['$scope', '$resource', '$routeParams', 'AudioEvent'];

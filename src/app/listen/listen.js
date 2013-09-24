@@ -1,7 +1,6 @@
+angular.module('bawApp.listen', [])
 
-    var app = angular.module('bawApp.controllers');
-
-    app.controller('ListenCtrl', ['$scope', '$resource', '$routeParams', '$route', 'Media', 'AudioEvent', 'Tag',
+    .controller('ListenCtrl', ['$scope', '$resource', '$routeParams', '$route', 'Media', 'AudioEvent', 'Tag',
 
         // code here
         /**

@@ -1,29 +1,23 @@
-"use strict";
+angular.module('bawApp.tags', [])
 
-function TagsCtrl($scope, $resource, $routeParams, Tag) {
-    $scope.tagsResource = $resource('/tags', {});
-    $scope.tags = $scope.tagsResource.query();
+    .controller('TagsCtrl', ['$scope', '$resource', '$routeParams', 'Tag',
 
-    $scope.links = function(key) {
-        return TagsCtrl.linkList(this.tag.id)[key];
-    };
+        function TagsCtrl($scope, $resource, $routeParams, Tag) {
+            $scope.tagsResource = $resource('/tags', {});
+            $scope.tags = $scope.tagsResource.query();
 
-    $scope.delete = function(id) {
-        alert("deleting tag {0}!".format(id));
-    };
-}
+            $scope.links = function (key) {
+                return TagsCtrl.linkList(this.tag.id)[key];
+            };
 
-TagsCtrl.linkList = function (id) {
-    return {
-        edit: '/tags/' + id + '/edit',
-        details: '/tags/' + id
-    };
-};
+            $scope.delete = function (id) {
+                alert("deleting tag {0}!".format(id));
+            };
+        }])
 
-TagsCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Tag'];
+    .controller('TagCtrl', ['$scope', '$resource', '$routeParams', 'Tag',
 
-function TagCtrl($scope, $resource, $routeParams, Tag) {
 
-}
+        function TagCtrl($scope, $resource, $routeParams, Tag) {
 
-TagCtrl.$inject = ['$scope', '$resource', '$routeParams', 'Tag'];
+        }]);

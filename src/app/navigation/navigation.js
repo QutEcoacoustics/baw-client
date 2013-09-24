@@ -1,4 +1,6 @@
-"use strict";
+angular.module('bawApp.navigation', [])
+
+.controller('NavigationCtrl', ['$scope', '$resource', '$routeParams',
 /**
  * The navigation controller. Here we setup breadcrumbs.
  * @param $scope
@@ -9,6 +11,4 @@
 function NavigationCtrl($scope, $resource, $routeParams) {
 
 }
-
-
-NavigationCtrl.$inject = ['$scope', '$resource', '$routeParams'];
+]);

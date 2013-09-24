@@ -1,13 +1,12 @@
-"use strict";
+angular.module('bawApp.recordings', [])
+
+.controller('RecordingsCtrl', ['$scope', '$resource',
 function RecordingsCtrl($scope, $resource) {
     $scope.recordingsResource = $resource('/audio_recordings', {}, { get: { method:'GET', params:{}, isArray: true }});
     $scope.recordings = $scope.recordingsResource.get();
-}
+}])
 
-RecordingsCtrl.$inject = ['$scope', '$resource'];
-
-
-
+.controller('RecordingCtrl', ['$scope', '$resource',
 function RecordingCtrl($scope, $resource) {
 
     var recordingResource = $resource('/audio_recordings/:recordingId', {recordingId: '@id'}, {
@@ -15,6 +14,4 @@ function RecordingCtrl($scope, $resource) {
     });
 
     $scope.recording = recordingResource.get({recordingId:1});
-}
-
-RecordingCtrl.$inject = ['$scope', '$resource'];
+}]);

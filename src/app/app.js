@@ -1,74 +1,83 @@
-'use strict';
+/* A spot for the app to put stuff globally */
+var baw = window.baw = baw || window.baw || {};
+baw.exports = {};
 
-/* App Module */
+/**
+ * Helper function to add a bunch of common routes for a page
+ * @param resourceName
+ * @param singularResourceName
+ * @param id
+ * @param controllerMany
+ * @param controllerOne
+ * @return {*|Object}
+ */
+function whenDefaults(resourceName, singularResourceName, id, controllerMany, controllerOne) {
 
-// global definition
-//noinspection JSCheckFunctionSignatures
-var bawApp = (function (undefined) {
-    var exports = {
+    // for a resource, there are three views:
+    //  - a list (possibly with delete/edit links),
+    //  - an item edit (for creating and editing),
+    //  -  a details/show (for showing item info read-only, in a good-looking format)
 
-    };
+    // more info on anchors:
+    // https://github.com/angular/angular.js/issues/352#issuecomment-1270847
 
-    /**
-     * Helper function to add a bunch of common routes for a page
-     * @param resourceName
-     * @param singularResourceName
-     * @param id
-     * @param controllerMany
-     * @param controllerOne
-     * @return {*|Object}
-     */
-    function whenDefaults(resourceName, singularResourceName, id, controllerMany, controllerOne) {
+    // routes
+    var pathList = "/" + resourceName;
+    var pathShow = pathList + "/" + id;
+    var pathEdit = pathShow + "/:editing";
+    //var pathNew = pathList + '/new';
 
-        // for a resource, there are three views:
-        //  - a list (possibly with delete/edit links),
-        //  - an item edit (for creating and editing),
-        //  -  a details/show (for showing item info read-only, in a good-looking format)
+    // assets
+    var assetList = "/assets/" + resourceName + "_list.html";
+    var assetDetails = "/assets/" + singularResourceName + "_details.html";
 
-        // more info on anchors:
-        // https://github.com/angular/angular.js/issues/352#issuecomment-1270847
+    return this
+        // list
+        .when(pathList, {templateUrl: assetList, controller: controllerMany})
+        // manage
+        //.fluidIf(addManageView, function () {
+        //    this.when(listPath, {templateUrl: assetManage, controller: controllerMany})
+        //})
+        // create
+        //.when(pathNew, {templateUrl: assetDetails, controller: controllerOne})
+        // edit
+        .when(pathEdit, {templateUrl: assetDetails, controller: controllerOne})
+        // details
+        .when(pathShow, {templateUrl: assetDetails, controller: controllerOne})
+        ;
+}
 
-        // routes
-        var pathList = "/" + resourceName;
-        var pathShow = pathList + "/" + id;
-        var pathEdit = pathShow + "/:editing";
-        //var pathNew = pathList + '/new';
-
-        // assets
-        var assetList = "/assets/" + resourceName + "_list.html";
-        var assetDetails = "/assets/" + singularResourceName + "_details.html";
-
-        return this
-            // list
-            .when(pathList, {templateUrl: assetList, controller: controllerMany})
-            // manage
-            //.fluidIf(addManageView, function () {
-            //    this.when(listPath, {templateUrl: assetManage, controller: controllerMany})
-            //})
-            // create
-            //.when(pathNew, {templateUrl: assetDetails, controller: controllerOne})
-            // edit
-            .when(pathEdit, {templateUrl: assetDetails, controller: controllerOne})
-            // details
-            .when(pathShow, {templateUrl: assetDetails, controller: controllerOne})
-            ;
-    }
-
-    var app = angular.module('baw',
+var app = angular.module('baw',
         [
             'ngResource',
-            'ui.directives',            /* angular-ui project */
-            'ui.filters',               /* angular-ui project */
-            'bawApp.directives',        /* our directives.js  */
-            'bawApp.filters',           /* our filters.js     */
-            'bawApp.services',             /* our services.js    */
-            'bawApp.controllers',
-            'http-auth-interceptor',    /* the auth module    */
-            'angular-auth',             /* the auth module    */
-            'rails'                     /* a module designed to rewrite object keys on JSON objects */
-        ]);
+            'ui.utils', /* angular-ui project */
+            'bawApp.directives', /* our directives.js  */
+            'bawApp.filters', /* our filters.js     */
+            'bawApp.services', /* our services.js    */
 
-    app.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
+            'http-auth-interceptor', /* the auth module    */
+            'angular-auth', /* the auth module    */
+            'rails', /* a module designed to rewrite object keys on JSON objects */
+
+            'bawApp.accounts',
+            'bawApp.annotationViewer',
+            'bawApp.audioEvents',
+            'bawApp.bookmarks',
+            'bawApp.error',
+            'bawApp.home',
+            'bawApp.listen',
+            'bawApp.login',
+            'bawApp.navigation',
+            'bawApp.photos',
+            'bawApp.projects',
+            'bawApp.recordInformation',
+            'bawApp.recordings',
+            'bawApp.search',
+            'bawApp.tags',
+            'bawApp.users'
+        ])
+
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider.whenDefaults = whenDefaults;
         $routeProvider.fluidIf = baw.fluidIf;
 
@@ -113,13 +122,11 @@ var bawApp = (function (undefined) {
 
         // location config
         $locationProvider.html5Mode(true);
-    }]);
+    }])
 
 
-
-
-    app.run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', function ($rootScope, $location, $route, $http, AudioEvent) {
-        exports.print = $rootScope.print = function () {
+    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', function ($rootScope, $location, $route, $http, AudioEvent) {
+        baw.exports.print = $rootScope.print = function () {
             var seen = [];
             var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling", "$$prevSibling", "$root", "this", "$parent"];
             var str = JSON.stringify(this,
@@ -143,7 +150,8 @@ var bawApp = (function (undefined) {
         // http://www.yearofmoo.com/2012/10/more-angularjs-magic-to-supercharge-your-webapp.html#apply-digest-and-phase
         $rootScope.$safeApply = function ($scope, fn) {
             $scope = $scope || $rootScope;
-            fn = fn || function () {};
+            fn = fn || function () {
+            };
 
             if ($scope.$$phase) {
                 fn();
@@ -155,7 +163,8 @@ var bawApp = (function (undefined) {
 
         $rootScope.$safeApply2 = function (fn) {
             var $scope = this || $rootScope;
-            fn = fn || function () {};
+            fn = fn || function () {
+            };
 
             if ($scope.$$phase) {
                 fn();
@@ -194,7 +203,7 @@ var bawApp = (function (undefined) {
         // storage of auth_token
         $rootScope.authorisationToken = null;
 
-        $rootScope.authTokenParams = function() {
+        $rootScope.authTokenParams = function () {
             if ($rootScope.authorisationToken) {
                 return {
                     auth_token: $rootScope.authorisationToken
@@ -202,13 +211,13 @@ var bawApp = (function (undefined) {
             }
             return {};
         };
-        $rootScope.authTokenQuery = function() {
+        $rootScope.authTokenQuery = function () {
             return baw.angularCopies.toKeyValue($rootScope.authTokenParams());
         };
 
         $rootScope.loggedIn = false;
 
-        $rootScope.$watch('userData', function (){
+        $rootScope.$watch('userData', function () {
             var token = $rootScope.authorisationToken,
                 userData = $rootScope.userData;
             $rootScope.loggedIn = (token && userData) ? true : false;
@@ -217,7 +226,10 @@ var bawApp = (function (undefined) {
 
         $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
 
-    }]);
+    }])
 
-    return exports;
-})();
+    .controller('AppCtrl',
+        ['$scope', '$location',
+            function AppCtrl($scope, $location) {
+
+            }]);
