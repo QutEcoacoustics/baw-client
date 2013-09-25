@@ -44,7 +44,7 @@
         function makeCsvLink(options) {
             var formattedUrl = baseCsvUri;
             if (!angular.isObject(options)) {
-                // overwrite input then continur to format
+                // overwrite input then continue to format
                 options = {};
             }
 
