@@ -510,6 +510,8 @@ module.exports = function (grunt) {
                 files: [
                     '<%= app_files.js %>'
                 ],
+                // karma:unit:run is disabled because it breaks watch by stopping it
+                // see https://github.com/karma-runner/grunt-karma/issues/30
                 tasks: [ 'jshint:src', /*'karma:unit:run',*/ 'copy:build_appjs' ]
             },
 
