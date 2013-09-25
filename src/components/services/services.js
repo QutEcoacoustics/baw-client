@@ -1,5 +1,5 @@
 (function () {
-    /**
+    /**...
      * Helper method for adding a put request onto the standard angular resource service
      * @param $resource - the stub resource
      * @param {string} path - the web server path
@@ -13,7 +13,7 @@
         return $resource(path, paramDefaults, a);
     }
 
-    var bawss = angular.module("bawApp.services", ['ngResource']);
+    var bawss = angular.module("bawApp.services", ['ngResource', 'bawApp.paths']);
 
 
     /**
@@ -146,8 +146,8 @@
         return mediaResource;
     }]);
 
-    // authentication
-    bawss.factory('Authenticator', ['$rootScope', 'authService', '$http', function ($rootScope, authService, $http) {
+    // authentication...
+    bawss.factory('Authenticator', ['$rootScope', 'authService', '$http', 'paths', function ($rootScope, authService, $http, paths) {
         function loginSuccess(data, status, headers, config) {
             // a provider has just logged in
             // the response arg, is the response from our server (devise)
@@ -214,7 +214,7 @@
              */
             checkLogin: function checkLogin() {
                 if ($rootScope.loggedIn !== true) {
-                    $http.get('/security/ping', {params: {antiCache: (new Date()).getTime()}, cache: false })
+                    $http.get(paths.api.routes.security.ping, {params: {antiCache: (new Date()).getTime()}, cache: false })
                         .success(function checkLoginSuccess(data, status, headers, config) {
                             // the ping request is different, because it just asks for information, it will always return a 200,
                             // so split on response field

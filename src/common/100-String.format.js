@@ -1,4 +1,4 @@
-//console.debug("begin string.toformat.js");
+//console.debug("begin string.toformat.js");...
 /***** Begin String.format - MIT License ************************************
 
 Copyright (c) 2009 - Michael J. Ryan (http://tracker1.info)
@@ -56,8 +56,8 @@ returns: 'some string with first value and second value injected using {property
 	function isEmpty(obj) {
 		if (typeof obj == 'undefined' || obj === null || obj === '') return true;
 		if (typeof obj == 'number' && isNaN(obj)) return true;
-		if (obj instanceof Date && isNaN(Number(obj))) return true;
-		return false;
+		return obj instanceof Date && isNaN(Number(obj));
+
 	}
 
 	//gets the format method to use for the object instance

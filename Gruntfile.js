@@ -1,3 +1,5 @@
+var modRewrite = require('connect-modrewrite');
+
 module.exports = function (grunt) {
 
     /**
@@ -378,7 +380,7 @@ module.exports = function (grunt) {
                 configFile: '<%= build_dir %>/karma-unit.js'
             },
             unit: {
-                runnerPort: 9101,
+                runnerPort: 9100,
                 background: true
             },
             continuous: {
@@ -453,7 +455,16 @@ module.exports = function (grunt) {
                     port: 8080,
                     base: '<%= build_dir %>',
                     debug: true,
-                    livereload: true
+                    livereload: true,
+                    /*keepalive: true,*/
+                    middleware: function(connect, options) {
+                        return [
+                            modRewrite([
+                                '!(\\..+)$ / [L]'
+                            ]),
+                            connect.static(options.base)
+                        ];
+                    }
                 }
             }
         },
@@ -499,19 +510,19 @@ module.exports = function (grunt) {
                 files: [
                     '<%= app_files.js %>'
                 ],
-                tasks: [ 'jshint:src', 'karma:unit:run', 'copy:build_appjs' ]
+                tasks: [ 'jshint:src', /*'karma:unit:run',*/ 'copy:build_appjs' ]
             },
 
             /**
              * When our CoffeeScript source files change, we want to run lint them and
              * run our unit tests.
              */
-            coffeesrc: {
-                files: [
-                    '<%= app_files.coffee %>'
-                ],
-                tasks: [ 'coffeelint:src', 'coffee:source', 'karma:unit:run', 'copy:build_appjs' ]
-            },
+            //coffeesrc: {
+            //    files: [
+            //        '<%= app_files.coffee %>'
+            //    ],
+            //    tasks: [ 'coffeelint:src', 'coffee:source', 'karma:unit:run', 'copy:build_appjs' ]
+            //},
 
             /**
              * When assets are changed, copy them. Note that this will *not* copy new
@@ -521,7 +532,7 @@ module.exports = function (grunt) {
                 files: [
                     'src/assets/**/*'
                 ],
-                tasks: [ 'copy:build_assets' ]
+                tasks: [ 'copy:build_app_assets' ]
             },
 
             /**
@@ -552,7 +563,7 @@ module.exports = function (grunt) {
 //      },
             sass: {
                 files: [ 'src/**/*.scss' ],
-                tasks: 'compassCompile'
+                tasks: 'compass:build'
             },
 
             /**
@@ -597,7 +608,7 @@ module.exports = function (grunt) {
      * before watching for changes.
      */
     grunt.renameTask('watch', 'delta');
-    grunt.registerTask('watch', [ 'build', 'karma:unit', 'connect', 'delta' ]);
+    grunt.registerTask('watch', [ 'build', 'karma:unit',  'connect', 'delta' ]);
 
     /**
      * The default task is to build and compile.

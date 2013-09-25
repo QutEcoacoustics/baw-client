@@ -51,6 +51,12 @@ var app = angular.module('baw',
         [
             'ngResource',
             'ui.utils', /* angular-ui project */
+
+            'bawApp.paths', /* a mapping of all static path configurations */
+
+            'templates-app', /* these are the precompiled templates */
+            'templates-common',
+
             'bawApp.directives', /* our directives.js  */
             'bawApp.filters', /* our filters.js     */
             'bawApp.services', /* our services.js    */
@@ -77,7 +83,7 @@ var app = angular.module('baw',
             'bawApp.users'
         ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'paths', function ($routeProvider, $locationProvider, $httpProvider, paths) {
         $routeProvider.whenDefaults = whenDefaults;
         $routeProvider.fluidIf = baw.fluidIf;
 
@@ -97,9 +103,9 @@ var app = angular.module('baw',
             when('/recordings', {templateUrl: '/assets/recordings.html', controller: 'RecordingsCtrl' }).
             when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
 
-            when('/listen', {templateUrl: '/assets/listen.html', controller: 'ListenCtrl'}).
-            when('/listen/:recordingId', {templateUrl: '/assets/listen.html', controller: 'ListenCtrl'}).
-            when('/listen/:recordingId/start=:start/end=:end', {templateUrl: '/assets/listen.html', controller: 'ListenCtrl'}).
+            when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+            when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+            when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 
             when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
             when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
@@ -111,9 +117,9 @@ var app = angular.module('baw',
 
 
             // missing route page
-            when('/', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
-            when('/404', {templateUrl: '/assets/error_404.html', controller: 'ErrorCtrl'}).
-            when('/404?path=:errorPath', {templateUrl: '/assets/error_404.html', controller: 'ErrorCtrl'}).
+            when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
+            when('/404', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
+            when('/404?path=:errorPath', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
             otherwise({
                 redirectTo: function (params, location, search) {
                     return '/404?path=' + location;

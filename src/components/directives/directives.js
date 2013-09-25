@@ -129,7 +129,7 @@
     });
 
 
-    bawds.directive('bawAnnotationViewer', function () {
+    bawds.directive('bawAnnotationViewer', [ 'paths', function (paths) {
 
         function variance(x, y) {
             var fraction = x / y;
@@ -292,7 +292,7 @@
             },
             controller: 'AnnotationViewerCtrl',
             require: '', // ngModel?
-            templateUrl: '/assets/annotation_viewer.html',
+            templateUrl: paths.site.files.annotationViewer,
 //            compile: function(element, attributes, transclude)  {
 //                // transform DOM
 //            },
@@ -392,7 +392,7 @@
                 });
             }
         }
-    });
+    }]);
 
     /**
      * A directive for binding the model to data off an audio element.
