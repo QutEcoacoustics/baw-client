@@ -287,6 +287,8 @@ module.exports = function (grunt) {
                     sassDir: 'src/sass',
                     cssDir: '<%= build_dir %>/assets/styles/',
                     environment: 'production',
+                    outputStyle: 'compressed',
+                    noLineComments: true,
                     raw: "preferred_syntax = :scss\n"
                 }
             }
