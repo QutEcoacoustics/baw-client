@@ -64,6 +64,7 @@ module.exports = {
     js: [
       'vendor/jquery/jquery.js',
       'vendor/angular/angular.js',
+      'vendor/angular-route/angular-route.js',
       'vendor/angular-resource/angular-resource.js',
       'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
       'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
@@ -71,7 +72,7 @@ module.exports = {
       'vendor/angular-ui-utils/modules/route/route.js',
       // TODO: the following line is dodgy and bloats the app
         'vendor/angular-ui-utils/modules/**/*.js', '!vendor/angular-ui-utils/modules/**/*Spec.js',
-      'vendor/modernizr/modernizr-latest.js',
+      'vendor/modernizr/modernizr.js',
       'vendor/underscore/underscore.js'
     ],
     css: [

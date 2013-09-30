@@ -49,10 +49,12 @@ function whenDefaults(resourceName, singularResourceName, id, controllerMany, co
 
 var app = angular.module('baw',
         [
+            'ngRoute',
             'ngResource',
             'ui.utils', /* angular-ui project */
 
-            'bawApp.paths', /* a mapping of all static path configurations */
+            'bawApp.configuration', /* a mapping of all static path configurations
+                                        and a module that contains all app configuration */
 
             'templates-app', /* these are the precompiled templates */
             'templates-common',
@@ -83,7 +85,7 @@ var app = angular.module('baw',
             'bawApp.users'
         ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'paths', function ($routeProvider, $locationProvider, $httpProvider, paths) {
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', function ($routeProvider, $locationProvider, $httpProvider, paths) {
         $routeProvider.whenDefaults = whenDefaults;
         $routeProvider.fluidIf = baw.fluidIf;
 
@@ -105,7 +107,7 @@ var app = angular.module('baw',
 
             when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
             when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
-            when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+            //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 
             when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
             when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
@@ -128,6 +130,9 @@ var app = angular.module('baw',
 
         // location config
         $locationProvider.html5Mode(true);
+
+        // http default configuration
+        $httpProvider.defaults.withCredentials = true;
     }])
 
 

@@ -1,8 +1,6 @@
 angular.module('bawApp.listen', [])
 
-    .controller('ListenCtrl', ['$scope', '$resource', '$routeParams', '$route', 'Media', 'AudioEvent', 'Tag',
-
-        // code here
+    .controller('ListenCtrl', ['$scope', '$resource', '$routeParams', '$route', 'conf.paths', 'conf.constants', 'Media', 'AudioEvent', 'Tag',
         /**
          * The listen controller.
          * @param $scope
@@ -13,27 +11,31 @@ angular.module('bawApp.listen', [])
          * @param Tag
          * @param Media
          * @param $route
+         * @param paths
+         * @param constants
          */
-            function ListenCtrl($scope, $resource, $routeParams, $route, Media, AudioEvent, Tag) {
-            var CHUNK_DURATION_SECONDS = 30.0;
+            function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, Media, AudioEvent, Tag) {
+            var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
-            function getMediaParameters() {
+            function getMediaParameters(format) {
                 return {
                     start_offset: $routeParams.start,
                     end_offset: $routeParams.end,
                     // this one is different, it is encoded into the path of the request by angular
-                    recordingId: $routeParams.recordingId
-
+                    recordingId: $routeParams.recordingId,
+                    format: format,
+                    type: format == "png" ? "spectrogram" : "audio"
                 }
             }
 
-            $scope.errorState = !baw.GUID_REGEXP.test($routeParams.recordingId);
+            $scope.errorState = !(baw.isNumber($routeParams.recordingId) && baw.parseInt($routeParams.recordingId) >= 0);
 
             if ($scope.errorState) {
-                console.warn("Invalid guid specified in route... page rendering disabled");
+                console.warn("Invalid (or no) audio recording id specified in route... page rendering disabled");
             }
             else {
 
+                // parse the start and end offsets
                 $routeParams.start = parseFloat($routeParams.start) || 0.0;
                 $routeParams.end = parseFloat($routeParams.end) || CHUNK_DURATION_SECONDS;
                 var chunkDuration = ($routeParams.end - $routeParams.start);
@@ -47,17 +49,19 @@ angular.module('bawApp.listen', [])
                     console.warn("invalid end offsets specified, reverting to safe value: end=" + $routeParams.end);
                 }
 
-
+                // the core resource used in this controller
                 var recordingId = $scope.recordingId = $routeParams.recordingId;
 
+                // set up some dummy objects for use later
                 $scope.model = {
                     audioElement: {}
                 };
 
                 var formatPaths = function () {
                     if ($scope.model.media && $scope.model.media.hasOwnProperty('recordingId')) {
-                        var authToken = $scope.authTokenQuery();
-                        $scope.model.media.imageUrl = $scope.model.media.spectrogramBaseUrl.format($scope.model.media) + "?" + authToken;
+                        //var authToken = $scope.authTokenQuery();
+                        $scope.model.media.imageUrl =
+                            $scope.model.media.spectrogramBaseUrl.format($scope.model.media) + "?" + authToken;
 
                         $scope.model.media.audioUrls = [];
                         angular.forEach($scope.model.media.options.audioFormats, function (value, key) {
@@ -70,21 +74,20 @@ angular.module('bawApp.listen', [])
                 $scope.$on('event:auth-loginRequired', formatPaths);
                 $scope.$on('event:auth-loginConfirmed', formatPaths);
 
-                $scope.model.media = Media.get(getMediaParameters(), {},
+                $scope.model.media = Media.get(getMediaParameters("json"), {},
                     function mediaGetSuccess() {
                         // reformat url's
                         formatPaths();
                     },
                     function mediaGetFailure() {
-                        throw "boo booos";
+                        console.error("retieval of media json failed");
                     });
 
 
                 // TODO: add time bounds
-                $scope.model.audioEvents = AudioEvent.query({byAudioId: recordingId},
+                $scope.model.audioEvents = AudioEvent.query({recordingId: recordingId},
                     function audioEventsQuerySuccess() {
                         // TODO : map tag's
-
 
                         for (var index = 0; index < $scope.model.audioEvents.length; index++) {
                             // transform
@@ -92,11 +95,11 @@ angular.module('bawApp.listen', [])
                         }
                     },
                     function audioEventQueryFailure() {
-
+                        console.error("retieval of audio events failed");
                     });
 
-
                 // download all the tags and store them in Tag service cache
+                // TODO: this is inefficient, make better in the future...
                 $scope.tags = Tag.query({}, {}, function () {
 
                 }, undefined);
@@ -163,6 +166,7 @@ angular.module('bawApp.listen', [])
                     return offset;
                 };
 
+                var listenUrl = paths.site
                 $scope.createNavigationHref = function (linkType, stepBy) {
 
                     if (!angular.isNumber(stepBy)) {
@@ -170,6 +174,7 @@ angular.module('bawApp.listen', [])
                     }
 
                     if (linkType === "previous") {
+
                         return "/listen/" + recordingId + "/start=" + ($routeParams.start - stepBy) + "/end=" + ($routeParams.end - stepBy);
                     }
                     else if (linkType === "next") {

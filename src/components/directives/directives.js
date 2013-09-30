@@ -129,7 +129,7 @@
     });
 
 
-    bawds.directive('bawAnnotationViewer', [ 'paths', function (paths) {
+    bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
         function variance(x, y) {
             var fraction = x / y;
@@ -160,7 +160,7 @@
                 console.warn("the image height does not conform well with the meta data");
             }
             if (variance(idealPps, spectrogramPps) > 0.02) {
-                console.warn("the image width does not conform well with the meta data");
+                console.warn("the image width does not3 conform well with the meta data");
             }
 
             return { pixelsPerSecond: spectrogramPps, pixelsPerHertz: imagePph};

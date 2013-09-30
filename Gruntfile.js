@@ -382,7 +382,7 @@ module.exports = function (grunt) {
                 configFile: '<%= build_dir %>/karma-unit.js'
             },
             unit: {
-                runnerPort: 9100,
+                port: 9019,
                 background: true
             },
             continuous: {
@@ -514,7 +514,7 @@ module.exports = function (grunt) {
                 ],
                 // karma:unit:run is disabled because it breaks watch by stopping it
                 // see https://github.com/karma-runner/grunt-karma/issues/30
-                tasks: [ 'jshint:src', /*'karma:unit:run',*/ 'copy:build_appjs' ]
+                tasks: [ 'jshint:src', 'karma:unit:run', 'copy:build_appjs' ]
             },
 
             /**

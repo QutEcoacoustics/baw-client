@@ -88,7 +88,6 @@ if (!Array.prototype.filter) {
  *
  * https://gist.github.com/Fleshgrinder/4523839
  */
-;
 (function requestAnimationFramePolyfill() {
     var
         lastTime = 0,
@@ -175,7 +174,7 @@ if (!Array.prototype.filter) {
         return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
     };
 
-    function stringPad(number, paddingDigits, paddingCharacter) {
+    baw.stringPad = function stringPad(number, paddingDigits, paddingCharacter) {
         var padLoop = Math.floor(number).toString().length;
 
         var output = number.toString();
@@ -187,9 +186,8 @@ if (!Array.prototype.filter) {
             output = paddingCharacter + output;
         }
         return output;
-    }
+    };
 
-    baw.stringPad = stringPad;
 
     /**
      * A custom formatter for TimeSpans - accepts seconds only
@@ -224,10 +222,10 @@ if (!Array.prototype.filter) {
             result += dayComponent.toString() + ( dayComponent == 1 ? " day " : " days ");
         }
 
-        result += stringPad(Math.floor(totalHours) % 24, 2) + ":";
-        result += stringPad(Math.floor(totalMinutes) % 60, 2) + ":";
-        result += stringPad(Math.floor(totalSeconds) % 60, 2) + ".";
-        result += stringPad(totalMilliseconds % 1000, 3);
+        result += baw.stringPad(Math.floor(totalHours) % 24, 2) + ":";
+        result += baw.stringPad(Math.floor(totalMinutes) % 60, 2) + ":";
+        result += baw.stringPad(Math.floor(totalSeconds) % 60, 2) + ".";
+        result += baw.stringPad(totalMilliseconds % 1000, 3);
 
         return result;
     };
@@ -237,6 +235,14 @@ if (!Array.prototype.filter) {
      * @type {RegExp}
      */
     baw.GUID_REGEXP = /^\{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}?$/i;
+
+    baw.isNumber = function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    };
+
+    baw.parseInt = function(n) {
+        return parseInt(n, 10);
+    };
 
     baw.popUpWindow = function popUpWindow(provider_url, width, height, callback) {
         var screenX = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft,
