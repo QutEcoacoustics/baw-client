@@ -28,7 +28,7 @@ angular.module('bawApp.photos', [])
 
             $scope.links = {};
 
-            $scope.delete = function () {
+            $scope["delete"] = function () {
                 var doit = confirm("Are you sure you want to delete this photo (id {0})?".format(this.project.id));
                 if (doit) {
                     photoResource.remove();

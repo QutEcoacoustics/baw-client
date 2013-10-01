@@ -1,4 +1,3 @@
-;
 (function (undefined) {
     var baw = window.baw = window.baw || {};
 
@@ -10,8 +9,9 @@
 //            obj = localIdOrResource;
 //        }
 
-        if (!(this instanceof AudioEventTag))
+        if (!(this instanceof AudioEventTag)) {
             throw new Error("Constructor called as a function");
+        }
         
         angular.extend(this, obj);
 

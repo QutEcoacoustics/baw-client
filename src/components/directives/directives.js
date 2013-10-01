@@ -21,7 +21,7 @@
 
             }
 
-        }
+        };
     });
 
     bawds.directive('bawDebugInfo', function () {
@@ -35,7 +35,7 @@
                     scope.print = bawApp.print;
                 }
             }
-        }
+        };
     });
 
     bawds.directive('bawJsonBinding', function () {
@@ -45,8 +45,9 @@
             link: function (scope, element, attr, ngModel) {
 
                 function catchParseErrors(viewValue) {
+                    var result;
                     try {
-                        var result = angular.fromJson(viewValue);
+                        result = angular.fromJson(viewValue);
                     } catch (e) {
                         ngModel.$setValidity('bawJsonBinding', false);
                         return '';
@@ -56,7 +57,7 @@
                 }
 
                 ngModel.$parsers.push(catchParseErrors);
-                ngModel.$formatters.push(angular.toJson)
+                ngModel.$formatters.push(angular.toJson);
             }
         };
     });
@@ -199,7 +200,7 @@
          * @param scope
          */
         function resizeOrMove(audioEvent, box, scope) {
-            var boxId = parseInt(box.id);
+            var boxId = baw.parseInt(box.id);
 
             if (audioEvent.__temporaryId__ === boxId) {
                 audioEvent.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
@@ -227,7 +228,7 @@
 
         function create(simpleBox, audioRecordingId, scope) {
 
-            var audioEvent = new baw.Annotation(parseInt(simpleBox.id), audioRecordingId);
+            var audioEvent = new baw.Annotation(baw.parseInt(simpleBox.id), audioRecordingId);
 
             resizeOrMove(audioEvent, simpleBox, scope);
             touchUpdatedField(audioEvent);
@@ -282,7 +283,7 @@
             // --
             // note the last argument sets up the watcher for compare equality (not reference).
             // this may cause memory / performance issues if the model gets too big later on
-            var deregisterer = scope.$watch(watcherFunc, listenerFunc, true)
+            var deregisterer = scope.$watch(watcherFunc, listenerFunc, true);
         }
 
         return {
@@ -311,7 +312,7 @@
                 }
 
                 scope.$watch(function () {
-                    return scope.model.media.imageUrl
+                    return scope.model.media.imageUrl;
                 }, updateConverters);
                 scope.$image[0].addEventListener('load', updateConverters, false);
                 updateConverters();
@@ -352,7 +353,7 @@
                             });
 
                             // new form of selecting
-                            scope.model.audioEvents[element[0].annotationViewerIndex]._selected = true
+                            scope.model.audioEvents[element[0].annotationViewerIndex]._selected = true;
                         });
                     },
                     "boxResizing": function (element, box) {
@@ -391,7 +392,7 @@
                     }
                 });
             }
-        }
+        };
     }]);
 
     /**
@@ -490,7 +491,7 @@
                 }, elements[0]);
 
             }
-        }
+        };
     }]);
 
     /**
@@ -563,7 +564,7 @@
                 element.bind('click', updateModel);
 
             }
-        }
+        };
     }]);
 
 
@@ -596,7 +597,7 @@
                     }
                 });
             }
-        }
+        };
     });
 
     bawds.directive('bawImageLoaded',['$timeout', '$parse', function($timeout, $parse) {
@@ -628,7 +629,7 @@
                }
 
            }
-       }
+       };
     }]);
 
     bawds.directive('bawInjectTransformers', function () {
@@ -727,7 +728,9 @@
                 //We create an $apply if it isn't happening. we need better support for this
                 //We don't want to use timeout because tons of these events fire at once,
                 //and we only need one $apply
-                if (!scope.$$phase) scope.$apply();
+                if (!scope.$$phase) {
+                    scope.$apply();
+                }
             });
 
             var $eventOnce = {
@@ -735,11 +738,13 @@
             };
             google.maps.event.addListenerOnce(googleObject, eventName, function (evt) {
                 element.triggerHandler(angular.extend({}, $eventOnce, evt));
-                console.log('addListenerOnce', $eventOnce)
+                console.log('addListenerOnce', $eventOnce);
                 //We create an $apply if it isn't happening. we need better support for this
                 //We don't want to use timeout because tons of these events fire at once,
                 //and we only need one $apply
-                if (!scope.$$phase) scope.$apply();
+                if (!scope.$$phase) {
+                    scope.$apply();
+                }
             });
 
         });

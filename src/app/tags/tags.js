@@ -10,7 +10,7 @@ angular.module('bawApp.tags', [])
                 return TagsCtrl.linkList(this.tag.id)[key];
             };
 
-            $scope.delete = function (id) {
+            $scope["delete"] = function (id) {
                 alert("deleting tag {0}!".format(id));
             };
         }])

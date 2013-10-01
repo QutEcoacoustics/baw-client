@@ -54,10 +54,13 @@ returns: 'some string with first value and second value injected using {property
 
 	//returns true for null, undefined and empty string
 	function isEmpty(obj) {
-		if (typeof obj == 'undefined' || obj === null || obj === '') return true;
-		if (typeof obj == 'number' && isNaN(obj)) return true;
+		if (typeof obj == 'undefined' || obj === null || obj === '') {
+            return true;
+        }
+		if (typeof obj == 'number' && isNaN(obj)) {
+            return true;
+        }
 		return obj instanceof Date && isNaN(Number(obj));
-
 	}
 
 	//gets the format method to use for the object instance
@@ -74,21 +77,31 @@ returns: 'some string with first value and second value injected using {property
 		}
 		
 		//determin the constructor base & prototype to use
-		var ctor = function(o) {
-			if (typeof o == 'number') return Number;
-			if (typeof o == 'boolean') return Boolean;
+		var ctor = (function(o) {
+			if (typeof o == 'number') {
+                return Number;
+            }
+			if (typeof o == 'boolean') {
+                return Boolean;
+            }
 			return o.constructor;
-		}(obj);
+		}(obj));
 		var proto = ctor.prototype;
 
 		//prototype has a format method use it (why was it overriden/deleted from the instance?)
-		if (proto && typeof proto.format == 'function') return ctor.prototype.format;
+		if (proto && typeof proto.format == 'function') {
+            return ctor.prototype.format;
+        }
 		
 		//object has a toString method use it
-		if (typeof obj.toString == 'function') return obj.toString;
+		if (typeof obj.toString == 'function') {
+            return obj.toString;
+        }
 
 		//prototype has a toString method use it
-		if (proto && typeof proto.toString == 'function') return proto.toString;
+		if (proto && typeof proto.toString == 'function') {
+            return proto.toString;
+        }
 
 		//use the string's toString method - final resort
 		return String.prototype.toString;
@@ -98,9 +111,10 @@ returns: 'some string with first value and second value injected using {property
 	//convert an object to a string with an optional format to use
 	function stringFromAny(obj, format) {
 		//the object is nothing, use an empty string
-		if (isEmpty(obj))
+		if (isEmpty(obj)) {
 			return "";
-			
+        }
+
 		//get the formatter to use for the object
 		var formatter = getFormatter(obj);
 
@@ -114,7 +128,9 @@ returns: 'some string with first value and second value injected using {property
 					try {
 						return formatter.call(obj,"");	
 					} catch(err1) {
-						if (typeof console != "undefined") (console.error || console.log)(err1);
+						if (typeof console != "undefined") {
+                            (console.error || console.log)(err1);
+                        }
 						return ""; //unable to format
 					}
 				}
@@ -122,28 +138,33 @@ returns: 'some string with first value and second value injected using {property
 				return formatter.call(obj,format);
 			}
 		}
-		else
-			return ""; //no formatter, use empty string, this should *NEVER* happen.
+		else {
+            return ""; //no formatter, use empty string, this should *NEVER* happen.
+        }
 	}
 	
 	
 	//basic format, used when a single, or no arguments are passed in
 	function basicFormat(source) {
 		//null argument, return empty string
-		if (isEmpty(source))
+		if (isEmpty(source)) {
 			return "";
+        }
 		
 		//it's a string, return it as-is
-		if (typeof source == "string")
+		if (typeof source == "string") {
 			return String(source);
+        }
 		
 		//it has a formatter, use that
-		if (source && source.format)
+		if (source && source.format) {
 			return source.format();
+        }
 		
 		//it's an array, use it as one - recursive call
-		if (source && source.length) 
+		if (source && source.length) {
 			return String.format.apply(source[0], Array.prototype.slice.call(arguments, 0, 1));
+        }
 		
 		//force it to a string
 		return String(source);
@@ -162,14 +183,17 @@ returns: 'some string with first value and second value injected using {property
 			params = params[0];
 
 			//use an empty string for null and undefined valuse
-			if (params === null || params === undef) return [''];
+			if (params === null || params === undef) {
+                return [''];
+            }
 			
 			//reference to the type of params
 			var t = typeof params;
 			
 			//if it (has format or not an object) and not an array)
-			if ((params.format || t != 'object') && t != 'array' )
+			if ((params.format || t != 'object') && t != 'array' ) {
 				params = [ params ]; //put the param inside an array
+            }
 		}
 		
 		//return normalized input parameters
@@ -194,12 +218,20 @@ returns: 'some string with first value and second value injected using {property
 		var ret = source.replace(
 			/\{\{|\}\}|\{([^}: ]+?)(?::([^}]*?))?\}/g, 
 			function(match, num, format) {
-				if (match == "{{") return "{"; //unescape the nested {
-				if (match == "}}") return "}"; //unescape the nested }
+				if (match == "{{") {
+                    //unescape the nested {
+                    return "{";
+                }
+				if (match == "}}") {
+                    //unescape the nested }
+                    return "}";
+                }
 				if (typeof params[num] == "undefined") {
 					//if there was only one parameter, and the match is "0", and there's no "0" in params, use the params as the binding formatter
 					//should fix "... {0:...}".toFormat(singleItem)
-					if (num === "0" && outerLength == 2) return stringFromAny(params, format);
+					if (num === "0" && outerLength == 2) {
+                        return stringFromAny(params, format);
+                    }
 
 					return match; //no param value available
 				}

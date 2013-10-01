@@ -32,7 +32,7 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                     //var isAnimating = loginHolderElm.is(':animated');
 
                     return loginVisible;
-                }
+                };
 
                 scope.$on('event:auth-loginRequired', function () {
                     // TODO: add extra checks to stop multiple animations
@@ -68,7 +68,7 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                     }
                 });
             }
-        }
+        };
     })
 
 ;

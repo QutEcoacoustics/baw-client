@@ -32,7 +32,7 @@
             try {
                 // mark this object as having been transformed
 
-                Object.defineProperty(object, STAMPER_LABEL, {configurable: true, value: value})
+                Object.defineProperty(object, STAMPER_LABEL, {configurable: true, value: value});
             }
             catch (e) {
                 console.warn("Object.defineProperty failed in stampObject");
@@ -113,7 +113,7 @@
             return function () {
                 return {
                     promise: function railsFieldRenamingInterceptor() {
-                        return (function (p) {
+                        return function (p) {
                             p.then(function (response) {
                                     if ((response.headers()["content-type"] || "").indexOf("application/json") >= 0) {
                                         core(response.data);
@@ -128,11 +128,11 @@
                                     return response;
                                 });
                             return p;
-                        });
+                        };
                     },
                     core: core
                 };
-            }
+            };
         })
 
         .factory('railsRootWrappingTransformer', function () {

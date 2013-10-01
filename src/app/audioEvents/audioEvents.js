@@ -9,7 +9,7 @@ angular.module('bawApp.audioEvents', [])
                 return AudioEventsCtrl.linkList(this.audioEvent.id)[key];
             };
 
-            $scope.delete = function (id) {
+            $scope["delete"] = function (id) {
                 alert("deleting audio event {0}!".format(id));
             };
         }])

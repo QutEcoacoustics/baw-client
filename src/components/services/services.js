@@ -51,11 +51,11 @@
                 formattedUrl += options.format;
             }
             else {
-                formattedUrl += "csv"
+                formattedUrl += "csv";
             }
 
             if (options.projectId || options.siteId) {
-                formattedUrl += "?"
+                formattedUrl += "?";
             }
 
             if (options.projectId) {
@@ -63,7 +63,7 @@
             }
 
             if (options.projectId && options.siteId) {
-                formattedUrl += "&"
+                formattedUrl += "&";
             }
 
             if (options.siteId) {
@@ -129,7 +129,7 @@
             if (angular.isArray(result)) {
                 angular.forEach(result, function (value) {
                     tags[value.id] = value;
-                })
+                });
             }
             else {
                 tags[result.id] = result;
@@ -158,7 +158,7 @@
         // this is a read only service, remove unnecessary methods
         delete  mediaResource.save;
         delete  mediaResource.remove;
-        delete  mediaResource.delete;
+        delete  mediaResource["delete"];
         //delete  mediaResource.update;
 
         return mediaResource;
@@ -173,7 +173,7 @@
                                             // extract auth_token and set in rootScope
 
                                             if (!data || data.response !== "ok") {
-                                                throw "Authenticator.loginSuccess: this function should not be called unless a successful response was received"
+                                                throw "Authenticator.loginSuccess: this function should not be called unless a successful response was received";
                                             }
 
                                             $rootScope.$safeApply($rootScope, function () {
@@ -264,7 +264,7 @@
 
                                                 return true;
                                             }
-                                        }
+                                        };
                                     }]);
 
     bawss.factory('AuthenticationProviders',
@@ -370,33 +370,33 @@
                            },
                            "facebook":    {
                                login:    function () {
-                                   openAuthLogin('facebook')
+                                   openAuthLogin('facebook');
                                },
                                logout:   signOut,
                                requires: null
                            },
                            "github":      {
                                login:    function () {
-                                   openAuthLogin('github')
+                                   openAuthLogin('github');
                                },
                                logout:   signOut,
                                requires: null
                            },
                            "twitter":     {
                                login:    function () {
-                                   openAuthLogin('twitter')
+                                   openAuthLogin('twitter');
                                },
                                logout:   signOut,
                                requires: null
                            },
                            "windowslive": {
                                login:    function () {
-                                   openAuthLogin('windowslive')
+                                   openAuthLogin('windowslive');
                                },
                                logout:   signOut,
                                requires: null
                            }
-                       }
+                       };
                    }]);
 
 

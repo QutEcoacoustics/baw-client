@@ -1,21 +1,22 @@
-﻿
-(function ($) {
+﻿(function ($) {
 
     var SELECTED_ATTRIBUTE = "data-selected";
 
     var clickLocation = function (e) {
         var posx = 0;
         var posy = 0;
-        if (!e) e = window.event;
-        if (!e) return { posx: 0, posy: 0 };
+        if (!e) {
+            e = window.event;
+        }
+        if (!e) {
+            return { posx: 0, posy: 0 };
+        }
         if (e.pageX || e.pageY) {
             posx = e.pageX;
             posy = e.pageY;
         } else if (e.clientX || e.clientY) {
-            posx = e.clientX + document.body.scrollLeft
-                + document.documentElement.scrollLeft;
-            posy = e.clientY + document.body.scrollTop
-                + document.documentElement.scrollTop;
+            posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
         }
 
         // FIX: need to take off an extra 10px from y (vertical) for some reason - don't know why.
@@ -78,8 +79,8 @@
         var containerOffset = $thisMouseDown.offset();
 
         var clickPos = {
-            x: parseInt(docClickLocation.posx - containerOffset.left),
-            y: parseInt(docClickLocation.posy - containerOffset.top)
+            x: baw.parseInt(docClickLocation.posx - containerOffset.left),
+            y: baw.parseInt(docClickLocation.posy - containerOffset.top)
         };
 
         // update stored values
@@ -151,7 +152,7 @@
         switch (contextData.options.selectionCallbackTrigger) {
             case "mousedown" : $newBox.mousedown(raiseSelectCallback); break;
             case "both" : $newBox.click(raiseSelectCallback); $newBox.mousedown(raiseSelectCallback); break;
-            case "click" :
+            case "click" : $newBox.click(raiseSelectCallback); break;
             default : $newBox.click(raiseSelectCallback); break;
         }
 
@@ -219,8 +220,8 @@
         var containerHeight = $thisMouseMove.height();
 
         var currentPos = {
-            x: Math.min(parseInt(docClickLocation.posx - containerOffset.left), containerWidth),
-            y: Math.min(parseInt(docClickLocation.posy - containerOffset.top), containerHeight)
+            x: Math.min(baw.parseInt(docClickLocation.posx - containerOffset.left), containerWidth),
+            y: Math.min(baw.parseInt(docClickLocation.posy - containerOffset.top), containerHeight)
         };
 
         var startClickPos = dataMouseMove.mousedownPos;
@@ -260,7 +261,7 @@
             //throw new Error("Non pixel quantity given, cannot convert:" + cssValue);
             return NaN;
         } else {
-            return parseInt(cssValue.substring(0, pos));
+            return baw.parseInt(cssValue.substring(0, pos));
         }
     };
 
@@ -294,7 +295,7 @@
             return callbackFunction.apply(element, [element, boxSimpleData]);
         };
 
-        return callbackFunction ? bevent : (function () { });
+        return callbackFunction ? bevent : function () { };
     };
 
     var methods = {};
@@ -304,7 +305,9 @@
             throw new Error("If defined, eventMap should be an object");
         }
 
-        if (!options) options = {};
+        if (!options) {
+            options = {};
+        }
 
         // Create some defaults, extending them with any options that were provided
         options = $.extend({
@@ -318,7 +321,7 @@
         }, options);
 
 
-        var maxBoxes = parseInt(options.maxBoxes);
+        var maxBoxes = baw.parseInt(options.maxBoxes);
         if (isNaN(maxBoxes) && maxBoxes < 1) {
             throw new Error("Max boxes must be an int greater than zero (or undefined)");
         }

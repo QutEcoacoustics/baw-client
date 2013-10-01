@@ -22,7 +22,7 @@ angular.module('bawApp.login', [])
 
                     if (authProvider.requires) {
 
-                        if (!$scope.additionalInformation || $scope.additionalInformation == "" /*  && validation check */) {
+                        if (!$scope.additionalInformation || $scope.additionalInformation === "" /*  && validation check */) {
                             $scope.requireMoreInformation = authProvider.requires;
                             $scope.requireMoreInformation.providerId = provider;
                             return;

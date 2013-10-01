@@ -320,6 +320,7 @@ module.exports = function (grunt) {
                 sub: true,
                 boss: true,
                 eqnull: true,
+
                 /* HACK: At some point this should be turned off!" */
                 force: true
             },

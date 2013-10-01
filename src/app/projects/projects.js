@@ -90,7 +90,7 @@ angular.module('bawApp.projects', [])
 
             $scope.links = {};
 
-            $scope.delete = function () {
+            $scope["delete"] = function () {
                 var doit = confirm("Are you sure you want to delete this project (id {0})?".format(this.project.id));
                 if (doit) {
                     projectResource.remove();

@@ -124,7 +124,7 @@ var app = angular.module('baw',
             when('/404?path=:errorPath', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
             otherwise({
                 redirectTo: function (params, location, search) {
-                    return '/404?path=' + location;
+                    //return '/404?path=' + location;
                 }
             });
 
@@ -141,7 +141,7 @@ var app = angular.module('baw',
             var seen = [];
             var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling", "$$prevSibling", "$root", "this", "$parent"];
             var str = JSON.stringify(this,
-                (function (key, val) {
+                function (key, val) {
                     if (badKeys.indexOf(key) >= 0) {
                         return "[Can't do that]";
                     }
@@ -152,7 +152,7 @@ var app = angular.module('baw',
                         seen.push(val);
                     }
                     return val;
-                }), 4);
+                }, 4);
             return str;
         };
         $rootScope.showOrHideDebugInfo = false;

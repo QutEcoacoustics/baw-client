@@ -25,7 +25,7 @@ angular.module('bawApp.listen', [])
                     recordingId: $routeParams.recordingId,
                     format: format,
                     type: format == "png" ? "spectrogram" : "audio"
-                }
+                };
             }
 
             $scope.errorState = !(baw.isNumber($routeParams.recordingId) && baw.parseInt($routeParams.recordingId) >= 0);
@@ -166,7 +166,7 @@ angular.module('bawApp.listen', [])
                     return offset;
                 };
 
-                var listenUrl = paths.site
+                var listenUrl = paths.site;
                 $scope.createNavigationHref = function (linkType, stepBy) {
 
                     if (!angular.isNumber(stepBy)) {
@@ -217,7 +217,7 @@ angular.module('bawApp.listen', [])
                         if (tagResources.length > 0) {
 
                             var result = tagResources.map(function (value) {
-                                return new baw.AudioEventTag({tagId: value.id})
+                                return new baw.AudioEventTag({tagId: value.id});
                             });
 
                             return result;
@@ -264,7 +264,7 @@ angular.module('bawApp.listen', [])
                         function createAnnotationFailure(response, getResponseHeaders) {
                             console.error("Annotation creation unsuccessful, response: " + response.status, response.data);
                         }
-                    )
+                    );
                 };
 
 

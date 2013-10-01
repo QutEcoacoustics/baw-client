@@ -10,7 +10,7 @@ angular.module('bawApp.bookmarks', [])
                     return BookmarksCtrl.linkList(this.bookmark.id)[key];
                 };
 
-                $scope.delete = function (id) {
+                $scope["delete"] = function (id) {
                     alert("deleting bookmark {0}!".format(id));
                 };
             }])

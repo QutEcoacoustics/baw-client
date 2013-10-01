@@ -47,8 +47,8 @@ angular.module('http-auth-interceptor', [])
 
                     retryAll();
                 }
-            }
-        }]
+            };
+        }];
     })
 
 /**
@@ -77,7 +77,7 @@ angular.module('http-auth-interceptor', [])
 
             return function (promise) {
                 return promise.then(success, error);
-            }
+            };
 
         }];
         $httpProvider.responseInterceptors.push(interceptor);

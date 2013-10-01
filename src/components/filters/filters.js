@@ -13,7 +13,7 @@
      */
     bawfs.filter('range', function() {
         return function(input, total) {
-            total = parseInt(total);
+            total = baw.parseInt(total);
             for (var i=0; i<total; i++) {
                 input.push(i);
             }
@@ -30,7 +30,7 @@
             else {
                 return falsePhrase || "";
             }
-        }
+        };
     });
 
     /**
@@ -50,7 +50,7 @@
            }
 
            return "";
-       }
+       };
     });
 
 
@@ -68,7 +68,7 @@
                 return '';
             }
 
-        }
+        };
     });
 
 
@@ -92,7 +92,7 @@
             else {
                 return "";
             }
-        }
+        };
     }]);
 
 })();

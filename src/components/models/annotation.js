@@ -1,4 +1,3 @@
-;
 (function (undefined) {
     var baw = window.baw = window.baw || {};
 
@@ -10,8 +9,9 @@
             resource = localIdOrResource;
         }
 
-        if (!(this instanceof Annotation))
+        if (!(this instanceof Annotation)) {
             throw new Error("Constructor called as a function");
+        }
 
         var now = new Date();
 

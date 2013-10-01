@@ -1,5 +1,3 @@
-'use strict';
-
 ///**
 // * String format function
 // * http://www.isurinder.com/blog/post/2011/04/02/StringFormat-In-JavaScript.aspx#.UKWRyvgzpQs
@@ -37,7 +35,9 @@ if (!Array.prototype.indexOf) {
         i = i || 0;
         var L = this.length;
         while (i < L) {
-            if (this[i] === what) return i;
+            if (this[i] === what) {
+                return i;
+            }
             ++i;
         }
         return -1;
@@ -53,21 +53,24 @@ if (!Array.prototype.filter) {
     Array.prototype.filter = function (fun /*, thisp */) {
         "use strict";
 
-        if (this == null)
+        if (this == null) {
             throw new TypeError();
+        }
 
         var t = Object(this);
         var len = t.length >>> 0;
-        if (typeof fun != "function")
+        if (typeof fun != "function") {
             throw new TypeError();
+        }
 
         var res = [];
         var thisp = arguments[1];
         for (var i = 0; i < len; i++) {
             if (i in t) {
                 var val = t[i]; // in case fun mutates this
-                if (fun.call(thisp, val, i, t))
+                if (fun.call(thisp, val, i, t)) {
                     res.push(val);
+                }
             }
         }
 
@@ -171,7 +174,7 @@ if (!Array.prototype.filter) {
     };
 
     baw.toType = function toType(obj) {
-        return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+        return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
     };
 
     baw.stringPad = function stringPad(number, paddingDigits, paddingCharacter) {
@@ -218,7 +221,7 @@ if (!Array.prototype.filter) {
 
         // default format [+/-d days] HH:mm:ss.fff
         var dayComponent = Math.floor(totalDays);
-        if (dayComponent != 0) {
+        if (dayComponent !== 0) {
             result += dayComponent.toString() + ( dayComponent == 1 ? " day " : " days ");
         }
 
@@ -273,13 +276,14 @@ if (!Array.prototype.filter) {
             callbackOnClose();
         }
 
-        if (window.focus)
+        if (window.focus) {
             newWindow.focus();
+        }
 
         return false;
     };
 
-    baw.angularCopies = new (function Angular() {
+   function Angular() {
         this.fixedEncodeURIComponent = function fixedEncodeURIComponent(str) {
             str = str || "";
             return encodeURIComponent(str)
@@ -309,9 +313,11 @@ if (!Array.prototype.filter) {
 
         this.isUndefined = function isUndefined(value) {
             return typeof value == 'undefined';
-        }
+        };
 
-    });
+    }
+
+    baw.angularCopies = new Angular();
 
 }());
 
