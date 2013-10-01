@@ -37,7 +37,7 @@
 
         <h3>Audio Controls</h3>
         <audio id="main-player" ng-audio="model.audioElement" controls>
-            <source ng-repeat="url in model.media.audioUrls" ng-src="{{url.url}}" src="" type="{{url.mime}}">
+            <source ng-repeat="url in model.media.availableAudioFormats" ng-src="{{url.url}}" src="" type="{{url.mime}}">
             Your browser does not support the audio element.
         </audio>
         <div id="listenEditContainer">

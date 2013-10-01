@@ -1,6 +1,15 @@
 angular.module('bawApp.listen', [])
 
-    .controller('ListenCtrl', ['$scope', '$resource', '$routeParams', '$route', 'conf.paths', 'conf.constants', 'Media', 'AudioEvent', 'Tag',
+    .controller('ListenCtrl', ['$scope',
+        '$resource',
+        '$routeParams',
+        '$route',
+        'conf.paths',
+        'conf.constants',
+        '$url',
+        'Media',
+        'AudioEvent',
+        'Tag',
         /**
          * The listen controller.
          * @param $scope
@@ -14,7 +23,7 @@ angular.module('bawApp.listen', [])
          * @param paths
          * @param constants
          */
-            function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, Media, AudioEvent, Tag) {
+            function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, $url, Media, AudioEvent, Tag) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -23,8 +32,7 @@ angular.module('bawApp.listen', [])
                     end_offset: $routeParams.end,
                     // this one is different, it is encoded into the path of the request by angular
                     recordingId: $routeParams.recordingId,
-                    format: format,
-                    type: format == "png" ? "spectrogram" : "audio"
+                    format: format
                 };
             }
 
@@ -58,16 +66,29 @@ angular.module('bawApp.listen', [])
                 };
 
                 var formatPaths = function () {
-                    if ($scope.model.media && $scope.model.media.hasOwnProperty('recordingId')) {
+                    if ($scope.model.media && $scope.model.media.hasOwnProperty('id')) {
                         //var authToken = $scope.authTokenQuery();
-                        $scope.model.media.imageUrl =
-                            $scope.model.media.spectrogramBaseUrl.format($scope.model.media) + "?" + authToken;
 
-                        $scope.model.media.audioUrls = [];
-                        angular.forEach($scope.model.media.options.audioFormats, function (value, key) {
-                            $scope.model.media.audioFormat = value.extension;
-                            this.push({url: $scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + authToken, mime: value.mimeType});
-                        }, $scope.model.media.audioUrls);
+                        var imgKeys = Object.keys($scope.model.media.availableImageFormats);
+                        if (imgKeys.length > 1) {
+                            throw "don't know how to handle more than one image format!";
+                        }
+
+                        $scope.model.media.imageUrl =
+                            $scope.model.media.availableImageFormats[imgKeys[0]] =
+                            paths.joinFragments(paths.api.root, $scope.model.media.availableImageFormats[imgKeys[0]].url);
+                        //$scope.model.media.spectrogramBaseUrl.format($scope.model.media);  + "?" + authToken;
+
+                        // No longer necessary, new-api is HATEOASish
+                        //$scope.model.media.audioUrls = [];
+                        //angular.forEach($scope.model.media.options.audioFormats, function (value, key) {
+                        //    $scope.model.media.audioFormat = value.extension;
+                        //    this.push({url: $scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + authToken, mime: value.mimeType});
+                        //}, $scope.model.media.audioUrls);
+
+                        angular.forEach($scope.model.media.available_audio_formats, function(key, value) {
+                            this[key] =  paths.joinFragments(paths.api.root, value);
+                        }, $scope.model.media.available_audio_formats);
 
                     }
                 };
@@ -95,7 +116,7 @@ angular.module('bawApp.listen', [])
                         }
                     },
                     function audioEventQueryFailure() {
-                        console.error("retieval of audio events failed");
+                        console.error("retrieval of audio events failed");
                     });
 
                 // download all the tags and store them in Tag service cache
@@ -174,11 +195,16 @@ angular.module('bawApp.listen', [])
                     }
 
                     if (linkType === "previous") {
-
-                        return "/listen/" + recordingId + "/start=" + ($routeParams.start - stepBy) + "/end=" + ($routeParams.end - stepBy);
+                        var uri = $url.formatUri(
+                            paths.site.ngRoutes.listenAbsolute,
+                            {start: ($routeParams.start - stepBy) , end: ($routeParams.end - stepBy)});
+                        return uri;
                     }
                     else if (linkType === "next") {
-                        return "/listen/" + recordingId + "/start=" + ($routeParams.start + stepBy) + "/end=" + ($routeParams.end + stepBy);
+                        var uri = $url.formatUri(
+                            paths.site.ngRoutes.listenAbsolute,
+                            {start: ($routeParams.start + stepBy) , end: ($routeParams.end + stepBy)});
+                        return uri;
                     }
 
                     throw "Invalid link type specified in createNavigationHref";

@@ -76,7 +76,7 @@ returns: 'some string with first value and second value injected using {property
 			return obj.format;
 		}
 		
-		//determin the constructor base & prototype to use
+		//determine the constructor base & prototype to use
 		var ctor = (function(o) {
 			if (typeof o == 'number') {
                 return Number;
@@ -139,6 +139,7 @@ returns: 'some string with first value and second value injected using {property
 			}
 		}
 		else {
+            console.warn("no formatter, use empty string, this should *NEVER* happen.");
             return ""; //no formatter, use empty string, this should *NEVER* happen.
         }
 	}
@@ -171,11 +172,11 @@ returns: 'some string with first value and second value injected using {property
 	}
     
 	//normalize arguments into parameter array
-	function setParams() {
+	function setParams(args) {
 		var undef; //undefined value
 
 		//remove first item from stack
-		var params = Array.prototype.slice.call(arguments, 1);
+		var params = args.slice(1);
 		
 		//only one param
 		if (params.length == 1) {
@@ -200,15 +201,29 @@ returns: 'some string with first value and second value injected using {property
 		return params;
 	}
 	
-	function stringformat(source, params) {
+	function stringformat(trimObject, source, params) {
+
+        var args = Array.prototype.slice.call(arguments, 1);
+
 		//only one argument, force it to a proper string.
-		if ( arguments.length < 2 ) {
+		if ( args.length < 2 ) {
 			basicFormat(source);
 		}
 			
 		//normalize the input parameters
-		params = setParams.apply(null, arguments);
-		var outerLength = arguments.length;
+		params = setParams(args);
+		var outerLength = args.length;
+
+        var diff = {};
+        if (trimObject) {
+            if (Object.keys(params).length === 1 && params["0"] == "") {
+                diff = null;
+                trimObject = false;
+            }
+            else {
+                diff = JSON.parse(JSON.stringify(params));
+            }
+        }
 			
 		//run a replace method against the source string, matching against
 		//	named/numbered parameters
@@ -230,16 +245,26 @@ returns: 'some string with first value and second value injected using {property
 					//if there was only one parameter, and the match is "0", and there's no "0" in params, use the params as the binding formatter
 					//should fix "... {0:...}".toFormat(singleItem)
 					if (num === "0" && outerLength == 2) {
-                        return stringFromAny(params, format);
+                        var str2 = stringFromAny(params, format);
+                        if (trimObject) {
+                            diff = null;
+                        }
+                        return  str2;
                     }
 
 					return match; //no param value available
 				}
 
-				return stringFromAny(params[num], format); //convert the input replacement to a proper string
+                //convert the input replacement to a proper string
+                var str = stringFromAny(params[num], format);
+                if (trimObject) {
+                    delete diff[num];
+                }
+                return  str;
 			}
 		);
-		return ret;
+
+		return {string: ret, unused: diff};
 	}
 
 	//main string formatter
@@ -253,17 +278,34 @@ returns: 'some string with first value and second value injected using {property
 
 	//create a format method for string instances
 	if (typeof String.prototype.format != "function") {
-		String.prototype.format = function() {
-			var args = Array.prototype.slice.call(arguments);
-			args.unshift(this);
-			return stringformat.apply(null, args);
-		};
-	}
+        String.prototype.format = function() {
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift(this);
+            args.unshift(false);
+            return stringformat.apply(null, args).string;
+        };
+    }
+
+    if (typeof String.prototype.formatReturnUnused != "function") {
+        /**
+         * A string formatter that takes in arguments, returns a formatted string, and returns any unused arguments.
+         * @param {Object} lookup - The lookup hash
+         * @returns {Object.<string, Object>} The formatted string along with any unused arguments
+         */
+        String.prototype.formatReturnUnused = function() {
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift(this);
+            args.unshift(true);
+            return stringformat.apply(null, args);
+        };
+    }
+
 	if (typeof String.prototype.asFormat != "function") {
 		String.prototype.asFormat = function() {
 			var args = Array.prototype.slice.call(arguments);
-			args.unshift(this);
-			return stringformat.apply(null, args);
+            args.unshift(this);
+			args.unshift(false);
+			return stringformat.apply(null, args).string;
 		};
 	}
 	

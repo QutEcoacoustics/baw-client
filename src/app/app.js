@@ -55,6 +55,7 @@ var app = angular.module('baw',
 
             'bawApp.configuration', /* a mapping of all static path configurations
                                         and a module that contains all app configuration */
+            'url',      /* a custom uri formatter */
 
             'templates-app', /* these are the precompiled templates */
             'templates-common',
@@ -124,7 +125,7 @@ var app = angular.module('baw',
             when('/404?path=:errorPath', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
             otherwise({
                 redirectTo: function (params, location, search) {
-                    //return '/404?path=' + location;
+                    return '/404?path=' + location;
                 }
             });
 

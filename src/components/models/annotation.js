@@ -1,6 +1,12 @@
 (function (undefined) {
     var baw = window.baw = window.baw || {};
 
+    /**
+     *
+     * @param localIdOrResource
+     * @param {*=} audioRecordingId
+     * @constructor
+     */
     baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
 
         var localId = typeof(localIdOrResource) === "number" ? localIdOrResource : undefined;

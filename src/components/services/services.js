@@ -14,7 +14,7 @@
     }
 
     function uriConvert(uri) {
-        return uri.replace(/({{)/g, ":").replace(/}}/g, "");
+        return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
     var bawss = angular.module("bawApp.services", ['ngResource', 'bawApp.configuration']);
@@ -87,8 +87,6 @@
     bawss.factory('Taggings', [ '$resource', 'conf.paths', function ($resource, paths) {
         var resource = resourcePut($resource, uriConvert(paths.api.routes.taggings.showAbsolute),
                                    {
-                                       projectId:    "@projectId",
-                                       siteId:       "@siteId",
                                        recordingId:  '@recordingId',
                                        audioEventId: '@audioEventId',
                                        taggingId:    '@taggingId'
@@ -151,7 +149,6 @@
         var mediaResource = $resource( uriConvert(paths.api.routes.media.showAbsolute),
                                        {
                                            recordingId: '@recordingId',
-                                           type: '@type',
                                            format: '@format'
                                        });
 
