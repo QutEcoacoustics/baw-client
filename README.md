@@ -13,18 +13,19 @@ cd to your cloned directory and then
 
 	$ bower install
 
-To add new bower packages
-
-	$ bower install xxxx --save-dep
-
-You'll also have to configure `build.config.js` when adding any new packages to vendor directory.
-	
+	$ gem install compass
 
 ## To develop:
 
 	$ grunt watch
 
-and browse to `localhost:8080`
+and browse to the karma tab first `localhost:<port>` (see output for port number), then `localhost:8080`.
+
+To add new bower packages
+
+	$ bower install xxxx --save-dep
+
+You'll need to configure `build.config.js` when adding any new grunt packages to the vendor directory.
 
 ## To build:
 
