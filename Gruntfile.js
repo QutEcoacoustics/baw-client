@@ -274,10 +274,10 @@ module.exports = function (grunt) {
         compass: {
             build: {
                 options: {
-                    outputStyle: 'compact',
                     sassDir: 'src/sass',
                     cssDir: '<%= build_dir %>/assets/styles/',
                     environment: 'development',
+                    outputStyle: 'expanded',
                     raw: "preferred_syntax = :scss\n"
                 }
             },
@@ -568,7 +568,7 @@ module.exports = function (grunt) {
 //      },
             sass: {
                 files: [ 'src/**/*.scss' ],
-                tasks: 'compass:build'
+                tasks: ['compass:build', 'concat:build_css']
             },
 
             /**

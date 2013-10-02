@@ -86,9 +86,9 @@ angular.module('bawApp.listen', [])
                         //    this.push({url: $scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + authToken, mime: value.mimeType});
                         //}, $scope.model.media.audioUrls);
 
-                        angular.forEach($scope.model.media.available_audio_formats, function(key, value) {
-                            this[key] =  paths.joinFragments(paths.api.root, value);
-                        }, $scope.model.media.available_audio_formats);
+                        angular.forEach($scope.model.media.availableAudioFormats, function(value, key) {
+                            this[key].url =  paths.joinFragments(paths.api.root, value.url);
+                        }, $scope.model.media.availableAudioFormats);
 
                     }
                 };
@@ -195,16 +195,24 @@ angular.module('bawApp.listen', [])
                     }
 
                     if (linkType === "previous") {
-                        var uri = $url.formatUri(
-                            paths.site.ngRoutes.listenAbsolute,
-                            {start: ($routeParams.start - stepBy) , end: ($routeParams.end - stepBy)});
-                        return uri;
+                        var uriPrev = $url.formatUri(
+                            paths.site.ngRoutes.listen,
+                            {
+                                recordingId: recordingId,
+                                start: ($routeParams.start - stepBy) ,
+                                end: ($routeParams.end - stepBy)
+                            });
+                        return uriPrev;
                     }
                     else if (linkType === "next") {
-                        var uri = $url.formatUri(
-                            paths.site.ngRoutes.listenAbsolute,
-                            {start: ($routeParams.start + stepBy) , end: ($routeParams.end + stepBy)});
-                        return uri;
+                        var uriNext = $url.formatUri(
+                            paths.site.ngRoutes.listen,
+                            {
+                                recordingId: recordingId,
+                                start: ($routeParams.start + stepBy) ,
+                                end: ($routeParams.end + stepBy)
+                            });
+                        return uriNext;
                     }
 
                     throw "Invalid link type specified in createNavigationHref";

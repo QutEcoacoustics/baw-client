@@ -1,13 +1,10 @@
 @import 'base';
 
-.hint {
-  // dummy class to get rid of warning
-  background-color: white;
-}
+//@import "../../vendor/hint.css/hint.css";
 
 @mixin arrow-border-color($color, $isInsideSelector: "true") {
   @each $position in top, bottom, left, right {
-  // if the current mixin is called from within a selector, use a '&'. Otherwise not.
+    // if the current mixin is called from within a selector, use a '&'. Otherwise not.
     @if $isInsideSelector == "true" {
       &.hint--#{$position}:before {
         border-#{$position}-color: $color;
@@ -22,6 +19,9 @@
 
 @mixin hint-custom-color($color, $content) {
   border-color: $color;
+
+
+
   @include vendor-prefix(box-shadow, 1px 1px 8px -1px rgba($color, 0.5));
   &:before {
     //border-top-color: $color;
@@ -29,20 +29,23 @@
   &:after {
     background-color: $color;
     text-shadow:      0 -1px 0px darken($color, 20%);
-    content:          $content;
+    font-size: smaller;
+    border-radius: 4px;
+    padding: 4px;
+    content:      $content;
   }
 
 }
 
 .time {
-  background-color: rgba(255,255,255, 0.3) ;
+  background-color: rgba(255, 255, 255, 0.3);
   @include rounded-corners($standard-border-radius);
-  color:        nth($master-dark, 1);
-  border-style: solid;
-  border-width: 1px;
-  @extend .hint;
+  color:            nth($master-dark, 1);
+  border-style:     solid;
+  border-width:     1px;
+  /*@extend .hint;*/
 
-  padding:      0 $standard-padding-horizontal;
+  padding:          0 $standard-padding-horizontal;
 }
 
 .relative-recording-time {

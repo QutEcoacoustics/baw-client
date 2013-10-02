@@ -86,7 +86,14 @@ var app = angular.module('baw',
             'bawApp.users'
         ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', function ($routeProvider, $locationProvider, $httpProvider, paths) {
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider'
+        , function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
+        // adjust security whitelist for resource urls
+        var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
+        currentWhitelist.push(paths.api.root);
+        $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
+
+
         $routeProvider.whenDefaults = whenDefaults;
         $routeProvider.fluidIf = baw.fluidIf;
 
