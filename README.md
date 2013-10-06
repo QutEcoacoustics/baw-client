@@ -13,8 +13,6 @@ cd to your cloned directory and then
 
 	$ bower install
 
-	$ gem install compass
-
 ## To develop:
 
 	$ grunt watch
