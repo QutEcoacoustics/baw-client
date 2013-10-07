@@ -54,8 +54,8 @@ var app = angular.module('baw',
             'ui.utils', /* angular-ui project */
 
             'bawApp.configuration', /* a mapping of all static path configurations
-                                        and a module that contains all app configuration */
-            'url',      /* a custom uri formatter */
+         and a module that contains all app configuration */
+            'url', /* a custom uri formatter */
 
             'templates-app', /* these are the precompiled templates */
             'templates-common',
@@ -86,62 +86,62 @@ var app = angular.module('baw',
             'bawApp.users'
         ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider'
-        , function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
-        // adjust security whitelist for resource urls
-        var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
-        currentWhitelist.push(paths.api.root);
-        $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider',
+        function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
+            // adjust security whitelist for resource urls
+            var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
+            currentWhitelist.push(paths.api.root);
+            $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
 
 
-        $routeProvider.whenDefaults = whenDefaults;
-        $routeProvider.fluidIf = baw.fluidIf;
+            $routeProvider.whenDefaults = whenDefaults;
+            $routeProvider.fluidIf = baw.fluidIf;
 
-        // routes
-        $routeProvider.
-            when('/home', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
+            // routes
+            $routeProvider.
+                when('/home', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
 
-            whenDefaults("projects", "project", ":projectId", 'ProjectsCtrl', 'ProjectCtrl').
-            whenDefaults("sites", "site", ":siteId", 'SitesCtrl', 'SiteCtrl').
-            whenDefaults("photos", "photo", ":photoId", 'PhotosCtrl', 'PhotoCtrl').
-            whenDefaults("bookmarks", "bookmark", ":bookmarkId", 'BookmarksCtrl', 'BookmarkCtrl').
-            whenDefaults("searches", "search", ":searchId", 'SearchesCtrl', 'SearchCtrl').
-            whenDefaults("tags", "tag", ":tagId", 'TagsCtrl', 'TagCtrl').
-            whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
-            whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
+                whenDefaults("projects", "project", ":projectId", 'ProjectsCtrl', 'ProjectCtrl').
+                whenDefaults("sites", "site", ":siteId", 'SitesCtrl', 'SiteCtrl').
+                whenDefaults("photos", "photo", ":photoId", 'PhotosCtrl', 'PhotoCtrl').
+                whenDefaults("bookmarks", "bookmark", ":bookmarkId", 'BookmarksCtrl', 'BookmarkCtrl').
+                whenDefaults("searches", "search", ":searchId", 'SearchesCtrl', 'SearchCtrl').
+                whenDefaults("tags", "tag", ":tagId", 'TagsCtrl', 'TagCtrl').
+                whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
+                whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
 
-            when('/recordings', {templateUrl: '/assets/recordings.html', controller: 'RecordingsCtrl' }).
-            when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
+                when('/recordings', {templateUrl: '/assets/recordings.html', controller: 'RecordingsCtrl' }).
+                when('/recordings/:recordingId', {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
 
-            when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
-            when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
-            //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+                when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+                when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+                //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 
-            when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
-            when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
+                when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
+                when('/accounts/:action', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
 
-            when('/attribution', {templateUrl: '/assets/attributions.html'}).
+                when('/attribution', {templateUrl: '/assets/attributions.html'}).
 
-            // experiments
-            when('/experiments/:experiment', {templateUrl: '/assets/experiment_base.html', controller: 'ExperimentsCtrl'}).
+                // experiments
+                when('/experiments/:experiment', {templateUrl: '/assets/experiment_base.html', controller: 'ExperimentsCtrl'}).
 
 
-            // missing route page
-            when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
-            when('/404', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
-            when('/404?path=:errorPath', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
-            otherwise({
-                redirectTo: function (params, location, search) {
-                    return '/404?path=' + location;
-                }
-            });
+                // missing route page
+                when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
+                when('/404', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
+                when('/404?path=:errorPath', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
+                otherwise({
+                    redirectTo: function (params, location, search) {
+                        return '/404?path=' + location;
+                    }
+                });
 
-        // location config
-        $locationProvider.html5Mode(true);
+            // location config
+            $locationProvider.html5Mode(true);
 
-        // http default configuration
-        $httpProvider.defaults.withCredentials = true;
-    }])
+            // http default configuration
+            $httpProvider.defaults.withCredentials = true;
+        }])
 
 
     .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', function ($rootScope, $location, $route, $http, AudioEvent) {

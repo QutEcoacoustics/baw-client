@@ -275,7 +275,7 @@
         var selectedAttr = $element.attr(SELECTED_ATTRIBUTE);
 
         return {
-            id: $element.attr(dataIdKey),
+            id: parseInt($element.attr(dataIdKey), 10),
             left: removePx($element.css("left")),
             top: removePx($element.css("top")),
             width: removePx($element.css("width")) + BORDER_MODEL_DIFFERANCE,  // box model - border not included in widths

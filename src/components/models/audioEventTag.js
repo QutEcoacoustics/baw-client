@@ -1,4 +1,4 @@
-(function (undefined) {
+
     var baw = window.baw = window.baw || {};
 
     baw.AudioEventTag = function AudioEventTag(obj) {
@@ -23,4 +23,3 @@
         }
 
     };
-})();

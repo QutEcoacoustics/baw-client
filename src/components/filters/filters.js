@@ -1,8 +1,6 @@
-'strict';
 
 /* http://docs.angularjs.org/#!angular.filter */
-(function() {
-    var bawfs = angular.module('bawApp.filters', []);
+    var bawfs = bawfs || angular.module('bawApp.filters', []);
 
     /*
      http://stackoverflow.com/questions/11873570/angularjs-for-loop-with-numbers-ranges
@@ -95,4 +93,3 @@
         };
     }]);
 
-})();

@@ -1,4 +1,3 @@
-(function (undefined) {
     var baw = window.baw = window.baw || {};
 
     /**
@@ -55,5 +54,3 @@
             }, this);
         }
     };
-
-})();
