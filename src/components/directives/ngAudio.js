@@ -3,6 +3,9 @@ var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration'
 /**
  * A directive for binding the model to data off an audio element.
  * Most things are oneway bindings
+ *
+ * This directive is incomplete. The potential exists for many other cool bindings,
+ * like a "isBuffering" binding.
  */
 bawds.directive('ngAudio', ['$parse', function ($parse) {
 
@@ -14,7 +17,13 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 throw 'Cannot put ngAudio element on an element that is not a <audio />';
             }
 
-            function setCurrentState(event) {
+            var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume'];
+            function updateObject(src, dest) {
+                for (var i = 0; i < propertiesToUpdate.length; i++){
+                    dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
+                }
+            }
+            function updateState(event) {
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
                         var expression = $parse(attributes.ngAudio);
@@ -25,13 +34,16 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                         }
 
                         target.currentState = event && event.type || 'unknown';
+                        updateObject(element ,target);
                         return;
 
                     }
                     scope.currentState = event && event.type || 'unknown';
+                    updateObject(element, scope);
                 });
             }
 
+            // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Events/Media_events
             var events = {
                 'abort': undefined,
                 'canplay': undefined,
@@ -49,23 +61,23 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                         scope.duration = element.duration;
                     });
                 },
-                'emptied': undefined,
-                'ended': setCurrentState,
+                'emptied': updateState,
+                'ended': updateState,
                 'error': undefined,
-                'loadeddata': undefined,
-                'loadedmetadata': undefined,
-                'loadstart': undefined,
+                'loadeddata': updateState,
+                'loadedmetadata': updateState,
+                'loadstart': updateState,
                 'mozaudioavailable': undefined,
-                'pause': setCurrentState,
-                'play': setCurrentState,
-                'playing': setCurrentState,
+                'pause': updateState,
+                'play': updateState,
+                'playing': updateState,
                 'progress': undefined,
                 'ratechange': undefined,
                 'seeked': undefined,
                 'seeking': undefined,
                 'suspend': undefined,
                 'timeupdate': undefined,
-                'volumechange': undefined,
+                'volumechange': updateState,
                 'waiting': undefined};
 
             angular.forEach(events, function (value, key) {

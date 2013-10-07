@@ -66,6 +66,7 @@ module.exports = {
       'vendor/jquery/jquery.js',
         // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
       'vendor/jquery-ui/ui/jquery-ui.js',
+      'vendor/momentjs/moment.js',
       'vendor/angular/angular.js',
       'vendor/angular-route/angular-route.js',
       'vendor/angular-resource/angular-resource.js',

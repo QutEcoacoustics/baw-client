@@ -13,7 +13,8 @@
     "underscore": "~1.5.2",
     "angular-resource": "~1.0.8",
     "modernizr": "~2.6.2",
-    "jquery-ui": "~1.10.3"
+    "jquery-ui": "~1.10.3",
+    "momentjs": "~2.3.0"
   },
   "dependencies": {}
 }

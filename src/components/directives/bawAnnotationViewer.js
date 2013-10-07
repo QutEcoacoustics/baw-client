@@ -9,7 +9,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
     function unitConversions(sampleRate, window, imageWidth, imageHeight) {
         if (sampleRate === undefined || window === undefined || !imageWidth || !imageHeight) {
-            Console.warn("not enough information to calculate unit conversions");
+            console.warn("not enough information to calculate unit conversions");
             return { pixelsPerSecond: NaN, pixelsPerHertz: NaN};
         }
 
@@ -39,7 +39,10 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
     }
 
     function updateUnitConversions(scope, imageWidth, imageHeight) {
-        var conversions = unitConversions(scope.model.media.sampleRate, scope.model.media.window, imageWidth, imageHeight);
+        var conversions = {};
+        if (scope.model.media && scope.model.media.spectrogram){
+            conversions = unitConversions(scope.model.media.sampleRate, scope.model.media.spectrogram.window, imageWidth, imageHeight);
+        }
 
         var PRECISION = 6;
 
