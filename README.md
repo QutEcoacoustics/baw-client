@@ -38,7 +38,7 @@ The `grunt` runner will accept three build options that will rewrite important v
  - staging: `$ grunt --staging`
  - production (the default): `$ grunt --production`
 
-These variables are configured in `build_configs.js`.
+These variables are configured in `build.config.js`.
 
 ---
 # Licence
