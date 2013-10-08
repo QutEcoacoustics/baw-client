@@ -24,10 +24,52 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-contrib-connect');
 
+
     /**
      * Load in our build configuration file.
      */
     var userConfig = require('./build.config.js');
+
+
+    /**
+     * Process the build option.
+     */
+    var development = grunt.option('development') === true,
+        staging = grunt.option('staging') === true,
+        production = grunt.option('production') === true,
+        sumBuildOptions = development + staging + production;
+
+    // if none set, set default to prod
+    if (sumBuildOptions === 0) {
+        if (grunt.cli.tasks && grunt.cli.tasks.length > 0) {
+            grunt.log.writeln("No build option selected, setting default to ***development***");
+            development = true;
+        }
+        else {
+            grunt.log.writeln("No build option selected and no task given, setting default to ***production***");
+            production = true;
+        }
+        sumBuildOptions = 1;
+    }
+
+    if (sumBuildOptions !== 1) {
+        grunt.log.error("More than one build option set! cannot have multiple build options.");
+        throw "More than one build option set! cannot have multiple build options.";
+    }
+
+    if (development) {
+        grunt.log.ok("Development build selected");
+        userConfig.build_configs.current = userConfig.build_configs.development;
+    }
+    if (staging) {
+        grunt.log.ok("Staging build selected");
+        userConfig.build_configs.current = userConfig.build_configs.staging;
+    }
+    if (production) {
+        grunt.log.ok("Production build selected");
+        userConfig.build_configs.current = userConfig.build_configs.production;
+    }
+
 
     /**
      * This is the configuration object Grunt uses to give each plugin its
@@ -126,6 +168,21 @@ module.exports = function (grunt) {
                 ]
             },
             build_appjs: {
+                options : {
+                    processContent : function(content, srcPath) {
+                        // if srcPath contain .tpl.js
+                        // for now since the angular templates use tpl as well,
+                        // we'll cheat and just use a direct file reference
+                        var bc = grunt.config('build_configs');
+                        if (srcPath === bc.configFile) {
+
+                            // then process as template!
+                            return grunt.template.process(content, {data: bc});
+                        }
+
+                        return content;
+                    }
+                },
                 files: [
                     {
                         src: [ '<%= app_files.js %>' ],
@@ -625,6 +682,7 @@ module.exports = function (grunt) {
 
     };
 
+
     grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
     /**
@@ -698,6 +756,7 @@ module.exports = function (grunt) {
             process: function (contents, path) {
                 return grunt.template.process(contents, {
                     data: {
+                        build_configs: grunt.config('build_configs'),
                         scripts: jsFiles,
                         styles: cssFiles,
                         mainStyle: mainCss,

@@ -76,7 +76,7 @@ angular.module('bawApp.listen', [])
                         }
 
                         $scope.model.media.availableImageFormats[imgKeys[0]].url =
-                                paths.joinFragments(paths.api.root, $scope.model.media.availableImageFormats[imgKeys[0]].url);
+                            paths.joinFragments(paths.api.root, $scope.model.media.availableImageFormats[imgKeys[0]].url);
                         $scope.model.media.spectrogram = $scope.model.media.availableImageFormats[imgKeys[0]];
 
                         //$scope.model.media.spectrogramBaseUrl.format($scope.model.media);  + "?" + authToken;
@@ -236,15 +236,26 @@ angular.module('bawApp.listen', [])
                         stepBy = CHUNK_DURATION_SECONDS;
                     }
 
+                    var baseLink = {recordingId: recordingId};
+
                     if (linkType === "previous") {
+                        var lowerBound = ($routeParams.start - stepBy);
+                        if (lowerBound === 0) {
+                            baseLink.end = lowerBound + stepBy;
+                        }
+                        else if (lowerBound > 0) {
+                            baseLink.start = lowerBound;
+                            baseLink.end = lowerBound + stepBy;
+                        }
+                        else {
+                            // noop
+                        }
+
                         var uriPrev = $url.formatUri(
                             paths.site.ngRoutes.listen,
-                            {
-                                recordingId: recordingId,
-                                start: ($routeParams.start - stepBy),
-                                end: ($routeParams.end - stepBy)
-                            });
+                            baseLink);
                         return uriPrev;
+
                     }
                     else if (linkType === "next") {
                         var uriNext = $url.formatUri(
@@ -258,7 +269,8 @@ angular.module('bawApp.listen', [])
                     }
 
                     throw "Invalid link type specified in createNavigationHref";
-                };
+                }
+                ;
 
                 $scope.clearSelected = function () {
                     //$scope.model.selectedAudioEvents.length = 0;
@@ -347,4 +359,5 @@ angular.module('bawApp.listen', [])
             }
 
 
-        }]);
+        }])
+;
