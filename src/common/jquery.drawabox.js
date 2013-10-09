@@ -269,7 +269,7 @@
      * This is dodgy as fuck - if the border width changes...
      * @type {number}
      */
-    var BORDER_MODEL_DIFFERANCE = 2;
+    var BORDER_MODEL_DIFFERANCE = 0;
 
     var getBox = function ($element) {
         var selectedAttr = $element.attr(SELECTED_ATTRIBUTE);

@@ -35,12 +35,12 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
             console.warn("the image width does not3 conform well with the meta data");
         }
 
-        return { pixelsPerSecond: spectrogramPps, pixelsPerHertz: imagePph};
+        return { pixelsPerSecond: spectrogramPps, pixelsPerHertz: imagePph, nyquistFrequency: nyquistFrequency };
     }
 
     function updateUnitConversions(scope, imageWidth, imageHeight) {
         var conversions = {};
-        if (scope.model.media && scope.model.media.spectrogram){
+        if (scope.model.media && scope.model.media.spectrogram) {
             conversions = unitConversions(scope.model.media.sampleRate, scope.model.media.spectrogram.window, imageWidth, imageHeight);
         }
 
@@ -63,6 +63,9 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
             hertzToPixels: function hertzToPixels(hertz) {
                 var pixels = hertz * conversions.pixelsPerHertz;
                 return pixels;
+            },
+            invertHertz: function invertHertz(hertz) {
+                return Math.abs(conversions.nyquistFrequency - hertz);
             }
         };
     }
@@ -78,10 +81,10 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
         if (audioEvent.__temporaryId__ === boxId) {
             audioEvent.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
-            audioEvent.highFrequencyHertz = scope.model.converters.pixelsToHertz(box.top || 0);
+            audioEvent.highFrequencyHertz = scope.model.converters.invertHertz(scope.model.converters.pixelsToHertz(box.top || 0));
 
             audioEvent.endTimeSeconds = audioEvent.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0);
-            audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz + scope.model.converters.pixelsToHertz(box.height || 0);
+            audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0);
         }
         else {
             console.error("Box ids do not match on resizing  or move event", audioEvent.__temporaryId__, boxId);
@@ -182,6 +185,21 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
             // init unit conversion
             function updateConverters() {
+                if (scope.$image[0].src) {
+                    var natHeight = scope.$image[0].naturalHeight;
+                    if (natHeight === undefined) {
+                        // TODO: handle better
+                        throw "can't determine natural height!";
+                    }
+                    if (natHeight !== 0 && !baw.isPowerOfTwo(natHeight)) {
+                        var croppedHeight = baw.closestPowerOfTwoBelow(natHeight);
+                        console.warn("The natural height (" + natHeight +
+                            "px) for image " + scope.$image[0].src +
+                            " is not a power of two. The image has been cropped to " + croppedHeight + "px!");
+
+                        scope.$image.height(croppedHeight);
+                    }
+                }
                 scope.model.converters = updateUnitConversions(scope, scope.$image.width(), scope.$image.height());
             }
 
