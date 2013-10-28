@@ -86,8 +86,8 @@ var app = angular.module('baw',
             'bawApp.users'
         ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider'
-        , function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider',
+             function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
         // adjust security whitelist for resource urls
         var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
         currentWhitelist.push(paths.api.root);
