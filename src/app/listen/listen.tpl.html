@@ -6,10 +6,9 @@
         <h1>Listen</h1>
         Listen and annotate.
         <ul>
-            <li><span class="" data-hint="lots o boobies">Hello</span></li>
         <li>
-            Audio recording: <span class="hint absolute-time hint--top">{{model.media.original.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
-            Duration of recording: <span class="hint duration hint--top" >{{model.media.original.durationSeconds | formatTimeSpan}} </span>
+            Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
+            Duration of recording: <span class="hint duration hint--top" >{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
         </li>
         <li>
             Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span class="hint duration hint--top" >--TODO-- </span>

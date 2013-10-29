@@ -122,7 +122,6 @@ if (!Array.prototype.filter) {
     }
 }());
 
-
 (function (undefined) {
 
     var baw = window.baw = window.baw || {};
@@ -136,7 +135,7 @@ if (!Array.prototype.filter) {
     baw.shuffle = function shuffle(list) {
         var i, j, t;
         for (i = 1; i < list.length; i++) {
-            j = Math.floor(Math.random()*(1+i));  // choose j in [0..i]
+            j = Math.floor(Math.random() * (1 + i));  // choose j in [0..i]
             if (j != i) {
                 t = list[i];                        // swap list[i] and list[j]
                 list[i] = list[j];
@@ -243,8 +242,17 @@ if (!Array.prototype.filter) {
         return !isNaN(parseFloat(n)) && isFinite(n);
     };
 
-    baw.parseInt = function(n) {
+    baw.parseInt = function (n) {
         return parseInt(n, 10);
+    };
+
+    baw.isPowerOfTwo = function isPowerOfTwo(x) {
+        return (x & (x - 1)) === 0;
+    };
+
+    baw.closestPowerOfTwoBelow = function closestPowerOfTwoBelow(x) {
+        var power = Math.floor(Math.log(257)/Math.log(2));
+        return Math.pow(2, power);
     };
 
     baw.popUpWindow = function popUpWindow(provider_url, width, height, callback) {
@@ -283,7 +291,7 @@ if (!Array.prototype.filter) {
         return false;
     };
 
-   function Angular() {
+    function Angular() {
         this.fixedEncodeURIComponent = function fixedEncodeURIComponent(str) {
             str = str || "";
             return encodeURIComponent(str)

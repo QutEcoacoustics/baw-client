@@ -69,6 +69,10 @@ angular.module('url', ['ng']).
                 var first = true;
                 for (var key in unused) {
 
+                    if (!unused.hasOwnProperty(key)) {
+                        continue;
+                    }
+
                     query += (first ? "" : "&") + this.encodeUriQuery(key) + "=" + this.encodeUriQuery(unused[key]);
 
                     if (first) {

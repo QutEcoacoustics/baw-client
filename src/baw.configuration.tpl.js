@@ -12,7 +12,7 @@ angular.module('bawApp.configuration', [])
 
         var paths = {
             api: {
-                root: "http://staging.ecosounds.org",
+                root: "<%= current.apiRoot %>",
                 routes: {
                     project: "/projects/{projectId}",
                     site: "/projects/{projectId}/sites/{siteId}",
@@ -43,7 +43,7 @@ angular.module('bawApp.configuration', [])
                 }
             },
             site: {
-                root: "localhost:8080",
+                root: "<%= current.siteRoot %>",
                 // The following intentionally are not prefixed with a '/'
                 files: {
                     error404: 'error/error_404.tpl.html',

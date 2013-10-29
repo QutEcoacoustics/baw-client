@@ -336,7 +336,7 @@ input, textarea{
   background-color: white;
 }
 
-input.ng-invalid.ng-dirty, textarea.ng-invalid.ng-dirty,  {
+input.ng-invalid.ng-dirty, textarea.ng-invalid.ng-dirty  {
   border-color: nth($error-dirty, 2);
   @include vendor-prefix(box-shadow, 0px 0px 8px nth($error-dirty, 2));
   background-color: nth($error-dirty, 3);

@@ -21,5 +21,26 @@
 
 @import "time_formats";
 
+// TODO: create someway to automatically import files
 //@import "partials/*";
+
+/*
+C:\Work\GitHub\baw-client\src\sass [master +0 ~1 -0]> ls ../app/ -Recurse -Include "*.scss" | Resolve-Path -Relative | %{ '@import "' + $_ + '";'  } | % {$_ -replace '\\', '/'} | % {$_ -replace '/_(.*).scss', '/$1'} | Out-Clipboard
+ */
+@import "../app/annotationViewer/annotation_viewer";
+@import "../app/audioEvents/audio_events";
+@import "../app/bookmarks/bookmarks";
+@import "../app/home/home";
+@import "../app/listen/listen";
+@import "../app/login/login_control";
+@import "../app/photos/photos";
+@import "../app/projects/projects";
+@import "../app/recordInformation/record_information";
+@import "../app/recordings/audio_recordings";
+@import "../app/search/saved_searches";
+@import "../app/sites/sites";
+@import "../app/tags/tags";
+
+
+
 

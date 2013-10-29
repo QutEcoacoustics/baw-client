@@ -17,16 +17,59 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-coffeelint');
     /*grunt.loadNpmTasks('grunt-recess');*/
-    grunt.loadNpmTasks('grunt-contrib-compass');
+//    grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-contrib-connect');
 
+
     /**
      * Load in our build configuration file.
      */
     var userConfig = require('./build.config.js');
+
+
+    /**
+     * Process the build option.
+     */
+    var development = grunt.option('development') === true,
+        staging = grunt.option('staging') === true,
+        production = grunt.option('production') === true,
+        sumBuildOptions = development + staging + production;
+
+    // if none set, set default to prod
+    if (sumBuildOptions === 0) {
+        if (grunt.cli.tasks && grunt.cli.tasks.length > 0) {
+            grunt.log.writeln("No build option selected, setting default to ***development***");
+            development = true;
+        }
+        else {
+            grunt.log.writeln("No build option selected and no task given, setting default to ***production***");
+            production = true;
+        }
+        sumBuildOptions = 1;
+    }
+
+    if (sumBuildOptions !== 1) {
+        grunt.log.error("More than one build option set! cannot have multiple build options.");
+        throw "More than one build option set! cannot have multiple build options.";
+    }
+
+    if (development) {
+        grunt.log.ok("Development build selected");
+        userConfig.build_configs.current = userConfig.build_configs.development;
+    }
+    if (staging) {
+        grunt.log.ok("Staging build selected");
+        userConfig.build_configs.current = userConfig.build_configs.staging;
+    }
+    if (production) {
+        grunt.log.ok("Production build selected");
+        userConfig.build_configs.current = userConfig.build_configs.production;
+    }
+
 
     /**
      * This is the configuration object Grunt uses to give each plugin its
@@ -38,6 +81,8 @@ module.exports = function (grunt) {
          * version. It's already there, so we don't repeat ourselves here.
          */
         pkg: grunt.file.readJSON("package.json"),
+        
+        sassDest: '<%= build_dir %>/assets/styles/<%= pkg.name %>-<%= pkg.version %>.css',
 
         /**
          * The banner is the comment that is placed at the top of our compiled
@@ -123,6 +168,21 @@ module.exports = function (grunt) {
                 ]
             },
             build_appjs: {
+                options : {
+                    processContent : function(content, srcPath) {
+                        // if srcPath contain .tpl.js
+                        // for now since the angular templates use tpl as well,
+                        // we'll cheat and just use a direct file reference
+                        var bc = grunt.config('build_configs');
+                        if (srcPath === bc.configFile) {
+
+                            // then process as template!
+                            return grunt.template.process(content, {data: bc});
+                        }
+
+                        return content;
+                    }
+                },
                 files: [
                     {
                         src: [ '<%= app_files.js %>' ],
@@ -166,9 +226,9 @@ module.exports = function (grunt) {
                 src: [
                     '<%= vendor_files.css %>',
                     /*'<%= recess.build.dest %>',*/
-                    '<%= compass.build.options.cssDir%>/application.css'
+                    '<%= build_dir %>/assets/styles/*.css'
                 ],
-                dest: '<%= compass.build.options.cssDir %>/<%= pkg.name %>-<%= pkg.version %>.css'
+                dest: '<%= sassDest %>'
             },
             /**
              * The `compile_js` target is the concatenation of our application source
@@ -270,27 +330,46 @@ module.exports = function (grunt) {
         //    }
         //  }
         //},
+        /*
+         compass: {
+         build: {
+         options: {
+         sassDir: 'src/sass',
+         cssDir: '<%= build_dir %>/assets/styles/',
+         environment: 'development',
+         outputStyle: 'expanded',
+         raw: "preferred_syntax = :scss\n"
+         }
+         },
 
-        compass: {
+         compile: {
+         options: {
+         sassDir: 'src/sass',
+         cssDir: '<%= build_dir %>/assets/styles/',
+         environment: 'production',
+         outputStyle: 'compressed',
+         noLineComments: true,
+         raw: "preferred_syntax = :scss\n"
+         }
+         }
+         },*/
+
+        sass: {
             build: {
                 options: {
-                    sassDir: 'src/sass',
-                    cssDir: '<%= build_dir %>/assets/styles/',
-                    environment: 'development',
                     outputStyle: 'expanded',
-                    raw: "preferred_syntax = :scss\n"
-                }
+                    sourceComments: 'map'
+                },
+                src: '<%= app_files.sass %>',
+                dest: '<%= sassDest %>'
             },
-
             compile: {
                 options: {
-                    sassDir: 'src/sass',
-                    cssDir: '<%= build_dir %>/assets/styles/',
-                    environment: 'production',
                     outputStyle: 'compressed',
-                    noLineComments: true,
-                    raw: "preferred_syntax = :scss\n"
-                }
+                    sourceComments: 'none'
+                },
+                src: '<%= app_files.sass %>',
+                dest: '<%= sassDest %>'
             }
         },
 
@@ -412,7 +491,7 @@ module.exports = function (grunt) {
                     '<%= html2js.app.dest %>',
                     '<%= vendor_files.css %>',
                     /*'<%= recess.build.dest %>',*/
-                    '<%= compass.build.options.cssDir %>/*'
+                    '<%= build_dir %>/assets/styles/*'
                 ]
             },
 
@@ -427,7 +506,7 @@ module.exports = function (grunt) {
                     '<%= concat.compile_js.dest %>',
                     '<%= vendor_files.css %>',
                     /*'<%= recess.compile.dest %>',*/
-                    '<%= compass.build.options.cssDir %>'
+                    '<%= build_dir %>/assets/styles/*.css'
                 ]
             }
         },
@@ -460,7 +539,7 @@ module.exports = function (grunt) {
                     debug: true,
                     livereload: true,
                     /*keepalive: true,*/
-                    middleware: function(connect, options) {
+                    middleware: function (connect, options) {
                         return [
                             modRewrite([
                                 '!(\\..+)$ / [L]'
@@ -568,7 +647,7 @@ module.exports = function (grunt) {
 //      },
             sass: {
                 files: [ 'src/**/*.scss' ],
-                tasks: ['compass:build', 'concat:build_css']
+                tasks: ['sass:build', 'concat:build_css']
             },
 
             /**
@@ -603,6 +682,7 @@ module.exports = function (grunt) {
 
     };
 
+
     grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
 
     /**
@@ -613,7 +693,7 @@ module.exports = function (grunt) {
      * before watching for changes.
      */
     grunt.renameTask('watch', 'delta');
-    grunt.registerTask('watch', [ 'build', 'karma:unit',  'connect', 'delta' ]);
+    grunt.registerTask('watch', [ 'build', 'karma:unit', 'connect', 'delta' ]);
 
     /**
      * The default task is to build and compile.
@@ -624,7 +704,7 @@ module.exports = function (grunt) {
      * The `build` task gets your app ready to run for development and testing.
      */
     grunt.registerTask('build', [
-        'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', /*'recess:build',*/ 'compass:build',
+        'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', /*'recess:build',*/ 'sass:build',
         'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
         'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
         'karma:continuous'
@@ -635,7 +715,7 @@ module.exports = function (grunt) {
      * minifying your code.
      */
     grunt.registerTask('compile', [
-        /*'recess:compile',*/ 'compass:compile', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
+        /*'recess:compile',*/ 'sass:compile', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
     ]);
 
     /**
@@ -670,13 +750,13 @@ module.exports = function (grunt) {
         var cssFiles = filterForCSS(this.filesSrc).map(function (file) {
             return file.replace(dirRE, '');
         });
-        var mainCss = (grunt.config('compass.build.options.cssDir') +
-            grunt.config('pkg.name') + '-' + grunt.config('pkg.version') + '.css').replace(dirRE, '');
+        var mainCss = (grunt.config('sassDest')).replace(dirRE, '');
 
         grunt.file.copy('src/index.html', this.data.dir + '/index.html', {
             process: function (contents, path) {
                 return grunt.template.process(contents, {
                     data: {
+                        build_configs: grunt.config('build_configs'),
                         scripts: jsFiles,
                         styles: cssFiles,
                         mainStyle: mainCss,

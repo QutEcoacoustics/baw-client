@@ -7,6 +7,7 @@ angular.module('bawApp.listen', [])
         'conf.paths',
         'conf.constants',
         '$url',
+        'AudioRecording',
         'Media',
         'AudioEvent',
         'Tag',
@@ -23,7 +24,7 @@ angular.module('bawApp.listen', [])
          * @param paths
          * @param constants
          */
-            function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, $url, Media, AudioEvent, Tag) {
+            function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -74,9 +75,10 @@ angular.module('bawApp.listen', [])
                             throw "don't know how to handle more than one image format!";
                         }
 
-                        $scope.model.media.imageUrl =
-                            $scope.model.media.availableImageFormats[imgKeys[0]] =
+                        $scope.model.media.availableImageFormats[imgKeys[0]].url =
                             paths.joinFragments(paths.api.root, $scope.model.media.availableImageFormats[imgKeys[0]].url);
+                        $scope.model.media.spectrogram = $scope.model.media.availableImageFormats[imgKeys[0]];
+
                         //$scope.model.media.spectrogramBaseUrl.format($scope.model.media);  + "?" + authToken;
 
                         // No longer necessary, new-api is HATEOASish
@@ -86,24 +88,64 @@ angular.module('bawApp.listen', [])
                         //    this.push({url: $scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + authToken, mime: value.mimeType});
                         //}, $scope.model.media.audioUrls);
 
-                        angular.forEach($scope.model.media.availableAudioFormats, function(value, key) {
-                            this[key].url =  paths.joinFragments(paths.api.root, value.url);
+                        angular.forEach($scope.model.media.availableAudioFormats, function (value, key) {
+
+                            // just update the url so it is an absolute uri
+                            this[key].url = paths.joinFragments(paths.api.root, value.url);
+
                         }, $scope.model.media.availableAudioFormats);
 
                     }
                 };
-                $scope.$on('event:auth-loginRequired', formatPaths);
-                $scope.$on('event:auth-loginConfirmed', formatPaths);
+
+                /* // NOT NECESSARY - we aren't using auth keys atm
+                 $scope.$on('event:auth-loginRequired', formatPaths);
+                 $scope.$on('event:auth-loginConfirmed', formatPaths);
+                 */
 
                 $scope.model.media = Media.get(getMediaParameters("json"), {},
                     function mediaGetSuccess() {
                         // reformat url's
                         formatPaths();
+
+                        // additionally do a check on the sample rate
+                        // the sample rate is used in the unit calculations.
+                        // it must be exposed and must be consistent for all sub-resources.
+                        var sampleRate = null;
+                        var sampleRateChecker = function (value, key) {
+                            if (sampleRate === null) {
+                                sampleRate = value.sampleRate;
+                            }
+                            else {
+                                if (value.sampleRate !== sampleRate) {
+                                    throw "The sample rates are not consistent for the media.json request. At the currest time all sub-resources returned must be equal!";
+                                }
+                            }
+                        };
+
+                        angular.forEach($scope.model.media.availableAudioFormats, sampleRateChecker);
+                        angular.forEach($scope.model.media.availableImageFormats, sampleRateChecker);
+
+                        if (angular.isNumber(sampleRate)) {
+                            $scope.model.media.sampleRate = sampleRate;
+                        }
+                        else {
+                            throw "The provided sample rate for the Media json must be a number!";
+                        }
+
                     },
                     function mediaGetFailure() {
-                        console.error("retieval of media json failed");
+                        console.error("retrieval of media json failed");
                     });
 
+                $scope.model.audioRecording = AudioRecording.get({recordingId: recordingId}, {},
+                    function audioRecordingGetSuccess() {
+                        // no-op
+                        // if an audioRecodring 'model' is ever created, this is where we would transform the returned data
+                    },
+                    function audioRecordingGetFailure() {
+                        console.error("retrieval of audioRecording json failed");
+                    });
 
                 // TODO: add time bounds
                 $scope.model.audioEvents = AudioEvent.query({recordingId: recordingId},
@@ -178,11 +220,11 @@ angular.module('bawApp.listen', [])
                 };
 
                 $scope.absoluteDateChunkStart = function () {
-                    if (!$scope.model.media || !$scope.model.media.original) {
+                    if (!$scope.model.media || !$scope.model.audioRecording) {
                         return undefined;
                     }
 
-                    var base = moment($scope.model.media.original.recordedDate);
+                    var base = moment($scope.model.audioRecording.recordedDate);
                     var offset = base.add({seconds: $scope.model.media.startOffset});
                     return offset;
                 };
@@ -194,29 +236,41 @@ angular.module('bawApp.listen', [])
                         stepBy = CHUNK_DURATION_SECONDS;
                     }
 
+                    var baseLink = {recordingId: recordingId};
+
                     if (linkType === "previous") {
+                        var lowerBound = ($routeParams.start - stepBy);
+                        if (lowerBound === 0) {
+                            baseLink.end = lowerBound + stepBy;
+                        }
+                        else if (lowerBound > 0) {
+                            baseLink.start = lowerBound;
+                            baseLink.end = lowerBound + stepBy;
+                        }
+                        else {
+                            // noop
+                        }
+
                         var uriPrev = $url.formatUri(
                             paths.site.ngRoutes.listen,
-                            {
-                                recordingId: recordingId,
-                                start: ($routeParams.start - stepBy) ,
-                                end: ($routeParams.end - stepBy)
-                            });
+                            baseLink);
                         return uriPrev;
+
                     }
                     else if (linkType === "next") {
                         var uriNext = $url.formatUri(
                             paths.site.ngRoutes.listen,
                             {
                                 recordingId: recordingId,
-                                start: ($routeParams.start + stepBy) ,
+                                start: ($routeParams.start + stepBy),
                                 end: ($routeParams.end + stepBy)
                             });
                         return uriNext;
                     }
 
                     throw "Invalid link type specified in createNavigationHref";
-                };
+                }
+                ;
 
                 $scope.clearSelected = function () {
                     //$scope.model.selectedAudioEvents.length = 0;
@@ -305,4 +359,5 @@ angular.module('bawApp.listen', [])
             }
 
 
-        }]);
+        }])
+;

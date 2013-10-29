@@ -216,7 +216,7 @@ returns: 'some string with first value and second value injected using {property
 
         var diff = {};
         if (trimObject) {
-            if (Object.keys(params).length === 1 && params["0"] == "") {
+            if (Object.keys(params).length === 1 && params["0"] === "") {
                 diff = null;
                 trimObject = false;
             }

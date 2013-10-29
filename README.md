@@ -13,13 +13,11 @@ cd to your cloned directory and then
 
 	$ bower install
 
-	$ gem install compass
-
 ## To develop:
 
 	$ grunt watch
 
-and browse to the karma tab first `localhost:<port>` (see output for port number), then `localhost:8080`.
+and browse to the karma tab first `localhost:<port>` (see output for port number), then `localhost:8080` after the karma unit tests have run.
 
 To add new bower packages
 
@@ -29,9 +27,23 @@ You'll need to configure `build.config.js` when adding any new grunt packages to
 
 ## To build:
 
-	$ grunt compile
+	$ grunt
 
 and copy the artefacts from the `/bin` directory.
 
+
+The `grunt` runner will accept three build options that will rewrite important variables.
+
+ - development: `$ grunt --development`
+ - staging: `$ grunt --staging`
+ - production (the default): `$ grunt --production`
+
+These variables are configured in `build.config.js`.
+
+---
+# Licence
+Apache License, Version 2.0
+
+---
 
 Based off the [ng-boilerplate](https://github.com/ngbp/ng-boilerplate) library.
