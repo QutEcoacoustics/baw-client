@@ -16,5 +16,8 @@
     "jquery-ui": "~1.10.3",
     "momentjs": "~2.3.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "angular": "~1.2.0"
+  }
 }

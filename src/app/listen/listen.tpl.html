@@ -3,43 +3,54 @@
         Something has gone wrong - can't load this page.
     </div>
     <div ng-hide="errorState">
-        <h1>Listen</h1>
-        Listen and annotate.
         <ul>
-        <li>
-            Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
-            Duration of recording: <span class="hint duration hint--top" >{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
-        </li>
-        <li>
-            Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span class="hint duration hint--top" >--TODO-- </span>
-        </li>
-        <li>
-            On screen: <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
-            , Duration of chunk: <span class="hint duration hint--top" >{{durationChunk()}} </span>
-        </li>
+            <li>
+                Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
+                Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
+            </li>
+            <li>
+                Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span
+                    class="hint duration hint--top">--TODO-- </span>
+            </li>
+            <li>
+                On screen: <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+                , Duration of chunk: <span class="hint duration hint--top">{{durationChunk()}} </span>
+            </li>
         </ul>
-        <div>
-            <h3>Navigation</h3>
-            <a ng-href="{{createNavigationHref('previous')}}" class="">Previous chunk</a>
-            <a ng-href="{{createNavigationHref('next')}}" class="">Next chunk</a>
-        </div>
-        <h3>Spectrogram</h3>
 
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
         <div id="chunkTimeStamps" class="clear-pseudo">
-            <span class="left" >Segment start: <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span>
+            <span class="left">Segment start: <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span>
             </span>
             <span class="position">
-                Position: <br />
-                <span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br />
+                Position: <br/>
+                <span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br/>
                 <span class="hint relative-recording-time hint--bottom">{{currentOffsetRecording()}}</span>
             </span>
-            <span class="right">Segment end: <span class="hint relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
+            <span class="right">Segment end: <span
+                    class="hint relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
         </div>
-
+        <div class="btn-group">
+            <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}">
+                <span class="glyphicon glyphicon-step-backward"></span>
+            </a>
+            <a class="btn btn-default" ng-href="#">
+                <span class="glyphicon glyphicon-pause"></span>
+            </a>
+            <a class="btn btn-default" ng-href="#">
+                <span class="glyphicon glyphicon-play"></span>
+            </a>
+            <a class="btn btn-default" ng-href="#">
+                <span class="glyphicon glyphicon-tags"></span>
+            </a>
+            <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}">
+                <span class="glyphicon glyphicon-step-forward"></span>
+            </a>
+        </div>
         <h3>Audio Controls</h3>
         <audio id="main-player" ng-audio="model.audioElement" controls>
-            <source ng-repeat="url in model.media.availableAudioFormats" ng-src="{{url.url}}" src="" type="{{url.mimeType}}">
+            <source ng-repeat="url in model.media.availableAudioFormats" ng-src="{{url.url}}" src=""
+                    type="{{url.mimeType}}">
             Your browser does not support the audio element.
         </audio>
         <div id="listenEditContainer">
@@ -110,7 +121,7 @@
                     <tr ng-repeat="ae in model.audioEvents">
                         <td>
                             <!--<input type="radio" ng-checked="ae._selected" ng-model="ae._selected"   name="selectionRadioGroup"  >-->
-                            <input type="radio" baw-checked="ae._selected"  name="selectionRadioGroup"  >
+                            <input type="radio" baw-checked="ae._selected" name="selectionRadioGroup">
                             SELECTED:{{ae._selected}}
                         </td>
                         <td>
@@ -130,9 +141,10 @@
                         <td>{{ae.deleterId}}</td>
                         <td>{{ae.updatedAt}}</td>
                         <td>{{ae.updaterId}}</td>
-                        <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId | tagName}}{{!$last && ',' || ''}}</span></td>
+                        <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId | tagName}}{{!$last && ',' || ''}}</span>
+                        </td>
                         <td>{{ae.startTimeSeconds | number:3}} - {{ae.endTimeSeconds | number:3}}</td>
-                        <td>{{ae.lowFrequencyHertz  | number:3}} - {{ae.highFrequencyHertz | number:3}}</td>
+                        <td>{{ae.lowFrequencyHertz | number:3}} - {{ae.highFrequencyHertz | number:3}}</td>
                     </tr>
                     </tbody>
                 </table>

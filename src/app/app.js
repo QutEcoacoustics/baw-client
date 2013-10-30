@@ -90,7 +90,7 @@ var app = angular.module('baw',
              function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
-                 currentWhitelist.push(paths.api.root);
+                 currentWhitelist.push(paths.api.root+'/**');
                  $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
 
 
