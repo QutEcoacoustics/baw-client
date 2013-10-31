@@ -1,5 +1,5 @@
 @import '_base';
-@import '_dynamic';
+
 
 /**********************************************************
  *
@@ -16,7 +16,7 @@
  *  Elements
  *
  */
-
+/*
 * {
   margin: 0;
   padding: 0;
@@ -51,12 +51,13 @@ h2 {
 
 h3 {
   margin: 0.70em 0;
-}
+}*/
 
 baw-debug-info {
   margin-top: 2em;
 }
 
+/*
 body {
   background-color: nth($master-background, 1);
   font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
@@ -113,10 +114,11 @@ ul {
   & ol{
     margin:0 1.5em 1.5em 1.5em;
   }
-}
+}/*
 
 /* Header
 -----------------------------------------------------------------------------*/
+/*
 header {
   height: 60px;
   @include gradient("linear", nth($master-highlight-2,1) , nth($master-highlight-2,2));
@@ -143,7 +145,7 @@ header {
       float:left;
     }
   }
-}
+}*/
 
 /* Middle
 -----------------------------------------------------------------------------*/
@@ -184,8 +186,8 @@ footer {
   margin:  0;
   min-width: 768px;
 
-  background: nth($master-highlight-2, 2);
-  border-top:2px solid nth($master-highlight,1);
+  /*background: nth($master-highlight-2, 2);*/
+  border-top:2px solid #000000;
 
   /* for sticky footer */
   /* from: http://www.cssstickyfooter.com/using-sticky-footer-code.html */
@@ -265,7 +267,7 @@ body:before {
 
 /* Form Styles
 -----------------------------------------------------------------------------*/
-
+/*
 input {
   vertical-align: middle;
 }
@@ -287,8 +289,8 @@ label {
     border: 1px solid nth($primary-color, 2);
 
   }
-}
-
+}*/
+/*
 $start-gradient: #F5FFD9;
 button {
   padding: 2px 6px;
@@ -312,9 +314,9 @@ button:hover:not([disabled]) {
   @include vendor-prefix(box-shadow, 0px 0px 8px nth($master-highlight-2, 2));
   border:1px solid nth($master-highlight-2, 2);
 }
+*/
 
-
-
+/*
 
 textarea {
   width: 450px;
@@ -329,9 +331,10 @@ textarea:focus, input:focus{
 pre {
   width: 500px;
 }
-
+*/
 /* Form Validation Styles
 ------------------------------------------------------------------------------*/
+/*
 input, textarea{
   background-color: white;
 }
@@ -354,11 +357,11 @@ input.ng-pristine.ng-invalid, textarea.ng-pristine.ng-invalid {
   border: 1px solid nth($primary-color, 3);
   @include vendor-prefix(box-shadow, 0px 0px 8px nth($primary-color, 3));
   background-color: #FFFFFF; /*nth($primary-color, 3);*/
-}
+//}*/
 
 /* List Styles
 ------------------------------------------------------------------------------*/
-
+/*
 ul.item-list {
   list-style-type: none;
   & li{
@@ -398,11 +401,11 @@ ul.item-list {
       display:block;
     }
   }
-}
+}*/
 
 .large-image {
   max-height: 300px;
-  max-height: 300px;
+  max-width: 300px;
 }
 
 .right-column {

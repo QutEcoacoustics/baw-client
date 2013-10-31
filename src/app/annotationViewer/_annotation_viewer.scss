@@ -1,6 +1,13 @@
 //@import 'base';
 
+// color-swatch
+$spectrogramProgressLine: #FF0000;
+$tagAlignmentLine: #ffa73c;
 
+$marqueeBorderColorSelected: #FFFF00;
+$marqueeBorderColorSelectedGlow: #f7ffef;
+$marqueeBorderColorHover: #00ffe9;
+$marqueeBorderColorInactive: #00FF00;
 
 baw-annotation-viewer {
 
@@ -71,7 +78,7 @@ baw-annotation-viewer {
     }
 
     & .positionLine {
-      border-left: solid 1px red;
+      border-left: solid 1px $spectrogramProgressLine;
       height: 100%;
       width: 1px;
       position: absolute;
@@ -91,13 +98,16 @@ baw-annotation-viewer {
 
     border-style: $border-style;
     border-width: $border-width;
-    border-color: nth($master-highlight, 2);
+    border-color: $marqueeBorderColorInactive;
     position: absolute;
     background-color: rgba(255,255,255,0.05);
     overflow: visible;
 
     &:before {
-      border-left: red solid 1px;
+      @if $DEBUG == false {
+        visibility: collapse;
+      }
+      border-left: $tagAlignmentLine solid 1px;
       height: 256px;
       position: relative;
       top: -257px;
@@ -107,16 +117,19 @@ baw-annotation-viewer {
     }
 
     &[data-selected="true"] {
-      border-color: nth($master-complementary, 2);
-      @include glow(nth($master-background, 2));
+      border-color: $marqueeBorderColorSelected;
+      @include glow($marqueeBorderColorSelectedGlow);
 
       & .close-icon{
         visibility: visible;
       }
     }
 
-    &:hover .close-icon {
-      visibility: visible;
+    &:hover  {
+      border-color: $marqueeBorderColorHover;
+      & .close-icon {
+        visibility: visible;
+      }
     }
   }
 

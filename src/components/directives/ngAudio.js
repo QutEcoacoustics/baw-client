@@ -8,7 +8,6 @@ var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration'
  * like a "isBuffering" binding.
  */
 bawds.directive('ngAudio', ['$parse', function ($parse) {
-
     return {
         restrict: 'A',
         link: function (scope, elements, attributes, controller) {
@@ -17,12 +16,21 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 throw 'Cannot put ngAudio element on an element that is not a <audio />';
             }
 
+            function play() {
+                element.play();
+            }
+
+            function pause() {
+                element.pause();
+            }
+
             var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume'];
             function updateObject(src, dest) {
                 for (var i = 0; i < propertiesToUpdate.length; i++){
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
                 }
             }
+
             function updateState(event) {
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
@@ -32,6 +40,9 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                             expression.assign(scope, {});
                             target = expression(scope);
                         }
+
+                        target.play = target.play || play;
+                        target.pause = target.pause || pause;
 
                         target.currentState = event && event.type || 'unknown';
                         updateObject(element ,target);

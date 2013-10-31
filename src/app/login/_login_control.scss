@@ -6,6 +6,7 @@ body.waiting-for-angular div#content-outer {
 }
 body.waiting-for-angular div#initializing-panel {
   display: block;
+  // TODO: THIS IS BROKEN BUT NOT USED
   background: image-url("angular-auth/loading.gif") center center no-repeat;
   position:absolute;
   top:0;
@@ -15,7 +16,8 @@ body.waiting-for-angular div#initializing-panel {
 }
 
 #login-holder {
-  @include gradient("radial", nth($master-background,3) , nth($master-background,1));
+  // TODO: FIX WHEN USED AGAIN
+  @include gradient("radial", #FEFEFE , #EEEEEE);
 
   // login is not needed until requested
   display: none;
@@ -32,9 +34,8 @@ body.waiting-for-angular div#initializing-panel {
 }
 #loginbox {
   margin: 50px auto 0 auto;
-  background-color: nth($master-background, 2);
+
   @extend .rounded-corners;
-  border-color: nth($master-highlight, 2);
 
   height: 312px;
   line-height: 12px;

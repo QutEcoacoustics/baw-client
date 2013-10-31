@@ -4,6 +4,9 @@
  * the Grunt configuration that is automatically processed.
  */
 
+
+$DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
+
 /**
 * First, we include jlong's Twitter Bootstrap SCSS files. Only the ones used in the
 * project should be imported as the rest are just wasting space.

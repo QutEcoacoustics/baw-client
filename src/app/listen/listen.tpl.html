@@ -34,12 +34,12 @@
             <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}">
                 <span class="glyphicon glyphicon-step-backward"></span>
             </a>
-            <a class="btn btn-default" ng-href="#">
+            <button class="btn btn-default" ng-click="model.audioElement.pause()">
                 <span class="glyphicon glyphicon-pause"></span>
-            </a>
-            <a class="btn btn-default" ng-href="#">
+            </button>
+            <button class="btn btn-default" ng-click="model.audioElement.play()">
                 <span class="glyphicon glyphicon-play"></span>
-            </a>
+            </button>
             <a class="btn btn-default" ng-href="#">
                 <span class="glyphicon glyphicon-tags"></span>
             </a>
@@ -49,8 +49,8 @@
         </div>
         <h3>Audio Controls</h3>
         <audio id="main-player" ng-audio="model.audioElement" controls>
-            <source ng-repeat="url in model.media.availableAudioFormats" ng-src="{{url.url}}" src=""
-                    type="{{url.mimeType}}">
+            <source ng-repeat="resource in model.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
+                    type="{{resource.mimeType}}">
             Your browser does not support the audio element.
         </audio>
         <div id="listenEditContainer">

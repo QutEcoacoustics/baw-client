@@ -118,7 +118,7 @@ angular.module('bawApp.listen', [])
                             }
                             else {
                                 if (value.sampleRate !== sampleRate) {
-                                    throw "The sample rates are not consistent for the media.json request. At the currest time all sub-resources returned must be equal!";
+                                    throw "The sample rates are not consistent for the media.json request. At the current time all sub-resources returned must be equal!";
                                 }
                             }
                         };

@@ -28,7 +28,9 @@ module.exports = {
             apiRoot: "http://ecosounds.org",
             siteRoot: "http://ecosounds.org/????",
             siteDir: "????"
-        }
+        },
+
+        current: {}
     },
 
     /**
@@ -51,7 +53,7 @@ module.exports = {
         ctpl: [ 'src/common/**/*.tpl.html' ],
 
         html: [ 'src/index.html'],
-        sass: [ 'src/sass/application.scss' ]
+        sass: [ 'src/sass/application.tpl.scss' ]
         //less: 'src/less/main.less'
     },
 
@@ -87,6 +89,8 @@ module.exports = {
             'vendor/jquery/jquery.js',
             // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
             'vendor/jquery-ui/ui/jquery-ui.js',
+            // NOTE: bootstrap css important in application.tpl.scss
+            'vendor/sass-bootstrap/dist/js/bootstrap.js',
             'vendor/momentjs/moment.js',
             'vendor/angular/angular.js',
             'vendor/angular-route/angular-route.js',
