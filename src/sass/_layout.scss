@@ -1,5 +1,28 @@
 @import '_base';
 
+// http://getbootstrap.com/components/#navbar-fixed-top
+body {
+  padding-top: 51px;
+}
+
+// http://www.helloerik.com/bootstrap-3-grid-introduction#fluid
+.container-liquid {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@if $DEBUG {
+  .debug-ui {
+    width: auto;
+  }
+}
+@else {
+  .debug-ui {
+    display: none;
+  }
+}
 
 /**********************************************************
  *
@@ -149,62 +172,62 @@ header {
 
 /* Middle
 -----------------------------------------------------------------------------*/
-#page-wrapper {
-  width: 100%;
-  min-width: 768px;
-  //height: auto !important;
-  //height: 100%;
-  position: relative;
-  //top: -5px;
+//#page-wrapper {
+//  width: 100%;
+//  min-width: 768px;
+//  //height: auto !important;
+//  //height: 100%;
+//  position: relative;
+//  //top: -5px;
+//
+//  /* for sticky footer */
+//  min-height: 100%;
+//  /* end for sticky footer */
+//}
+//
+//#content-wrapper{
+//  margin-top:    0px;
+//  margin-right:  15px;
+//  margin-left:   15px;
+//  margin-bottom: $footer-height;
+//
+//  padding-top:  15px;
+//
+//  /* for sticky footer */
+//  overflow:auto;
+//  padding-bottom: $footer-height;
+//  /* end for sticky footer */
+//}
 
-  /* for sticky footer */
-  min-height: 100%;
-  /* end for sticky footer */
-}
-
-#content-wrapper{
-  margin-top:    0px;
-  margin-right:  15px;
-  margin-left:   15px;
-  margin-bottom: $footer-height;
-
-  padding-top:  15px;
-
-  /* for sticky footer */
-  overflow:auto;
-  padding-bottom: $footer-height;
-  /* end for sticky footer */
-}
-
-#content {
-  margin:5px 15px;
-}
+//#content {
+//  margin:5px 15px;
+//}
 
 /* Footer
 -----------------------------------------------------------------------------*/
-footer {
-  margin:  0;
-  min-width: 768px;
-
-  /*background: nth($master-highlight-2, 2);*/
-  border-top:2px solid #000000;
-
-  /* for sticky footer */
-  /* from: http://www.cssstickyfooter.com/using-sticky-footer-code.html */
-  position:relative;
-  margin-top:-($footer-height + 42);
-  height: $footer-height;
-  clear:both;
-  /* end for sticky footer */
-
-  ul{
-    list-style-type:none;
-    li {
-      float:left;
-      margin: 0 15px 0 0;
-    }
-  }
-}
+//footer {
+//  margin:  0;
+//  min-width: 768px;
+//
+//  /*background: nth($master-highlight-2, 2);*/
+//  border-top:2px solid #000000;
+//
+//  /* for sticky footer */
+//  /* from: http://www.cssstickyfooter.com/using-sticky-footer-code.html */
+//  position:relative;
+//  margin-top:-($footer-height + 42);
+//  height: $footer-height;
+//  clear:both;
+//  /* end for sticky footer */
+//
+//  ul{
+//    list-style-type:none;
+//    li {
+//      float:left;
+//      margin: 0 15px 0 0;
+//    }
+//  }
+//}
 
 /* stick footer Opera Fix */
 body:before {
@@ -407,8 +430,8 @@ ul.item-list {
   max-height: 300px;
   max-width: 300px;
 }
-
-.right-column {
-  float: right;
-  width: 50%;
-}
+//
+//.right-column {
+//  float: right;
+//  width: 50%;
+//}

@@ -1,15 +1,9 @@
 #listenEditContainer {
 
-}
-
-#listenEditColumn {
-  width:   250px;
-  display: inline-block;
-}
-
-#listenTableColumn {
-  display:        inline-block;
-  vertical-align: top;
+  > div {
+    clear: both;
+    width: 100%;
+  }
 }
 
 #chunkTimeStamps {
@@ -27,5 +21,48 @@
   & .right {
     float: right;
   }
+
+}
+
+#mainAudioElement {
+    display: none;
+}
+
+#timeline {
+
+  & * {
+    border: solid black 1px;
+
+  }
+
+  div {
+    clear: both;
+  }
+
+  > div:nth-child(1) {
+    float: left;
+    clear: none;
+
+    div {
+      height: 25%;
+    }
+  }
+
+  > div:nth-child(2) {
+    overflow: hidden;
+    clear: none;
+
+    div {
+      text-align: center;
+      span {
+        display: inline-block;
+        width: 33.1%;
+
+        margin:0;
+
+      }
+    }
+  }
+
 
 }

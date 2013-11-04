@@ -49,7 +49,8 @@ angular.module('bawApp.configuration', [])
                     error404: 'error/error_404.tpl.html',
                     home: 'home/home.tpl.html',
                     listen: 'listen/listen.tpl.html',
-                    annotationViewer: 'annotationViewer/annotationViewer.tpl.html'
+                    annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
+                    navigation: 'navigation/navigation.tpl.html'
                 },
                 ngRoutes :{
                     listen: "/listen/{recordingId}/"

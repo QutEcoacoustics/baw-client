@@ -32,8 +32,6 @@
 </head>
 <body baw-auth class="waiting-for-angular">
 
-<div id="page-wrapper">
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse">
@@ -50,7 +48,7 @@
                 <li><a href="/projects">Projects</a></li>
                 <li class="active"><a href="#">Listen</a></li>
 
-                <li style="visibility: collapse" ng-controller="LoginCtrl">
+                <li style="display: none" ng-controller="LoginCtrl">
                   <span ng-show="loggedIn">
                     Welcome
                       <a href="/users/{{userData.userId}}" title="{{friendlyName}}">{{friendlyName}}</a>
@@ -64,11 +62,15 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <!-- Hide text at small screen size to prevent double row navbar -->
+                <p class="navbar-text hidden-sm">
+                    Bio-Acoustic Workbench, an open source eScience initiative (v<%= version %>).
+                </p>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Debugging <b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Show hidden features</a></li>
-                        <li><a href="#">Hide hidden features</a></li>
+                        <li><button class="btn btn-default btn-block" ng-click="showDebugUi()">Show hidden features</button></li>
+                        <li><button class="btn btn-default btn-block" ng-click="hideDebugUi()">Hide hidden features</button></li>
                         <li class="divider"></li>
                         <li><a href="/listen/40">Easy Link</a></li>
                     </ul>
@@ -145,12 +147,7 @@
 
     <navigation ng-controller="NavigationCtrl"></navigation>
     <!-- each view must specify the controller they use -->
-    <div id="content-wrapper" ng-view></div>
+    <div id="content-wrapper" class="container-liquid" ng-view></div>
 
-</div>
-
-<footer>
-    Bio-Acoustic Workbench, an open source eScience initiative. v<%= version %>
-</footer>
 </body>
 </html>

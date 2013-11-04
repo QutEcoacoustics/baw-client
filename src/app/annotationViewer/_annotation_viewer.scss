@@ -11,6 +11,13 @@ $marqueeBorderColorInactive: #00FF00;
 
 baw-annotation-viewer {
 
+  width: 100%;
+  text-align: center;
+
+  & #scroller {
+    display: inline-block;
+  }
+
   & .tag-preview {
 
     font-size: 9pt;

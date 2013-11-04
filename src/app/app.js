@@ -256,4 +256,13 @@ var app = angular.module('baw',
                 ['$scope', '$location',
                  function AppCtrl($scope, $location) {
 
+                     $scope.showDebugUi = function() {
+                         var r = window.cssRules.getCssRule(".debug-UI")
+                         r.style.display = "";
+                     }
+                     $scope.hideDebugUi = function() {
+                         var r = window.cssRules.getCssRule(".debug-UI")
+                         r.style.display = "none";
+                     }
+
                  }]);

@@ -3,7 +3,42 @@
         Something has gone wrong - can't load this page.
     </div>
     <div ng-hide="errorState">
-        <ul>
+
+        <h2 class="debug-ui">Timeline</h2>
+        <div id="timeline" class="clearfix debug-ui">
+
+            <div>
+                <div>Playlist</div>
+                <div>AudioRecording</div>
+                <div>Segment</div>
+                <div>Chunk</div>
+            </div>
+            <div>
+                <div>
+                    <span>3 items previous</span>
+                    <span>Current Segment</span>
+                    <span>2 items next</span>
+                </div>
+                <div>
+                    <span>112 minutes before</span>
+                    <span>Current Segment</span>
+                    <span>1100 minutes after</span>
+                </div>
+                <div>
+                    <span> 33 chunks previous</span>
+                    <span>Current Chunk</span>
+                    <span>16 chunks next</span>
+                </div>
+                <div>
+                    <span>&nbsp;</span>
+                    <span>Time index</span>
+                    <span>&nbsp;</span>
+                </div>
+            </div>
+            <div></div>
+        </div>
+        <h2 class="debug-ui">Stats</h2>
+        <ul class="debug-ui">
             <li>
                 Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
                 Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
@@ -18,6 +53,7 @@
             </li>
         </ul>
 
+        <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span></h4>
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
         <div id="chunkTimeStamps" class="clear-pseudo">
             <span class="left">Segment start: <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span>
@@ -30,31 +66,37 @@
             <span class="right">Segment end: <span
                     class="hint relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
         </div>
-        <div class="btn-group">
-            <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}">
-                <span class="glyphicon glyphicon-step-backward"></span>
-            </a>
-            <button class="btn btn-default" ng-click="model.audioElement.pause()">
-                <span class="glyphicon glyphicon-pause"></span>
-            </button>
-            <button class="btn btn-default" ng-click="model.audioElement.play()">
-                <span class="glyphicon glyphicon-play"></span>
-            </button>
-            <a class="btn btn-default" ng-href="#">
-                <span class="glyphicon glyphicon-tags"></span>
-            </a>
-            <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}">
-                <span class="glyphicon glyphicon-step-forward"></span>
-            </a>
+        <div class="btn-toolbar">
+
+            <div class="btn-group">
+                <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}">
+                    <span class="glyphicon glyphicon-step-backward"></span>
+                </a>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-default" ng-click="model.audioElement.pause()">
+                    <span class="glyphicon glyphicon-pause"></span>
+                </button>
+                <button class="btn btn-default" ng-click="model.audioElement.play()">
+                    <span class="glyphicon glyphicon-play"></span>
+                </button>
+                <a class="btn btn-default" ng-href="#">
+                    <span class="glyphicon glyphicon-tags"></span>
+                </a>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}">
+                    <span class="glyphicon glyphicon-step-forward"></span>
+                </a>
+            </div>
         </div>
-        <h3>Audio Controls</h3>
-        <audio id="main-player" ng-audio="model.audioElement" controls>
+        <audio id="mainAudioElement" ng-audio="model.audioElement" controls class="debug-ui">
             <source ng-repeat="resource in model.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
                     type="{{resource.mimeType}}">
             Your browser does not support the audio element.
         </audio>
         <div id="listenEditContainer">
-            <div id="listenEditColumn">
+            <div>
                 <h3>
                     Annotation edit
                 </h3>
@@ -97,7 +139,7 @@
 
                 </form>
             </div>
-            <div id="listenTableColumn">
+            <div class="debug-ui">
                 <h3>Annotations</h3>
                 <table>
                     <thead>
