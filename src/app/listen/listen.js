@@ -44,6 +44,9 @@ angular.module('bawApp.listen', [])
             }
             else {
 
+                // the core resource used in this controller
+                var recordingId = $scope.recordingId =  baw.parseInt($routeParams.recordingId);
+
                 // parse the start and end offsets
                 $routeParams.start = parseFloat($routeParams.start) || 0.0;
                 $routeParams.end = parseFloat($routeParams.end) || CHUNK_DURATION_SECONDS;
@@ -58,8 +61,7 @@ angular.module('bawApp.listen', [])
                     console.warn("invalid end offsets specified, reverting to safe value: end=" + $routeParams.end);
                 }
 
-                // the core resource used in this controller
-                var recordingId = $scope.recordingId = $routeParams.recordingId;
+
 
                 // set up some dummy objects for use later
                 $scope.model = {
@@ -331,9 +333,11 @@ angular.module('bawApp.listen', [])
 
                 $scope.addAnnotation = function createAnnotation() {
                     // BUG: ONLY SAVES FIRST ONE
-                    var a = $scope.model.selectedAudioEvents[0];
+                    //var a = $scope.model.selectedAudioEvents[0];
                     //TODO: BROKEN!
-                    var a = $scope.model;
+                    var a = $scope.model.audioEvents.filter(function (value) {
+                        return value._selected === true;
+                    })[0];
 
                     // prep tags
 //                    a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {
@@ -341,7 +345,7 @@ angular.module('bawApp.listen', [])
 //                    });
 //                    delete a.audioEventTags;
 
-                    if (a.audioRecordingId != recordingId) {
+                    if (a.audioRecordingId !== recordingId) {
                         throw "The audioRecordingId should have been set way earlier!";
                     }
 
