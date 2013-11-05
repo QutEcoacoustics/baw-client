@@ -230,13 +230,13 @@ header {
 //}
 
 /* stick footer Opera Fix */
-body:before {
-  content:"";
-  height:100%;
-  float:left;
-  width:0;
-  margin-top:-32767px;
-}
+//body:before {
+//  content:"";
+//  height:100%;
+//  float:left;
+//  width:0;
+//  margin-top:-32767px;
+//}
 
 /* General Classes
 -----------------------------------------------------------------------------*/

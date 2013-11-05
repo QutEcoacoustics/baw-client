@@ -18,13 +18,13 @@
             throw new Error("Constructor called as a function");
         }
 
-        var now = new Date();
-
         this.__temporaryId__ = localId || Number.Unique();
         this._selected = false;
         this.audioEventTags = [];
 
         if (localId) {
+            var now = new Date();
+
             this.audioRecordingId = audioRecordingId;
 
             this.createdAt = now;
@@ -38,6 +38,7 @@
 
         }
 
+        // ensure JSON values taken from a resource have nicely formatted values
         if (resource) {
             angular.extend(this, resource);
 
@@ -49,8 +50,21 @@
             this.lowFrequencyHertz = parseFloat(this.lowFrequencyHertz);
             this.startTimeSeconds = parseFloat(this.startTimeSeconds);
 
+            this.audioEventTags = {};
             angular.forEach(this.audioEventTags, function(value, key) {
                 this.audioEventTags[key] = new baw.AudioEventTag(value);
             }, this);
         }
+
+        // strip out unnecessary values;
+        this.create = function() {
+            // NO-OP
+            return this;
+        };
+//
+//        this.toJSON = function() {
+//          return {
+//
+//          }
+//        };
     };

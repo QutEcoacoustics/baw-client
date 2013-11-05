@@ -8,16 +8,13 @@
     "angular-bootstrap": "~0.6.0",
     "angular-ui-router": "~0.0.1",
     "angular-ui-utils": "latest",
-    "sass-bootstrap": "~3.0.0",
+    "sass-bootstrap": "3.0.0",
     "hint.css": "https://github.com/chinchang/hint.css.git",
     "underscore": "~1.5.2",
-    "angular-resource": "~1.0.8",
+    "angular-resource": "~1.2.0",
     "modernizr": "~2.6.2",
     "jquery-ui": "~1.10.3",
     "momentjs": "~2.3.0"
   },
-  "dependencies": {},
-  "resolutions": {
-    "angular": "~1.2.0"
-  }
+  "dependencies": {}
 }

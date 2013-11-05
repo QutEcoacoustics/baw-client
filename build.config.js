@@ -15,7 +15,7 @@ module.exports = {
     build_configs: {
         configFile: appConfigFile,
         development: {
-            apiRoot: "http://staging.ecosounds.org",
+            apiRoot: "http://131.181.33.143:3000", //"http://staging.ecosounds.org",
             siteRoot: "localhost:8080",
             siteDir: "/"
         },

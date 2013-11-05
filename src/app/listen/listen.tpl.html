@@ -100,7 +100,7 @@
                 <h3>
                     Annotation edit
                 </h3>
-                <span>Selected elements: {{model.selectedAudioEvents.length}}</span>
+                <span>Selected elements: {{model.selectedAudioEvents.length || 0}}</span>
 
                 <form id="annotationEditForm" name="annotationEditForm"
                       ng-repeat="selectedEvent in model.audioEvents | filter:selectedFilter">
@@ -136,7 +136,7 @@
 
                     <!--<button type="button" ng-click="reset()">Clear</button>-->
                     <!--<button ng-click="addAnnotation()">Add annotation</button>-->
-
+                    <button ng-click="addAnnotation()">Add</button>
                 </form>
             </div>
             <div class="debug-ui">

@@ -91,7 +91,7 @@ var app = angular.module('baw',
              function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
-                 currentWhitelist.push('^'+paths.api.root+'/.*');
+                 currentWhitelist.push(paths.api.root+'/**');
                  $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
 
 
@@ -260,12 +260,12 @@ var app = angular.module('baw',
                  function AppCtrl($scope, $location) {
 
                      $scope.showDebugUi = function() {
-                         var r = window.cssRules.getCssRule(".debug-UI")
+                         var r = window.cssRules.getCssRule(".debug-UI");
                          r.style.display = "";
-                     }
+                     };
                      $scope.hideDebugUi = function() {
-                         var r = window.cssRules.getCssRule(".debug-UI")
+                         var r = window.cssRules.getCssRule(".debug-UI");
                          r.style.display = "none";
-                     }
+                     };
 
                  }]);
