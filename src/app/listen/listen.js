@@ -331,15 +331,19 @@ angular.module('bawApp.listen', [])
 
                 $scope.addAnnotation = function createAnnotation() {
                     // BUG: ONLY SAVES FIRST ONE
-                    var a = angular.copy(this.$scope.model.selectedAudioEvents[0]);
+                    var a = $scope.model.selectedAudioEvents[0];
+                    //TODO: BROKEN!
+                    var a = $scope.model;
 
                     // prep tags
-                    a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {
-                        return {tag_id: v};
-                    });
-                    delete a.audioEventTtags;
+//                    a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {
+//                        return {tag_id: v};
+//                    });
+//                    delete a.audioEventTags;
 
-                    a.audio_recording_id = recordingId;
+                    if (a.audioRecordingId != recordingId) {
+                        throw "The audioRecordingId should have been set way earlier!";
+                    }
 
                     AudioEvent.save({audioEventId: null}, a,
                         function createAnnotationSuccess(response, getResponseHeaders) {
