@@ -46,4 +46,4 @@ Apache License, Version 2.0
 
 ---
 
-Based off the [ng-boilerplate](https://github.com/ngbp/ng-boilerplate) library.
+Based on the [ng-boilerplate](https://github.com/ngbp/ng-boilerplate) library.

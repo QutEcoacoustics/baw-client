@@ -50,7 +50,8 @@ angular.module('bawApp.configuration', [])
                     home: 'home/home.tpl.html',
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
-                    navigation: 'navigation/navigation.tpl.html'
+                    navigation: 'navigation/navigation.tpl.html',
+                    birdWalks: 'birdWalks/birdWalks.tpl.html'
                 },
                 ngRoutes :{
                     listen: "/listen/{recordingId}/"

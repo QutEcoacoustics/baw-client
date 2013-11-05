@@ -83,7 +83,8 @@ var app = angular.module('baw',
                              'bawApp.recordings',
                              'bawApp.search',
                              'bawApp.tags',
-                             'bawApp.users'
+                             'bawApp.users',
+                             'bawApp.birdWalks'
                          ])
 
     .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider',
@@ -123,6 +124,8 @@ var app = angular.module('baw',
                           {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
 
                      when('/attribution', {templateUrl: '/assets/attributions.html'}).
+
+                     when('/birdWalks', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl'}).
 
                      // experiments
                      when('/experiments/:experiment',
