@@ -227,6 +227,9 @@ var app = angular.module('baw',
 
               };
 
+              // cross-site scripting token storage
+              $rootScope.csrfToken = null;
+
               // storage of auth_token
               $rootScope.authorisationToken = null;
 

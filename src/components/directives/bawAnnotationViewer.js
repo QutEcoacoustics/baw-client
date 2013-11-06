@@ -217,7 +217,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
             scope.$canvas.drawabox({
                 "selectionCallbackTrigger": "mousedown",
                 "newBox": function (element, newBox) {
-                    var newAudioEvent = create(newBox, "a dummy id!", scope);
+                    var newAudioEvent = create(newBox, scope.model.audioRecording.id, scope);
 
 
                     scope.$apply(function () {
