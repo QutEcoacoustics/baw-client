@@ -168,13 +168,16 @@
             };
         })
         // GIANT HACK!
-        .factory('railsCsrfToken', ['$q', '$rootScope', function ($q, $rootScope) {
+        .factory('railsCsrfToken', ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
             return {
                 request: function(config) {
                     if (!$rootScope.csrfToken) {
                         var token = "";
-                        while (!token) {
-                            token = prompt("Enter temporary CSRF token:");
+
+                        token = $location.search().csrf;
+
+                        if (!token) {
+                            console.error("No temporary CSRF token has been found!");
                         }
                         $rootScope.csrfToken = token;
                     }

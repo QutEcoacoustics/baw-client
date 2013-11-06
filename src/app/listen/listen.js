@@ -24,7 +24,7 @@ angular.module('bawApp.listen', [])
          * @param paths
          * @param constants
          */
-            function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag) {
+        function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -45,7 +45,7 @@ angular.module('bawApp.listen', [])
             else {
 
                 // the core resource used in this controller
-                var recordingId = $scope.recordingId =  baw.parseInt($routeParams.recordingId);
+                var recordingId = $scope.recordingId = baw.parseInt($routeParams.recordingId);
 
                 // parse the start and end offsets
                 $routeParams.start = parseFloat($routeParams.start) || 0.0;
@@ -60,7 +60,6 @@ angular.module('bawApp.listen', [])
                     $routeParams.end = $routeParams.start + CHUNK_DURATION_SECONDS;
                     console.warn("invalid end offsets specified, reverting to safe value: end=" + $routeParams.end);
                 }
-
 
 
                 // set up some dummy objects for use later
@@ -349,7 +348,7 @@ angular.module('bawApp.listen', [])
                         throw "The audioRecordingId should have been set way earlier!";
                     }
 
-                    AudioEvent.save({audioEventId: null}, a,
+                    AudioEvent.save({audioEventId: null, recordingId: a.audioRecordingId}, a.create(),
                         function createAnnotationSuccess(response, getResponseHeaders) {
                             console.log("Annotation creation successful");
 
