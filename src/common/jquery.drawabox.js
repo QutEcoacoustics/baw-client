@@ -71,6 +71,7 @@
         // do not execute if no more boxs allowed
         if (dataMouseDown.maxChildrenReached) {
             // TODO: raise too-many-boxes event
+            console.warn("too many boxes, further addition of boxes disabled");
             return;
         }
 

@@ -177,7 +177,7 @@
                         token = $location.search().csrf;
 
                         if (!token) {
-                            console.error("No temporary CSRF token has been found!");
+                            console.warn("No temporary CSRF token has been found!");
                         }
                         $rootScope.csrfToken = token;
                     }

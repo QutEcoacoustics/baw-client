@@ -216,6 +216,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
             scope.$canvas.drawabox({
                 "selectionCallbackTrigger": "mousedown",
+
                 "newBox": function (element, newBox) {
                     var newAudioEvent = create(newBox, scope.model.audioRecording.id, scope);
 
@@ -235,11 +236,11 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                 "boxSelected": function (element, selectedBox) {
                     console.log("boxSelected", selectedBox);
 
-                    // support for multiple selections - remove the clear
-                    scope.$apply(function () {
-                        //scope.model.selectedAudioEvents.length = 0;
-                        //scope.model.selectedAudioEvents.push(scope.model.audioEvents[element[0].annotationViewerIndex]);
 
+                    scope.$apply(function () {
+
+                        // support for multiple selections - remove the clear
+                        // TODO: this is a very inefficient method of achieving this result
                         angular.forEach(scope.model.audioEvents, function (value, key) {
                             value._selected = false;
                         });
@@ -283,6 +284,8 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                     });
                 }
             });
+
+            
         }
     };
 }]);
