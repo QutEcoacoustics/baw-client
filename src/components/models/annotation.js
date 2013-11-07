@@ -18,7 +18,7 @@ baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
         throw new Error("Constructor called as a function");
     }
 
-    this.__temporaryId__ = localId || Number.Unique();
+    this.__temporaryId__ = localId || (Number.Unique() * -1);
     this._selected = false;
     this.audioEventTags = [];
 
@@ -57,7 +57,7 @@ baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
     }
 
     // strip out unnecessary values;
-    this.create = function () {
+    this.exportObj = function () {
         return {
             // TODO:
             taggings: [],
@@ -68,22 +68,18 @@ baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
             isReference: this.isReference,
             lowFrequencyHertz: this.lowFrequencyHertz,
             startTimeSeconds: this.startTimeSeconds,
-            updatedAt: this.updatedAt
-        }
+            updatedAt: this.updatedAt,
+            id: this.id
+        };
     };
 
-//    this.toJSON = function () {
-//        return {
-//            // TODO:
-//            taggings: [],
-//            audioRecordingId: this.audioRecordingId,
-//            createdAt: this.createdAt,
-//            endTimeSeconds: this.endTimeSeconds,
-//            highFrequencyHertz: this.highFrequencyHertz,
-//            isReference: this.isReference,
-//            lowFrequencyHertz: this.lowFrequencyHertz,
-//            startTimeSeconds: this.startTimeSeconds,
-//            updatedAt: this.updatedAt
-//        }
-//    };
+    this.toJSON = function () {
+        return {
+            id: this.id || this.__temporaryId__
+        }
+    };
+};
+
+baw.Annotation.new = function(arg) {
+    return new baw.Annotation(arg);
 };
