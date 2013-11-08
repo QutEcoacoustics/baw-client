@@ -115,8 +115,8 @@ var app = angular.module('baw',
                      when('/recordings/:recordingId',
                           {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
 
-                     when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
-                     when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+                     when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: 'Listen'}).
+                     when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: ':recordingId'}).
                      //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 
                      when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
@@ -125,7 +125,8 @@ var app = angular.module('baw',
 
                      when('/attribution', {templateUrl: '/assets/attributions.html'}).
 
-                     when('/birdWalks', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl'}).
+                     when('/birdWalks', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl', title: 'Bird Walks'}).
+                     when('/birdWalks/:birdWalkId', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl', title: ':birdWalkId'}).
 
                      // experiments
                      when('/experiments/:experiment',

@@ -45,9 +45,9 @@
 
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/projects">Projects</a></li>
-                <li class="active"><a href="#">Listen</a></li>
-                <li><a href="/birdWalks">Bird Walks</a></li>
+                <li ng-class="{ active: $location.path().indexOf('/projects') != -1}"><a href="/projects">Projects</a></li>
+                <li ng-class="{ active: $location.path().indexOf('/listen') != -1}"><a href="/listen/40">Listen</a></li>
+                <li ng-class="{ active: $location.path().indexOf('/bird') != -1}"><a href="/birdWalks">Bird Walks</a></li>
 
                 <li style="display: none" ng-controller="LoginCtrl">
                   <span ng-show="loggedIn">

@@ -5,20 +5,15 @@ angular.module('bawApp.navigation', [])
         return {
             restrict: 'E',
             templateUrl: paths.site.files.navigation
-    };
+        };
     }])
 
     .controller(
         'NavigationCtrl',
-        ['$scope', '$resource', '$routeParams',
-            /**
-             * The navigation controller. Here we setup breadcrumbs.
-             * @param $scope
-             * @param $resource
-             * @constructor
-             * @param $routeParams
-             */
-                function NavigationCtrl($scope, $resource, $routeParams) {
-
+        ['$scope', '$resource', '$route', '$routeParams', '$location', 'breadcrumbs',
+            function NavigationCtrl($scope, $resource, $route, $routeParams, $location, breadcrumbs) {
+                $scope.$location = $location;
+                $scope.$route = $route;
+                $scope.breadcrumbs = breadcrumbs;
             }
         ]);

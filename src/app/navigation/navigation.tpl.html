@@ -1,5 +1,7 @@
-<ol class="breadcrumb">
-    <li><a href="/">Home</a></li>
-    <li><a href="/listen">Listen</a></li>
-    <li class="active">Listening to 40</li>
-</ol>
+<ul class="breadcrumb">
+    <li ng-repeat="breadcrumb in breadcrumbs.getAll()" ng-class="{ active: $last }">
+        <a ng-if="!$last" ng-href="{{breadcrumb.path}}">{{breadcrumb.title}}</a>
+        <span ng-if="$last">{{breadcrumb.title}}</span>
+    </li>
+</ul>
+
