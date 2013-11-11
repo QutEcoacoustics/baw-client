@@ -7,7 +7,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
         return Math.abs(fraction - 1);
     }
 
-    function unitConversions(sampleRate, window, imageWidth, imageHeight) {
+    function calculateUnitConversions(sampleRate, window, imageWidth, imageHeight) {
         if (sampleRate === undefined || window === undefined || !imageWidth || !imageHeight) {
             console.warn("not enough information to calculate unit conversions");
             return { pixelsPerSecond: NaN, pixelsPerHertz: NaN};
@@ -35,14 +35,15 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
             console.warn("the image width does not3 conform well with the meta data");
         }
 
-        console.info("unit update calculated successfully")
-        return { pixelsPerSecond: spectrogramPps, pixelsPerHertz: imagePph, nyquistFrequency: nyquistFrequency };
+        console.info("unit update calculated successfully");
+        return { pixelsPerSecond: spectrogramPps, pixelsPerHertz: imagePph, nyquistFrequency: nyquistFrequency, imageHeight: imageHeight };
     }
 
     function updateUnitConversions(scope, imageWidth, imageHeight) {
         var conversions = {};
+        // TODO: calculate unit-conversions without image media
         if (scope.model.media && scope.model.media.spectrogram) {
-            conversions = unitConversions(scope.model.media.sampleRate, scope.model.media.spectrogram.window,
+            conversions = calculateUnitConversions(scope.model.media.sampleRate, scope.model.media.spectrogram.window,
                 imageWidth, imageHeight);
         }
 
@@ -68,22 +69,20 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
             },
             invertHertz: function invertHertz(hertz) {
                 return Math.abs(conversions.nyquistFrequency - hertz);
+            },
+            invertPixels: function invertPixels(pixels) {
+                return Math.abs(conversions.imageHeight - pixels);
             }
         };
     }
 
-    /**
-     *
-     * @param audioEvent
-     * @param box
-     * @param scope
-     */
     function resizeOrMove(audioEvent, box, scope) {
         var boxId = baw.parseInt(box.id);
 
         if (audioEvent.__temporaryId__ === boxId) {
-            audioEvent.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
             audioEvent.highFrequencyHertz = scope.model.converters.invertHertz(scope.model.converters.pixelsToHertz(box.top || 0));
+            audioEvent.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
+
 
             audioEvent.endTimeSeconds = audioEvent.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0);
             audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0);
@@ -141,15 +140,15 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                     return;
                 }
 
-                console.log("audioEvent watcher fired", value.__temporaryId__, value._selected);
+                console.log("audioEvent watcher fired", value.__temporaryId__, value.selected);
 
                 // TODO: SET UP CONVERSIONS HERE
-                var top = scope.model.converters.hertzToPixels(value.highFrequencyHertz),
+                var top = scope.model.converters.invertPixels(scope.model.converters.hertzToPixels(value.highFrequencyHertz)),
                     left = scope.model.converters.secondsToPixels(value.startTimeSeconds),
                     width = scope.model.converters.secondsToPixels(value.endTimeSeconds - value.startTimeSeconds),
                     height = scope.model.converters.hertzToPixels(value.highFrequencyHertz - value.lowFrequencyHertz);
 
-                drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, value._selected);
+                drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, value.selected);
             }
         };
 
@@ -252,15 +251,19 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                 }
                 scope.model.converters = updateUnitConversions(scope, scope.$image.width(), scope.$image.height());
 
-                // redraw all boxes already drawn
+                // redraw all boxes already drawn (hacky way to force angular to see these objects as dirty!)
                 scope.model.audioEvents.forEach(function (value) {
-                    value.forceDodgyUpdate = (value.forceDodgyUpdate || 0) + 1
+                    value.forceDodgyUpdate = (value._forceDodgyUpdate || 0) + 1;
                 });
 
             }
 
             scope.$watch('model.media.spectrogram.url', updateConverters);
-            scope.$image[0].addEventListener('load', updateConverters, false);
+            scope.$image[0].addEventListener('load', function () {
+                scope.$apply(function () {
+                    updateConverters();
+                });
+            }, false);
             updateConverters();
 
             // init drawabox
@@ -291,11 +294,11 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                         // support for multiple selections - remove the clear
                         // TODO: this is a very inefficient method of achieving this result
                         angular.forEach(scope.model.audioEvents, function (value, key) {
-                            value._selected = false;
+                            value.selected = false;
                         });
 
                         // new form of selecting
-                        scope.model.audioEvents[element[0].annotationViewerIndex]._selected = true;
+                        scope.model.audioEvents[element[0].annotationViewerIndex].selected = true;
                     });
                 },
                 "boxResizing": function (element, box) {
@@ -322,6 +325,9 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                         // TODO: i'm not sure how I should handle 'deleted' items yet
                         var itemToDelete = scope.model.audioEvents[element[0].annotationViewerIndex];
                         itemToDelete.deletedAt = (new Date());
+
+                        // TODO: delete index bound watcher... do not change array layout, keep it sparse
+
 
                         //                            if (scope.model.selectedAudioEvents.length > 0) {
                         //                                var index = scope.model.selectedAudioEvents.indexOf(itemToDelete);

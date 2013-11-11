@@ -29,40 +29,56 @@
 }
 
 #timeline {
+  line-height: normal;
+  font-size: smaller;
 
   & * {
     border: solid black 1px;
 
   }
 
-  div {
-    clear: both;
+  & div {
+    clear: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    text-align: center;
   }
 
-  > div:nth-child(1) {
-    float: left;
-    clear: none;
+  > div {
+    width: 100%;
 
-    div {
-      height: 25%;
-    }
-  }
+    > div {
+      width: 100%;
 
-  > div:nth-child(2) {
-    overflow: hidden;
-    clear: none;
+      > div {
+        width: 33%;
 
-    div {
-      text-align: center;
-      span {
-        display: inline-block;
-        width: 33.1%;
+        > div {
+          width: 32%;
 
-        margin:0;
-
+          > div {
+            width: 32%;
+          }
+        }
       }
     }
   }
+
+  #audioRecording {
+    display: block;
+
+    & div:nth-child(1) {
+      width: 44%;
+    }
+    & div:nth-child(2) {
+      width: 11%;
+    }
+    & div:nth-child(3) {
+      width: 44%;
+    }
+  }
+
 
 
 }

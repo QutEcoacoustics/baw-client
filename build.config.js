@@ -105,9 +105,18 @@ module.exports = {
             'vendor/underscore/underscore.js'
         ],
         css: [
-            'vendor/hint.css/hint.css'
+            'vendor/hint.css/hint.css',
+            // TODO: remove bloat
+            'vendor/jquery-ui/themes/redmond/jquery-ui.css'
         ],
         assets: [
+            // jquery-ui is stoopid, special case
+            function(template) {
+                template.src = 'vendor/jquery-ui/themes/redmond/images/**';
+                template.dest += "styles/images/";
+
+                return template;
+            }
         ]
     }
 };

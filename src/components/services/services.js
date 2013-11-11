@@ -173,8 +173,9 @@
             for (key in obj) {
                 if (obj.hasOwnProperty(key)) {
                     // console.log(key);
-                    if (key == propName)
+                    if (key == propName) {
                         return obj[key];
+                    }
                 }
             }
             console.log('did not find match', propName, obj);

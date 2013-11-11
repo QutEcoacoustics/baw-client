@@ -40,8 +40,8 @@ angular.module('bawApp.listen', [])
             }
 
             $scope.errorState =
-                !(baw.isNumber($routeParams.recordingId)
-                    && baw.parseInt($routeParams.recordingId) >= 0);
+                !(baw.isNumber($routeParams.recordingId) &&
+                    baw.parseInt($routeParams.recordingId) >= 0);
 
             if ($scope.errorState) {
                 console.warn("Invalid (or no) audio recording id specified in route... page rendering disabled");
@@ -160,7 +160,7 @@ angular.module('bawApp.listen', [])
                         // TODO : map tag's
 
                         $scope.model.audioEvents =
-                            tempEvents.map(baw.Annotation.new);
+                            tempEvents.map(baw.Annotation.create);
                     },
                     function audioEventQueryFailure() {
                         console.error("retrieval of audio events failed");
@@ -281,12 +281,12 @@ angular.module('bawApp.listen', [])
                     //$scope.model.selectedAudioEvents.length = 0;
 
                     angular.forEach($scope.model.audioEvents, function (value, key) {
-                        value._selected = false;
+                        value.selected = false;
                     });
                 };
 
                 $scope.selectedFilter = function (audioEvent) {
-                    return audioEvent._selected;
+                    return audioEvent.selected;
                 };
 
                 $scope.select2Settings = {
@@ -339,7 +339,7 @@ angular.module('bawApp.listen', [])
                     //var a = $scope.model.selectedAudioEvents[0];
                     //TODO: BROKEN!
                     var a = $scope.model.audioEvents.filter(function (value) {
-                        return value._selected === true;
+                        return value.selected === true;
                     })[0];
 
                     // prep tags

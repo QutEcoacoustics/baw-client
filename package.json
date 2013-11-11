@@ -29,7 +29,8 @@
         "grunt-bump": "0.0.6",
         "grunt-contrib-connect": "~0.5.0",
         "connect-modrewrite": "~0.5.7",
-        "grunt-sass": "~0.7.0"
+        "grunt-sass": "~0.7.0",
+        "lodash": "~2.2.1"
     },
     "private": true
 }

@@ -18,8 +18,12 @@ baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
         throw new Error("Constructor called as a function");
     }
 
-    this.__temporaryId__ = localId || (Number.Unique() * -1);
-    this._selected = false;
+    this.__temporaryId__ = localId || resource.id;  //(Number.Unique() * -1);
+    if (!angular.isNumber(this.__temporaryId__)) {
+        throw "Is in an annotation is not a number!";
+    }
+
+    this.selected = false;
     this.audioEventTags = [];
 
     if (localId) {
@@ -76,10 +80,10 @@ baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
     this.toJSON = function () {
         return {
             id: this.id || this.__temporaryId__
-        }
+        };
     };
 };
 
-baw.Annotation.new = function(arg) {
+baw.Annotation.create = function(arg) {
     return new baw.Annotation(arg);
 };

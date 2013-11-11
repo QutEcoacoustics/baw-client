@@ -1,5 +1,6 @@
 var modRewrite = require('connect-modrewrite'),
-    path = require('path');
+    path = require('path'),
+    _ = require('lodash');
 
 
 module.exports = function (grunt) {
@@ -168,20 +169,47 @@ module.exports = function (grunt) {
                         src: [ '**' ],
                         dest: '<%= build_dir %>/assets/',
                         cwd: 'src/assets',
-                        expand: true
+                        expand: true,
+                        nonull: true
                     }
                 ]
             },
             build_vendor_assets: {
-                files: [
-                    {
-                        src: [ '<%= vendor_files.assets %>' ],
+                files: (function () {
+                    var result = [];
+
+                    var template = {
+                        //src: [ '<%= vendor_files.assets %>' ],
                         dest: '<%= build_dir %>/assets/',
                         cwd: '.',
                         expand: true,
-                        flatten: true
-                    }
-                ]
+                        flatten: true,
+                        nonull: true
+                    };
+
+                    userConfig.vendor_files.assets.forEach(function (value, index, source) {
+                        var kind = grunt.util.kindOf(value);
+                        var templateCopy = _.clone(template);
+                        if (kind === "string") {
+                            templateCopy.src = value;
+                            result.push(_.extend(template, base));
+                        }
+                        else {
+                            // here we assume it is a special specification func
+                            var transformedTemplate = value.call(null, templateCopy);
+
+                            if (!transformedTemplate) {
+                                throw "Copy:build_vendor_assets:transformTemplate: expected object, got " + transformedTemplate + " instead";
+                            }
+
+                            result.push(transformedTemplate);
+                        }
+                    });
+
+                    grunt.log.debug("Vendor assets compilation result:\n" + JSON.stringify(result, undefined, 2));
+
+                    return result;
+                })()
             },
             build_appjs: {
                 options: {
@@ -239,9 +267,12 @@ module.exports = function (grunt) {
              * together.
              */
             build_css: {
+                options: {
+                    banner: '<%= meta.banner %>'
+                },
+                nonull: true,
                 src: [
                     '<%= vendor_files.css %>',
-                    /*'<%= recess.build.dest %>',*/
                     '<%= build_dir %>/assets/styles/*.css'
                 ],
                 dest: '<%= sassDest %>'
@@ -254,6 +285,7 @@ module.exports = function (grunt) {
                 options: {
                     banner: '<%= meta.banner %>'
                 },
+                nonull: true,
                 src: [
                     '<%= vendor_files.js %>',
                     'module.prefix',

@@ -123,13 +123,16 @@
         if (contextData === undefined) {
             throw "Context data must be given";
         }
-        var closeIconTemplate = '<span class="close-icon"></span>';
+        var closeIconTemplate = '<span class="close-icon glyphicon glyphicon-remove"></span>';
 
 
-        var uniqueId = uniqueId || (-1 * Number.Unique());
+        uniqueId = uniqueId || (-1 * Number.Unique());
         $('.boxItem').attr(SELECTED_ATTRIBUTE, false);
         var newId = "boxItem_" + uniqueId;
-        contextData.currentMouseDragBoxId = newId;
+
+        if (!silent) {
+            contextData.currentMouseDragBoxId = newId;
+        }
 
         if (contextData.options.showOnly === true) {
             closeIconTemplate = "";
@@ -172,6 +175,7 @@
             // add other events
             $newBox.resizable({
                 handles: "all",
+                //containment: "parent",
                 resize: function (event, ui) { contextData.options.boxResizing($newBox); },
                 stop: function (event, ui) { contextData.options.boxResized($newBox); }
             });
@@ -461,7 +465,7 @@
 
             var elements = this.querySelectorAll(".boxItem[data-id='" + id.toString() + "']");
 
-            if (elements.length == 0) {
+            if (elements.length === 0) {
                 result[index] = false;
             }
             else if (elements.length > 1) {
@@ -482,7 +486,7 @@
 
             var $this = $(this);
 
-            if (this.querySelectorAll(".boxItem[data-id='" + id.toString() + "']").length != 0) {
+            if (this.querySelectorAll(".boxItem[data-id='" + id.toString() + "']").length !== 0) {
                 throw "An element with that id already exists, cannot insert";
             }
 
