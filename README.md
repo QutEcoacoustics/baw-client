@@ -3,7 +3,7 @@ baw-client
 
 The AngularJS client for the bioacoustic workbench
 
-
+---
 ## Install instructions
 	$ npm -g install grunt-cli karma bower
 

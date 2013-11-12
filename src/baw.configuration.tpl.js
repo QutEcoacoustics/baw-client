@@ -38,13 +38,15 @@ angular.module('bawApp.configuration', [])
                         show: "/audio_recordings/{recordingId}/media.{format}"
                     },
                     security: {
-                        ping: "/security/sign_in"
+                        ping: "/security/sign_in",
+                        signIn: "/my_account/sign_in"
                     }
                 }
             },
             site: {
                 root: "<%= current.siteRoot %>",
                 // The following intentionally are not prefixed with a '/'
+                // static files
                 files: {
                     error404: 'error/error_404.tpl.html',
                     home: 'home/home.tpl.html',
@@ -53,8 +55,13 @@ angular.module('bawApp.configuration', [])
                     navigation: 'navigation/navigation.tpl.html',
                     birdWalks: 'birdWalks/birdWalks.tpl.html'
                 },
-                ngRoutes :{
+                // routes used by angular
+                ngRoutes: {
                     listen: "/listen/{recordingId}/"
+                },
+                // general links for use in <a />'s
+                links: {
+
                 }
             }
         };

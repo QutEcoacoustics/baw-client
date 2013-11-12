@@ -6,62 +6,66 @@ var baw = window.baw = window.baw || {};
  * @param {*=} audioRecordingId
  * @constructor
  */
-baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
+baw.Annotation = (function () {
 
-    var localId = typeof(localIdOrResource) === "number" ? localIdOrResource : undefined;
-    var resource;
-    if (localIdOrResource instanceof Object && localIdOrResource.constructor.name == "Resource") {
-        resource = localIdOrResource;
-    }
+    // constructor
+    var module = function Annotation(localIdOrResource, audioRecordingId) {
 
-    if (!(this instanceof Annotation)) {
-        throw new Error("Constructor called as a function");
-    }
+        var localId = typeof(localIdOrResource) === "number" ? localIdOrResource : undefined;
+        var resource;
+        if (localIdOrResource instanceof Object && localIdOrResource.constructor.name == "Resource") {
+            resource = localIdOrResource;
+        }
 
-    this.__temporaryId__ = localId || resource.id;  //(Number.Unique() * -1);
-    if (!angular.isNumber(this.__temporaryId__)) {
-        throw "Is in an annotation is not a number!";
-    }
+        if (!(this instanceof Annotation)) {
+            throw new Error("Constructor called as a function");
+        }
 
-    this.selected = false;
-    this.audioEventTags = [];
+        this.__localId__ = localId || resource.id;  //(Number.Unique() * -1);
+        if (!angular.isNumber(this.__localId__)) {
+            throw "Is in an annotation is not a number!";
+        }
 
-    if (localId) {
-        var now = new Date();
+        this.selected = false;
+        this.audioEventTags = [];
 
-        this.audioRecordingId = audioRecordingId;
+        if (localId) {
+            var now = new Date();
 
-        this.createdAt = now;
-        this.updatedAt = now;
+            this.audioRecordingId = audioRecordingId;
 
-        this.endTimeSeconds = 0.0;
-        this.highFrequencyHertz = 0.0;
-        this.isReference = false;
-        this.lowFrequencyHertz = 0.0;
-        this.startTimeSeconds = 0.0;
+            this.createdAt = now;
+            this.updatedAt = now;
 
-    }
+            this.endTimeSeconds = 0.0;
+            this.highFrequencyHertz = 0.0;
+            this.isReference = false;
+            this.lowFrequencyHertz = 0.0;
+            this.startTimeSeconds = 0.0;
 
-    // ensure JSON values taken from a resource have nicely formatted values
-    if (resource) {
-        angular.extend(this, resource);
+        }
 
-        this.createdAt = new Date(this.createdAt);
-        this.updatedAt = new Date(this.updatedAt);
+        // ensure JSON values taken from a resource have nicely formatted values
+        if (resource) {
+            angular.extend(this, resource);
 
-        this.endTimeSeconds = parseFloat(this.endTimeSeconds);
-        this.highFrequencyHertz = parseFloat(this.highFrequencyHertz);
-        this.lowFrequencyHertz = parseFloat(this.lowFrequencyHertz);
-        this.startTimeSeconds = parseFloat(this.startTimeSeconds);
+            this.createdAt = new Date(this.createdAt);
+            this.updatedAt = new Date(this.updatedAt);
 
-        this.audioEventTags = {};
-        angular.forEach(this.audioEventTags, function (value, key) {
-            this.audioEventTags[key] = new baw.AudioEventTag(value);
-        }, this);
-    }
+            this.endTimeSeconds = parseFloat(this.endTimeSeconds);
+            this.highFrequencyHertz = parseFloat(this.highFrequencyHertz);
+            this.lowFrequencyHertz = parseFloat(this.lowFrequencyHertz);
+            this.startTimeSeconds = parseFloat(this.startTimeSeconds);
+
+            this.audioEventTags = {};
+            angular.forEach(this.audioEventTags, function (value, key) {
+                this.audioEventTags[key] = new baw.AudioEventTag(value);
+            }, this);
+        }
+    };
 
     // strip out unnecessary values;
-    this.exportObj = function () {
+    module.prototype.exportObj = function exportObj() {
         return {
             // TODO:
             taggings: [],
@@ -77,13 +81,16 @@ baw.Annotation = function Annotation(localIdOrResource, audioRecordingId) {
         };
     };
 
-    this.toJSON = function () {
+    module.prototype.toJSON = function toJSON() {
         return {
-            id: this.id || this.__temporaryId__
+            id: this.id || this.__localId__
         };
     };
-};
 
-baw.Annotation.create = function(arg) {
-    return new baw.Annotation(arg);
-};
+
+    module.create = function (arg) {
+        return new baw.Annotation(arg);
+    };
+
+    return module;
+})();

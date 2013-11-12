@@ -76,27 +76,19 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
         };
     }
 
-    function resizeOrMove(audioEvent, box, scope) {
-        var boxId = baw.parseInt(box.id);
-
-        if (audioEvent.__temporaryId__ === boxId) {
-            audioEvent.highFrequencyHertz = scope.model.converters.invertHertz(scope.model.converters.pixelsToHertz(box.top || 0));
-            audioEvent.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
-
-
-            audioEvent.endTimeSeconds = audioEvent.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0);
-            audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0);
-        }
-        else {
-            console.error("Box ids do not match on resizing  or move event", audioEvent.__temporaryId__, boxId);
-        }
-    }
-
     function resizeOrMoveWithApply(scope, audioEvent, box) {
         scope.$apply(function () {
-            scope.__lastDrawABoxEditId__ = audioEvent.__temporaryId__;
-            resizeOrMove(audioEvent, box, scope);
-
+            scope.__lastDrawABoxEditId__ = audioEvent.__localId__;
+            var boxId = baw.parseInt(box.id);
+            if (audioEvent.__localId__ === boxId) {
+                audioEvent.highFrequencyHertz = scope.model.converters.invertHertz(scope.model.converters.pixelsToHertz(box.top || 0));
+                audioEvent.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
+                audioEvent.endTimeSeconds = audioEvent.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0);
+                audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0);
+            }
+            else {
+                console.error("Box ids do not match on resizing  or move event", audioEvent.__localId__, boxId);
+            }
         });
     }
 
@@ -108,8 +100,9 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
         var audioEvent = new baw.Annotation(baw.parseInt(simpleBox.id), audioRecordingId);
 
-        resizeOrMove(audioEvent, simpleBox, scope);
+        scope.model.audioEvents.push(audioEvent);
         touchUpdatedField(audioEvent);
+        resizeOrMoveWithApply(audioEvent, simpleBox, scope);
 
         return audioEvent;
     }
@@ -135,20 +128,20 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
         var listenerFunc = function audioEventToBoxWatcher(value) {
 
             if (value) {
-                if (scope.__lastDrawABoxEditId__ === value.__temporaryId__) {
+                if (scope.__lastDrawABoxEditId__ === value.__localId__) {
                     scope.__lastDrawABoxEditId__ = undefined;
+                    console.log("audioEvent watcher SKIPPED", value.__localId__, value.selected);
                     return;
                 }
 
-                console.log("audioEvent watcher fired", value.__temporaryId__, value.selected);
+                console.log("audioEvent watcher fired", value.__localId__, value.selected);
 
-                // TODO: SET UP CONVERSIONS HERE
                 var top = scope.model.converters.invertPixels(scope.model.converters.hertzToPixels(value.highFrequencyHertz)),
                     left = scope.model.converters.secondsToPixels(value.startTimeSeconds),
                     width = scope.model.converters.secondsToPixels(value.endTimeSeconds - value.startTimeSeconds),
                     height = scope.model.converters.hertzToPixels(value.highFrequencyHertz - value.lowFrequencyHertz);
 
-                drawaboxInstance.drawabox('setBox', value.__temporaryId__, top, left, height, width, value.selected);
+                drawaboxInstance.drawabox('setBox', value.__localId__, top, left, height, width, value.selected);
             }
         };
 
@@ -178,10 +171,10 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
                 // does the annotation exist in the DOM?
                 // this means the annotation should not be present in the DOM, assert this
-                var exists = drawaboxInstance.drawabox('exists', value.__temporaryId__);
+                var exists = drawaboxInstance.drawabox('exists', value.__localId__);
                 if (exists[0] === false) {
                     // if not, add the annotation into the DOM
-                    element = drawaboxInstance.drawabox('insert', value.__temporaryId__)[0][0];
+                    element = drawaboxInstance.drawabox('insert', value.__localId__)[0][0];
                 }
                 else {
                     // the element already exists
@@ -211,6 +204,71 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
     }
 
+    /**ȻɌɄƉ**/
+
+    var UPDATER_DRAWABOX = "DRAWABOX";
+    var UPDATER_PAGE_LOAD = "DRAWABOX";
+
+    /**
+     * Update the model. Events must be emitted from drawabox.
+     * @param box
+     */
+    function drawaboxUpdatesModel(box) {
+
+    }
+
+    function modelUpdatesDrawabox(annotation) {
+
+    }
+
+    function modelUpdatesServer(action, annotation) {
+
+    }
+
+    function serverUpdatesModel() {
+
+    }
+
+    /**
+     * This method should be called when an Annotation model is updated.
+     * There are four possible cases:
+     *  1) Page load (Ȼ R ɄƉ)
+     *  2) Single Edit change (ȻɌ UD)
+     *  3) Drawabox change (C Ɍ UD)
+     *  4) Server async return for (reverse ȻɌ U Ɖ)
+     * @param changedAnnotation
+     * @param oldAnnotation
+     * @param scope
+     */
+    function modelUpdated(changedAnnotation, oldAnnotation, scope) {
+        if (!changedAnnotation) {
+            console.debug("AnnotationEditor:modelUpdated: Falsy annotation, skip update.", changedAnnotation.__localId__);
+            return;
+        }
+
+        // invariants
+        if (changedAnnotation.lastUpdater === UPDATER_DRAWABOX && changedAnnotation.isDirty !== true) {
+            throw "AnnotationEditor:modelUpdated: Invalid state! If the last update came from drawabox then the the annotation must be dirty!";
+        }
+        if (changedAnnotation.lastUpdater === UPDATER_PAGE_LOAD && changedAnnotation.isDirty !== false) {
+            throw "AnnotationEditor:modelUpdated: Invalid state! If the last update came from page load then the the annotation must NOT be dirty!";
+        }
+        if (changedAnnotation.toBeDeleted && changedAnnotation.isDirty !== true) {
+            throw "AnnotationEditor:modelUpdated: Invalid state! If the the delete flag is set the annotation must be dirty!";
+        }
+
+        // if the last update was done by the drawabox control, do not propagate it back to drawabox
+        if (annotation.lastUpdater === DRAWABOX) {
+            // reset flag
+            annotation.lastUpdater = null;
+        }
+        else {
+            modelUpdatesDrawabox(changedAnnotation);
+        }
+    }
+
+
+    /****/
 
     return {
         restrict: 'AE',
@@ -277,13 +335,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
                 "newBox": function (element, newBox) {
                     var newAudioEvent = create(newBox, scope.model.audioRecording.id, scope);
-
-
-                    scope.$root.$safeApply(scope, function () {
-                        scope.model.audioEvents.push(newAudioEvent);
-
-                        console.log("newBox", newBox, newAudioEvent);
-                    });
+                    console.log("newBox", newBox, newAudioEvent);
                 },
                 "boxSelected": function (element, selectedBox) {
                     console.log("boxSelected", selectedBox);

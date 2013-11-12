@@ -151,8 +151,13 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent',
-          function ($rootScope, $location, $route, $http, AudioEvent) {
+    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths',
+          function ($rootScope, $location, $route, $http, AudioEvent, paths) {
+
+              // embed configuration for easy site-wide binding
+              $rootScope.paths = paths;
+
+              // helper function for printing scope objects
               baw.exports.print = $rootScope.print = function () {
                   var seen = [];
                   var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling",

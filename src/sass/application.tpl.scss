@@ -6,6 +6,7 @@
 
 
 $DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
+//@debug "Debug build is #{$DEBUG}";
 
 /**
 * First, we include jlong's Twitter Bootstrap SCSS files. Only the ones used in the
