@@ -87,7 +87,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                 audioEvent.lowFrequencyHertz = audioEvent.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0);
             }
             else {
-                console.error("Box ids do not match on resizing  or move event", audioEvent.__localId__, boxId);
+                console.error("Box ids do not match on resizing or move event", audioEvent.__localId__, boxId);
             }
         });
     }
@@ -213,12 +213,31 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
      * Update the model. Events must be emitted from drawabox.
      * @param box
      */
-    function drawaboxUpdatesModel(box) {
-
+    function drawaboxUpdatesModel(scope, annotation, box) {
+        scope.$apply(function () {
+            //scope.__lastDrawABoxEditId__ = audioEvent.__localId__;
+            
+            var boxId = baw.parseInt(box.id);
+            if (annotation.__localId__ === boxId) {
+                annotation.lastUpdater = UPDATER_DRAWABOX;
+                annotation.highFrequencyHertz = scope.model.converters.invertHertz(scope.model.converters.pixelsToHertz(box.top || 0));
+                annotation.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
+                annotation.endTimeSeconds = annotation.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0);
+                annotation.lowFrequencyHertz = annotation.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0);
+            }
+            else {
+                console.error("Box ids do not match on resizing or move event", annotation.__localId__, boxId);
+            }
+        });
     }
 
-    function modelUpdatesDrawabox(annotation) {
+    function modelUpdatesDrawabox(scope, drawaboxInstance, annotation) {
+        var top = scope.model.converters.invertPixels(scope.model.converters.hertzToPixels(annotation.highFrequencyHertz)),
+            left = scope.model.converters.secondsToPixels(annotation.startTimeSeconds),
+            width = scope.model.converters.secondsToPixels(annotation.endTimeSeconds - annotation.startTimeSeconds),
+            height = scope.model.converters.hertzToPixels(annotation.highFrequencyHertz - annotation.lowFrequencyHertz);
 
+        drawaboxInstance.drawabox('setBox', annotation.__localId__, top, left, height, width, annotation.selected);
     }
 
     function modelUpdatesServer(action, annotation) {
@@ -263,7 +282,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
             annotation.lastUpdater = null;
         }
         else {
-            modelUpdatesDrawabox(changedAnnotation);
+            modelUpdatesDrawabox(scope, ??? ,changedAnnotation);
         }
     }
 
