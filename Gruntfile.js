@@ -37,6 +37,13 @@ module.exports = function (grunt) {
     /**
      * Process the build option.
      */
+    var usePhantomJsTestRunner = grunt.option('use-phantomjs') === true;
+    grunt.log.writeln("Test runner should use " + (usePhantomJsTestRunner ? "PhantomJS" : "Chrome"));
+    userConfig.usePhantomJs = usePhantomJsTestRunner;
+
+
+
+
     var development = grunt.option('development') === true,
         staging = grunt.option('staging') === true,
         production = grunt.option('production') === true,
@@ -867,11 +874,13 @@ module.exports = function (grunt) {
      */
     grunt.registerMultiTask('karmaconfig', 'Process karma config templates', function () {
         var jsFiles = filterForJS(this.filesSrc);
+        var usePhantomJs = grunt.config('usePhantomJs');
 
         grunt.file.copy('karma/karma-unit.tpl.js', grunt.config('build_dir') + '/karma-unit.js', {
             process: function (contents, path) {
                 return grunt.template.process(contents, {
                     data: {
+                        usePhantomJs: usePhantomJs,
                         scripts: jsFiles
                     }
                 });
