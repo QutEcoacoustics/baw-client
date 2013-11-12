@@ -285,7 +285,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                 }
             });
 
-            
+
         }
     };
 }]);
