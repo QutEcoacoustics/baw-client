@@ -6,36 +6,28 @@
 
         <h2 class="debug-ui">Timeline</h2>
         <div id="timeline" class="clearfix debug-ui">
-
-            <div>
-                <div>Playlist</div>
-                <div>AudioRecording</div>
-                <div>Segment</div>
-                <div>Chunk</div>
-            </div>
-            <div>
-                <div>
-                    <span>3 items previous</span>
-                    <span>Current Segment</span>
-                    <span>2 items next</span>
+            <div >
+                <div id="audioRecording">
+                    <div>before</div>
+                    <div>current</div>
+                    <div>after</div>
                 </div>
-                <div>
-                    <span>112 minutes before</span>
-                    <span>Current Segment</span>
-                    <span>1100 minutes after</span>
-                </div>
-                <div>
-                    <span> 33 chunks previous</span>
-                    <span>Current Chunk</span>
-                    <span>16 chunks next</span>
-                </div>
-                <div>
-                    <span>&nbsp;</span>
-                    <span>Time index</span>
-                    <span>&nbsp;</span>
+                <div id="playlist">
+                    <div>pli</div>
+                    <div>
+                        <div>segment</div>
+                        <div>
+                            <div>chunk</div>
+                            <div>
+                                You are here
+                            </div>
+                            <div>chunk</div>
+                        </div>
+                        <div>segment</div>
+                    </div>
+                    <div>pli</div>
                 </div>
             </div>
-            <div></div>
         </div>
         <h2 class="debug-ui">Stats</h2>
         <ul class="debug-ui">
@@ -162,9 +154,9 @@
                     <tbody>
                     <tr ng-repeat="ae in model.audioEvents">
                         <td>
-                            <!--<input type="radio" ng-checked="ae._selected" ng-model="ae._selected"   name="selectionRadioGroup"  >-->
-                            <input type="radio" baw-checked="ae._selected" name="selectionRadioGroup">
-                            SELECTED:{{ae._selected}}
+                            <!--<input type="radio" ng-checked="ae.selected" ng-model="ae.selected"   name="selectionRadioGroup"  >-->
+                            <input type="radio" baw-checked="ae.selected" name="selectionRadioGroup">
+                            SELECTED:{{ae.selected}}
                         </td>
                         <td>
                             <!-- TODO -->

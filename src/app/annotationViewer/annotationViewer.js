@@ -11,7 +11,19 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      * @param Tag
      */
         function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
-        $scope.getTag = function getTag(id) {
+        $scope.getTag = function getTag(annotation) {
+
+            // which tag to show
+            // HACK: show first only
+            var taggings = annotation.taggings;
+
+            if (!taggings || taggings.length === 0) {
+                return "<no tags>";
+            }
+
+            var tag = taggings ? taggings[0] : undefined;
+            var id = tag ? tag.id : undefined;
+
             var tagObject = Tag.resolve(id);
             if (tagObject) {
                 return tagObject.text;

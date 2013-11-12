@@ -83,7 +83,8 @@ var app = angular.module('baw',
                              'bawApp.recordings',
                              'bawApp.search',
                              'bawApp.tags',
-                             'bawApp.users'
+                             'bawApp.users',
+                             'bawApp.birdWalks'
                          ])
 
     .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider',
@@ -114,8 +115,8 @@ var app = angular.module('baw',
                      when('/recordings/:recordingId',
                           {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
 
-                     when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
-                     when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+                     when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: 'Listen'}).
+                     when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: ':recordingId'}).
                      //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 
                      when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
@@ -123,6 +124,9 @@ var app = angular.module('baw',
                           {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
 
                      when('/attribution', {templateUrl: '/assets/attributions.html'}).
+
+                     when('/birdWalks', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl', title: 'Bird Walks'}).
+                     when('/birdWalks/:birdWalkId', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl', title: ':birdWalkId'}).
 
                      // experiments
                      when('/experiments/:experiment',
@@ -147,8 +151,13 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent',
-          function ($rootScope, $location, $route, $http, AudioEvent) {
+    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths',
+          function ($rootScope, $location, $route, $http, AudioEvent, paths) {
+
+              // embed configuration for easy site-wide binding
+              $rootScope.paths = paths;
+
+              // helper function for printing scope objects
               baw.exports.print = $rootScope.print = function () {
                   var seen = [];
                   var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling",

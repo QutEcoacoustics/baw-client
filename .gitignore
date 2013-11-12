@@ -34,7 +34,8 @@ doc/
 /log/*.log
 /tmp
 
-
+# bird walk resources
+/src/assets/bird_walk/*
 
 /.project
 

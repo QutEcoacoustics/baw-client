@@ -33,7 +33,7 @@ baw-annotation-viewer {
       line-height: $standard-line-height;
 
       li {
-        border-bottom: red solid 1px;
+        border-bottom: $tagAlignmentLine solid 1px;
         margin-left: -4px;
         position: absolute;
         bottom:  -1px;
@@ -91,7 +91,7 @@ baw-annotation-viewer {
       position: absolute;
       top:  0;
       left: 0;
-      -webkit-transform: translatex(0px);
+      @include vendor-prefix(transform, translatex(0 px));
     }
   }
 
@@ -102,7 +102,7 @@ baw-annotation-viewer {
   // general
 
   & .boxItem {
-
+    text-align: left;
     border-style: $border-style;
     border-width: $border-width;
     border-color: $marqueeBorderColorInactive;
@@ -111,8 +111,8 @@ baw-annotation-viewer {
     overflow: visible;
 
     &:before {
-      @if $DEBUG == false {
-        visibility: collapse;
+      @if not $DEBUG {
+        background-color: red;
       }
       border-left: $tagAlignmentLine solid 1px;
       height: 256px;
@@ -121,6 +121,8 @@ baw-annotation-viewer {
       left: -1px;
       display: inline-block;
       content: "";
+      visibility: hidden;
+
     }
 
     &[data-selected="true"] {
@@ -137,23 +139,22 @@ baw-annotation-viewer {
       & .close-icon {
         visibility: visible;
       }
+
+      &:before {
+        visibility: visible;
+      }
     }
   }
 
   & .close-icon {
     position: absolute;
     left: 3px;
-    top: 6px;
-    color: black;
-    font-weight: bold;
-    font-size: 12px;
-    font-family: sans-serif;
-    vertical-align: top;
-    cursor: pointer;
+    top: 2px;
 
-    &:before{
-      content: "x";
-    }
+    cursor: pointer;
+    font-size: 8px;
+
+    // icon glyph used from bootstrap
 
     visibility: hidden;
   }

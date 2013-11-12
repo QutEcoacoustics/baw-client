@@ -118,25 +118,29 @@
 
 
 
-    function createBox($parent, contextData, width, height, top, left) {
+    function createBox($parent, contextData, width, height, top, left, uniqueId, silent) {
 
         if (contextData === undefined) {
             throw "Context data must be given";
         }
-        var closeIconTemplate = '<span class="close-icon"></span>';
+        var closeIconTemplate = '<span class="close-icon glyphicon glyphicon-remove"></span>';
 
 
-        var uniqueId = -1 * Number.Unique();
+        uniqueId = uniqueId || (-1 * Number.Unique());
         $('.boxItem').attr(SELECTED_ATTRIBUTE, false);
         var newId = "boxItem_" + uniqueId;
-        contextData.currentMouseDragBoxId = newId;
+
+        if (!silent) {
+            contextData.currentMouseDragBoxId = newId;
+        }
 
         if (contextData.options.showOnly === true) {
             closeIconTemplate = "";
         }
 
         // removed 'overflow:hidden' from default style... it was messing up a trick i was trying to do
-        $parent.append('<div '+ SELECTED_ATTRIBUTE +'="true" id="' + newId + '" class="boxItem ui-widget" style="width:' + width + 'px;height:' + height + 'px;">' + closeIconTemplate + '</div>');
+
+        $parent.append('<div '+ SELECTED_ATTRIBUTE +'="' + (silent ? 'false' : 'true') + '" id="' + newId + '" class="boxItem ui-widget" style="width:' + width + 'px;height:' + height + 'px;">' + closeIconTemplate + '</div>');
 
         var $newBox = $('#' + newId);
         $newBox.attr(dataIdKey, uniqueId);
@@ -171,6 +175,7 @@
             // add other events
             $newBox.resizable({
                 handles: "all",
+                //containment: "parent",
                 resize: function (event, ui) { contextData.options.boxResizing($newBox); },
                 stop: function (event, ui) { contextData.options.boxResized($newBox); }
             });
@@ -191,8 +196,10 @@
         contextData.maxChildrenReached = maxChildrenCheck(contextData.options.maxBoxes, $newBox);
 
         // raise new box event and selected events
-        contextData.options.newBox($newBox);
-        contextData.options.boxSelected($newBox);
+        if (!silent) {
+            contextData.options.newBox($newBox);
+            contextData.options.boxSelected($newBox);
+        }
 
         return $newBox;
     }
@@ -446,6 +453,49 @@
             }
         });
     };
+
+    /**
+     * Checks whether an box is present in drawabox
+     * @param {number} id - the id to search for
+     * @returns {Array}
+     */
+    methods.exists = function setBox(id) {
+        var result = [];
+        this.each(function (index) {
+
+            var elements = this.querySelectorAll(".boxItem[data-id='" + id.toString() + "']");
+
+            if (elements.length === 0) {
+                result[index] = false;
+            }
+            else if (elements.length > 1) {
+                throw "There should never be more than one match. Internal state broken";
+            }
+            else {
+                result[index] = elements[0];
+            }
+        });
+
+        return result;
+    };
+
+    methods.insert = function insert(id) {
+
+        var result = [];
+        this.each(function(){
+
+            var $this = $(this);
+
+            if (this.querySelectorAll(".boxItem[data-id='" + id.toString() + "']").length !== 0) {
+                throw "An element with that id already exists, cannot insert";
+            }
+
+            var newBox = createBox($this, $this.data('drawboxes'),0, 0, 0, 0, id, true);
+            result.push(newBox);
+        });
+        return result;
+    };
+
 
     methods.destroy = function () {
         return this.each(function () {

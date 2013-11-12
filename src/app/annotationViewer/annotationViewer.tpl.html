@@ -5,9 +5,9 @@
         <div class="tag-preview">
             <ul>
                 <li ng-repeat="annotation in model.audioEvents" ng-style="{left: (positionLabel(annotation)) + 'px' }" >
-                <span ng-repeat="tag in annotation.audioEventTags">
-                    {{getTag(tag.tagId)}}{{!$last && ',' || ''}}
-                </span>
+                    <span>
+                      {{getTag(annotation)}}
+                    </span>
                 </li>
             </ul>
         </div>

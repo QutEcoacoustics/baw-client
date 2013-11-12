@@ -23,6 +23,8 @@ angular.module('bawApp.listen', [])
          * @param $route
          * @param paths
          * @param constants
+         * @param $url
+         * @param AudioRecording
          */
         function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
@@ -37,7 +39,9 @@ angular.module('bawApp.listen', [])
                 };
             }
 
-            $scope.errorState = !(baw.isNumber($routeParams.recordingId) && baw.parseInt($routeParams.recordingId) >= 0);
+            $scope.errorState =
+                !(baw.isNumber($routeParams.recordingId) &&
+                    baw.parseInt($routeParams.recordingId) >= 0);
 
             if ($scope.errorState) {
                 console.warn("Invalid (or no) audio recording id specified in route... page rendering disabled");
@@ -49,6 +53,7 @@ angular.module('bawApp.listen', [])
 
                 // parse the start and end offsets
                 $routeParams.start = parseFloat($routeParams.start) || 0.0;
+                // warn: this converts 0 to chunk duration
                 $routeParams.end = parseFloat($routeParams.end) || CHUNK_DURATION_SECONDS;
                 var chunkDuration = ($routeParams.end - $routeParams.start);
                 if (chunkDuration < 0) {
@@ -99,14 +104,14 @@ angular.module('bawApp.listen', [])
                     }
                 };
 
-                /* // NOT NECESSARY - we aren't using auth keys atm
+                /* // NOT NECESSARY - we aren't using auth keys atm    */
                  $scope.$on('event:auth-loginRequired', formatPaths);
                  $scope.$on('event:auth-loginConfirmed', formatPaths);
-                 */
+
 
                 $scope.model.media = Media.get(getMediaParameters("json"), {},
                     function mediaGetSuccess() {
-                        // reformat url's
+                        // reformat urls
                         formatPaths();
 
                         // additionally do a check on the sample rate
@@ -149,14 +154,13 @@ angular.module('bawApp.listen', [])
                     });
 
                 // TODO: add time bounds
-                $scope.model.audioEvents = AudioEvent.query({recordingId: recordingId},
+                $scope.model.audioEvents = [];
+                var tempEvents = AudioEvent.query({recordingId: recordingId},
                     function audioEventsQuerySuccess() {
                         // TODO : map tag's
 
-                        for (var index = 0; index < $scope.model.audioEvents.length; index++) {
-                            // transform
-                            $scope.model.audioEvents[index] = new baw.Annotation($scope.model.audioEvents[index]);
-                        }
+                        $scope.model.audioEvents =
+                            tempEvents.map(baw.Annotation.create);
                     },
                     function audioEventQueryFailure() {
                         console.error("retrieval of audio events failed");
@@ -277,12 +281,12 @@ angular.module('bawApp.listen', [])
                     //$scope.model.selectedAudioEvents.length = 0;
 
                     angular.forEach($scope.model.audioEvents, function (value, key) {
-                        value._selected = false;
+                        value.selected = false;
                     });
                 };
 
                 $scope.selectedFilter = function (audioEvent) {
-                    return audioEvent._selected;
+                    return audioEvent.selected;
                 };
 
                 $scope.select2Settings = {
@@ -335,7 +339,7 @@ angular.module('bawApp.listen', [])
                     //var a = $scope.model.selectedAudioEvents[0];
                     //TODO: BROKEN!
                     var a = $scope.model.audioEvents.filter(function (value) {
-                        return value._selected === true;
+                        return value.selected === true;
                     })[0];
 
                     // prep tags
@@ -348,7 +352,7 @@ angular.module('bawApp.listen', [])
                         throw "The audioRecordingId should have been set way earlier!";
                     }
 
-                    AudioEvent.save({audioEventId: null, recordingId: a.audioRecordingId}, a.create(),
+                    AudioEvent.save({audioEventId: null, recordingId: a.audioRecordingId}, a.exportObj(),
                         function createAnnotationSuccess(response, getResponseHeaders) {
                             console.log("Annotation creation successful");
 
@@ -361,6 +365,9 @@ angular.module('bawApp.listen', [])
                         }
                     );
                 };
+
+
+
 
 
             }

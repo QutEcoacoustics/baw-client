@@ -3,7 +3,7 @@ baw-client
 
 The AngularJS client for the bioacoustic workbench
 
-
+---
 ## Install instructions
 	$ npm -g install grunt-cli karma bower
 
@@ -40,10 +40,13 @@ The `grunt` runner will accept three build options that will rewrite important v
 
 These variables are configured in `build.config.js`.
 
+Additionally, the grunt command will accept a `--use-phantomjs` JS options which will switch the default `karma` test runner
+from Chrome to PhantomJS.
+
 ---
 # Licence
 Apache License, Version 2.0
 
 ---
 
-Based off the [ng-boilerplate](https://github.com/ngbp/ng-boilerplate) library.
+Based on the [ng-boilerplate](https://github.com/ngbp/ng-boilerplate) library.
