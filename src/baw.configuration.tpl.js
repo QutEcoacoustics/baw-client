@@ -53,7 +53,12 @@ angular.module('bawApp.configuration', [])
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
                     navigation: 'navigation/navigation.tpl.html',
-                    birdWalks: 'birdWalks/birdWalks.tpl.html'
+                    birdWalk : {
+                        list: 'birdWalks/birdWalks.tpl.html',
+                        detail: 'birdWalks/birdWalk.tpl.html',
+                        spec: '/assets/bird_walk/bird_walk_spec.json',
+                        images: '/assets/bird_walk/images/'
+                    }
                 },
                 // routes used by angular
                 ngRoutes: {
