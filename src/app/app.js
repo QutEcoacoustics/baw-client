@@ -125,8 +125,8 @@ var app = angular.module('baw',
 
                      when('/attribution', {templateUrl: '/assets/attributions.html'}).
 
-                     when('/birdWalks', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl', title: 'Bird Walks'}).
-                     when('/birdWalks/:birdWalkId', {templateUrl: paths.site.files.birdWalks, controller: 'BirdWalkCtrl', title: ':birdWalkId'}).
+                     when('/birdWalks', {templateUrl: paths.site.files.birdWalk.list, controller: 'BirdWalksCtrl', title: 'Bird Walks'}).
+                     when('/birdWalks/:birdWalkId', {templateUrl: paths.site.files.birdWalk.detail, controller: 'BirdWalkCtrl', title: ':birdWalkId'}).
 
                      // experiments
                      when('/experiments/:experiment',

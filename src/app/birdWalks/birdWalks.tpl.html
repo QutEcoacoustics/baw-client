@@ -1,8 +1,8 @@
-<div class="row" data-ng-controller="BirdWalkCtrl">
+<div class="row" data-ng-controller="BirdWalksCtrl">
 
     <div class="col-sm-6 col-md-3" data-ng-repeat="(name, walkSpec) in spec.birdWalkSpec.walks">
         <div class="thumbnail">
-            <img data-ng-src="{{$parent.imagesPath + $parent.spec.birdWalkSpec.locations[walkSpec.locationName].backgroundImageName}}"
+            <img data-ng-src="{{$parent.imagesPath + $parent.spec.birdWalkSpec.locations[walkSpec.locationName].smallImageName}}"
                  alt="{{name}}" class="img-responsive">
 
             <div class="caption">
@@ -12,7 +12,7 @@
                 <p>{{walkSpec.description}}</p>
 
                 <p>
-                    <a href="#" class="btn btn-default" role="button">Begin Bird Walk</a>
+                    <a ng-href="birdWalks/{{walkSpec.id}}" class="btn btn-default" role="button">Begin Bird Walk</a>
                 </p>
 
                 <p class="text-muted small">
