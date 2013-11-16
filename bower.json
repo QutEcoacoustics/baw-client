@@ -14,7 +14,9 @@
     "angular-resource": "~1.2.0",
     "modernizr": "~2.6.2",
     "jquery-ui": "~1.10.3",
-    "momentjs": "~2.3.0"
+    "momentjs": "~2.3.0",
+    "jasmine-matchers":  "https://github.com/JamieMason/Jasmine-Matchers.git",
+    "objectdiff": "https://github.com/NV/objectDiff.js.git"
   },
   "dependencies": {}
 }

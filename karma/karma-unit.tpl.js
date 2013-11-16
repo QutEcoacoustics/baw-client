@@ -16,10 +16,12 @@ module.exports = function (config) {
         /**
          * This is the list of file patterns to load into the browser during testing.
          */
-        files: JSON.parse(fileJson).concat([
-            'src/**/*.js',
-            'src/**/*.coffee'
-        ]),
+        files: [
+            "vendor/objectdiff/objectDiff.js",
+            "vendor/jasmine-matchers/dist/jasmine-matchers.js"
+        ].concat(JSON.parse(fileJson).concat([
+            'src/**/*.js'
+        ])),
         exclude: [
             'src/assets/**/*.js'
         ],
@@ -33,9 +35,9 @@ module.exports = function (config) {
         },
 
         /**
-         * How to report, by default.
+         * How to report, by default. 'dots', 'progress'
          */
-        reporters: 'dots',
+        reporters: ['dots'],
 
         /**
          * On which port should the browser connect, on which port is the test runner

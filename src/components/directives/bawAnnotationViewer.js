@@ -1,6 +1,6 @@
 var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
 
-bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
+bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (paths, AudioEvent) {
 
     function variance(x, y) {
         var fraction = x / y;
@@ -38,34 +38,37 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                 throw "AnnotationEditor:calculateUnitConversions: can't determine natural height or natural width of source image!";
             }
 
-            // crop images that are too tall - specifically for removing DC values
-            if (!baw.isPowerOfTwo(imageHeight)) {
-                var croppedHeight = baw.closestPowerOfTwoBelow(imageHeight);
-                console.error("AnnotationEditor:calculateUnitConversions: The natural height (" + imageHeight +
-                    "px) for image " + image.src +
-                    " is not a power of two. The image has been STRETCHED to " + croppedHeight + "px! ALL MEASUREMENTS ON THIS SPECTROGRAM WILL BE WRONG!");
+            // only process if image is loaded
+            if (imageHeight && imageWidth) {
+                // crop images that are too tall - specifically for removing DC values
+                if (!baw.isPowerOfTwo(imageHeight)) {
+                    var croppedHeight = baw.closestPowerOfTwoBelow(imageHeight);
+                    console.error("AnnotationEditor:calculateUnitConversions: The natural height (" + imageHeight +
+                        "px) for image " + image.src +
+                        " is not a power of two. The image has been STRETCHED to " + croppedHeight + "px! ALL MEASUREMENTS ON THIS SPECTROGRAM WILL BE WRONG!");
 
-                // squish image into the nearest 'correct height' to minimise damage
-                result.enforcedImageHeight = imageHeight = croppedHeight;
-            }
+                    // squish image into the nearest 'correct height' to minimise damage
+                    result.enforcedImageHeight = imageHeight = croppedHeight;
+                }
 
 
-            // use the image width to estimate the actual shown duration
-            var spectrogramBasedAudioLength = (imageWidth * window) / sampleRate,
-                spectrogramPps = imageWidth / spectrogramBasedAudioLength;
+                // use the image width to estimate the actual shown duration
+                var spectrogramBasedAudioLength = (imageWidth * window) / sampleRate,
+                    spectrogramPps = imageWidth / spectrogramBasedAudioLength;
 
-            // use the image height to estimate the actual shown frequency bounds
-            var spectrogramPph = imageHeight / nyquistFrequency;
+                // use the image height to estimate the actual shown frequency bounds
+                var spectrogramPph = imageHeight / nyquistFrequency;
 
-            // do consistency check (tolerance = 2%)
-            var tolerance = 0.02;
-            if (variance(idealPph, spectrogramPph) > tolerance) {
-                console.warn("AnnotationEditor:calculateUniConversions: the image height does not conform well with the meta data. The image will be stretched to fit!",
-                    idealPph, spectrogramPph);
-            }
-            if (variance(idealPps, spectrogramPps) > tolerance) {
-                console.warn("AnnotationEditor:calculateUniConversions: the image width does not conform well with the meta data. The image will be stretched to fit!",
-                    idealPps, spectrogramPps);
+                // do consistency check (tolerance = 2%)
+                var tolerance = 0.02;
+                if (variance(idealPph, spectrogramPph) > tolerance) {
+                    console.warn("AnnotationEditor:calculateUniConversions: the image height does not conform well with the meta data. The image will be stretched to fit!",
+                        idealPph, spectrogramPph);
+                }
+                if (variance(idealPps, spectrogramPps) > tolerance) {
+                    console.warn("AnnotationEditor:calculateUniConversions: the image width does not conform well with the meta data. The image will be stretched to fit!",
+                        idealPps, spectrogramPps);
+                }
             }
         }
 
@@ -104,7 +107,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                 return Math.abs(conversions.nyquistFrequency - hertz);
             },
             invertPixels: function invertPixels(pixels) {
-                return Math.abs(conversions.imageHeight - pixels);
+                return Math.abs(conversions.enforcedImageHeight - pixels);
             }
         };
     }
@@ -145,7 +148,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
 
     function watchForSpectrogramChanges(scope, imageElement) {
         function updateUnitConverters() {
-            console.debug("AnnotationEditor:watchForSpectrogramChanges:");
+            console.debug("AnnotationEditor:watchForSpectrogramChanges:updateUnitConverters");
 
             scope.model.converters = calculateUnitConverters(scope.model.media, scope.$image[0]);
 
@@ -162,7 +165,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
                 updateUnitConverters();
             });
         }, false);
-        updateUnitConverters();
+        //updateUnitConverters();
     }
 
     /**ȻɌɄƉ**/
@@ -179,13 +182,13 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
      * Handles emitted create, update, delete
      */
     function drawaboxUpdatesModel(scope, annotation, box, action) {
-        console.debug("AnnotationEditor:drawaboxUpdatesModel:");
+        console.debug("AnnotationEditor:drawaboxUpdatesModel:", action);
 
         // invariants
         if (action === DRAWABOX_ACTION_SELECT && box.selected !== true) {
             throw "AnnotationEditor:drawaboxUpdatesModel: Invariant failed for selection action";
         }
-        if (action !== DRAWABOX_ACTION_SELECT && box.selected !== annotation.selected) {
+        if (action !== DRAWABOX_ACTION_SELECT && action !== DRAWABOX_ACTION_CREATE && box.selected !== annotation.selected) {
             throw "AnnotationEditor:drawaboxUpdatesModel: Invariant failed for non-selection action";
         }
         if (action !== DRAWABOX_ACTION_CREATE && !annotation) {
@@ -193,9 +196,9 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
         }
 
         // pre assertion
-        var wasDirty = annotation.isDirty;
+        var wasDirty = annotation === undefined ? null : annotation.isDirty;
         var boxId = baw.parseInt(box.id);
-        if (annotation.__localId__ !== boxId) {
+        if (annotation && annotation.__localId__ !== boxId) {
             console.error("Box ids do not match on resizing or move event", annotation.__localId__, boxId);
             return;
         }
@@ -204,11 +207,11 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
             // create
             if (action === DRAWABOX_ACTION_CREATE) {
                 //noinspection AssignmentToFunctionParameterJS
-                annotation = new baw.Annotation(baw.parseInt(box.id), audioRecordingId);
+                annotation = new baw.Annotation(baw.parseInt(box.id), scope.model.media.id);
                 scope.model.audioEvents.push(annotation);
             }
 
-            annotation.lastUpdater = UPDATER_DRAWABOX;
+            annotation.$lastUpdater = UPDATER_DRAWABOX;
 
             // only the select action selects, and only the select action does not update the bounds of the annotation
             if (action === DRAWABOX_ACTION_SELECT) {
@@ -235,11 +238,17 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
         });
 
         // post assertion
-        if (action === DRAWABOX_ACTION_SELECT && annotation.isDirty) {
-            throw "AnnotationEditor:drawaboxUpdatesModel: Post condition failed for selection triggering a isDirty state";
+        if (action === DRAWABOX_ACTION_SELECT) {
+            console.assert(annotation.isDirty == wasDirty,
+                "AnnotationEditor:drawaboxUpdatesModel: Post condition failed for selection triggering a isDirty state");
         }
-        if (action === DRAWABOX_ACTION_DELETE && annotation.toBeDeleted !== true) {
-            throw "AnnotationEditor:drawaboxUpdatesModel: Post condition failed for ensuring a annotation is deleted";
+        else {
+            console.assert(annotation.isDirty,
+                "AnnotationEditor:drawaboxUpdatesModel: Post condition failed for action not triggering a isDirty state");
+        }
+        if (action === DRAWABOX_ACTION_DELETE) {
+            console.assert(annotation.toBeDeleted === true,
+                "AnnotationEditor:drawaboxUpdatesModel: Post condition failed for ensuring a annotation is deleted");
         }
     }
 
@@ -248,7 +257,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
      * Handles model updates (not created or deleted events)
      */
     function modelUpdatesDrawabox(scope, annotation) {
-        console.debug("AnnotationEditor:modelUpdatesDrawabox:");
+        console.debug("AnnotationEditor:modelUpdatesDrawabox:", annotation.__localId__);
 
         var drawaboxInstance = scope.$drawaboxElement,
             top = scope.model.converters.invertPixels(scope.model.converters.hertzToPixels(annotation.highFrequencyHertz)),
@@ -260,15 +269,32 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
     }
 
     function modelUpdatesServer(annotation) {
-        // invariants
-        if (!annotation) {
-            throw "AnnotationEditor:modelUpdatesServer: Invalid state! Cannot call this method with a falsy value!";
-        }
-        if (annotation.isDirty !== true) {
-            throw "AnnotationEditor:modelUpdatesServer: Invalid state! The annotation should be dirty (but isn't)!";
-        }
 
-        console.debug("AnnotationEditor:modelUpdatesServer: stub");
+        // invariants
+        console.assert(annotation,
+            "AnnotationEditor:modelUpdatesServer: Invalid state! Cannot call this method with a falsy value!");
+        console.assert(annotation.isDirty === true,
+            "AnnotationEditor:modelUpdatesServer: Invalid state! The annotation should be dirty (but isn't)!");
+
+        var postData = annotation.exportObj();
+        var parameters = {recordingId: postData.audioRecordingId, audioEventId: postData.id};
+        if (annotation.isNew()) {
+            console.debug("AnnotationEditor:modelUpdatesServer: create!", parameters.__localId__);
+        }
+        else if (annotation.toBeDeleted === true) {
+            console.debug("AnnotationEditor:modelUpdatesServer: delete!", parameters.__localId__);
+        }
+        else {
+            // update!
+            console.debug("AnnotationEditor:modelUpdatesServer: update!", parameters.__localId__);
+            AudioEvent.update(parameters, postData,
+                function success(value, headers) {
+                    console.debug("AnnotationEditor:modelUpdatesServer: update success", value);
+                },
+                function error(response) {
+                    console.debug("AnnotationEditor:modelUpdatesServer: update FAILURE");
+                });
+        }
     }
 
     function serverUpdatesModel() {
@@ -296,20 +322,15 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', function (paths) {
         console.debug("AnnotationEditor:modelUpdated:", changedAnnotation.__localId__, changedAnnotation.selected);
 
         // invariants
-        if (changedAnnotation.lastUpdater === UPDATER_DRAWABOX && changedAnnotation.isDirty !== true) {
-            throw "AnnotationEditor:modelUpdated: Invalid state! If the last update came from drawabox then the the annotation must be dirty!";
-        }
-        if (changedAnnotation.lastUpdater === UPDATER_PAGE_LOAD && changedAnnotation.isDirty !== false) {
-            throw "AnnotationEditor:modelUpdated: Invalid state! If the last update came from page load then the the annotation must NOT be dirty!";
-        }
-        if (changedAnnotation.toBeDeleted && changedAnnotation.isDirty !== true) {
-            throw "AnnotationEditor:modelUpdated: Invalid state! If the the delete flag is set the annotation must be dirty!";
-        }
+        console.assert(changedAnnotation.$lastUpdater !== UPDATER_PAGE_LOAD || changedAnnotation.isDirty !== false,
+            "AnnotationEditor:modelUpdated: Invalid state! If the last update came from page load then the the annotation must NOT be dirty!");
+        console.assert(!changedAnnotation.toBeDeleted || changedAnnotation.toBeDeleted && changedAnnotation.isDirty !== true,
+            "AnnotationEditor:modelUpdated: Invalid state! If the the delete flag is set the annotation must be dirty!");
 
         // if the last update was done by the drawabox control, do not propagate it back to drawabox
-        if (changedAnnotation.lastUpdater === UPDATER_DRAWABOX) {
+        if (changedAnnotation.$lastUpdater === UPDATER_DRAWABOX) {
             // reset flag
-            changedAnnotation.lastUpdater = null;
+            changedAnnotation.$lastUpdater = null;
         }
         else {
             modelUpdatesDrawabox(scope, changedAnnotation);
