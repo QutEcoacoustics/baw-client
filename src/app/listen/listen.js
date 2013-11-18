@@ -108,11 +108,19 @@ angular.module('bawApp.listen', [])
                  $scope.$on('event:auth-loginRequired', formatPaths);
                  $scope.$on('event:auth-loginConfirmed', formatPaths);
 
+                var fixMediaApi = function fixMediaApi() {
+                    if ($scope.model.media && $scope.model.audioRecording) {
+                        $scope.model.media.id = $scope.model.audioRecording.id;
+                        $scope.model.media.uuid = $scope.model.audioRecording.uuid;
+                    }
+                };
 
                 $scope.model.media = Media.get(getMediaParameters("json"), {},
                     function mediaGetSuccess() {
                         // reformat urls
                         formatPaths();
+
+                        fixMediaApi();
 
                         // additionally do a check on the sample rate
                         // the sample rate is used in the unit calculations.
@@ -147,7 +155,9 @@ angular.module('bawApp.listen', [])
                 $scope.model.audioRecording = AudioRecording.get({recordingId: recordingId}, {},
                     function audioRecordingGetSuccess() {
                         // no-op
-                        // if an audioRecodring 'model' is ever created, this is where we would transform the returned data
+                        // if an audioRecording 'model' is ever created, this is where we would transform the returned data
+
+                        fixMediaApi();
                     },
                     function audioRecordingGetFailure() {
                         console.error("retrieval of audioRecording json failed");

@@ -10,13 +10,14 @@
     "angular-ui-utils": "latest",
     "sass-bootstrap": "3.0.0",
     "hint.css": "https://github.com/chinchang/hint.css.git",
-    "underscore": "~1.5.2",
     "angular-resource": "~1.2.0",
     "modernizr": "~2.6.2",
     "jquery-ui": "~1.10.3",
     "momentjs": "~2.3.0",
-    "jasmine-matchers":  "https://github.com/JamieMason/Jasmine-Matchers.git",
-    "objectdiff": "https://github.com/NV/objectDiff.js.git"
+    "jasmine-matchers": "https://github.com/JamieMason/Jasmine-Matchers.git",
+    "objectdiff": "https://github.com/NV/objectDiff.js.git",
+    "lodash": "~2.3.0",
+    "select2": "~3.4.5"
   },
   "dependencies": {}
 }

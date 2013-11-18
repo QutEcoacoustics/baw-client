@@ -48,26 +48,9 @@ baw.Annotation = (function () {
 
         // ensure JSON values taken from a resource have nicely formatted values
         if (resource) {
-            //angular.extend(this, resource);
+            this.mergeResource(resource);
 
-            this.id = resource.id;
-            this.audioRecordingId = resource.audioRecordingId;
-            this.createdAt = new Date(resource.createdAt);
-            this.creatorId = resource.creatorId;
-            this.updatedAt = new Date(resource.updatedAt);
-            this.updaterId = resource.updaterId;
-            this.deletedAt = new Date(resource.deletedAt);
-            this.deleterId = resource.deleterId;
-
-            this._isReference = resource.isReference;
-            this._endTimeSeconds = parseFloat(resource.endTimeSeconds);
-            this._highFrequencyHertz = parseFloat(resource.highFrequencyHertz);
-            this._lowFrequencyHertz = parseFloat(resource.lowFrequencyHertz);
-            this._startTimeSeconds = parseFloat(resource.startTimeSeconds);
-
-            this.audioEventTags = this.audioEventTags.map(function (value, key) {
-                return baw.AudioEventTag(value);
-            });
+            this.isDirty = false;
         }
     };
 
@@ -119,6 +102,29 @@ baw.Annotation = (function () {
         pt.isNew = function() {
 
             return this.__localId__ !== this.id;
+        };
+
+        pt.mergeResource = function mergeResource(resource, ignoreClientFields) {
+            this.id = resource.id;
+            this.audioRecordingId = resource.audioRecordingId;
+            this.createdAt = new Date(resource.createdAt);
+            this.creatorId = resource.creatorId;
+            this.updatedAt = new Date(resource.updatedAt);
+            this.updaterId = resource.updaterId;
+            this.deletedAt = new Date(resource.deletedAt);
+            this.deleterId = resource.deleterId;
+
+            if (!ignoreClientFields) {
+                this._isReference = resource.isReference;
+                this._endTimeSeconds = parseFloat(resource.endTimeSeconds);
+                this._highFrequencyHertz = parseFloat(resource.highFrequencyHertz);
+                this._lowFrequencyHertz = parseFloat(resource.lowFrequencyHertz);
+                this._startTimeSeconds = parseFloat(resource.startTimeSeconds);
+            }
+
+            this.audioEventTags = this.audioEventTags.map(function (value, key) {
+                return baw.AudioEventTag(value);
+            });
         };
 
         pt.exportObj = function exportObj() {

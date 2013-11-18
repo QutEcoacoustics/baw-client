@@ -102,12 +102,14 @@ module.exports = {
             // TODO: the following line is dodgy and bloats the app
             'vendor/angular-ui-utils/modules/**/*.js', '!vendor/angular-ui-utils/modules/**/*Spec.js',
             'vendor/modernizr/modernizr.js',
-            'vendor/underscore/underscore.js'
+            'vendor/lodash/dist/lodash.js',
+            'vendor/select2/select2.js'
         ],
         css: [
             'vendor/hint.css/hint.css',
             // TODO: remove bloat
-            'vendor/jquery-ui/themes/redmond/jquery-ui.css'
+            'vendor/jquery-ui/themes/redmond/jquery-ui.css',
+            'vendor/select2/select2-bootstrap.css'
         ],
         assets: [
             // jquery-ui is stoopid, special case

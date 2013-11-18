@@ -181,7 +181,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
      * Update the model. Events must be emitted from drawabox.
      * Handles emitted create, update, delete
      */
-    function drawaboxUpdatesModel(scope, annotation, box, action) {
+    function drawaboxUpdatesModel(scope, annotation, box, action, finishedEvent) {
         console.debug("AnnotationEditor:drawaboxUpdatesModel:", action);
 
         // invariants
@@ -196,7 +196,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
         }
 
         // pre assertion
-        var wasDirty = annotation === undefined ? null : annotation.isDirty;
+        var wasDirty = annotation ? annotation.isDirty : null;
         var boxId = baw.parseInt(box.id);
         if (annotation && annotation.__localId__ !== boxId) {
             console.error("Box ids do not match on resizing or move event", annotation.__localId__, boxId);
@@ -212,6 +212,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
             }
 
             annotation.$lastUpdater = UPDATER_DRAWABOX;
+            annotation.$intermediateEvent = finishedEvent;
 
             // only the select action selects, and only the select action does not update the bounds of the annotation
             if (action === DRAWABOX_ACTION_SELECT) {
@@ -225,10 +226,10 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
             }
             else {
                 // resize / move
-                annotation.highFrequencyHertz = scope.model.converters.invertHertz(scope.model.converters.pixelsToHertz(box.top || 0));
-                annotation.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0);
-                annotation.endTimeSeconds = annotation.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0);
-                annotation.lowFrequencyHertz = annotation.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0);
+                annotation.highFrequencyHertz = scope.model.converters.invertHertz(scope.model.converters.pixelsToHertz(box.top || 0.0));
+                annotation.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0.0);
+                annotation.endTimeSeconds = annotation.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0.0);
+                annotation.lowFrequencyHertz = annotation.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0.0);
             }
 
             // delete
@@ -268,7 +269,50 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
         drawaboxInstance.drawabox('setBox', annotation.__localId__, top, left, height, width, annotation.selected);
     }
 
-    function modelUpdatesServer(annotation) {
+    var serverAction = {
+        create: "create",
+        remove: "remove",
+        update: "update"
+    };
+
+    var serverQueue = {
+
+    };
+    var defaultQueueItem = {
+        create: {
+            current: {
+
+            }
+        },
+        update: {
+            current: {
+
+            },
+            pending: {}
+        },
+        remove: {
+            current: {
+
+            }
+        },
+        count: function () {
+            return (this.create.current && 1 || 0) +
+                (this.update.current && 1 || 0) +
+                (this.pending.current && 1 || 0) +
+                (this.remove.current && 1 || 0);
+        },
+        executeNext: function () {
+            var f = this.create.current || this.update.current || this.update.pending || this.remove.current;
+            if (this.update.pending) {
+                this.update.current = this.update.pending;
+                this.update.pending = null;
+            }
+
+            f();
+        }
+    };
+
+    function modelUpdatesServer(scope, annotation) {
 
         // invariants
         console.assert(annotation,
@@ -276,29 +320,125 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
         console.assert(annotation.isDirty === true,
             "AnnotationEditor:modelUpdatesServer: Invalid state! The annotation should be dirty (but isn't)!");
 
-        var postData = annotation.exportObj();
-        var parameters = {recordingId: postData.audioRecordingId, audioEventId: postData.id};
+
+        var localId = annotation.__localId__;
+        var currentQueue = serverQueue[localId] = serverQueue[localId] || angular.copy(defaultQueueItem);
+
+        var makeExecute = function (method, action) {
+            return function () {
+                var postData = annotation.exportObj();
+                var parameters = {recordingId: postData.audioRecordingId, audioEventId: postData.id};
+                AudioEvent[method](parameters, postData,
+                    function success(value, headers) {
+                        console.debug("AnnotationEditor:modelUpdatesServer: " + action + " success", value);
+                        serverUpdatesModel(scope, action, value, annotation);
+                    },
+                    function error(response) {
+                        console.error("AnnotationEditor:modelUpdatesServer: " + action + " FAILURE", response);
+                    });
+            };
+        };
+
         if (annotation.isNew()) {
-            console.debug("AnnotationEditor:modelUpdatesServer: create!", parameters.__localId__);
+            if (currentQueue.create.current != null) {
+                // convert to update instead
+                // no-op, catch all update will pick it up
+            }
+            else {
+                // enqueue create
+                currentQueue.create.current = makeExecute("save", serverAction.create);
+
+                // execute create
+                currentQueue.create.current();
+                return;
+            }
         }
-        else if (annotation.toBeDeleted === true) {
-            console.debug("AnnotationEditor:modelUpdatesServer: delete!", parameters.__localId__);
+
+        if (annotation.toBeDeleted === true) {
+            if (currentQueue.remove.current != null) {
+                // not valid - can't delete twice
+                throw "AnnotationEditor:modelUpdatesServer: can't delete an annotation twice!";
+            }
+            else {
+                // enqueue delete
+                currentQueue.remove.current = makeExecute("remove", serverAction.remove);
+
+                // execute delete
+                currentQueue.remove.current();
+                return;
+            }
+        }
+
+        // default - update!
+        if (currentQueue.update.current != null) {
+            // overwrite pending
+            currentQueue.update.pending = makeExecute("update", serverAction.update);
         }
         else {
-            // update!
-            console.debug("AnnotationEditor:modelUpdatesServer: update!", parameters.__localId__);
-            AudioEvent.update(parameters, postData,
-                function success(value, headers) {
-                    console.debug("AnnotationEditor:modelUpdatesServer: update success", value);
-                },
-                function error(response) {
-                    console.debug("AnnotationEditor:modelUpdatesServer: update FAILURE");
-                });
+            // enqueue update
+            currentQueue.update.current = makeExecute("update", serverAction.update);
+
+            // execute update
+            currentQueue.update.current();
         }
     }
 
-    function serverUpdatesModel() {
-        console.debug("AnnotationEditor:serverUpdatesModel: stub");
+    function serverUpdatesModel(scope, action, updatedValue, oldValue) {
+        console.debug("AnnotationEditor:serverUpdatesModel: " + action);
+
+        // if there are more things in the queue execute them
+        var oldId = oldValue.__localId__,
+            queuedAnnotation = serverQueue[oldId],
+            count = queuedAnnotation.count();
+        console.assert(count >= 1, "Invalid server queue state for annotation ", oldId);
+
+
+        // action complete - clear it
+        queuedAnnotation[action] = null;
+
+        // should reset dirty flag for create/update
+        if (action === serverAction.create || action === serverAction.update) {
+            console.assert(updatedValue, "After create/update the object should be returned");
+
+            // update metadata, but don't update dimensions, only update dimensions if it is the last save in the queue
+            // if there were other server actions left to do, run them now
+            if (count > 1) {
+                oldValue.mergeResource(updatedValue, true);
+                queuedAnnotation.executeNext();
+            }
+            else {
+                oldValue.mergeResource(updatedValue, false);
+                // saving complete
+                oldValue.isDirty = false;
+            }
+        }
+        else {
+            // should clean up resources for delete
+            console.assert(action === serverAction.deleteAction, "The remaining case must be a delete server action");
+            console.assert(count == 1, "There should be no more actions enqueued after a delete");
+
+            // find the correct Annotation and kill it!
+            //var index = _.findIndex(scope.model.audioEvents, function(value) {
+            //    return value.__localId__ === oldValue.__localId__;
+            //});
+
+            // we could integrate the updated value from the server here but
+            // a) there's no point, its just being removed from the model anyway
+            // and b) the DELETE api does not return a value
+
+
+            //scope.model.audioEvents[index] = null;
+
+            // saving complete (not necessary, since immediately deleted)
+            //oldValue.isDirty = false
+
+            // this by reference gets rid of the element.
+            _.remove(scope.model.audioEvents, function (value) {
+                return value.__localId__ == oldValue.__localId__;
+            });
+        }
+
+
     }
 
     /**
@@ -324,7 +464,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
         // invariants
         console.assert(changedAnnotation.$lastUpdater !== UPDATER_PAGE_LOAD || changedAnnotation.isDirty !== false,
             "AnnotationEditor:modelUpdated: Invalid state! If the last update came from page load then the the annotation must NOT be dirty!");
-        console.assert(!changedAnnotation.toBeDeleted || changedAnnotation.toBeDeleted && changedAnnotation.isDirty !== true,
+        console.assert(!changedAnnotation.toBeDeleted || changedAnnotation.toBeDeleted && changedAnnotation.isDirty === true,
             "AnnotationEditor:modelUpdated: Invalid state! If the the delete flag is set the annotation must be dirty!");
 
         // if the last update was done by the drawabox control, do not propagate it back to drawabox
@@ -336,8 +476,10 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
             modelUpdatesDrawabox(scope, changedAnnotation);
         }
 
-        if (changedAnnotation.isDirty) {
-            modelUpdatesServer(changedAnnotation);
+        if (changedAnnotation.isDirty && !changedAnnotation.$intermediateEvent) {
+            // reset flag
+            changedAnnotation.$intermediateEvent = null;
+            modelUpdatesServer(scope, changedAnnotation);
         }
     }
 
@@ -348,6 +490,11 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
 
         // now for all new events, add them to drawabox, if they are not there already!
         scope.model.audioEvents.forEach(function (value, index) {
+            // after a while the array become sparse... skip empty spots
+            if (!value) {
+                return;
+            }
+
             var element;
 
             // does the annotation's box exist in the DOM?
@@ -409,39 +556,39 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
                 "selectionCallbackTrigger": "mousedown",
                 "newBox": function (element, newBox) {
                     drawaboxUpdatesModel(scope, null, newBox, DRAWABOX_ACTION_CREATE);
-                    console.log("newBox", newBox);
+                    console.log("newBox", newBox, false);
                 },
                 "boxSelected": function (element, selectedBox) {
                     console.log("boxSelected", selectedBox);
                     drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], selectedBox,
-                        DRAWABOX_ACTION_SELECT);
+                        DRAWABOX_ACTION_SELECT, false);
                 },
                 "boxResizing": function (element, box) {
                     console.log("boxResizing");
                     drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
-                        DRAWABOX_ACTION_RESIZE_OR_MOVE);
+                        DRAWABOX_ACTION_RESIZE_OR_MOVE, true);
                 },
                 "boxResized": function (element, box) {
                     console.log("boxResized");
                     drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
-                        DRAWABOX_ACTION_RESIZE_OR_MOVE);
+                        DRAWABOX_ACTION_RESIZE_OR_MOVE, false);
                 },
                 "boxMoving": function (element, box) {
                     console.log("boxMoving");
                     drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
-                        DRAWABOX_ACTION_RESIZE_OR_MOVE);
+                        DRAWABOX_ACTION_RESIZE_OR_MOVE, true);
                 },
                 "boxMoved": function (element, box) {
                     console.log("boxMoved");
                     drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
-                        DRAWABOX_ACTION_RESIZE_OR_MOVE);
+                        DRAWABOX_ACTION_RESIZE_OR_MOVE, false);
                 },
                 "boxDeleted": function (element, deletedBox) {
                     console.log("boxDeleted");
                     // TODO: delete index bound watcher... do not change array layout, keep it sparse...
                     // ...but only after server operation is a success
-                    drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
-                        DRAWABOX_ACTION_DELETE);
+                    drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], deletedBox,
+                        DRAWABOX_ACTION_DELETE, false);
                 }
             });
 
