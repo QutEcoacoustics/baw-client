@@ -103,13 +103,15 @@ module.exports = {
             'vendor/angular-ui-utils/modules/**/*.js', '!vendor/angular-ui-utils/modules/**/*Spec.js',
             'vendor/modernizr/modernizr.js',
             'vendor/lodash/dist/lodash.js',
-            'vendor/select2/select2.js'
+            'vendor/select2/select2.js',
+            'vendor/angular-ui-select2/src/select2.js'
         ],
         css: [
             'vendor/hint.css/hint.css',
             // TODO: remove bloat
             'vendor/jquery-ui/themes/redmond/jquery-ui.css',
-            'vendor/select2/select2-bootstrap.css'
+            'vendor/select2/select2-bootstrap.css',
+            'vendor/select2/select2.css'
         ],
         assets: [
             // jquery-ui is stoopid, special case

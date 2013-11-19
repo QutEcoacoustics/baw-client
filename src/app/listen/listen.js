@@ -26,7 +26,8 @@ angular.module('bawApp.listen', [])
          * @param $url
          * @param AudioRecording
          */
-        function ListenCtrl($scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag) {
+            function ListenCtrl(
+            $scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -39,9 +40,8 @@ angular.module('bawApp.listen', [])
                 };
             }
 
-            $scope.errorState =
-                !(baw.isNumber($routeParams.recordingId) &&
-                    baw.parseInt($routeParams.recordingId) >= 0);
+            $scope.errorState = !(baw.isNumber($routeParams.recordingId) &&
+                baw.parseInt($routeParams.recordingId) >= 0);
 
             if ($scope.errorState) {
                 console.warn("Invalid (or no) audio recording id specified in route... page rendering disabled");
@@ -82,7 +82,8 @@ angular.module('bawApp.listen', [])
                         }
 
                         $scope.model.media.availableImageFormats[imgKeys[0]].url =
-                            paths.joinFragments(paths.api.root, $scope.model.media.availableImageFormats[imgKeys[0]].url);
+                            paths.joinFragments(paths.api.root,
+                                $scope.model.media.availableImageFormats[imgKeys[0]].url);
                         $scope.model.media.spectrogram = $scope.model.media.availableImageFormats[imgKeys[0]];
 
                         //$scope.model.media.spectrogramBaseUrl.format($scope.model.media);  + "?" + authToken;
@@ -105,8 +106,8 @@ angular.module('bawApp.listen', [])
                 };
 
                 /* // NOT NECESSARY - we aren't using auth keys atm    */
-                 $scope.$on('event:auth-loginRequired', formatPaths);
-                 $scope.$on('event:auth-loginConfirmed', formatPaths);
+                $scope.$on('event:auth-loginRequired', formatPaths);
+                $scope.$on('event:auth-loginConfirmed', formatPaths);
 
                 var fixMediaApi = function fixMediaApi() {
                     if ($scope.model.media && $scope.model.audioRecording) {
@@ -165,7 +166,12 @@ angular.module('bawApp.listen', [])
 
                 // TODO: add time bounds
                 $scope.model.audioEvents = [];
-                var tempEvents = AudioEvent.query({recordingId: recordingId},
+                var tempEvents = AudioEvent.query(
+                    {
+                        recordingId: recordingId,
+                        start_offset: $routeParams.start,
+                        end_offset: $routeParams.end
+                    },
                     function audioEventsQuerySuccess() {
                         // TODO : map tag's
 
@@ -302,16 +308,16 @@ angular.module('bawApp.listen', [])
                 $scope.select2Settings = {
                     allowClear: true,
                     tags: $scope.tags
-//                    id: function selectTagId(tag) {
-//                        return tag.tagId;
-//                    },
-//                    initSelection: function (element, callback) {
-//                        var data = [];
-//                        $(element.val().split(",")).each(function () {
-//                            data.push({id: this, text: this});
-//                        });
-//                        callback(data);
-//                    }
+                    //                    id: function selectTagId(tag) {
+                    //                        return tag.tagId;
+                    //                    },
+                    //                    initSelection: function (element, callback) {
+                    //                        var data = [];
+                    //                        $(element.val().split(",")).each(function () {
+                    //                            data.push({id: this, text: this});
+                    //                        });
+                    //                        callback(data);
+                    //                    }
                 };
 
                 $scope.select2Transformers = {
@@ -353,10 +359,10 @@ angular.module('bawApp.listen', [])
                     })[0];
 
                     // prep tags
-//                    a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {
-//                        return {tag_id: v};
-//                    });
-//                    delete a.audioEventTags;
+                    //                    a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {
+                    //                        return {tag_id: v};
+                    //                    });
+                    //                    delete a.audioEventTags;
 
                     if (a.audioRecordingId !== recordingId) {
                         throw "The audioRecordingId should have been set way earlier!";
@@ -371,13 +377,11 @@ angular.module('bawApp.listen', [])
 
                         },
                         function createAnnotationFailure(response, getResponseHeaders) {
-                            console.error("Annotation creation unsuccessful, response: " + response.status, response.data);
+                            console.error("Annotation creation unsuccessful, response: " + response.status,
+                                response.data);
                         }
                     );
                 };
-
-
-
 
 
             }

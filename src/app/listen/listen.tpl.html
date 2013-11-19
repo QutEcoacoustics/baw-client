@@ -107,17 +107,17 @@
                     </label>
                     <label>
                         <span>Duration (seconds)</span></label>
-                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" required
+                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
                            ng-model="selectedEvent.startTimeSeconds"/>
                     &nbsp;to&nbsp;
-                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" required
+                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
                            ng-model="selectedEvent.endTimeSeconds"/>
                     <label>
                         <span>Frequency</span> </label>
-                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" required
+                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
                            ng-model="selectedEvent.lowFrequencyHertz"/>
                     &nbsp;to&nbsp;
-                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" required
+                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
                            ng-model="selectedEvent.highFrequencyHertz"/>
                     <fieldset>
                         <legend>Annotation options</legend>
@@ -157,10 +157,10 @@
                         <td>
                             <!--<input type="radio" ng-checked="ae.selected" ng-model="ae.selected"   name="selectionRadioGroup"  >-->
                             <input type="radio" baw-checked="ae.selected" name="selectionRadioGroup">
-                            {{ae.selected && '✗' || '✓'}}
+                            {{ae.selected && '✓' || '✗'}}
                         </td>
                         <td>
-                            {{ae.isDirty && '✓' || '✗'}}
+                            {{ae.isDirty && '✗' || '✓'}}
                         </td>
                         <td>
                             <!-- TODO -->
