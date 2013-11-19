@@ -113,10 +113,8 @@
         // raise moved event
         dataMouseUp.options.boxResized($box);
     };
+
     var dataIdKey = 'data-id';
-
-
-
 
     function createBox($parent, contextData, width, height, top, left, uniqueId, silent) {
 
@@ -246,7 +244,7 @@
 
             // no box created yet. Only create box once dragged for 10 pixels
             if (distance > 10) {
-                var $newBox = createBox($thisMouseMove, dataMouseMove, xdiff, ydiff);
+                var $newBox = createBox($thisMouseMove, dataMouseMove, xdiff, ydiff, startClickPos.y, startClickPos.x);
                 setBoxBoxPosition($newBox, startClickPos, currentPos);
             }
         } else {

@@ -230,6 +230,12 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
                 annotation.startTimeSeconds = scope.model.converters.pixelsToSeconds(box.left || 0.0);
                 annotation.endTimeSeconds = annotation.startTimeSeconds + scope.model.converters.pixelsToSeconds(box.width || 0.0);
                 annotation.lowFrequencyHertz = annotation.highFrequencyHertz - scope.model.converters.pixelsToHertz(box.height || 0.0);
+
+                if (!annotation.$intermediateEvent) {
+                    // funny bug. resized does not trigger a model updated... although moved does.
+                    // so force an update for resized events
+                    annotation.forceDodgyUpdate = (annotation.forceDodgyUpdate || 0) + 1;
+                }
             }
 
             // delete
@@ -280,25 +286,19 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
     };
     var defaultQueueItem = {
         create: {
-            current: {
-
-            }
+            current: null
         },
         update: {
-            current: {
-
-            },
-            pending: {}
+            current: null,
+            pending: null
         },
         remove: {
-            current: {
-
-            }
+            current: null
         },
         count: function () {
             return (this.create.current && 1 || 0) +
                 (this.update.current && 1 || 0) +
-                (this.pending.current && 1 || 0) +
+                (this.update.pending && 1 || 0) +
                 (this.remove.current && 1 || 0);
         },
         executeNext: function () {
@@ -342,7 +342,11 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
         if (annotation.isNew()) {
             if (currentQueue.create.current != null) {
                 // convert to update instead
-                // no-op, catch all update will pick it up
+                // enqueue update
+                console.assert(currentQueue.update.current == null);
+                currentQueue.update.current = makeExecute("update", serverAction.update);
+                return;
+
             }
             else {
                 // enqueue create
@@ -394,7 +398,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
 
 
         // action complete - clear it
-        queuedAnnotation[action] = null;
+        queuedAnnotation[action].current = null;
 
         // should reset dirty flag for create/update
         if (action === serverAction.create || action === serverAction.update) {
@@ -414,7 +418,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
         }
         else {
             // should clean up resources for delete
-            console.assert(action === serverAction.deleteAction, "The remaining case must be a delete server action");
+            console.assert(action === serverAction.remove, "The remaining case must be a delete server action");
             console.assert(count == 1, "There should be no more actions enqueued after a delete");
 
             // find the correct Annotation and kill it!
@@ -454,8 +458,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
      */
     function modelUpdated(changedAnnotation, oldAnnotation, scope) {
         if (!changedAnnotation) {
-            console.debug("AnnotationEditor:modelUpdated: Falsy annotation, skip update.",
-                changedAnnotation.__localId__);
+            console.debug("AnnotationEditor:modelUpdated: Falsy annotation, skip update.");
             return;
         }
 
@@ -516,11 +519,13 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
                 element.annotationViewerIndex = index;
 
                 // register for reverse binding
-                watchSingleAnnotation(scope, scope.model.audioEvents, index,
-                    scope.$drawaboxElement);
+                watchSingleAnnotation(scope, scope.model.audioEvents, index);
             }
             else {
-                throw "Array and elements on drawabox out of sync, shit fucked up";
+                // reset the index - this should only happen after a delete
+                console.debug("AnnotationEditor:modelCollectionUpdated: resetting element index", element.annotationViewerIndex, index);
+                element.annotationViewerIndex = index;
+                //throw "Array and elements on drawabox out of sync, shit fucked up";
             }
         });
     }

@@ -137,7 +137,7 @@
                     <thead>
                     <tr>
                         <th>Selected</th>
-                        <th>Unsaved</th>
+                        <th>Saved</th>
                         <th>Jump to</th>
                         <th>Annotation ID</th>
                         <th>Audio Recording</th>
@@ -157,7 +157,7 @@
                         <td>
                             <!--<input type="radio" ng-checked="ae.selected" ng-model="ae.selected"   name="selectionRadioGroup"  >-->
                             <input type="radio" baw-checked="ae.selected" name="selectionRadioGroup">
-                            {{ae.selected && '✓' || '✗'}}
+                            {{ae.selected && '✗' || '✓'}}
                         </td>
                         <td>
                             {{ae.isDirty && '✓' || '✗'}}

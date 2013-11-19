@@ -101,17 +101,17 @@ baw.Annotation = (function () {
 
         pt.isNew = function() {
 
-            return this.__localId__ !== this.id;
+            return this.id === undefined || this.id === null;
         };
 
         pt.mergeResource = function mergeResource(resource, ignoreClientFields) {
             this.id = resource.id;
             this.audioRecordingId = resource.audioRecordingId;
-            this.createdAt = new Date(resource.createdAt);
+            this.createdAt = resource.createdAt ? new Date(resource.createdAt) : null;
             this.creatorId = resource.creatorId;
-            this.updatedAt = new Date(resource.updatedAt);
+            this.updatedAt = resource.updatedAt ? new Date(resource.updatedAt) : null;
             this.updaterId = resource.updaterId;
-            this.deletedAt = new Date(resource.deletedAt);
+            this.deletedAt = resource.deletedAt ? new Date(resource.deletedAt) : null;
             this.deleterId = resource.deleterId;
 
             if (!ignoreClientFields) {
@@ -128,7 +128,7 @@ baw.Annotation = (function () {
         };
 
         pt.exportObj = function exportObj() {
-            return {
+            var result = {
                 // TODO:
                 taggings: [],
                 audioRecordingId: this.audioRecordingId,
@@ -141,6 +141,13 @@ baw.Annotation = (function () {
                 updatedAt: this.updatedAt,
                 id: this.id
             };
+
+            // don't send a null id back
+            if(!this.isNew()) {
+                result.id = this.id;
+            }
+
+            return result;
         };
 
         pt.toJSON = function toJSON() {
