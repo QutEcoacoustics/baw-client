@@ -165,7 +165,7 @@
 
         var birdWalkService = {};
 
-        var getUrl = function getUrl(downloadUrl, storeProperty, theScope) {
+        var getUrl = function getUrl(downloadUrl, storeProperty, theScope, onSuccess) {
             $http.get(downloadUrl, {
                 cache: true
             })
@@ -176,10 +176,13 @@
                     }
                     theScope.spec[storeProperty] = data;
 
-                    if (data.additionalResources) {
-                        angular.forEach(data.additionalResources, function (value, key) {
-                            getUrl(value, key);
-                        });
+//                    if (data.additionalResources) {
+//                        angular.forEach(data.additionalResources, function (value, key) {
+//                            getUrl(value, key);
+//                        });
+//                    }
+                    if (onSuccess) {
+                        onSuccess();
                     }
 
                 }).error(function (data, status, headers, config) {

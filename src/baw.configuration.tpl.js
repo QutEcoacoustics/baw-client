@@ -56,8 +56,9 @@ angular.module('bawApp.configuration', [])
                     birdWalk : {
                         list: 'birdWalks/birdWalks.tpl.html',
                         detail: 'birdWalks/birdWalk.tpl.html',
-                        spec: '/assets/bird_walk/bird_walk_spec.json',
-                        images: '/assets/bird_walk/images/'
+                        spec: 'assets/bird_walk/bird_walk_spec.json',
+                        stats: 'assets/bird_walk/bird_walk_stats.json',
+                        images: 'assets/bird_walk/images/'
                     }
                 },
                 // routes used by angular

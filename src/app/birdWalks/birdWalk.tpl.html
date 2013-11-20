@@ -1,8 +1,11 @@
 <div class="row" data-ng-controller="BirdWalkCtrl">
-{{params}}
-    <div class="col-sm-6 col-md-3" data-ng-repeat="(name, walkSpec) in spec.birdWalkSpec.walks">
 
-    </div>
+    <h1>{{details.name}}</h1>
 
-{{spec.walks}}
+    <p class="lead">{{details.description}}</p>
+    <img data-ng-src="{{imagesPath + spec.birdWalkSpec.locations[details.locationName].smallImageName}}"
+         alt="{{details.name}}" class="img-responsive"
+         title="{{spec.birdWalkSpec.locations[details.locationName].name}}">
+    {{$parent.spec.birdWalkSpec.walks[params.birdWalkId]}}
+    <div id="locationMap"></div>
 </div>

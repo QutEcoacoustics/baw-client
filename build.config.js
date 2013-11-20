@@ -13,10 +13,13 @@ module.exports = {
     compile_dir: 'bin',
 
     build_configs: {
+        keys:{
+            googleMaps: ""
+        },
         configFile: appConfigFile,
         development: {
             apiRoot: "http://staging.ecosounds.org",
-            siteRoot: "localhost:8080",
+            siteRoot: "http://localhost:8080",
             siteDir: "/"
         },
         staging: {
@@ -25,9 +28,9 @@ module.exports = {
             siteDir: "/system/listen_to/"
         },
         production: {
-            apiRoot: "http://ecosounds.org",
-            siteRoot: "http://ecosounds.org/????",
-            siteDir: "????"
+            apiRoot: "http://awb.ecosounds.org",
+            siteRoot: "http://awb.ecosounds.org/system/listen_to",
+            siteDir: "/system/listen_to/"
         },
 
         current: {}
