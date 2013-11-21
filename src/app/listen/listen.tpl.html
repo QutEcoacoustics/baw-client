@@ -89,17 +89,16 @@
         </audio>
         <div id="listenEditContainer">
             <div>
-                <h3>
-                    Annotation edit
+                <h3>Annotation edit
                 </h3>
                 <span>Selected elements: {{model.selectedAudioEvents.length || 0}}</span>
 
                 <form id="annotationEditForm" name="annotationEditForm"
-                      ng-repeat="selectedEvent in model.audioEvents | filter:selectedFilter">
+                       >
                     <label>
                         <span>Tags</span>
                         <input type="hidden" ng-multiple="true" tags multiple ui-select2="select2Settings"
-                               ng-model="selectedEvent.audioEventTags" baw-inject-transformers="select2Transformers"/>
+                               ng-model="model.selectedAudioEvent.audioEventTags" baw-inject-transformers="select2Transformers"/>
                         <!--<option ng-repeat="t in tags" value="{{t.id}}">{{t.text}} <span> &lt;!&ndash; ng-show={{t.type_of_tag}}&ndash;&gt;
                         ,-->
                         <!--{{t.typeOfTag}} &lt;!&ndash; &ndash;&gt;</span></option>-->
@@ -108,27 +107,23 @@
                     <label>
                         <span>Duration (seconds)</span></label>
                     <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
-                           ng-model="selectedEvent.startTimeSeconds"/>
+                           ng-model="model.selectedAudioEvent.startTimeSeconds"/>
                     &nbsp;to&nbsp;
                     <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
-                           ng-model="selectedEvent.endTimeSeconds"/>
+                           ng-model="model.selectedAudioEvent.endTimeSeconds"/>
                     <label>
                         <span>Frequency</span> </label>
                     <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
-                           ng-model="selectedEvent.lowFrequencyHertz"/>
+                           ng-model="model.selectedAudioEvent.lowFrequencyHertz"/>
                     &nbsp;to&nbsp;
                     <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
-                           ng-model="selectedEvent.highFrequencyHertz"/>
+                           ng-model="model.selectedAudioEvent.highFrequencyHertz"/>
                     <fieldset>
                         <legend>Annotation options</legend>
                         <label>
-                            <input type="checkbox" ng-model="selectedEvent.isReference">&nbsp;Is reference tag?
+                            <input type="checkbox" ng-model="model.selectedAudioEvent.isReference">&nbsp;Is reference tag?
                         </label>
                     </fieldset>
-
-                    <!--<button type="button" ng-click="reset()">Clear</button>-->
-                    <!--<button ng-click="addAnnotation()">Add annotation</button>-->
-                    <button ng-click="addAnnotation()">Add</button>
                 </form>
             </div>
             <div class="debug-ui">

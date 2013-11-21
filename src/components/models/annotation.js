@@ -3,6 +3,28 @@ var baw = window.baw = window.baw || {};
 
 baw.Annotation = (function () {
 
+    function customProperty(that, prop) {
+        var privateProp = "_" + prop;
+
+        // create a "private" storage property. Being non-enumerable means the backing property is not used in deep [angular] equality checking
+        Object.defineProperty(that, privateProp, {configurable: false, enumerable: false, writable: true, value: null});
+
+        // define the getter / setter - with the dirty checker
+        Object.defineProperty(that, prop, {
+            enumerable: true,
+            configurable: false,
+            get: function () {
+                return this[privateProp];
+            },
+            set: function (value) {
+                if (value !== this[privateProp]) {
+                    this[privateProp] = value;
+                    this.isDirty = true;
+                }
+            }
+        });
+    }
+
     /**
      *
      * @param localIdOrResource
@@ -31,8 +53,27 @@ baw.Annotation = (function () {
             throw "Is in an annotation is not a number!";
         }
 
+        // copied from api. Special props defined below.
+        this.audioRecordingId = null;
+        this.createdAt = null;
+        this.creatorId = null;
+        this.deletedAt = null;
+        this.deleterId = null;
+        this.id = null;
+        this.updatedAt = null;
+        this.updaterId = null;
+        this.taggings = [];
+
+        this._epsilsonDirty = 0.0;
+        this.isDirty = false;
         this.selected = false;
         this.audioEventTags = [];
+
+        customProperty(this, "startTimeSeconds");
+        customProperty(this, "endTimeSeconds");
+        customProperty(this, "highFrequencyHertz");
+        customProperty(this, "lowFrequencyHertz");
+        customProperty(this, "isReference");
 
         if (localId) {
             var now = new Date();
@@ -56,50 +97,9 @@ baw.Annotation = (function () {
 
     // strip out unnecessary values;
     function prototype() {
-        // copied from api. Special props defined below.
-        var pt = {
-            // from resource
-            "audioRecordingId": null,
-            "createdAt": null,
-            "creatorId": null,
-            "deletedAt": null,
-            "deleterId": null,
-            "id": null,
-            "updatedAt": null,
-            "updaterId": null,
-            "taggings": [
-            ]
-        };
+        var pt = {};
 
-        pt._epsilsonDirty = 0.0;
-        pt.__localId__ = null;
-        pt.isDirty = false;
-
-        function customProperty(prop) {
-            var privateProp = "_" + prop;
-            pt[privateProp] = null;
-            Object.defineProperty(pt, prop, {
-                enumerable: true,
-                configurable: false,
-                get: function () {
-                    return this[privateProp];
-                },
-                set: function (value) {
-                    if (value !== this[privateProp]) {
-                        this[privateProp] = value;
-                        this.isDirty = true;
-                    }
-                }
-            });
-        }
-
-        customProperty("startTimeSeconds");
-        customProperty("endTimeSeconds");
-        customProperty("highFrequencyHertz");
-        customProperty("lowFrequencyHertz");
-        customProperty("isReference");
-
-        pt.isNew = function() {
+        pt.isNew = function () {
 
             return this.id === undefined || this.id === null;
         };
@@ -143,7 +143,7 @@ baw.Annotation = (function () {
             };
 
             // don't send a null id back
-            if(!this.isNew()) {
+            if (!this.isNew()) {
                 result.id = this.id;
             }
 

@@ -98,7 +98,7 @@ describe("The Annotation object", function () {
     });
 
     it("'s prototype should have all of the resource properties defined", function () {
-        expect(baw.Annotation.prototype).toImplement(resource);
+        expect(baw.Annotation.prototype).toImplement({isNew: null, mergeResource:null, exportObj: null});
 
     });
 

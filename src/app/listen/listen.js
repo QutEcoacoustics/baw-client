@@ -69,7 +69,10 @@ angular.module('bawApp.listen', [])
 
                 // set up some dummy objects for use later
                 $scope.model = {
-                    audioElement: {}
+                    audioElement: {},
+                    audioEvents: [],
+                    media: null,
+                    selectedAudioEvent: null
                 };
 
                 var formatPaths = function () {
@@ -109,19 +112,19 @@ angular.module('bawApp.listen', [])
                 $scope.$on('event:auth-loginRequired', formatPaths);
                 $scope.$on('event:auth-loginConfirmed', formatPaths);
 
-                var fixMediaApi = function fixMediaApi() {
-                    if ($scope.model.media && $scope.model.audioRecording) {
-                        $scope.model.media.id = $scope.model.audioRecording.id;
-                        $scope.model.media.uuid = $scope.model.audioRecording.uuid;
-                    }
-                };
+//                var fixMediaApi = function fixMediaApi() {
+//                    if ($scope.model.media && $scope.model.audioRecording) {
+//                        $scope.model.media.id = $scope.model.audioRecording.id;
+//                        $scope.model.media.uuid = $scope.model.audioRecording.uuid;
+//                    }
+//                };
 
                 $scope.model.media = Media.get(getMediaParameters("json"), {},
                     function mediaGetSuccess() {
                         // reformat urls
                         formatPaths();
 
-                        fixMediaApi();
+//                        fixMediaApi();
 
                         // additionally do a check on the sample rate
                         // the sample rate is used in the unit calculations.
@@ -158,25 +161,23 @@ angular.module('bawApp.listen', [])
                         // no-op
                         // if an audioRecording 'model' is ever created, this is where we would transform the returned data
 
-                        fixMediaApi();
+//                        fixMediaApi();
                     },
                     function audioRecordingGetFailure() {
                         console.error("retrieval of audioRecording json failed");
                     });
 
-                // TODO: add time bounds
-                $scope.model.audioEvents = [];
-                var tempEvents = AudioEvent.query(
+
+                AudioEvent.query(
                     {
                         recordingId: recordingId,
                         start_offset: $routeParams.start,
                         end_offset: $routeParams.end
                     },
-                    function audioEventsQuerySuccess() {
+                    function audioEventsQuerySuccess(value, responseHeaders) {
                         // TODO : map tag's
 
-                        $scope.model.audioEvents =
-                            tempEvents.map(baw.Annotation.create);
+                        $scope.model.audioEvents = value.map(baw.Annotation.create);
                     },
                     function audioEventQueryFailure() {
                         console.error("retrieval of audio events failed");
@@ -250,9 +251,7 @@ angular.module('bawApp.listen', [])
                     return offset;
                 };
 
-                var listenUrl = paths.site;
                 $scope.createNavigationHref = function (linkType, stepBy) {
-
                     if (!angular.isNumber(stepBy)) {
                         stepBy = CHUNK_DURATION_SECONDS;
                     }
@@ -290,20 +289,15 @@ angular.module('bawApp.listen', [])
                     }
 
                     throw "Invalid link type specified in createNavigationHref";
-                }
-                ;
+                };
 
                 $scope.clearSelected = function () {
-                    //$scope.model.selectedAudioEvents.length = 0;
-
-                    angular.forEach($scope.model.audioEvents, function (value, key) {
+                    $scope.model.audioEvents.forEach(function (value, key) {
                         value.selected = false;
                     });
                 };
 
-                $scope.selectedFilter = function (audioEvent) {
-                    return audioEvent.selected;
-                };
+
 
                 $scope.select2Settings = {
                     allowClear: true,
@@ -349,40 +343,6 @@ angular.module('bawApp.listen', [])
                         return audioEventTags;
                     }
                 };
-
-                $scope.addAnnotation = function createAnnotation() {
-                    // BUG: ONLY SAVES FIRST ONE
-                    //var a = $scope.model.selectedAudioEvents[0];
-                    //TODO: BROKEN!
-                    var a = $scope.model.audioEvents.filter(function (value) {
-                        return value.selected === true;
-                    })[0];
-
-                    // prep tags
-                    //                    a.audio_event_tags_attributes = a.audioEventTags.map(function (v) {
-                    //                        return {tag_id: v};
-                    //                    });
-                    //                    delete a.audioEventTags;
-
-                    if (a.audioRecordingId !== recordingId) {
-                        throw "The audioRecordingId should have been set way earlier!";
-                    }
-
-                    AudioEvent.save({audioEventId: null, recordingId: a.audioRecordingId}, a.exportObj(),
-                        function createAnnotationSuccess(response, getResponseHeaders) {
-                            console.log("Annotation creation successful");
-
-                            // now update tag-list
-                            $scope.model.audioEvents.push(response);
-
-                        },
-                        function createAnnotationFailure(response, getResponseHeaders) {
-                            console.error("Annotation creation unsuccessful, response: " + response.status,
-                                response.data);
-                        }
-                    );
-                };
-
 
             }
 

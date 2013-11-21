@@ -125,14 +125,27 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
             return array[index];
         };
 
-        // tag for easy removal later
-        watcherFunc.__drawaboxWatcherForAudioEvent = "index" + index.toString();
+        // tag for tracking
+        watcherFunc.__watcherForAudioEvent = index;
 
-        // don't know if I need deregisterer or not - use this to stop listening...
-        // --
+        // after deletion, the forward section of the array is shifted one left
+        // this means the watcher for the deleted item, now watches a valid item
+        // and the end of the watchers, is watching out-of-bounds in the array.
+        // if we add a new element afterwards, then this function will create a duplicate watcher
+        // therefore, if we find a watcher on the scope that already monitors the index we are about to watch
+        // do not continue to add another watcher
+        var alreadyExists = scope.$$watchers.some(function (watcher) {
+            return watcher.get.__watcherForAudioEvent === index;
+        });
+        if (alreadyExists) {
+            console.debug("Skipped adding new watch - an existing watch was already present", index);
+            return;
+        }
+
         // note the last argument sets up the watcher for compare equality (not reference).
         // this may cause memory / performance issues if the model gets too big later on
         var deregisterer = scope.$watch(watcherFunc, modelUpdated, true);
+
     }
 
     /**
@@ -154,7 +167,9 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
 
             // redraw all boxes already drawn (hacky way to force angular to consider these objects changed!)
             scope.model.audioEvents.forEach(function (value) {
-                value.forceDodgyUpdate = (value._forceDodgyUpdate || 0) + 1;
+                if (value) {
+                    value.forceDodgyUpdate = (value._forceDodgyUpdate || 0) + 1;
+                }
             });
         }
 
@@ -165,7 +180,6 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
                 updateUnitConverters();
             });
         }, false);
-        //updateUnitConverters();
     }
 
     /**ȻɌɄƉ**/
@@ -421,28 +435,24 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
             console.assert(action === serverAction.remove, "The remaining case must be a delete server action");
             console.assert(count == 1, "There should be no more actions enqueued after a delete");
 
-            // find the correct Annotation and kill it!
-            //var index = _.findIndex(scope.model.audioEvents, function(value) {
-            //    return value.__localId__ === oldValue.__localId__;
-            //});
-
             // we could integrate the updated value from the server here but
             // a) there's no point, its just being removed from the model anyway
             // and b) the DELETE api does not return a value
 
 
-            //scope.model.audioEvents[index] = null;
-
-            // saving complete (not necessary, since immediately deleted)
+            // saving complete (changing isDirty not necessary, since immediately deleted)
             //oldValue.isDirty = false
 
-            // this by reference gets rid of the element.
+            // this, by reference, gets rid of the element.
             _.remove(scope.model.audioEvents, function (value) {
                 return value.__localId__ == oldValue.__localId__;
             });
+
+            // FYI - this will result in
+            // a) every annotation after index being forced to update
+            // b) every annotation after index will have its element's annotationViewerIndex reset
+            // c) result in a dudd out-of-bounds watcher at for the end of the audioEvents array (elements shifted back one position)
         }
-
-
     }
 
     /**
@@ -477,6 +487,11 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
         }
         else {
             modelUpdatesDrawabox(scope, changedAnnotation);
+        }
+
+        // TODO: the following is dodgy as shit, totally breaks separation of concerns.... but it is efficient
+        if (changedAnnotation.selected) {
+            scope.model.selectedAudioEvent = changedAnnotation;
         }
 
         if (changedAnnotation.isDirty && !changedAnnotation.$intermediateEvent) {
@@ -556,6 +571,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
             if (!angular.isArray(scope.model.audioEvents)) {
                 throw "bawAnnotationViewer: Model not ready, audioEvents model object not an array.";
             }
+            scope.model.selectedAudioEvent = scope.model.selectedAudioEvent || {};
 
             scope.$drawaboxElement.drawabox({
                 "selectionCallbackTrigger": "mousedown",
