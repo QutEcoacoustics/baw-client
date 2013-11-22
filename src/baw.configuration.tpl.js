@@ -1,83 +1,19 @@
-angular.module('bawApp.configuration', [])
+angular.module('bawApp.configuration', ['url'])
 
 /**
  * This module contains static paths that are stored centrally for easy configuration.
  * App dependent.
  *
- * At least the root properties will need to be changed when the app is deployed.
- * TODO: convert to template and let grunt do the hard work!
+ * The root properties changed when the app is built with grunt.
  */
 
     .constant("conf.paths", (function () {
-
-        var paths = {
-            api: {
-                root: "<%= current.apiRoot %>",
-                routes: {
-                    project: "/projects/{projectId}",
-                    site: "/projects/{projectId}/sites/{siteId}",
-                    audioRecording: {
-                        listShort: "/audio_recordings/{recordingId}",
-                        show: "/audio_recordings/{recordingId}",
-                        list: "/audio_recordings/"
-                        },
-                    audioEvent: {
-                        list: "/audio_recordings/{recordingId}/audio_events",
-                        show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}",
-                        csv : "/audio_events/download."
-                    },
-                    tagging: {
-                        list: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings",
-                        show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings/{taggingsId}"
-                    },
-                    tag: {
-                      list: '/tags/',
-                      show: '/tags/{tagId}'
-                    },
-                    media: {
-                        show: "/audio_recordings/{recordingId}/media.{format}"
-                    },
-                    security: {
-                        ping: "/security/sign_in",
-                        signIn: "/my_account/sign_in"
-                    }
-                }
-            },
-            site: {
-                root: "<%= current.siteRoot %>",
-                // The following intentionally are not prefixed with a '/'
-                // static files
-                files: {
-                    error404: 'error/error_404.tpl.html',
-                    home: 'home/home.tpl.html',
-                    listen: 'listen/listen.tpl.html',
-                    annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
-                    navigation: 'navigation/navigation.tpl.html',
-                    birdWalk : {
-                        list: 'birdWalks/birdWalks.tpl.html',
-                        detail: 'birdWalks/birdWalk.tpl.html',
-                        spec: 'assets/bird_walk/bird_walk_spec.json',
-                        stats: 'assets/bird_walk/bird_walk_stats.json',
-                        images: 'assets/bird_walk/images/'
-                    }
-                },
-                // routes used by angular
-                ngRoutes: {
-                    listen: "/listen/{recordingId}/"
-                },
-                // general links for use in <a />'s
-                links: {
-
-                }
-            }
-        };
-
         /**
          * Joins path fragments together.
          * @param {...[string]} fragments
          * @returns {*}
          */
-        function joinPathFragments(fragments) {
+       function joinPathFragments(fragments) {
             fragments = Array.prototype.slice.call(arguments, 0);
 
             if (fragments.length === 0) {
@@ -116,7 +52,75 @@ angular.module('bawApp.configuration', [])
 
                 return path;
             }
-        }
+        };
+
+        var paths = {
+            api: {
+                root: "<%= current.apiRoot %>",
+                routes: {
+                    project: "/projects/{projectId}",
+                    site: "/projects/{projectId}/sites/{siteId}",
+                    audioRecording: {
+                        listShort: "/audio_recordings/{recordingId}",
+                        show: "/audio_recordings/{recordingId}",
+                        list: "/audio_recordings/"
+                        },
+                    audioEvent: {
+                        list: "/audio_recordings/{recordingId}/audio_events",
+                        show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}",
+                        csv : "/audio_events/download."
+                    },
+                    tagging: {
+                        list: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings",
+                        show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings/{taggingsId}"
+                    },
+                    tag: {
+                      list: '/tags/',
+                      show: '/tags/{tagId}'
+                    },
+                    media: {
+                        show: "/audio_recordings/{recordingId}/media.{format}"
+                    },
+                    security: {
+                        ping: "/security/sign_in",
+                        signIn: "/my_account/sign_in"
+                    }
+                },
+                links: {
+                    projects: '/projects',
+                    home: '/'
+                }
+            },
+            site: {
+                root: "<%= current.siteRoot %>",
+                // The following intentionally are not prefixed with a '/'
+                // static files
+                files: {
+                    error404: 'error/error_404.tpl.html',
+                    home: 'home/home.tpl.html',
+                    listen: 'listen/listen.tpl.html',
+                    annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
+                    navigation: 'navigation/navigation.tpl.html',
+                    birdWalk : {
+                        list: 'birdWalks/birdWalks.tpl.html',
+                        detail: 'birdWalks/birdWalk.tpl.html',
+                        spec: 'assets/bird_walk/bird_walk_spec.json',
+                        stats: 'assets/bird_walk/bird_walk_stats.json',
+                        images: 'assets/bird_walk/images/'
+                    }
+                },
+                // routes used by angular
+                ngRoutes: {
+                    listen: "/listen/{recordingId}/"
+                },
+                // general links for use in <a />'s
+                links: {
+
+                }
+            }
+        };
+
+
 
         // add helper paths
         function recursivePath(source, root) {
@@ -135,6 +139,7 @@ angular.module('bawApp.configuration', [])
         }
 
         recursivePath(paths.api.routes, paths.api.root);
+        recursivePath(paths.api.links, paths.api.root);
         recursivePath(paths.site.files, paths.site.root);
         recursivePath(paths.site.ngRoutes, paths.site.root);
 
