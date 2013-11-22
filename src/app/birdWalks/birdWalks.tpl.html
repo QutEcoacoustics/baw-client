@@ -12,14 +12,16 @@
                 <p>{{walkSpec.description}}</p>
 
                 <p>
-                    <a ng-href="birdWalks/{{walkSpec.id}}" class="btn btn-default" role="button">Begin Bird Walk</a>
+                    <a ng-href="birdWalks/{{walkSpec.id}}" class="btn btn-default" role="button">View Bird Walk Details</a>
                 </p>
 
-                <p class="text-muted small">
+                <p>
+                    <small class="text-muted">
                     Image Source:
-                    <a data-ng-href="{{$parent.spec.birdWalkSpec.locations[walkSpec.locationName].backgroundImageAttributionLink}}">
+                    <a rel="nofollow" data-ng-href="{{$parent.spec.birdWalkSpec.locations[walkSpec.locationName].backgroundImageAttributionLink}}">
                         {{$parent.spec.birdWalkSpec.locations[walkSpec.locationName].backgroundImageAttribution}}
                     </a>
+                        </small>
                 </p>
                 <!--
                         <h3>{{$parent.spec.birdWalkSpec.locations[walkSpec.locationName].name}}</h3>

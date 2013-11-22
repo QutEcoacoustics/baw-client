@@ -19,7 +19,7 @@ angular.module('bawApp.birdWalks', [])
         function BirdWalkCtrl($scope, $resource, $routeParams, $route, $http, BirdWalkService, paths) {
 
             // constants
-            var CURRENT_LOCATION_ZOOM = 4;
+            var CURRENT_LOCATION_ZOOM = 8;
 
             // initialise
             $scope.imagesPath = paths.site.files.birdWalk.imagesAbsolute;
@@ -27,13 +27,31 @@ angular.module('bawApp.birdWalks', [])
             BirdWalkService.getUrl(paths.site.files.birdWalk.statsAbsolute, 'birdWalkStats', $scope, null);
             BirdWalkService.getUrl(paths.site.files.birdWalk.specAbsolute, 'birdWalkSpec', $scope, function () {
                 // set up page display
-                $scope.details = $scope.spec.birdWalkSpec.walks[$scope.params.birdWalkId];
+                $scope.walkDetails = $scope.spec.birdWalkSpec.walks[$scope.params.birdWalkId];
+                $scope.locationDetails = $scope.spec.birdWalkSpec.locations[$scope.walkDetails.locationName];
+
                 var overviewLocation = new google.maps.LatLng(
-                    $scope.details.overviewLocation.latitude,
-                    $scope.details.overviewLocation.longitude);
+                    $scope.walkDetails.overviewLocation.latitude,
+                    $scope.walkDetails.overviewLocation.longitude);
 
                 $scope.locationMap = $scope.createMap('locationMap', overviewLocation, CURRENT_LOCATION_ZOOM);
-                google.maps.event.trigger($scope.locationMap, 'resize');
+
+                var bounds = new google.maps.LatLngBounds();
+                $scope.walkDetails.waypoints.forEach(function(waypoint){
+
+                    var markerLocation = new google.maps.LatLng(
+                        waypoint.latitude,
+                        waypoint.longitude);
+
+                    bounds.extend(markerLocation);
+                    $scope.createMarker($scope.locationMap, markerLocation, waypoint.name);
+                });
+
+                if($scope.walkDetails.waypoints.length < 1){
+                    bounds.extend(overviewLocation);
+                }
+
+                $scope.locationMap.fitBounds(bounds);
             });
 
 
@@ -48,6 +66,26 @@ angular.module('bawApp.birdWalks', [])
                         mapTypeId: google.maps.MapTypeId.HYBRID
                     }
                 );
+            };
+
+            $scope.createMarker = function (map, LatLng, title) {
+
+                var marker = new MarkerWithLabel({
+                    position: LatLng,
+                    draggable: true,
+                    raiseOnDrag: true,
+                    map: map,
+                    labelContent: title,
+                    labelAnchor: new google.maps.Point(0, 0),
+                    labelClass: "markerLabel" // the CSS class for the label
+                });
+
+                return marker;
+//                new google.maps.Marker({
+//                    position: LatLng,
+//                    map: map,
+//                    title: title
+//                });
             };
 
 

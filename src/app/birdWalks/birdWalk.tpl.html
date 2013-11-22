@@ -1,11 +1,105 @@
-<div class="row" data-ng-controller="BirdWalkCtrl">
+<div data-ng-controller="BirdWalkCtrl">
 
-    <h1>{{details.name}}</h1>
+    <h2>{{walkDetails.name}}</h2>
 
-    <p class="lead">{{details.description}}</p>
-    <img data-ng-src="{{imagesPath + spec.birdWalkSpec.locations[details.locationName].smallImageName}}"
-         alt="{{details.name}}" class="img-responsive"
-         title="{{spec.birdWalkSpec.locations[details.locationName].name}}">
-    {{$parent.spec.birdWalkSpec.walks[params.birdWalkId]}}
-    <div id="locationMap"></div>
+    <p class="lead">
+        {{walkDetails.description}}
+        <a ng-href="#" class="btn btn-success" role="button">Begin Bird Walk</a>
+    </p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3 class="hidden-xs hidden-sm">{{locationDetails.name}}</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <img data-ng-src="{{imagesPath + locationDetails.smallImageName}}"
+                         alt="{{details.name}}" class="img-responsive img-thumbnail birdWalkImage"
+                         title="{{locationDetails.name}}">
+                </div>
+                <div class="col-md-6">
+                    <div id="locationMap"></div>
+                </div>
+            </div>
+            <div class="caption">
+
+
+                <p class="hidden-xs hidden-sm">{{locationDetails.locationDescription}}
+                    <small class="text-muted">
+                        <a rel="nofollow" data-ng-href="{{locationDetails.locationDescriptionAttributionLink}}">
+                            {{locationDetails.locationDescriptionAttribution}}</a>
+                    </small>
+                </p>
+
+                <h4 class="hidden-xs hidden-sm">{{locationDetails.environmentType}}</h4>
+
+                <p class="hidden-xs hidden-sm">{{locationDetails.environmentDescription}}
+                    <small class="text-muted">
+                        <a rel="nofollow" data-ng-href="{{locationDetails.environmentDescriptionAttributionLink}}">
+                            {{locationDetails.environmentDescriptionAttribution}}</a>
+                    </small>
+                </p>
+
+                <p>
+                    <small class="text-muted">
+                        Image Source:
+                        <a rel="nofollow" data-ng-href="{{locationDetails.backgroundImageAttributionLink}}">
+                            {{locationDetails.backgroundImageAttribution}}
+                        </a>
+                    </small>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            <h3>Waypoints</h3>
+
+            <ul data-ng-repeat="waypoint in walkDetails.waypoints">
+                <li>{{waypoint.name}}</li>
+            </ul>
+
+            <div id="birdWalkStats">
+                <h3>Status</h3>
+
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Your Progress</label>
+
+                        <div class="col-sm-10">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
+                                     aria-valuemax="100" style="width: 60%;">
+                                    <span class="sr-only">60% Complete</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Your time spent</label>
+
+                        <div class="col-sm-10">
+                            <p class="form-control-static">30 minutes</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Your annotations</label>
+
+                        <div class="col-sm-10">
+                            <p class="form-control-static">14 total, most common tag is <em>Koala</em></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Overall annotations</label>
+
+                        <div class="col-sm-10">
+                            <p class="form-control-static">154 total, most common tag is <em>Magpie</em></p>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+
+        </div>
+    </div>
 </div>

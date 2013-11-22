@@ -12,12 +12,14 @@
     <% }); %>
     <link rel="stylesheet" type="text/css" href="<%= build_configs.current.siteDir %><%= mainStyle %>"/>
 
+    <!-- Google Maps -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= build_configs.keys.googleMaps %>&sensor=false"></script>
+
     <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
     <script type="text/javascript" src="<%= build_configs.current.siteDir %><%= file %>"></script>
     <% }); %>
 
-    <!-- Google Maps -->
-    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= build_configs.keys.googleMaps %>&sensor=false"></script>-->
+
     <!--<script src="https://login.persona.org/include.js"></script>-->
 
     <!-- fot sticky footer -->
