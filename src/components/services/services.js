@@ -29,7 +29,7 @@
 
     // NOTE: deleted photo resource, API for photos no longer exposed
 
-    // NOTE: deleted user resource, API for photos no longer exposed
+    // NOTE: deleted user resource, API for users no longer exposed
 
     bawss.factory('AudioRecording', [ '$resource', 'conf.paths', function ($resource, paths) {
         return resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),

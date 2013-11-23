@@ -1,53 +1,55 @@
 <div id="content" data-ng-controller="ListenCtrl">
-    <div ng-show="errorState">
-        Something has gone wrong - can't load this page.
-    </div>
-    <div ng-hide="errorState">
+<div ng-show="errorState">
+    Something has gone wrong - can't load this page.
+</div>
+<div ng-hide="errorState">
 
-        <h2 class="debug-ui">Timeline</h2>
-        <div id="timeline" class="clearfix debug-ui">
-            <div >
-                <div id="audioRecording">
-                    <div>before</div>
-                    <div>current</div>
-                    <div>after</div>
-                </div>
-                <div id="playlist">
-                    <div>pli</div>
+    <h2 class="debug-ui">Timeline</h2>
+
+    <div id="timeline" class="clearfix debug-ui">
+        <div>
+            <div id="audioRecording">
+                <div>before</div>
+                <div>current</div>
+                <div>after</div>
+            </div>
+            <div id="playlist">
+                <div>pli</div>
+                <div>
+                    <div>segment</div>
                     <div>
-                        <div>segment</div>
+                        <div>chunk</div>
                         <div>
-                            <div>chunk</div>
-                            <div>
-                                You are here
-                            </div>
-                            <div>chunk</div>
+                            You are here
                         </div>
-                        <div>segment</div>
+                        <div>chunk</div>
                     </div>
-                    <div>pli</div>
+                    <div>segment</div>
                 </div>
+                <div>pli</div>
             </div>
         </div>
-        <h2 class="debug-ui">Stats</h2>
-        <ul class="debug-ui">
-            <li>
-                Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
-                Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
-            </li>
-            <li>
-                Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span
-                    class="hint duration hint--top">--TODO-- </span>
-            </li>
-            <li>
-                On screen: <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
-                , Duration of chunk: <span class="hint duration hint--top">{{durationChunk()}} </span>
-            </li>
-        </ul>
+    </div>
+    <h2 class="debug-ui">Stats</h2>
+    <ul class="debug-ui">
+        <li>
+            Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
+            Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
+        </li>
+        <li>
+            Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span
+                class="hint duration hint--top">--TODO-- </span>
+        </li>
+        <li>
+            On screen: <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+            , Duration of chunk: <span class="hint duration hint--top">{{durationChunk()}} </span>
+        </li>
+    </ul>
 
-        <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span></h4>
-        <baw-annotation-viewer model="model"></baw-annotation-viewer>
-        <div id="chunkTimeStamps" class="clear-pseudo">
+    <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span>
+    </h4>
+    <baw-annotation-viewer model="model"></baw-annotation-viewer>
+    <div id="chunkTimeStamps" class="clear-pseudo">
             <span class="left">Segment start: <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span>
             </span>
             <span class="position">
@@ -57,132 +59,147 @@
             </span>
             <span class="right">Segment end: <span
                     class="hint relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
-        </div>
-        <div class="btn-toolbar">
+    </div>
+    <div class="btn-toolbar">
 
-            <div class="btn-group">
-                <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}">
-                    <span class="glyphicon glyphicon-step-backward"></span>
-                </a>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-default" ng-click="model.audioElement.pause()">
-                    <span class="glyphicon glyphicon-pause"></span>
-                </button>
-                <button class="btn btn-default" ng-click="model.audioElement.play()">
-                    <span class="glyphicon glyphicon-play"></span>
-                </button>
-                <a class="btn btn-default" ng-href="#">
-                    <span class="glyphicon glyphicon-tags"></span>
-                </a>
-            </div>
-            <div class="btn-group">
-                <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}">
-                    <span class="glyphicon glyphicon-step-forward"></span>
-                </a>
-            </div>
+        <div class="btn-group">
+            <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}">
+                <span class="glyphicon glyphicon-step-backward"></span>
+            </a>
         </div>
-        <audio id="mainAudioElement" ng-audio="model.audioElement" controls class="debug-ui">
-            <source ng-repeat="resource in model.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
-                    type="{{resource.mimeType}}">
-            Your browser does not support the audio element.
-        </audio>
-        <div id="listenEditContainer">
-            <div>
-                <h3>Annotation edit
-                </h3>
+        <div class="btn-group">
+            <button class="btn btn-default" ng-click="model.audioElement.pause()">
+                <span class="glyphicon glyphicon-pause"></span>
+            </button>
+            <button class="btn btn-default" ng-click="model.audioElement.play()">
+                <span class="glyphicon glyphicon-play"></span>
+            </button>
+            <a class="btn btn-default" ng-href="#">
+                <span class="glyphicon glyphicon-tags"></span>
+            </a>
+        </div>
+        <div class="btn-group">
+            <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}">
+                <span class="glyphicon glyphicon-step-forward"></span>
+            </a>
+        </div>
+    </div>
+    <audio id="mainAudioElement" ng-audio="model.audioElement" controls class="debug-ui">
+        <source ng-repeat="resource in model.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
+                type="{{resource.mimeType}}">
+        Your browser does not support the audio element.
+    </audio>
+    <div id="listenEditContainer">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Annotation edit</h4>
+            </div>
+
+
+            <form id="annotationEditForm" name="annotationEditForm" class="panel-body" ng-class="">
                 <span>Selected elements: {{model.selectedAudioEvents.length || 0}}</span>
-
-                <form id="annotationEditForm" name="annotationEditForm"
-                       >
+                <fieldset ng-disabled="singleEditDisabled()">
+                    <legend>Tags</legend>
+                    <label></label>
+                    <input type="hidden" ng-multiple="true" tags multiple ui-select2="select2Settings"
+                           ng-model="model.selectedAudioEvent.audioEventTags"
+                           baw-inject-transformers="select2Transformers"/>
+                </fieldset>
+                <fieldset ng-disabled="singleEditDisabled()">
+                    <legend>
+                        Annotation Bounds
+                    </legend>
                     <label>
-                        <span>Tags</span>
-                        <input type="hidden" ng-multiple="true" tags multiple ui-select2="select2Settings"
-                               ng-model="model.selectedAudioEvent.audioEventTags" baw-inject-transformers="select2Transformers"/>
-                        <!--<option ng-repeat="t in tags" value="{{t.id}}">{{t.text}} <span> &lt;!&ndash; ng-show={{t.type_of_tag}}&ndash;&gt;
-                        ,-->
-                        <!--{{t.typeOfTag}} &lt;!&ndash; &ndash;&gt;</span></option>-->
+                        <span>Start</span>
+                        <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
+                               ng-disabled="singleEditDisabled()"
+                               ng-model="model.selectedAudioEvent.startTimeSeconds"/>
+                    </label>
+                    <label><span>End</span>
+                        <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
+                               ng-disabled="singleEditDisabled()"
+                               ng-model="model.selectedAudioEvent.endTimeSeconds"/>
+                    </label> <br/>
+                    <label> <span>High Frequency</span>
+                        <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
+                               ng-disabled="singleEditDisabled()"
+                               ng-model="model.selectedAudioEvent.highFrequencyHertz"/>
 
                     </label>
                     <label>
-                        <span>Duration (seconds)</span></label>
-                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
-                           ng-model="model.selectedAudioEvent.startTimeSeconds"/>
-                    &nbsp;to&nbsp;
-                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
-                           ng-model="model.selectedAudioEvent.endTimeSeconds"/>
+                        <span>Low Frequency</span>
+                        <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
+                               ng-disabled="singleEditDisabled()"
+                               ng-model="model.selectedAudioEvent.lowFrequencyHertz"/>
+                    </label>
+                </fieldset>
+                <fieldset ng-disabled="singleEditDisabled()">
+                    <legend>Options</legend>
                     <label>
-                        <span>Frequency</span> </label>
-                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
-                           ng-model="model.selectedAudioEvent.lowFrequencyHertz"/>
-                    &nbsp;to&nbsp;
-                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
-                           ng-model="model.selectedAudioEvent.highFrequencyHertz"/>
-                    <fieldset>
-                        <legend>Annotation options</legend>
-                        <label>
-                            <input type="checkbox" ng-model="model.selectedAudioEvent.isReference">&nbsp;Is reference tag?
-                        </label>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="debug-ui">
-                <h3>Annotations</h3>
-                <table class="details-table">
-                    <thead>
-                    <tr>
-                        <th>Selected</th>
-                        <th>Saved</th>
-                        <th>Jump to</th>
-                        <th>Annotation ID</th>
-                        <th>Audio Recording</th>
-                        <th>Created At</th>
-                        <th>Created By</th>
-                        <th>Deleted At</th>
-                        <th>Deleted By</th>
-                        <th>Updated At</th>
-                        <th>Updated By</th>
-                        <th>Tags</th>
-                        <th>Time Range</th>
-                        <th>Frequency Range</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="ae in model.audioEvents">
-                        <td>
-                            <!--<input type="radio" ng-checked="ae.selected" ng-model="ae.selected"   name="selectionRadioGroup"  >-->
-                            <input type="radio" baw-checked="ae.selected" name="selectionRadioGroup">
-                            {{ae.selected && '✓' || '✗'}}
-                        </td>
-                        <td>
-                            {{ae.isDirty && '✗' || '✓'}}
-                        </td>
-                        <td>
-                            <!-- TODO -->
-                        </td>
-                        <td colspan="{{ae.id && 1 || 2}}">
-                            {{ae.id}}
+
+                        <input type="checkbox" ng-model="model.selectedAudioEvent.isReference">&nbsp; Should this be a reference
+                        annotation?
+                    </label>
+                </fieldset>
+            </form>
+        </div>
+        <div class="debug-ui">
+            <h3>Annotations</h3>
+            <table class="details-table">
+                <thead>
+                <tr>
+                    <th>Selected</th>
+                    <th>Saved</th>
+                    <th>Jump to</th>
+                    <th>Annotation ID</th>
+                    <th>Audio Recording</th>
+                    <th>Created At</th>
+                    <th>Created By</th>
+                    <th>Deleted At</th>
+                    <th>Deleted By</th>
+                    <th>Updated At</th>
+                    <th>Updated By</th>
+                    <th>Tags</th>
+                    <th>Time Range</th>
+                    <th>Frequency Range</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="ae in model.audioEvents">
+                    <td>
+                        <!--<input type="radio" ng-checked="ae.selected" ng-model="ae.selected"   name="selectionRadioGroup"  >-->
+                        <input type="radio" baw-checked="ae.selected" name="selectionRadioGroup">
+                        {{ae.selected && '✓' || '✗'}}
+                    </td>
+                    <td>
+                        {{ae.isDirty && '✗' || '✓'}}
+                    </td>
+                    <td>
+                        <!-- TODO -->
+                    </td>
+                    <td colspan="{{ae.id && 1 || 2}}">
+                        {{ae.id}}
                     <span ng-hide="ae.id">
                         <em>new annotation</em>
                     </span>
-                        </td>
-                        <td ng-show="ae.id"><a ng-href="/recordings/{{ae.audioRecording.uuid}}"
-                                               class="short-guid">{{ae.audioRecording.uuid}}</a></td>
-                        <td>{{ae.createdAt}}</td>
-                        <td>{{ae.creatorId}}</td>
-                        <td>{{ae.deletedAt}}</td>
-                        <td>{{ae.deleterId}}</td>
-                        <td>{{ae.updatedAt}}</td>
-                        <td>{{ae.updaterId}}</td>
-                        <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId | tagName}}{{!$last && ',' || ''}}</span>
-                        </td>
-                        <td>{{ae.startTimeSeconds | number:3}} - {{ae.endTimeSeconds | number:3}}</td>
-                        <td>{{ae.lowFrequencyHertz | number:3}} - {{ae.highFrequencyHertz | number:3}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                    </td>
+                    <td ng-show="ae.id"><a ng-href="/recordings/{{ae.audioRecording.uuid}}"
+                                           class="short-guid">{{ae.audioRecording.uuid}}</a></td>
+                    <td>{{ae.createdAt}}</td>
+                    <td>{{ae.creatorId}}</td>
+                    <td>{{ae.deletedAt}}</td>
+                    <td>{{ae.deleterId}}</td>
+                    <td>{{ae.updatedAt}}</td>
+                    <td>{{ae.updaterId}}</td>
+                    <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId | tagName}}{{!$last && ',' || ''}}</span>
+                    </td>
+                    <td>{{ae.startTimeSeconds | number:3}} - {{ae.endTimeSeconds | number:3}}</td>
+                    <td>{{ae.lowFrequencyHertz | number:3}} - {{ae.highFrequencyHertz | number:3}}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <!--<baw-debug-info></baw-debug-info>-->
     </div>
+    <!--<baw-debug-info></baw-debug-info>-->
+</div>
 </div>

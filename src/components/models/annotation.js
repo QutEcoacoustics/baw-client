@@ -123,7 +123,7 @@ baw.Annotation = (function () {
             }
 
             this.audioEventTags = this.audioEventTags.map(function (value, key) {
-                return baw.AudioEventTag(value);
+                return new baw.AudioEventTag(value);
             });
         };
 

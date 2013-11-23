@@ -297,6 +297,10 @@ angular.module('bawApp.listen', [])
                     });
                 };
 
+                $scope.singleEditDisabled = function() {
+                    return !$scope.model.selectedAudioEvent;
+                };
+
 
 
                 $scope.select2Settings = {
@@ -314,35 +318,35 @@ angular.module('bawApp.listen', [])
                     //                    }
                 };
 
-                $scope.select2Transformers = {
-
-                    fromElement: function (tagResources) {
-                        if (tagResources.length > 0) {
-
-                            var result = tagResources.map(function (value) {
-                                return new baw.AudioEventTag({tagId: value.id});
-                            });
-
-                            return result;
-                        }
-
-                        return tagResources;
-                    },
-                    // warning: IE8 incompatibility for array.prototype.map
-                    fromModel: function (audioEventTags) {
-                        if (audioEventTags.length > 0) {
-                            var result = audioEventTags.map(function (value) {
-                                return Tag.resolve(value.tagId);
-                            });
-
-                            //result = result.join(",");
-
-                            return result;
-                        }
-
-                        return audioEventTags;
-                    }
-                };
+//                $scope.select2Transformers = {
+//
+//                    fromElement: function (tagResources) {
+//                        if (tagResources.length > 0) {
+//
+//                            var result = tagResources.map(function (value) {
+//                                return new baw.AudioEventTag({tagId: value.id});
+//                            });
+//
+//                            return result;
+//                        }
+//
+//                        return tagResources;
+//                    },
+//                    // warning: IE8 incompatibility for array.prototype.map
+//                    fromModel: function (audioEventTags) {
+//                        if (audioEventTags && audioEventTags.length > 0) {
+//                            var result = audioEventTags.map(function (value) {
+//                                return Tag.resolve(value.tagId);
+//                            });
+//
+//                            //result = result.join(",");
+//
+//                            return result;
+//                        }
+//
+//                        return audioEventTags;
+//                    }
+//                };
 
             }
 
