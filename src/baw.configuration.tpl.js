@@ -52,7 +52,7 @@ angular.module('bawApp.configuration', ['url'])
 
                 return path;
             }
-        };
+        }
 
         var paths = {
             api: {

@@ -489,7 +489,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
             modelUpdatesDrawabox(scope, changedAnnotation);
         }
 
-        // TODO: the following is dodgy as shit, totally breaks separation of concerns.... but it is efficient
+        // TODO: the following block is dodgy as shit, totally breaks separation of concerns.... but it is efficient
         if (changedAnnotation.selected) {
             scope.model.selectedAudioEvent = changedAnnotation;
         }
