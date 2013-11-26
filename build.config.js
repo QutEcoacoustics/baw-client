@@ -92,29 +92,37 @@ module.exports = {
             'vendor/jquery/jquery.js',
             // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
             'vendor/jquery-ui/ui/jquery-ui.js',
-            // NOTE: bootstrap css important in application.tpl.scss
+            // NOTE: bootstrap css imported in application.tpl.scss
             'vendor/sass-bootstrap/dist/js/bootstrap.js',
             'vendor/momentjs/moment.js',
             'vendor/angular/angular.js',
             'vendor/angular-route/angular-route.js',
             'vendor/angular-resource/angular-resource.js',
-            'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
-            'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
+            'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+
+            // Don't know what depended on this - disabled because does not exist on disk or in bower
+            //'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
             'vendor/angular-ui-router/release/angular-ui-router.js',
             'vendor/angular-ui-utils/modules/route/route.js',
             // TODO: the following line is dodgy and bloats the app
             'vendor/angular-ui-utils/modules/**/*.js', '!vendor/angular-ui-utils/modules/**/*Spec.js',
             'vendor/modernizr/modernizr.js',
             'vendor/lodash/dist/lodash.js',
-            'vendor/select2/select2.js',
-            'vendor/angular-ui-select2/src/select2.js'
+            //'vendor/select2/select2.js',
+            //'vendor/angular-ui-select2/src/select2.js'
+            'vendor/angular-tags/dist/angular-tags-0.2.10-tpls.js'
+
         ],
         css: [
+            // NOTE: bootstrap css imported in application.tpl.scss
+
             'vendor/hint.css/hint.css',
             // TODO: remove bloat
             'vendor/jquery-ui/themes/redmond/jquery-ui.css',
-            'vendor/select2/select2-bootstrap.css',
-            'vendor/select2/select2.css'
+            //'vendor/select2/select2-bootstrap.css',
+            //'vendor/select2/select2.css'
+
+            'vendor/angular-tags/dist/angular-tags-0.2.10.css'
         ],
         assets: [
             // jquery-ui is stoopid, special case

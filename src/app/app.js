@@ -52,7 +52,12 @@ var app = angular.module('baw',
                              'ngRoute',
                              'ngResource',
                              'ui.utils', /* angular-ui project */
-                             'ui.select2',
+                             //'ui.select2',
+                             'ui.bootstrap',
+                             'ui.bootstrap.typeahead',
+                             'ui.bootstrap.tpls',
+                             'decipher.tags',
+
 
                              'bawApp.configuration', /* a mapping of all static path configurations
                           and a module that contains all app configuration */

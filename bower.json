@@ -18,7 +18,11 @@
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "lodash": "~2.3.0",
     "select2": "~3.4.5",
-    "angular-ui-select2": "~0.0.2"
+    "angular-ui-select2": "~0.0.2",
+    "angular-tags": "~0.2.10"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "angular": "1.2.0"
+  }
 }

@@ -195,14 +195,14 @@ module.exports = function (grunt) {
                         var templateCopy = _.clone(template);
                         if (kind === "string") {
                             templateCopy.src = value;
-                            result.push(_.extend(template, base));
+                            result.push(templateCopy);
                         }
                         else {
                             // here we assume it is a special specification func
                             var transformedTemplate = value.call(null, templateCopy);
 
-                            if (!transformedTemplate) {
-                                throw "Copy:build_vendor_assets:transformTemplate: expected object, got " + transformedTemplate + " instead";
+                            if (!transformedTemplate || !transformedTemplate.src) {
+                                throw "Copy:build_vendor_assets:transformTemplate: expected object with src set, got " + transformedTemplate + " instead";
                             }
 
                             result.push(transformedTemplate);
@@ -235,7 +235,8 @@ module.exports = function (grunt) {
                         src: [ '<%= app_files.js %>' ],
                         dest: '<%= build_dir %>/',
                         cwd: '.',
-                        expand: true
+                        expand: true,
+                        nonull: true
                     }
                 ]
             },
@@ -245,7 +246,8 @@ module.exports = function (grunt) {
                         src: [ '<%= vendor_files.js %>' ],
                         dest: '<%= build_dir %>/',
                         cwd: '.',
-                        expand: true
+                        expand: true,
+                        nonull: true
                     }
                 ]
             },
@@ -255,7 +257,8 @@ module.exports = function (grunt) {
                         src: [ '**' ],
                         dest: '<%= compile_dir %>/assets',
                         cwd: '<%= build_dir %>/assets',
-                        expand: true
+                        expand: true,
+                        nonull: true
                     }
                 ]
             }

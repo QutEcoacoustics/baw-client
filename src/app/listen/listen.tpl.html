@@ -4,61 +4,18 @@
 </div>
 <div ng-hide="errorState">
 
-    <h2 class="debug-ui">Timeline</h2>
-
-    <div id="timeline" class="clearfix debug-ui">
-        <div>
-            <div id="audioRecording">
-                <div>before</div>
-                <div>current</div>
-                <div>after</div>
-            </div>
-            <div id="playlist">
-                <div>pli</div>
-                <div>
-                    <div>segment</div>
-                    <div>
-                        <div>chunk</div>
-                        <div>
-                            You are here
-                        </div>
-                        <div>chunk</div>
-                    </div>
-                    <div>segment</div>
-                </div>
-                <div>pli</div>
-            </div>
-        </div>
-    </div>
-    <h2 class="debug-ui">Stats</h2>
-    <ul class="debug-ui">
-        <li>
-            Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
-            Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
-        </li>
-        <li>
-            Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span
-                class="hint duration hint--top">--TODO-- </span>
-        </li>
-        <li>
-            On screen: <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
-            , Duration of chunk: <span class="hint duration hint--top">{{durationChunk()}} </span>
-        </li>
-    </ul>
 
     <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span>
     </h4>
     <baw-annotation-viewer model="model"></baw-annotation-viewer>
     <div id="chunkTimeStamps" class="clear-pseudo">
-            <span class="left">Segment start: <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span>
+            <span class="left"> <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span>
             </span>
             <span class="position">
-                Position: <br/>
-                <span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br/>
+                <!--<span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br/>-->
                 <span class="hint relative-recording-time hint--bottom">{{currentOffsetRecording()}}</span>
             </span>
-            <span class="right">Segment end: <span
-                    class="hint relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
+            <span class="right"> <span class="hint relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
     </div>
     <div class="btn-toolbar">
 
@@ -97,13 +54,16 @@
 
 
             <form id="annotationEditForm" name="annotationEditForm" class="panel-body" ng-class="">
-                <span>Selected elements: {{model.selectedAudioEvents.length || 0}}</span>
                 <fieldset ng-disabled="singleEditDisabled()">
                     <legend>Tags</legend>
                     <label></label>
-                    <input type="hidden" ng-multiple="true" tags multiple ui-select2="select2Settings"
-                           ng-model="model.selectedAudioEvent.audioEventTags"
-                           baw-inject-transformers="select2Transformers"/>
+                    <!--<input type="hidden" ng-multiple="true" tags multiple ui-select2="select2Settings"-->
+                           <!--ng-model="model.selectedAudioEvent.audioEventTags"-->
+                           <!--baw-inject-transformers="select2Transformers"/>-->
+                    <tags options="taggerOptions"
+                          typeahead-options="typeaheadOpts"
+                          ng-model="model.selectedAudioEvent.taggings"
+                          src="b for t in tags"></tags>
                 </fieldset>
                 <fieldset ng-disabled="singleEditDisabled()">
                     <legend>
@@ -200,6 +160,49 @@
             </table>
         </div>
     </div>
+
+    <h2 class="debug-ui">Timeline</h2>
+
+    <div id="timeline" class="clearfix debug-ui">
+        <div>
+            <div id="audioRecording">
+                <div>before</div>
+                <div>current</div>
+                <div>after</div>
+            </div>
+            <div id="playlist">
+                <div>pli</div>
+                <div>
+                    <div>segment</div>
+                    <div>
+                        <div>chunk</div>
+                        <div>
+                            You are here
+                        </div>
+                        <div>chunk</div>
+                    </div>
+                    <div>segment</div>
+                </div>
+                <div>pli</div>
+            </div>
+        </div>
+    </div>
+    <h2 class="debug-ui">Stats</h2>
+    <ul class="debug-ui">
+        <li>
+            Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
+            Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
+        </li>
+        <li>
+            Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span
+                class="hint duration hint--top">--TODO-- </span>
+        </li>
+        <li>
+            On screen: <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+            , Duration of chunk: <span class="hint duration hint--top">{{durationChunk()}} </span>
+        </li>
+    </ul>
+
     <!--<baw-debug-info></baw-debug-info>-->
 </div>
 </div>

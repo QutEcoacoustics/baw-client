@@ -1,4 +1,4 @@
-angular.module('bawApp.listen', [])
+angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
     .controller('ListenCtrl', ['$scope',
         '$resource',
@@ -302,21 +302,59 @@ angular.module('bawApp.listen', [])
                 };
 
 
-
-                $scope.select2Settings = {
-                    allowClear: true,
-                    tags: $scope.tags
-                    //                    id: function selectTagId(tag) {
-                    //                        return tag.tagId;
-                    //                    },
-                    //                    initSelection: function (element, callback) {
-                    //                        var data = [];
-                    //                        $(element.val().split(",")).each(function () {
-                    //                            data.push({id: this, text: this});
-                    //                        });
-                    //                        callback(data);
-                    //                    }
+                $scope.typeaheadOpts = {
+                    //inputFormatter: myInputFormatterFunction,
+                    //loading: myLoadingBoolean,
+                    minLength: 1,
+                    //onSelect: myOnSelectFunction, // this will be run in addition to directive internals
+                    templateUrl: "template/typeahead/typeahead-popup.htmlzzzzzzzzz"
+                    //waitMs: 500,
+                    //allowsEditable: true
                 };
+
+                $scope.taggerOptions = {
+                    delimiter: ",",
+                    addable: true,
+                    //classes:
+                    templateUrl: "/templates/tags.html",
+                    tagTemplateUrl: "/templates/tags.html"
+                };
+
+                $scope.$on('decipher.tags.initialized', function(event) {
+                    event.stopPropagation();
+                   console.debug('decipher.tags.initialized', arguments);
+                });
+                $scope.$on('decipher.tags.keyup', function (event) {
+                    event.stopPropagation();
+                    console.debug('decipher.tags.keyup', arguments);
+                });
+                $scope.$on('decipher.tags.added', function (event) {
+                    event.stopPropagation();
+                    console.debug('decipher.tags.added', arguments);
+                });
+                $scope.$on('decipher.tags.addfailed', function (event) {
+                    event.stopPropagation();
+                    console.debug('decipher.tags.addfailed', arguments);
+                });
+                $scope.$on('decipher.tags.removed', function (event) {
+                    event.stopPropagation();
+                    console.debug('decipher.tags.removed', arguments);
+                });
+
+//                $scope.select2Settings = {
+//                    allowClear: true,
+//                    tags: $scope.tags
+//                    //                    id: function selectTagId(tag) {
+//                    //                        return tag.tagId;
+//                    //                    },
+//                    //                    initSelection: function (element, callback) {
+//                    //                        var data = [];
+//                    //                        $(element.val().split(",")).each(function () {
+//                    //                            data.push({id: this, text: this});
+//                    //                        });
+//                    //                        callback(data);
+//                    //                    }
+//                };
 
 //                $scope.select2Transformers = {
 //
