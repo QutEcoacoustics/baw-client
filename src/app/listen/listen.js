@@ -185,9 +185,18 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                 // download all the tags and store them in Tag service cache
                 // TODO: this is inefficient, make better in the future...
-                $scope.tags = Tag.query({}, {}, function () {
+//                $scope.tags = Tag.query({}, {}, function () {
+//
+//                }, undefined);
 
-                }, undefined);
+                $scope.tags = [
+                    {id: 1, name:"crow", value: 1},
+                    {id: 2, name:"cow", value: 2},
+                    {id: 3, name:"pig", value: 3},
+                    {id: 4, name:"penguin", value: 4},
+                    {id: 5, name:"jason", value: 5},
+                    {id: 6, name:"sheep", value: 6}
+                ];
 
                 $scope.model.limits = {
                     timeMin: 0.0,
@@ -305,9 +314,9 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 $scope.typeaheadOpts = {
                     //inputFormatter: myInputFormatterFunction,
                     //loading: myLoadingBoolean,
-                    minLength: 1,
+                    minLength: 1
                     //onSelect: myOnSelectFunction, // this will be run in addition to directive internals
-                    templateUrl: "template/typeahead/typeahead-popup.htmlzzzzzzzzz"
+                    //templateUrl: "template/typeahead/typeahead-popup.htmlzzzzzzzzz"
                     //waitMs: 500,
                     //allowsEditable: true
                 };

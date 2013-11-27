@@ -2,7 +2,7 @@
   "name": "ng-boilerplate",
   "version": "0.0.4",
   "devDependencies": {
-    "angular": "~1.2.0",
+    "angular": "1.2.2",
     "angular-mocks": "~1.2.0",
     "angular-route": "~1.2.0",
     "angular-bootstrap": "~0.6.0",
@@ -23,6 +23,6 @@
   },
   "dependencies": {},
   "resolutions": {
-    "angular": "1.2.0"
+    "angular": "1.2.2"
   }
 }
