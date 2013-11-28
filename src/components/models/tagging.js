@@ -1,7 +1,7 @@
 
     var baw = window.baw = window.baw || {};
 
-    baw.AudioEventTag = function AudioEventTag(obj) {
+    baw.Tagging = function Tagging(obj) {
 
 //        var localId = typeof(localIdOrResource) === "number" ? localIdOrResource : undefined;
 //        var obj;
@@ -9,7 +9,7 @@
 //            obj = localIdOrResource;
 //        }
 
-        if (!(this instanceof AudioEventTag)) {
+        if (!(this instanceof Tagging)) {
             throw new Error("Constructor called as a function");
         }
         

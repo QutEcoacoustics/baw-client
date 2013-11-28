@@ -85,14 +85,14 @@
 
 
     bawss.factory('Taggings', [ '$resource', 'conf.paths', function ($resource, paths) {
-        var resource = resourcePut($resource, uriConvert(paths.api.routes.taggings.showAbsolute),
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.tagging.showAbsolute),
             {
                 recordingId: '@recordingId',
                 audioEventId: '@audioEventId',
                 taggingId: '@taggingId'
             }
         );
-
+        return resource;
     }]);
 
 
@@ -140,6 +140,26 @@
         resource.resolve = function resolveTag(id) {
             var tag = tags[id];
             return tag;
+        };
+
+
+        resource.resolveAll = function(srcArray, tagsArray) {
+            if (!tagsArray || tagsArray.length === 0) {
+                return;
+                //throw "Tag resolverAll, search array empty.";
+            }
+
+            for (var i = 0; i < srcArray.length; i++) {
+                if (srcArray[i].resolve) {
+                    var found = _.find(tagsArray, function (tagValue) {
+                        return srcArray[i].id === tagValue.id;
+                    });
+                    if (found) {
+                        srcArray[i] = found;
+                    }
+                }
+            }
+
         };
 
         return resource;

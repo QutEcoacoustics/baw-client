@@ -4,9 +4,12 @@
     <div id="scroller">
         <div class="tag-preview">
             <ul>
-                <li ng-repeat="annotation in model.audioEvents" ng-style="{left: (positionLabel(annotation)) + 'px' }" >
-                    <span>
-                      {{getTag(annotation)}}
+                <li ng-repeat="annotation in model.audioEvents"
+                    ng-style="{left: (positionLabel(annotation)) + 'px' }"
+                    ng-eval="tag = getTag(annotation)"
+                    >
+                    <span  class="{{tag.typeOfTag}}">
+                      {{tag.text}}
                     </span>
                 </li>
             </ul>

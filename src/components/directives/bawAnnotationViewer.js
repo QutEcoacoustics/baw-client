@@ -1,6 +1,6 @@
 var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
 
-bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (paths, AudioEvent) {
+bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', 'Tag', function (paths, AudioEvent, Tag) {
 
     function variance(x, y) {
         var fraction = x / y;
@@ -429,6 +429,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', function (p
                 // saving complete
                 oldValue.isDirty = false;
             }
+            Tag.resolveAll(oldValue.tags, scope.$parent.tags);
         }
         else {
             // should clean up resources for delete

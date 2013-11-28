@@ -72,7 +72,7 @@ angular.module('bawApp.configuration', ['url'])
                     },
                     tagging: {
                         list: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings",
-                        show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings/{taggingsId}"
+                        show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings/{taggingId}"
                     },
                     tag: {
                       list: '/tags/',

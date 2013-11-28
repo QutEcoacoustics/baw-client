@@ -3,6 +3,18 @@ describe("The Annotation object", function () {
 
     var annotation_local;
     var annotation_resource;
+
+    var tagging = {
+
+        "audioEventId": 10,
+        "createdAt": "2013-11-28T08:16:52Z",
+        "creatorId": 7,
+        "id": 4,
+        "tagId": 13,
+        "updatedAt": "2013-11-28T08:16:52Z",
+        "updaterId": 7
+    };
+
     var resource = {
         "audioRecordingId": 40,
         "createdAt": "2013-11-06T03:54:35Z",
@@ -18,6 +30,7 @@ describe("The Annotation object", function () {
         "updatedAt": "2013-11-06T03:54:35Z",
         "updaterId": 8,
         "taggings": [
+            tagging
         ]
     };
 
@@ -98,7 +111,7 @@ describe("The Annotation object", function () {
     });
 
     it("'s prototype should have all of the resource properties defined", function () {
-        expect(baw.Annotation.prototype).toImplement({isNew: null, mergeResource:null, exportObj: null});
+        expect(baw.Annotation.prototype).toImplement({isNew: null, mergeResource: null, exportObj: null});
 
     });
 
@@ -111,13 +124,17 @@ describe("The Annotation object", function () {
             var expected = (annotation_resource[key]);
             var actual = (resource[key]);
 
-            if (dateFields.indexOf(key) >= 0){
+            if (dateFields.indexOf(key) >= 0) {
                 actual = new Date(actual);
                 expect(expected).toBeDate(actual);
             }
-            else if(key === "taggings") {
-                // nopop
-                // TODO: hacky ignore, value not tested
+            else if (key === "taggings") {
+                var type = typeof actual;
+                for (var i = 0; i < expected.length; i++) {
+                    var tagging = expected[i];
+                    var isInstance = tagging instanceof baw.Tagging;
+                    expect(isInstance).toBeTrue();
+                }
             }
             else {
                 expect(expected).toBe(actual);
@@ -188,11 +205,29 @@ describe("The Annotation object", function () {
 
     });
 
-    it("should be dirty if isReference is modified", function() {
-       expect(annotation_resource.isDirty).toBeFalse();
-       annotation_resource.isReference = !annotation_resource.isReference;
-       expect(annotation_resource.isDirty).toBeTrue();
+    it("should be dirty if isReference is modified", function () {
+        expect(annotation_resource.isDirty).toBeFalse();
+        annotation_resource.isReference = !annotation_resource.isReference;
+        expect(annotation_resource.isDirty).toBeTrue();
     });
+
+
+
+
+    it("should have a taggings array, with taggings in it", function () {
+        var propExists = annotation_resource.hasOwnProperty("taggings");
+        expect(propExists).toBeTrue();
+
+        expect(annotation_resource.taggings).toBeArrayOfObjects("taggings");
+    });
+
+    it("should have a tags array, with tags in it", function () {
+        var propExists = annotation_resource.hasOwnProperty("tags");
+        expect(propExists).toBeTrue();
+
+        expect(annotation_resource.taggings).toBeArrayOfObjects("tags");
+    });
+
 
 
 });

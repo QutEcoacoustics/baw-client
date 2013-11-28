@@ -10,26 +10,49 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      * @constructor
      * @param Tag
      */
-        function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
+    function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
+
+        var emptyTag = {
+            text: "<no tags>",
+            typeOfTag: ""
+        };
         $scope.getTag = function getTag(annotation) {
 
-            // which tag to show
-            // HACK: show first only
-            var taggings = annotation.taggings;
+            // which tag to show?
+            // common name, then species_name, then if all else fails... whatever is first
 
-            if (!taggings || taggings.length === 0) {
-                return "<no tags>";
+            var tags = annotation.tags;
+
+            if (!tags || tags.length === 0) {
+                return emptyTag;
             }
 
-            var tag = taggings ? taggings[0] : undefined;
-            var id = tag ? tag.id : undefined;
+            var first = tags[0];
 
-            var tagObject = Tag.resolve(id);
-            if (tagObject) {
-                return tagObject.text;
+
+
+            // optimise for most common case
+            // also: on load, only incomplete tags will be listed --> the tag resolver then runs for every tag, just below
+            if (first.typeOfTag == baw.Tag.tagTypes.commonName) {
+                return first;
             }
             else {
-                return "<unknown>";
+                var commonName, speciesName, firstOther;
+                tags.forEach(function (value) {
+
+
+                    if (value.typeOfTag == baw.Tag.tagTypes.commonName && !commonName) {
+                        commonName = value;
+                    }
+                    if (value.typeOfTag == baw.Tag.tagTypes.speciesName && !speciesName) {
+                        speciesName = value;
+                    }
+                    if (!firstOther) {
+                        firstOther = value;
+                    }
+                });
+
+                return commonName || speciesName || firstOther;
             }
         };
 

@@ -62,12 +62,12 @@ baw.Annotation = (function () {
         this.id = null;
         this.updatedAt = null;
         this.updaterId = null;
-        this.taggings = [];
 
         this._epsilsonDirty = 0.0;
         this.isDirty = false;
         this.selected = false;
-        this.audioEventTags = [];
+        this.taggings = [];
+        this.tags = [];
 
         customProperty(this, "startTimeSeconds");
         customProperty(this, "endTimeSeconds");
@@ -104,7 +104,7 @@ baw.Annotation = (function () {
             return this.id === undefined || this.id === null;
         };
 
-        pt.mergeResource = function mergeResource(resource, ignoreClientFields) {
+        pt.mergeResource = function mergeResource(resource, ignoreClientFields, TagService) {
             this.id = resource.id;
             this.audioRecordingId = resource.audioRecordingId;
             this.createdAt = resource.createdAt ? new Date(resource.createdAt) : null;
@@ -114,17 +114,22 @@ baw.Annotation = (function () {
             this.deletedAt = resource.deletedAt ? new Date(resource.deletedAt) : null;
             this.deleterId = resource.deleterId;
 
+            this.taggings = resource.taggings.map(function (value, key) {
+                return new baw.Tagging(value);
+            });
+
             if (!ignoreClientFields) {
                 this._isReference = resource.isReference;
                 this._endTimeSeconds = parseFloat(resource.endTimeSeconds);
                 this._highFrequencyHertz = parseFloat(resource.highFrequencyHertz);
                 this._lowFrequencyHertz = parseFloat(resource.lowFrequencyHertz);
                 this._startTimeSeconds = parseFloat(resource.startTimeSeconds);
+
+                this.tags = this.taggings.map(function(value, key) {
+                   return {id: value.tagId, resolve: true};
+                });
             }
 
-            this.audioEventTags = this.audioEventTags.map(function (value, key) {
-                return new baw.AudioEventTag(value);
-            });
         };
 
         pt.exportObj = function exportObj() {
@@ -162,7 +167,7 @@ baw.Annotation = (function () {
     module.prototype = prototype();
 
 
-    module.create = function (arg) {
+    module.make = function (arg) {
         return new baw.Annotation(arg);
     };
 

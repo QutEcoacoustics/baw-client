@@ -11,6 +11,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'Media',
         'AudioEvent',
         'Tag',
+        'Taggings',
         /**
          * The listen controller.
          * @param $scope
@@ -25,9 +26,11 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param constants
          * @param $url
          * @param AudioRecording
+         * @param Taggings
          */
             function ListenCtrl(
-            $scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag) {
+            $scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag,
+            Taggings) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -89,15 +92,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                                 $scope.model.media.availableImageFormats[imgKeys[0]].url);
                         $scope.model.media.spectrogram = $scope.model.media.availableImageFormats[imgKeys[0]];
 
-                        //$scope.model.media.spectrogramBaseUrl.format($scope.model.media);  + "?" + authToken;
-
-                        // No longer necessary, new-api is HATEOASish
-                        //$scope.model.media.audioUrls = [];
-                        //angular.forEach($scope.model.media.options.audioFormats, function (value, key) {
-                        //    $scope.model.media.audioFormat = value.extension;
-                        //    this.push({url: $scope.model.media.audioBaseUrl.format($scope.model.media) + "?" + authToken, mime: value.mimeType});
-                        //}, $scope.model.media.audioUrls);
-
                         angular.forEach($scope.model.media.availableAudioFormats, function (value, key) {
 
                             // just update the url so it is an absolute uri
@@ -112,19 +106,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 $scope.$on('event:auth-loginRequired', formatPaths);
                 $scope.$on('event:auth-loginConfirmed', formatPaths);
 
-//                var fixMediaApi = function fixMediaApi() {
-//                    if ($scope.model.media && $scope.model.audioRecording) {
-//                        $scope.model.media.id = $scope.model.audioRecording.id;
-//                        $scope.model.media.uuid = $scope.model.audioRecording.uuid;
-//                    }
-//                };
-
                 $scope.model.media = Media.get(getMediaParameters("json"), {},
                     function mediaGetSuccess() {
                         // reformat urls
                         formatPaths();
 
-//                        fixMediaApi();
+                        //                        fixMediaApi();
 
                         // additionally do a check on the sample rate
                         // the sample rate is used in the unit calculations.
@@ -160,8 +147,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     function audioRecordingGetSuccess() {
                         // no-op
                         // if an audioRecording 'model' is ever created, this is where we would transform the returned data
-
-//                        fixMediaApi();
                     },
                     function audioRecordingGetFailure() {
                         console.error("retrieval of audioRecording json failed");
@@ -175,9 +160,11 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         end_offset: $routeParams.end
                     },
                     function audioEventsQuerySuccess(value, responseHeaders) {
-                        // TODO : map tag's
+                        $scope.model.audioEvents = value.map(baw.Annotation.make);
 
-                        $scope.model.audioEvents = value.map(baw.Annotation.create);
+                        $scope.model.audioEvents.forEach(function (value) {
+                            Tag.resolveAll(value.tags, $scope.tags);
+                        });
                     },
                     function audioEventQueryFailure() {
                         console.error("retrieval of audio events failed");
@@ -185,18 +172,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                 // download all the tags and store them in Tag service cache
                 // TODO: this is inefficient, make better in the future...
-//                $scope.tags = Tag.query({}, {}, function () {
-//
-//                }, undefined);
+                $scope.tags = [];
+                Tag.query({}, {},
+                    function success(value) {
+                        value.forEach(function (value) {
+                            $scope.tags.push(baw.Tag.make(value));
+                        });
 
-                $scope.tags = [
-                    {id: 1, name:"crow", value: 1},
-                    {id: 2, name:"cow", value: 2},
-                    {id: 3, name:"pig", value: 3},
-                    {id: 4, name:"penguin", value: 4},
-                    {id: 5, name:"jason", value: 5},
-                    {id: 6, name:"sheep", value: 6}
-                ];
+                        $scope.model.audioEvents.forEach(function(value){
+                            Tag.resolveAll(value.tags, $scope.tags);
+                        });
+                    },
+                    function failure() {
+                        console.error("Tag retrieval failure", arguments);
+                    });
+
 
                 $scope.model.limits = {
                     timeMin: 0.0,
@@ -306,7 +296,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     });
                 };
 
-                $scope.singleEditDisabled = function() {
+                $scope.singleEditDisabled = function () {
                     return !$scope.model.selectedAudioEvent;
                 };
 
@@ -329,71 +319,125 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     tagTemplateUrl: "/templates/tags.html"
                 };
 
-                $scope.$on('decipher.tags.initialized', function(event) {
+
+                $scope.$on('decipher.tags.initialized', function (event) {
                     event.stopPropagation();
-                   console.debug('decipher.tags.initialized', arguments);
+                    console.debug('decipher.tags.initialized', arguments);
                 });
                 $scope.$on('decipher.tags.keyup', function (event) {
                     event.stopPropagation();
                     console.debug('decipher.tags.keyup', arguments);
                 });
-                $scope.$on('decipher.tags.added', function (event) {
+                $scope.$on('decipher.tags.added', function (event, addedTag) {
                     event.stopPropagation();
                     console.debug('decipher.tags.added', arguments);
+
+                    var taggingParameters = {
+                        recordingId: recordingId,
+                        audioEventId: $scope.model.selectedAudioEvent.id
+                    };
+
+                    var index = $scope.model.selectedAudioEvent.tags.length; //.indexOf(addedTag.tag);
+
+
+                    Taggings.save(taggingParameters, {tagId: addedTag.tag.id},
+                        function success(value, headers) {
+
+                            // possible race condition: may no longer may be selected after async
+                            $scope.model.selectedAudioEvent.taggings[index] = new baw.Tagging(value);
+
+                            console.assert(
+                                $scope.model.selectedAudioEvent.tags.length ==
+                                    $scope.model.selectedAudioEvent.taggings.length,
+                                "The taggings array and tags array are out of sync, this is bad");
+                        },
+                        function error(response) {
+                            console.error("Tagging creation failed", response);
+                        });
                 });
                 $scope.$on('decipher.tags.addfailed', function (event) {
                     event.stopPropagation();
                     console.debug('decipher.tags.addfailed', arguments);
                 });
-                $scope.$on('decipher.tags.removed', function (event) {
+                $scope.$on('decipher.tags.removed', function (event, removedTag) {
                     event.stopPropagation();
                     console.debug('decipher.tags.removed', arguments);
+
+                    var index = _.findIndex($scope.model.selectedAudioEvent.taggings, function (value) {
+                        return value.tagId = removedTag.tag.id;
+                    });
+                    var oldTagging = $scope.model.selectedAudioEvent.taggings[index];
+
+                    var taggingParameters = {
+                        recordingId: recordingId,
+                        audioEventId: $scope.model.selectedAudioEvent.id,
+                        taggingId: oldTagging.id
+                    };
+
+                    console.assert(
+                        $scope.model.selectedAudioEvent.tags.length ==
+                            $scope.model.selectedAudioEvent.taggings.length,
+                        "The taggings array and tags array are out of sync, this is bad");
+
+                    Taggings.remove(taggingParameters, {},
+                        function success(value, headers) {
+                            // possible race condition: may no longer may be selected after async
+                            $scope.model.selectedAudioEvent.taggings.splice(oldTagging.id, 1);
+
+                            // assumes tags array is kept in sync
+                            //delete $scope.model.selectedAudioEvent.tags[index];
+                        },
+                        function error(response) {
+                            console.error("Tagging creation failed", response);
+                        }
+                    )
+                    ;
                 });
 
-//                $scope.select2Settings = {
-//                    allowClear: true,
-//                    tags: $scope.tags
-//                    //                    id: function selectTagId(tag) {
-//                    //                        return tag.tagId;
-//                    //                    },
-//                    //                    initSelection: function (element, callback) {
-//                    //                        var data = [];
-//                    //                        $(element.val().split(",")).each(function () {
-//                    //                            data.push({id: this, text: this});
-//                    //                        });
-//                    //                        callback(data);
-//                    //                    }
-//                };
+                //                $scope.select2Settings = {
+                //                    allowClear: true,
+                //                    tags: $scope.tags
+                //                    //                    id: function selectTagId(tag) {
+                //                    //                        return tag.tagId;
+                //                    //                    },
+                //                    //                    initSelection: function (element, callback) {
+                //                    //                        var data = [];
+                //                    //                        $(element.val().split(",")).each(function () {
+                //                    //                            data.push({id: this, text: this});
+                //                    //                        });
+                //                    //                        callback(data);
+                //                    //                    }
+                //                };
 
-//                $scope.select2Transformers = {
-//
-//                    fromElement: function (tagResources) {
-//                        if (tagResources.length > 0) {
-//
-//                            var result = tagResources.map(function (value) {
-//                                return new baw.AudioEventTag({tagId: value.id});
-//                            });
-//
-//                            return result;
-//                        }
-//
-//                        return tagResources;
-//                    },
-//                    // warning: IE8 incompatibility for array.prototype.map
-//                    fromModel: function (audioEventTags) {
-//                        if (audioEventTags && audioEventTags.length > 0) {
-//                            var result = audioEventTags.map(function (value) {
-//                                return Tag.resolve(value.tagId);
-//                            });
-//
-//                            //result = result.join(",");
-//
-//                            return result;
-//                        }
-//
-//                        return audioEventTags;
-//                    }
-//                };
+                //                $scope.select2Transformers = {
+                //
+                //                    fromElement: function (tagResources) {
+                //                        if (tagResources.length > 0) {
+                //
+                //                            var result = tagResources.map(function (value) {
+                //                                return new baw.AudioEventTag({tagId: value.id});
+                //                            });
+                //
+                //                            return result;
+                //                        }
+                //
+                //                        return tagResources;
+                //                    },
+                //                    // warning: IE8 incompatibility for array.prototype.map
+                //                    fromModel: function (audioEventTags) {
+                //                        if (audioEventTags && audioEventTags.length > 0) {
+                //                            var result = audioEventTags.map(function (value) {
+                //                                return Tag.resolve(value.tagId);
+                //                            });
+                //
+                //                            //result = result.join(",");
+                //
+                //                            return result;
+                //                        }
+                //
+                //                        return audioEventTags;
+                //                    }
+                //                };
 
             }
 

@@ -62,8 +62,8 @@
                            <!--baw-inject-transformers="select2Transformers"/>-->
                     <tags options="taggerOptions"
                           typeahead-options="typeaheadOpts"
-                          ng-model="model.selectedAudioEvent.taggings"
-                          src="s for t in tags"></tags>
+                          model="model.selectedAudioEvent.tags"
+                          src="t as t.name for t in tags"></tags>
                 </fieldset>
                 <fieldset ng-disabled="singleEditDisabled()">
                     <legend>

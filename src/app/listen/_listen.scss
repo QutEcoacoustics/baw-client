@@ -85,6 +85,8 @@
 }
 
 
+
+
 .details-table {
   @extend .table;
   @extend .table-striped;
@@ -92,5 +94,13 @@
 
   tbody {
 
+  }
+}
+
+.decipher-tags-taglist .icon-remove {
+  @extend .glyphicon;
+
+  &:before {
+    @extend .glyphicon-remove:before;
   }
 }
