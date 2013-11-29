@@ -350,6 +350,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                                 $scope.model.selectedAudioEvent.tags.length ==
                                     $scope.model.selectedAudioEvent.taggings.length,
                                 "The taggings array and tags array are out of sync, this is bad");
+
+                            console.debug("Tag addition success", addedTag.tag.text);
                         },
                         function error(response) {
                             console.error("Tagging creation failed", response);
@@ -382,10 +384,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     Taggings.remove(taggingParameters, {},
                         function success(value, headers) {
                             // possible race condition: may no longer may be selected after async
-                            $scope.model.selectedAudioEvent.taggings.splice(oldTagging.id, 1);
+                            $scope.model.selectedAudioEvent.taggings.splice(index, 1);
 
                             // assumes tags array is kept in sync
                             //delete $scope.model.selectedAudioEvent.tags[index];
+
+                            console.debug("Tag removal success", removedTag.tag.text );
                         },
                         function error(response) {
                             console.error("Tagging creation failed", response);
@@ -393,52 +397,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     )
                     ;
                 });
-
-                //                $scope.select2Settings = {
-                //                    allowClear: true,
-                //                    tags: $scope.tags
-                //                    //                    id: function selectTagId(tag) {
-                //                    //                        return tag.tagId;
-                //                    //                    },
-                //                    //                    initSelection: function (element, callback) {
-                //                    //                        var data = [];
-                //                    //                        $(element.val().split(",")).each(function () {
-                //                    //                            data.push({id: this, text: this});
-                //                    //                        });
-                //                    //                        callback(data);
-                //                    //                    }
-                //                };
-
-                //                $scope.select2Transformers = {
-                //
-                //                    fromElement: function (tagResources) {
-                //                        if (tagResources.length > 0) {
-                //
-                //                            var result = tagResources.map(function (value) {
-                //                                return new baw.AudioEventTag({tagId: value.id});
-                //                            });
-                //
-                //                            return result;
-                //                        }
-                //
-                //                        return tagResources;
-                //                    },
-                //                    // warning: IE8 incompatibility for array.prototype.map
-                //                    fromModel: function (audioEventTags) {
-                //                        if (audioEventTags && audioEventTags.length > 0) {
-                //                            var result = audioEventTags.map(function (value) {
-                //                                return Tag.resolve(value.tagId);
-                //                            });
-                //
-                //                            //result = result.join(",");
-                //
-                //                            return result;
-                //                        }
-                //
-                //                        return audioEventTags;
-                //                    }
-                //                };
-
             }
 
 

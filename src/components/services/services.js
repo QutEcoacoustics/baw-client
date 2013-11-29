@@ -142,7 +142,17 @@
             return tag;
         };
 
+        function search(id, tagsArray) {
+            return _.find(tagsArray, function (tagValue) {
+                return id === tagValue.id;
+            });
+        }
 
+        /**
+         * By reference, ensure every item in srcArray has a proper tag object reference.
+         * @param srcArray
+         * @param tagsArray
+         */
         resource.resolveAll = function(srcArray, tagsArray) {
             if (!tagsArray || tagsArray.length === 0) {
                 return;
@@ -151,15 +161,12 @@
 
             for (var i = 0; i < srcArray.length; i++) {
                 if (srcArray[i].resolve) {
-                    var found = _.find(tagsArray, function (tagValue) {
-                        return srcArray[i].id === tagValue.id;
-                    });
+                    var found = search(srcArray[i].id, tagsArray);
                     if (found) {
                         srcArray[i] = found;
                     }
                 }
             }
-
         };
 
         return resource;
