@@ -24,7 +24,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 element.pause();
             }
             
-            function tostart() {
+            function toStart() {
                 element.currentTime = 0;
             }
 
@@ -47,7 +47,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
 
                         target.play = target.play || play;
                         target.pause = target.pause || pause;
-                        target.tostart = target.tostart || tostart;
+                        target.toStart = target.toStart || toStart;
 
                         target.currentState = event && event.type || 'unknown';
                         updateObject(element ,target);
@@ -84,7 +84,6 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 'loadedmetadata': updateState,
                 'loadstart': updateState,
                 'mozaudioavailable': undefined,
-                'tostart' : updateState,
                 'pause': updateState,
                 'play': updateState,
                 'playing': updateState,
