@@ -199,9 +199,10 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', 'Tag', func
         console.debug("AnnotationEditor:drawaboxUpdatesModel:", action);
 
         // invariants
-        if (action === DRAWABOX_ACTION_SELECT && box.selected !== true) {
-            throw "AnnotationEditor:drawaboxUpdatesModel: Invariant failed for selection action";
-        }
+        // no longer true for hover state
+//        if (action === DRAWABOX_ACTION_SELECT && (box.selected !== true || box.hovering !== true)) {
+//            throw "AnnotationEditor:drawaboxUpdatesModel: Invariant failed for selection action";
+//        }
         if (action !== DRAWABOX_ACTION_SELECT && action !== DRAWABOX_ACTION_CREATE && box.selected !== annotation.selected) {
             throw "AnnotationEditor:drawaboxUpdatesModel: Invariant failed for non-selection action";
         }
@@ -237,6 +238,7 @@ bawds.directive('bawAnnotationViewer', [ 'conf.paths', 'AudioEvent', 'Tag', func
                 });
 
                 annotation.selected = box.selected;
+                annotation.hovering = box.hovering;
             }
             else {
                 // resize / move

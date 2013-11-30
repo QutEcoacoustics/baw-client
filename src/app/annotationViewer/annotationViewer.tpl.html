@@ -5,6 +5,7 @@
         <div class="tag-preview">
             <ul>
                 <li ng-repeat="annotation in model.audioEvents"
+                    ng-class="{active: annotation.selected || annotation.hovering}"
                     ng-style="{left: (positionLabel(annotation)) + 'px' }"
                     ng-eval="tag = getTag(annotation)"
                     >

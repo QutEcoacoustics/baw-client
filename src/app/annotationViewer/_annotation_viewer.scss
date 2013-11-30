@@ -33,18 +33,28 @@ baw-annotation-viewer {
       line-height: $standard-line-height;
 
       li {
-        border-bottom: $tagAlignmentLine solid 1px;
+
         margin-left: -4px;
         position: absolute;
         bottom:  -1px;
         padding-left: 2px;
+        z-index: 0;
+        background-color: transparent;
 
         @include vendor-prefix(transform-origin, 0 0);
         @include vendor-prefix(transform, rotate3d(0,0,1,-20deg));
 
+
+
       }
     }
 
+  }
+
+  & .active {
+    z-index: 100;
+    background-color: #ffffff;
+    border-bottom: $tagAlignmentLine solid 1px;
   }
 
 
@@ -109,6 +119,7 @@ baw-annotation-viewer {
     position: absolute;
     background-color: rgba(255,255,255,0.05);
     overflow: visible;
+    z-index: 0;
 
     &:before {
       @if not $DEBUG {
@@ -128,8 +139,13 @@ baw-annotation-viewer {
     &[data-selected="true"] {
       border-color: $marqueeBorderColorSelected;
       @include glow($marqueeBorderColorSelectedGlow);
+      z-index: 100;
 
       & .close-icon{
+        visibility: visible;
+      }
+
+      &:before {
         visibility: visible;
       }
     }
