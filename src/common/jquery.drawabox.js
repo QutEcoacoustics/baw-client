@@ -1,6 +1,7 @@
 ﻿(function ($) {
 
     var SELECTED_ATTRIBUTE = "data-selected";
+    var HOVER_ATTRIBUTE = "data-hover";
 
     var clickLocation = function (e) {
         var posx = 0;
@@ -159,6 +160,16 @@
             default : $newBox.click(raiseSelectCallback); break;
         }
 
+        function onHover(event) {
+            var hovering = event.type === "mouseover" ||
+                event.type === "mouseenter";
+            var $t = $(this);
+            $t.attr(HOVER_ATTRIBUTE, hovering);
+            contextData.options.boxSelected($t);
+        }
+
+        $newBox.hover(onHover);
+
         if (contextData.options.showOnly !== true) {
             // add delete click handler
             $('#' + newId + ' span').click(function () {
@@ -279,6 +290,7 @@
 
     var getBox = function ($element) {
         var selectedAttr = $element.attr(SELECTED_ATTRIBUTE);
+        var hoveringAttr = $element.attr(HOVER_ATTRIBUTE);
 
         return {
             id: parseInt($element.attr(dataIdKey), 10),
@@ -286,7 +298,8 @@
             top: removePx($element.css("top")),
             width: removePx($element.css("width")) + BORDER_MODEL_DIFFERANCE,  // box model - border not included in widths
             height: removePx($element.css("height")) + BORDER_MODEL_DIFFERANCE, // box model - border not included in widths
-            selected: (!!selectedAttr) && selectedAttr == "true"
+            selected: (!!selectedAttr) && selectedAttr == "true",
+            hovering: (!!hoveringAttr) && hoveringAttr == "true"
         };
     };
 

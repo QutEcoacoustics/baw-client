@@ -66,6 +66,7 @@ baw.Annotation = (function () {
         this._epsilsonDirty = 0.0;
         this.isDirty = false;
         this.selected = false;
+        this.hovering = false;
         this.taggings = [];
         this.tags = [];
 
