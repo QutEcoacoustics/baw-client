@@ -249,6 +249,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     var offset = base.add({seconds: $scope.model.media.startOffset});
                     return offset;
                 };
+                
+                $scope.previousEnabled = false;
+                $scope.nextEnabled = false;
+           
+         
+                
 
                 $scope.createNavigationHref = function (linkType, stepBy) {
                     if (!angular.isNumber(stepBy)) {
@@ -259,6 +265,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     if (linkType === "previous") {
                         var lowerBound = ($routeParams.start - stepBy);
+                        
+                        
+                        if ($routeParams.start > 0) {
+                            $scope.previousEnabled = true;
+                        } else {
+                            $scope.previousEnabled = false; 
+                        }
+                        
                         if (lowerBound === 0) {
                             baseLink.end = lowerBound + stepBy;
                         }
@@ -284,6 +298,15 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                                 start: ($routeParams.start + stepBy),
                                 end: ($routeParams.end + stepBy)
                             });
+                        
+                        
+                        
+                        if ($routeParams.start + stepBy < $scope.model.audioRecording.durationSeconds) {
+                            $scope.nextEnabled = true;
+                        } else {
+                            $scope.nextEnabled = false; 
+                        }
+                            
                         return uriNext;
                     }
 

@@ -20,7 +20,7 @@
     <div class="btn-toolbar">
 
         <div class="btn-group">
-            <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}">
+            <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}" ng-disabled="!previousEnabled">
                 <span class="glyphicon glyphicon-step-backward"></span>
             </a>
         </div>
@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="btn-group">
-            <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}">
+            <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}" ng-disabled="!nextEnabled">
                 <span class="glyphicon glyphicon-step-forward"></span>
             </a>
         </div>
