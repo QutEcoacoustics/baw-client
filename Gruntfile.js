@@ -335,59 +335,6 @@ module.exports = function (grunt) {
             }
         },
 
-        /**
-         * `recess` handles our LESS compilation and uglification automatically.
-         * Only our `main.less` file is included in compilation; all other files
-         * must be imported from this file.
-         */
-        //recess: {
-        //  build: {
-        //    src: [ '<%= app_files.less %>' ],
-        //    dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
-        //    options: {
-        //      compile: true,
-        //      compress: false,
-        //      noUnderscores: false,
-        //      noIDs: false,
-        //      zeroUnits: false
-        //    }
-        //  },
-        //  compile: {
-        //    src: [ '<%= recess.build.dest %>' ],
-        //    dest: '<%= recess.build.dest %>',
-        //    options: {
-        //      compile: true,
-        //      compress: true,
-        //      noUnderscores: false,
-        //      noIDs: false,
-        //      zeroUnits: false
-        //    }
-        //  }
-        //},
-        /*
-         compass: {
-         build: {
-         options: {
-         sassDir: 'src/sass',
-         cssDir: '<%= build_dir %>/assets/styles/',
-         environment: 'development',
-         outputStyle: 'expanded',
-         raw: "preferred_syntax = :scss\n"
-         }
-         },
-
-         compile: {
-         options: {
-         sassDir: 'src/sass',
-         cssDir: '<%= build_dir %>/assets/styles/',
-         environment: 'production',
-         outputStyle: 'compressed',
-         noLineComments: true,
-         raw: "preferred_syntax = :scss\n"
-         }
-         }
-         },*/
-
         sass: {
             build: ['sassTemplate', 'sassReal:build', 'clean:processedSass'],
             compile: ['sassTemplate', 'sassReal:compile', 'clean:processedSass']
@@ -726,7 +673,7 @@ module.exports = function (grunt) {
      * minifying your code.
      */
     grunt.registerTask('compile', [
-        /*'recess:compile',*/ 'sass:compile', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify',
+        'sass:compile', 'concat:build_css', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify',
         'index:compile'
     ]);
 
