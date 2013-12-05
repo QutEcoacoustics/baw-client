@@ -150,6 +150,7 @@ angular.module('bawApp.configuration', ['url'])
     )
     .constant("conf.constants", {
         listen: {
-            chunkDurationSeconds: 30.0
+            chunkDurationSeconds: 30.0,
+            minAudioDurationSeconds: 2.0
         }
     });
