@@ -15,6 +15,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    //grunt.loadNpmTasks('grunt-conventional-changelog');
     grunt.loadNpmTasks('grunt-conventional-changelog');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-sass');
@@ -113,6 +114,8 @@ module.exports = function (grunt) {
          */
         changelog: {
             options: {
+                after: "2013-09-05T10:18:39.4492679+10:00",
+                before: "today",
                 dest: 'CHANGELOG.md',
                 template: 'changelog.tpl'
             }
