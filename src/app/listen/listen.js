@@ -252,9 +252,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 
                 $scope.previousEnabled = false;
                 $scope.nextEnabled = false;
-           
-         
-                
 
                 $scope.createNavigationHref = function (linkType, stepBy) {
                     if (!angular.isNumber(stepBy)) {
@@ -265,7 +262,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     if (linkType === "previous") {
                         var lowerBound = ($routeParams.start - stepBy);
-                        
                         
                         if ($routeParams.start > 0) {
                             $scope.previousEnabled = true;
@@ -290,18 +286,19 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return uriPrev;
 
                     }
-                    else if (linkType === "next") {
+                    else if (linkType === "next") {   
+                        
+                        var maxEnd = Math.floor($scope.model.audioRecording.durationSeconds);
+                        
                         var uriNext = $url.formatUri(
                             paths.site.ngRoutes.listen,
                             {
                                 recordingId: recordingId,
                                 start: ($routeParams.start + stepBy),
-                                end: ($routeParams.end + stepBy)
+                                end: (($routeParams.end + stepBy <  maxEnd) ? $routeParams.end + stepBy : maxEnd)
                             });
                         
-                        
-                        
-                        if ($routeParams.start + stepBy < $scope.model.audioRecording.durationSeconds) {
+                        if ($routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds) {
                             $scope.nextEnabled = true;
                         } else {
                             $scope.nextEnabled = false; 
