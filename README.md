@@ -5,7 +5,7 @@ The AngularJS client for the bioacoustic workbench
 
 [![Build Status](https://travis-ci.org/QutBioacoustics/baw-client.png)](https://travis-ci.org/QutBioacoustics/baw-client.png)
 [![Dependency Status](https://gemnasium.com/QutBioacoustics/baw-client.png)](https://gemnasium.com/QutBioacoustics/baw-client.png)
-[![Code Quality](https://codeclimate.com/github/QutBioacoustics/baw-client/badges)](https://codeclimate.com/github/QutBioacoustics/baw-client/badges)
+[![Code Quality](https://d3s6mut3hikguw.cloudfront.net/github/QutBioacoustics/baw-client.png)](https://d3s6mut3hikguw.cloudfront.net/github/QutBioacoustics/baw-client.png)
 ---
 ## Install instructions
 	$ npm -g install grunt-cli karma bower
