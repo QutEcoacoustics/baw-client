@@ -29,12 +29,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" ng-href="{{paths.api.links.homeAbsolute}}">Bioacoustics Workbench</a>
+            <a class="navbar-brand" ng-href="{{paths.api.links.homeAbsolute}}" target="_self">Bioacoustics Workbench</a>
         </div>
 
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: $location.path().indexOf('/projects') != -1}"><a ng-href="{{paths.api.links.projectsAbsolute}}">Projects</a></li>
+                <li ng-class="{ active: $location.path().indexOf('/projects') != -1}"><a ng-href="{{paths.api.links.projectsAbsolute}}"  target="_self">Projects</a></li>
                 <li ng-class="{ active: $location.path().indexOf('/listen') != -1}"><a href="/listen/">Listen</a></li>
                 <li ng-class="{ active: $location.path().indexOf('/bird') != -1}"><a href="/birdWalks">Bird Walks</a></li>
 
