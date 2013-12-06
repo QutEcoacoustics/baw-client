@@ -152,5 +152,8 @@ angular.module('bawApp.configuration', ['url'])
         listen: {
             chunkDurationSeconds: 30.0,
             minAudioDurationSeconds: 2.0
+        },
+        unitConverter: {
+            precision: 4
         }
     });
