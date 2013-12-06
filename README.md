@@ -3,7 +3,7 @@ baw-client
 
 The AngularJS client for the bioacoustic workbench
 
-![Build status](https://travis-ci.org/QutBioacoustics/baw-client.png "QutBioacoustics/baw-client")
+![Build status](https://travis-ci.org/QutBioacoustics/baw-client.png)("QutBioacoustics/baw-client")
 
 ---
 ## Install instructions
