@@ -34,12 +34,7 @@ module.exports = function (grunt) {
     /**
      * Process the build option.
      */
-    var usePhantomJsTestRunner = grunt.option('use-phantomjs') === true;
-    grunt.log.writeln("Test runner should use " + (usePhantomJsTestRunner ? "PhantomJS" : "Chrome"));
-    userConfig.usePhantomJs = usePhantomJsTestRunner;
-
-
-
+    userConfig.usePhantomJs = grunt.option('use-phantomjs') === true;
 
     var development = grunt.option('development') === true,
         staging = grunt.option('staging') === true,
@@ -73,13 +68,16 @@ module.exports = function (grunt) {
         grunt.log.ok("Staging build selected");
         userConfig.build_configs.current = userConfig.build_configs.staging;
         userConfig.build_configs.current.key = 'staging';
+        userConfig.usePhantomJs = true;
     }
     if (production) {
         grunt.log.ok("Production build selected");
         userConfig.build_configs.current = userConfig.build_configs.production;
         userConfig.build_configs.current.key = 'production';
+        userConfig.usePhantomJs = true;
     }
 
+    grunt.log.writeln("Test runner should use " + (userConfig.usePhantomJs ? "PhantomJS" : "Chrome"));
 
     /**
      * This is the configuration object Grunt uses to give each plugin its
