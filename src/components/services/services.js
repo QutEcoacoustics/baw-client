@@ -223,7 +223,7 @@
     }]);
 
     // breadcrumbs - from https://github.com/angular-app/angular-app/blob/master/client/src/common/services/breadcrumbs.js
-    bawss.factory('breadcrumbs', ['$rootScope', '$location', '$route', '$routeParams', function ($rootScope, $location, $route, $routeParams) {
+    bawss.factory('breadcrumbs', ['$rootScope', '$location', '$route', '$routeParams',  'conf.paths', function ($rootScope, $location, $route, $routeParams, paths) {
 
         var breadcrumbs = [];
         var breadcrumbsService = {};
@@ -304,7 +304,7 @@
             }
 
             // add home as first item in result array
-            result.unshift({name: 'Home', path: '/', title: 'Home'});
+            result.unshift({name: 'Home', path: paths.api.root, title: 'Home', target: "_self"});
 
             breadcrumbs = result;
         });
