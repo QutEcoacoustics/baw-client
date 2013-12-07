@@ -7,30 +7,42 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
         return Math.abs(fraction - 1);
     }
 
-    function calculateUnitConversions(sampleRate, window, duration, image) {
-        if (sampleRate === undefined || window === undefined || duration === undefined) {
+    function calculateUnitConversions(data) {
+        var result = {
+            pixelsPerSecond: NaN,
+            pixelsPerHertz: NaN,
+            nyquistFrequency: NaN,
+            enforcedImageWidth: NaN,
+            enforcedImageHeight: NaN
+        };
+        
+        if (data.sampleRate === undefined ||
+            data.spectrogramWindowSize === undefined ||
+            data.startOffset === undefined ||
+            data.startOffset === undefined ||
+            data.endOffset === undefined) {
             console.warn("unitConverter:calculateUnitConversions: not enough information available to calculate unit conversions");
-            return { pixelsPerSecond: NaN, pixelsPerHertz: NaN};
+            return result;
         }
 
         // based on meta data only
-        var nyquistFrequency = (sampleRate / 2.0),
-            idealPps = sampleRate / window,
+        var duration = data.endOffset - data.startOffset,
+            nyquistFrequency = (data.sampleRate / 2.0),
+            idealPps = data.sampleRate / data.spectrogramWindowSize,
             idealWidth = duration * idealPps,
-            idealHeight = window / 2.0,
+            idealHeight = data.spectrogramWindowSize / 2.0,
             idealPph = idealHeight / nyquistFrequency;
 
-        var result = {
-            pixelsPerSecond: idealPps,
-            pixelsPerHertz: idealPph,
-            nyquistFrequency: nyquistFrequency,
-            enforcedImageWidth: idealWidth,
-            enforcedImageHeight: idealHeight
-        };
+       
+        result.pixelsPerSecond = idealPps;
+        result.pixelsPerHertz = idealPph;
+        result.nyquistFrequency = nyquistFrequency;
+        result.enforcedImageWidth = Math.round(idealWidth);
+        result.enforcedImageHeight = idealHeight;
 
-        if (image.src) {
-            var imageHeight = image.naturalHeight,
-                imageWidth = image.naturalWidth;
+        if (data.imageElement && data.imageElement.src) {
+            var imageHeight = data.imageElement.naturalHeight,
+                imageWidth = data.imageElement.naturalWidth;
 
             // invariant
             if (imageHeight === undefined || imageWidth === undefined) {
@@ -44,7 +56,7 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
                 if (!baw.isPowerOfTwo(imageHeight)) {
                     var croppedHeight = baw.closestPowerOfTwoBelow(imageHeight);
                     console.error("unitConverter:calculateUnitConversions: The natural height (" + imageHeight +
-                        "px) for image " + image.src +
+                        "px) for image " + data.imageElement.src +
                         " is not a power of two. The image has been STRETCHED to " + croppedHeight + "px! ALL MEASUREMENTS ON THIS SPECTROGRAM WILL BE WRONG!");
 
                     // squish image into the nearest 'correct height' to minimise damage
@@ -53,7 +65,7 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
 
 
                 // use the image width to estimate the actual shown duration
-                var spectrogramBasedAudioLength = (imageWidth * window) / sampleRate,
+                var spectrogramBasedAudioLength = (imageWidth * data.spectrogramWindowSize) / data.sampleRate,
                     spectrogramPps = imageWidth / spectrogramBasedAudioLength;
 
                 // use the image height to estimate the actual shown frequency bounds
@@ -76,18 +88,33 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
         return result;
     }
 
-    function calculateUnitConverters(mediaObject, image) {
+    var defaultArgs = {
+        sampleRate: null,
+        spectrogramWindowSize: null,
+        endOffset: null,
+        startOffset: null,
+        imageElement: null
+    };
+
+    function calculateUnitConverters(inputData) {
         var conversions = {};
 
-        if (mediaObject && mediaObject.spectrogram) {
-            conversions = calculateUnitConversions(mediaObject.sampleRate, mediaObject.spectrogram.window,
-                (mediaObject.endOffset - mediaObject.startOffset), image);
+        if (inputData) {
+            var defaultKeys = Object.keys(defaultArgs);
+            for (var i = 0; i < defaultKeys.length; i++) {
+                if (!inputData.hasOwnProperty(defaultKeys[i])) {
+                    throw "Missing property: " + defaultKeys[i];
+                }
+            }
+
+            conversions = calculateUnitConversions(inputData);
         }
 
-        var PRECISION = constants.precision;
+        var pSeconds = constants.precisionSeconds;
+        var pHertz = constants.precisionHertz;
 
-        return {
-            arguments: mediaObject,
+        var functions = {
+            input: inputData,
             conversions: conversions,
             pixelsToSeconds: function pixelsToSeconds(pixels) {
                 var seconds = pixels / conversions.pixelsPerSecond;
@@ -112,6 +139,37 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
                 return Math.abs(conversions.enforcedImageHeight - pixels);
             }
         };
+
+        functions.toLeft = function toLeft(startSeconds) {
+            return functions.secondsToPixels(startSeconds);
+        };
+        functions.toTop = function toTop(highHertz) {
+            return functions.invertPixels(functions.hertzToPixels(highHertz));
+        };
+        functions.toWidth = function toWidth(endSeconds, startSeconds) {
+            return functions.secondsToPixels(endSeconds - startSeconds);
+        };
+        functions.toHeight = function toHeight(highHertz, lowHertz) {
+            return functions.hertzToPixels(highHertz - lowHertz);
+        };
+        functions.toStart = function toStart(left) {
+            return functions.pixelsToSeconds(left || 0.0);
+        };
+        functions.toEnd = function toEnd(left, width) {
+            return functions.pixelsToSeconds((left || 0.0) + (width || 0.0));
+        };
+        functions.toLow = function toLow(top, height) {
+            return functions.pixelsToHertz(
+                functions.invertPixels(top || 0.0) - (height || 0.0)
+            );
+
+        };
+        functions.toHigh = function toHigh(top) {
+            return functions.pixelsToHertz(functions.invertPixels(top || 0.0));
+        };
+
+
+        return functions;
     }
 
     return {

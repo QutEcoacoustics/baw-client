@@ -58,10 +58,10 @@ var app = angular.module('baw',
                              'ui.bootstrap.tpls',
                              'decipher.tags',
 
-
+                             'url', /* a custom uri formatter */
                              'bawApp.configuration', /* a mapping of all static path configurations
                           and a module that contains all app configuration */
-                             'url', /* a custom uri formatter */
+
 
                              'templates-app', /* these are the precompiled templates */
                              'templates-common',
@@ -69,6 +69,7 @@ var app = angular.module('baw',
                              'bawApp.directives', /* our directives.js  */
                              'bawApp.filters', /* our filters.js     */
                              'bawApp.services', /* our services.js    */
+                             'bawApp.services.unitConverter',
 
                              'http-auth-interceptor', /* the auth module    */
                              'angular-auth', /* the auth module    */

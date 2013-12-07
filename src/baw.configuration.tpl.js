@@ -154,6 +154,8 @@ angular.module('bawApp.configuration', ['url'])
             minAudioDurationSeconds: 2.0
         },
         unitConverter: {
-            precision: 4
+            precisionSeconds: 3,
+            precisionHertz: 0
+
         }
     });
