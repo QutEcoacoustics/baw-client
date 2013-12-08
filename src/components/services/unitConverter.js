@@ -141,7 +141,7 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
         };
 
         functions.toLeft = function toLeft(startSeconds) {
-            return functions.secondsToPixels(startSeconds);
+            return functions.secondsToPixels(startSeconds - functions.input.startOffset);
         };
         functions.toTop = function toTop(highHertz) {
             return functions.invertPixels(functions.hertzToPixels(highHertz));
@@ -153,10 +153,10 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
             return functions.hertzToPixels(highHertz - lowHertz);
         };
         functions.toStart = function toStart(left) {
-            return functions.pixelsToSeconds(left || 0.0);
+            return functions.input.startOffset + functions.pixelsToSeconds(left || 0.0);
         };
         functions.toEnd = function toEnd(left, width) {
-            return functions.pixelsToSeconds((left || 0.0) + (width || 0.0));
+            return functions.input.startOffset + functions.pixelsToSeconds((left || 0.0) + (width || 0.0));
         };
         functions.toLow = function toLow(top, height) {
             return functions.pixelsToHertz(

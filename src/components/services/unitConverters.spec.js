@@ -5,7 +5,7 @@ describe("The unitConverter service", function () {
 
     beforeEach(module('bawApp.services.unitConverter'));
 
-    beforeEach( inject(["bawApp.unitConverter", function (providedUnitConverted) {
+    beforeEach(inject(["bawApp.unitConverter", function (providedUnitConverted) {
         unitConverter = providedUnitConverted;
 
         inputArgs = {
@@ -40,7 +40,7 @@ describe("The unitConverter service", function () {
         var obj = angular.copy(inputArgs);
         delete obj[keys[rand - 1]];
 
-        var f = function() {
+        var f = function () {
             unitConverter.getConversions(obj);
         };
 
@@ -148,36 +148,70 @@ describe("The unitConverter service", function () {
         });
 
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the left position of a box - with start offset", function () {
+            var left = converters.toLeft(45.0 /*seconds*/);
+            expect(left).toBe(430.6640625 /*pixels*/);
         });
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the left position of a box - less than start offset", function () {
+            var left = converters.toLeft(15.0 /*seconds*/);
+            expect(left).toBe(-861.328125 /*pixels*/);
         });
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the left position of a box - greater than offset", function () {
+            var left = converters.toLeft(92.0 /*seconds*/);
+            expect(left).toBe(2454.78515625);
         });
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the top position of a box", function () {
+            var top = converters.toTop(10000 /*hertz*/);
+
+            // remember - inverted y axis
+            expect(top).toBe(23.800453514739218 /*pixels*/);
         });
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the width of a box", function () {
+            var width = converters.toWidth(32, 16 /*seconds*/);
+            expect(width).toBe(689.0625 /*pixels*/);
         });
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the height of a box", function () {
+            var height = converters.toHeight(5000, 1500 /*hertz*/);
+            expect(height).toBe(81.26984126984127 /*pixels*/);
         });
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the startSeconds for and audioEvent from the left position of a box - with start offset",
+            function () {
+                var start = converters.toStart(650 /*pixels*/);
+                expect(start).toBe(50.09297052154195 /*seconds*/);
+            });
+
+        it("correctly calculates the startSeconds for and audioEvent from the left position of a box - with pos+ pixels",
+            function () {
+                var start = converters.toStart(2500 /*pixels*/);
+                expect(start).toBe(93.0498866213152 /*seconds*/);
+            });
+
+
+        it("correctly calculates the startSeconds for and audioEvent from the left position of a box - with negative pixels",
+            function () {
+                var start = converters.toStart(-860 /*pixels*/);
+                expect(start).toBe(15.030839002267573 /*seconds*/);
+            });
+
+        it("correctly calculates the endSeconds for an audioEvent from the left position of a box and its width", function () {
+            var end = converters.toEnd(650, 43.06640625 /*pixels*/);
+            expect(end).toBe(51.09297052154195 /*seconds*/);
         });
 
-        it("correctly calculates the left position of a box", function () {
-            expect().toBeTrue();
+        it("correctly calculates the lowFrequency for an audioEvent from the top position of a box and its width", function () {
+            var low = converters.toLow(20, 50 /*pixels*/);
+            expect(low).toBe(8010.3515625 /*hertz*/);
+        });
+
+        it("correctly calculates the highFrequency for an audioEvent from the top position of a box", function () {
+            var high = converters.toHigh(20 /*pixels*/);
+            expect(high).toBe(10163.671875);
         });
 
     });
