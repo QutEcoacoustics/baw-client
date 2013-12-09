@@ -1,32 +1,8 @@
-fieldset.tags-fs {
-
-  width: 55%;
-float: left;
-}
-fieldset.bounds-fs {
-  width: 40%;
-  float: right;
-}
-
-fieldset.options-fs {
-  width: 45%;
-  float: left;
-}
-fieldset.bounds-fs label {
-    width: 220px;
-}
-fieldset.bounds-fs input {
-    width: 100px;
-}
-
-label.reference {
-    margin:10px 10px 0px 10px;
-}
-
-
-.position span {
+.position {
+  & span {
     margin-left: 10px;
     margin-right: 10px;
+  }
 }
 
 #listenEditContainer {
@@ -35,6 +11,26 @@ label.reference {
     clear: both;
     width: 100%;
     margin-top: 10px;
+  }
+
+  & .tags-fs {
+    width: 55%;
+    float: left;
+  }
+
+  & .bounds-fs {
+    width: 40%;
+    float: right;
+    & input {
+      width: 100px;
+    }
+    & label {
+      width: 220px;
+    }
+  }
+
+  & .reference {
+      margin:10px 10px 0px 10px;
   }
 
 
