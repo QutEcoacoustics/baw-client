@@ -1,7 +1,13 @@
 describe("The unitConverter service", function () {
 
     var unitConverter;
-    var inputArgs;
+    var inputArgs = {
+        sampleRate: null,
+        spectrogramWindowSize: null,
+        endOffset: null,
+        startOffset: null,
+        imageElement: null
+    };
 
     beforeEach(module('bawApp.services.unitConverter'));
 
@@ -34,17 +40,19 @@ describe("The unitConverter service", function () {
         expect(c).toBeObject();
     });
 
-    it("fails iff the input object is missing properties", function () {
-        var keys = Object.keys(inputArgs);
-        var rand = Math.randomInt(0, keys.length);
-        var obj = angular.copy(inputArgs);
-        delete obj[keys[rand - 1]];
 
-        var f = function () {
-            unitConverter.getConversions(obj);
-        };
+    Object.keys(inputArgs).forEach(function (key) {
+        it("fails iff the input object is missing the " + key + " property", function () {
+            var obj = angular.copy(inputArgs);
+            delete obj[key];
 
-        expect(f).toThrowError("Missing property: " + keys[rand]);
+            var f = function () {
+                unitConverter.getConversions(obj);
+            };
+
+            expect(f).toThrowError("Missing property: " + key);
+        });
+
     });
 
     describe("has the getConversions method:", function () {

@@ -7,7 +7,6 @@ bawds.directive('bawAnnotationViewer',
         'Tag',
         function (paths, unitConverter, AudioEvent, Tag) {
 
-
             /**
              * Create an watcher for an audio event model.
              * The purpose is to allow for binding from model -> drawabox || model -> server
@@ -61,7 +60,7 @@ bawds.directive('bawAnnotationViewer',
 
                     scope.model.converters = unitConverter.getConversions({
                         sampleRate: scope.model.media.sampleRate,
-                        spectrogramWindowSize: scope.model.media.spectrogram.window,
+                        spectrogramWindowSize: scope.model.media.spectrogram ? scope.model.media.spectrogram.window : null,
                         endOffset: scope.model.media.endOffset,
                         startOffset: scope.model.media.startOffset,
                         imageElement: scope.$image[0]
@@ -144,10 +143,10 @@ bawds.directive('bawAnnotationViewer',
                     }
                     else {
                         // resize / move
-                        annotation.highFrequencyHertz =  unitConverter.toHigh(box.top);
-                        annotation.startTimeSeconds = unitConverter.toStart(box.left);
-                        annotation.endTimeSeconds = unitConverter.toEnd(box.left, box.width);
-                        annotation.lowFrequencyHertz = unitConverter.toLow(box.top, box.height);
+                        annotation.highFrequencyHertz =  scope.model.converters.toHigh(box.top);
+                        annotation.startTimeSeconds = scope.model.converters.toStart(box.left);
+                        annotation.endTimeSeconds = scope.model.converters.toEnd(box.left, box.width);
+                        annotation.lowFrequencyHertz = scope.model.converters.toLow(box.top, box.height);
 
                         if (!annotation.$intermediateEvent) {
                             // funny bug. resized does not trigger a model updated... although moved does.
@@ -185,10 +184,10 @@ bawds.directive('bawAnnotationViewer',
                 console.debug("AnnotationEditor:modelUpdatesDrawabox:", annotation.__localId__);
 
                 var drawaboxInstance = scope.$drawaboxElement,
-                    top = unitConverter.toTop(annotation.highFrequencyHertz),
-                    left = unitConverter.toLeft(annotation.startTimeSeconds),
-                    width = unitConverter.toWidth(annotation.endTimeSeconds, annotation.startTimeSeconds),
-                    height = unitConverter.toHeight(annotation.highFrequencyHertz, annotation.lowFrequencyHertz);
+                    top = scope.model.converters.toTop(annotation.highFrequencyHertz),
+                    left = scope.model.converters.toLeft(annotation.startTimeSeconds),
+                    width = scope.model.converters.toWidth(annotation.endTimeSeconds, annotation.startTimeSeconds),
+                    height = scope.model.converters.toHeight(annotation.highFrequencyHertz, annotation.lowFrequencyHertz);
 
                 drawaboxInstance.drawabox('setBox', annotation.__localId__, top, left, height, width,
                     annotation.selected);
@@ -491,7 +490,7 @@ bawds.directive('bawAnnotationViewer',
                             console.log("boxSelected", selectedBox);
                             drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex],
                                 selectedBox,
-                                DRAWABOX_ACTION_SELECT, false);
+                                DRAWABOX_ACTION_SELECT, true);
                         },
                         "boxResizing": function (element, box) {
                             console.log("boxResizing");

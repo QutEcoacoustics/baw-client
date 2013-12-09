@@ -111,7 +111,7 @@ angular.module('bawApp.configuration', ['url'])
                 },
                 // routes used by angular
                 ngRoutes: {
-                    listen: "/listen/{recordingId}/"
+                    listen: "/listen/{recordingId}"
                 },
                 // general links for use in <a />'s
                 links: {
