@@ -20,7 +20,8 @@ module.exports = function (config) {
             "vendor/objectdiff/objectDiff.js",
             "vendor/jasmine-matchers/dist/jasmine-matchers.js"
         ].concat(JSON.parse(fileJson).concat([
-            'src/**/*.js'
+            'src/**/*.js',
+            'src/**/*.spec.js'
         ])),
         exclude: [
             'src/assets/**/*.js'

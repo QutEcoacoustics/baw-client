@@ -57,7 +57,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
         };
 
         $scope.positionLabel = function (audioEvent) {
-            return $scope.model.converters.secondsToPixels(audioEvent.startTimeSeconds);
+            return $scope.model.converters.toLeft(audioEvent.startTimeSeconds);
         };
 
         $scope.positionLine = function () {
