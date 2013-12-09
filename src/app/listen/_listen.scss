@@ -1,25 +1,80 @@
+fieldset.tags-fs {
+
+  width: 55%;
+float: left;
+}
+fieldset.bounds-fs {
+  width: 40%;
+  float: right;
+}
+
+fieldset.options-fs {
+  width: 45%;
+  float: left;
+}
+fieldset.bounds-fs label {
+    width: 220px;
+}
+fieldset.bounds-fs input {
+    width: 100px;
+}
+
+label.reference {
+    margin:10px 10px 0px 10px;
+}
+
+
+.position span {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 #listenEditContainer {
 
   > div {
     clear: both;
     width: 100%;
+    margin-top: 10px;
   }
+
+
 }
+
+#listenEditContainer.disabled {
+
+    & * {
+        color: rgba(0,0,0,0.2);
+       
+    } 
+
+}
+
 
 #chunkTimeStamps {
   width: 100%;
   text-align: center;
+  position:relative;
 
   & .position {
     display: inline-block;
-  }
-
-  & .left {
     float: left;
   }
 
+  & .left {
+    position:absolute;
+    left: 0px;
+    top: 0px;
+  }
+
   & .right {
-    float: right;
+    position:absolute;
+    right: 0px;
+    top: 0px; 
+  }
+
+  & .btn-toolbar {
+    margin-left:38%;
+
   }
 
 }
@@ -104,3 +159,5 @@
     @extend .glyphicon-remove:before;
   }
 }
+
+

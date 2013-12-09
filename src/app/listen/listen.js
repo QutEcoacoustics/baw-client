@@ -317,7 +317,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 };
 
                 $scope.singleEditDisabled = function () {
-                    return !$scope.model.selectedAudioEvent;
+                    return (typeof($scope.model.selectedAudioEvent.id) === 'undefined');
                 };
 
 
