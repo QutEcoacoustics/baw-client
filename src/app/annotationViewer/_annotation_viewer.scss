@@ -11,8 +11,18 @@ $marqueeBorderColorInactive: #00FF00;
 
 baw-annotation-viewer {
 
+  
+
   width: 100%;
   text-align: center;
+
+
+
+  & .annotation-viewer-ctrl {
+    background: url(/assets/img/load.gif) center center no-repeat;
+
+  }
+  
 
   & #scroller {
     display: inline-block;
@@ -59,13 +69,14 @@ baw-annotation-viewer {
 
 
   & #scroller{
+
     overflow-x: scroll;
     overflow-y: hidden;
     line-height: 0;
   }
 
   & .annotation-viewer {
-
+    height: 255px;
     display: inline-block;
     position: relative;
     line-height: 0;

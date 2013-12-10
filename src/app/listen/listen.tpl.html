@@ -7,6 +7,7 @@
 
         <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span>
         </h4>
+        
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
 
         <div id="chunkTimeStamps" class="clear-pseudo">
@@ -18,7 +19,7 @@
 
 
                 <div class="btn-group">
-                    <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}" ng-disabled="!previousEnabled">
+                    <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}" ng-disabled="!previousEnabled" title="Previous Recording">
                         <span class="glyphicon glyphicon-step-backward"></span>
                     </a>
                 </div>
@@ -35,7 +36,7 @@
 
                 </div>
                 <div class="btn-group">
-                    <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}" ng-disabled="!nextEnabled">
+                    <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}" ng-disabled="!nextEnabled" title="Next Recording">
                         <span class="glyphicon glyphicon-step-forward"></span>
                     </a>
                 </div>
