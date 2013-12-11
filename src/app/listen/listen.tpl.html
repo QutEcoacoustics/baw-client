@@ -4,7 +4,6 @@
     </div>
     <div ng-hide="errorState">
 
-
         <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span>
         </h4>
         
@@ -15,8 +14,6 @@
             <span class="left"> <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span></span>
 
             <div class="btn-toolbar">
-
-
 
                 <div class="btn-group">
                     <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}" ng-disabled="!previousEnabled" title="Previous Recording">
