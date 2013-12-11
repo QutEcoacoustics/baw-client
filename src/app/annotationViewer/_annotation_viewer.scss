@@ -76,7 +76,6 @@ baw-annotation-viewer {
   }
 
   & .annotation-viewer {
-    height: 255px;
     display: inline-block;
     position: relative;
     line-height: 0;
@@ -85,7 +84,11 @@ baw-annotation-viewer {
 
 
     & img {
-
+      /* set a temporary height to avoid UI jumping around on image load
+          -- note: this value is usually overridden with a element level style by
+          the enforcedImageHeight value model.
+        */
+      height: 256px;
     }
 
     // overlay
