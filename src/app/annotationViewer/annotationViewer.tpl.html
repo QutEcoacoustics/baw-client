@@ -1,5 +1,6 @@
-<div ng-controller="AnnotationViewerCtrl">
+<div ng-controller="AnnotationViewerCtrl" class="annotation-viewer-ctrl">
 
+    
 
     <div id="scroller">
         <div class="tag-preview">
@@ -17,7 +18,7 @@
         </div>
         <div class="annotation-viewer" id="annotation-viewer_{{id}}" >
             <img ng-src="{{model.media.spectrogram.url}}" src=""
-                 ng-style="{width: model.converters.enforcedImageWidth, height: model.converters.enforcedImageHeight}">
+                 ng-style="{width: model.converters.conversions.enforcedImageWidth, height: model.converters.conversions.enforcedImageHeight}">
             <div id="spectrogramAnnotations_{{id}}" ></div>
             <div class="positionLine" baw-translate-x="positionLine()"></div>
         </div>

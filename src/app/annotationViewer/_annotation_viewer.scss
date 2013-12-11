@@ -11,8 +11,18 @@ $marqueeBorderColorInactive: #00FF00;
 
 baw-annotation-viewer {
 
+  
+
   width: 100%;
   text-align: center;
+
+
+
+  & .annotation-viewer-ctrl {
+    background: url(/assets/img/load.gif) center center no-repeat;
+
+  }
+  
 
   & #scroller {
     display: inline-block;
@@ -59,13 +69,13 @@ baw-annotation-viewer {
 
 
   & #scroller{
+
     overflow-x: scroll;
     overflow-y: hidden;
     line-height: 0;
   }
 
   & .annotation-viewer {
-
     display: inline-block;
     position: relative;
     line-height: 0;
@@ -74,7 +84,11 @@ baw-annotation-viewer {
 
 
     & img {
-
+      /* set a temporary height to avoid UI jumping around on image load
+          -- note: this value is usually overridden with a element level style by
+          the enforcedImageHeight value model.
+        */
+      height: 256px;
     }
 
     // overlay
