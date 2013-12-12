@@ -399,6 +399,9 @@ bawds.directive('bawAnnotationViewer',
                 if (changedAnnotation.selected) {
                     scope.model.selectedAudioEvent = changedAnnotation;
                 }
+                if (changedAnnotation.toBeDeleted) {
+                    scope.model.selectedAudioEvent = null;
+                }
 
                 if (changedAnnotation.isDirty && !changedAnnotation.$intermediateEvent) {
                     // reset flag
