@@ -2,6 +2,7 @@
 
 // color-swatch
 $spectrogramProgressLine: #FF0000;
+$spectrogramBorder: #666666;
 $tagAlignmentLine: #ffa73c;
 
 $marqueeBorderColorSelected: #FFFF00;
@@ -9,20 +10,15 @@ $marqueeBorderColorSelectedGlow: #f7ffef;
 $marqueeBorderColorHover: #00ffe9;
 $marqueeBorderColorInactive: #00FF00;
 
-baw-annotation-viewer {
 
-  
+baw-annotation-viewer {
 
   width: 100%;
   text-align: center;
 
-
-
   & .annotation-viewer-ctrl {
     background: url(/assets/img/load.gif) center center no-repeat;
-
   }
-  
 
   & #scroller {
     display: inline-block;
@@ -54,11 +50,8 @@ baw-annotation-viewer {
         @include vendor-prefix(transform-origin, 0 0);
         @include vendor-prefix(transform, rotate3d(0,0,1,-20deg));
 
-
-
       }
     }
-
   }
 
   & .active {
@@ -82,13 +75,15 @@ baw-annotation-viewer {
     padding: 0;
     margin: 0;
 
-
     & img {
       /* set a temporary height to avoid UI jumping around on image load
           -- note: this value is usually overridden with a element level style by
           the enforcedImageHeight value model.
         */
       height: 256px;
+      border: 1px solid $spectrogramBorder;
+      border-width: 1px 0px 1px 0px;
+
     }
 
     // overlay
