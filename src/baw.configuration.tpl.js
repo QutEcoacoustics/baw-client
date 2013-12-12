@@ -111,7 +111,7 @@ angular.module('bawApp.configuration', ['url'])
                 },
                 // routes used by angular
                 ngRoutes: {
-                    listen: "/listen/{recordingId}/"
+                    listen: "/listen/{recordingId}"
                 },
                 // general links for use in <a />'s
                 links: {
@@ -152,5 +152,10 @@ angular.module('bawApp.configuration', ['url'])
         listen: {
             chunkDurationSeconds: 30.0,
             minAudioDurationSeconds: 2.0
+        },
+        unitConverter: {
+            precisionSeconds: 3,
+            precisionHertz: 0
+
         }
     });

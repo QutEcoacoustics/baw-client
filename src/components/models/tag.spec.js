@@ -1,4 +1,4 @@
-describe("The Annotation object", function () {
+describe("The Tag object", function () {
 
     var newTag;
     var existingTag;
