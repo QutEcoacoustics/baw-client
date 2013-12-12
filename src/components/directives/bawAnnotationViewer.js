@@ -400,6 +400,7 @@ bawds.directive('bawAnnotationViewer',
                     scope.model.selectedAudioEvent = changedAnnotation;
                 }
                 if (changedAnnotation.toBeDeleted) {
+                    changedAnnotation.selected = false;
                     scope.model.selectedAudioEvent = null;
                 }
 
