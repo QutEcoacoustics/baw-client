@@ -30,7 +30,9 @@ module.exports = function (config) {
         plugins: [ 'karma-jasmine', 'karma-firefox-launcher',
             /*'karma-chrome-launcher',*/
             require('../node_modules/karma-chrome-launcher'),
-            'karma-phantomjs-launcher', 'karma-coffee-preprocessor' ],
+            'karma-phantomjs-launcher',
+            /*require('../node_modules/karma-phantomjs-launcher'),*/
+            'karma-coffee-preprocessor' ],
         preprocessors: {
             '**/*.coffee': 'coffee'
         },
