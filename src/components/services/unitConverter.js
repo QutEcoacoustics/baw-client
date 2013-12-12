@@ -118,10 +118,14 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
             conversions: conversions,
             pixelsToSeconds: function pixelsToSeconds(pixels) {
                 var seconds = pixels / conversions.pixelsPerSecond;
+                var m = Math.pow(10, constants.unitConverter.precisionSeconds);
+                seconds = Math.round(seconds * m) / m;
                 return seconds;
             },
             pixelsToHertz: function pixelsToHertz(pixels) {
                 var hertz = pixels / conversions.pixelsPerHertz;
+                var m = Math.pow(10, constants.unitConverter.precisionHertz);
+                hertz = Math.round(hertz * m) / m;
                 return hertz;
             },
             secondsToPixels: function secondsToPixels(seconds) {
