@@ -483,37 +483,37 @@ bawds.directive('bawAnnotationViewer',
                     scope.$drawaboxElement.drawabox({
                         "selectionCallbackTrigger": "mousedown",
                         "newBox": function (element, newBox) {
-                            drawaboxUpdatesModel(scope, null, newBox, DRAWABOX_ACTION_CREATE);
                             console.log("newBox", newBox, false);
+                            drawaboxUpdatesModel(scope, null, newBox, DRAWABOX_ACTION_CREATE);
                         },
                         "boxSelected": function (element, selectedBox) {
-                            console.log("boxSelected", selectedBox);
+                            //console.log("boxSelected", selectedBox);
                             drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex],
                                 selectedBox,
                                 DRAWABOX_ACTION_SELECT, true);
                         },
                         "boxResizing": function (element, box) {
-                            console.log("boxResizing");
+                            //console.log("boxResizing");
                             drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
                                 DRAWABOX_ACTION_RESIZE_OR_MOVE, true);
                         },
                         "boxResized": function (element, box) {
-                            console.log("boxResized");
+                            //console.log("boxResized");
                             drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
                                 DRAWABOX_ACTION_RESIZE_OR_MOVE, false);
                         },
                         "boxMoving": function (element, box) {
-                            console.log("boxMoving");
+                            //console.log("boxMoving");
                             drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
                                 DRAWABOX_ACTION_RESIZE_OR_MOVE, true);
                         },
                         "boxMoved": function (element, box) {
-                            console.log("boxMoved");
+                            //console.log("boxMoved");
                             drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex], box,
                                 DRAWABOX_ACTION_RESIZE_OR_MOVE, false);
                         },
                         "boxDeleted": function (element, deletedBox) {
-                            console.log("boxDeleted");
+                            //console.log("boxDeleted");
                             // TODO: delete index bound watcher... do not change array layout, keep it sparse...
                             // ...but only after server operation is a success
                             drawaboxUpdatesModel(scope, scope.model.audioEvents[element[0].annotationViewerIndex],

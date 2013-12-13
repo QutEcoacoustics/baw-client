@@ -188,6 +188,8 @@
                 resize: function (event, ui) { contextData.options.boxResizing($newBox); },
                 stop: function (event, ui) { contextData.options.boxResized($newBox); }
             });
+            // temporary function used for testing a bug
+            // window.hack = function(left, top) {$newBox.css({left:left, top:top}); contextData.options.boxMoved($newBox)};
             $newBox.draggable({
                 containment: 'parent',
                 drag: function (event, ui) { contextData.options.boxMoving($newBox); },
