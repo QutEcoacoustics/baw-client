@@ -122,14 +122,14 @@ describe("The unitConverter service", function () {
 
             var pixels = converters.pixelsToSeconds(1000);
 
-            expect(pixels).toBe(23.22 /* 23.219954648526077 */);
+            expect(pixels).toBe(23.219954649 /* 23.219954648526077 */);
         });
 
         it("correctly converts pixels to Hertz", function () {
 
             var pixels = converters.pixelsToHertz(128);
 
-            expect(pixels).toBe(5513 /* 5512.5 */);
+            expect(pixels).toBe(5512.5 /* 5512.5 */);
         });
 
         it("correctly inverts hertz", function () {
@@ -191,13 +191,13 @@ describe("The unitConverter service", function () {
         it("correctly calculates the startSeconds for and audioEvent from the left position of a box - with start offset",
             function () {
                 var start = converters.toStart(650 /*pixels*/);
-                expect(start).toBe(50.093 /*seconds (unrounded = 50.09297052154195)*/);
+                expect(start).toBe(50.092970522 /*seconds (unrounded = 50.09297052154195)*/);
             });
 
         it("correctly calculates the startSeconds for and audioEvent from the left position of a box - with pos+ pixels",
             function () {
                 var start = converters.toStart(2500 /*pixels*/);
-                expect(start).toBe(93.05 /*seconds (unrounded = 93.0498866213152)*/);
+                expect(start).toBe(93.049886621 /*seconds (unrounded = 93.0498866213152)*/);
             });
 
 
@@ -209,17 +209,17 @@ describe("The unitConverter service", function () {
 
         it("correctly calculates the endSeconds for an audioEvent from the left position of a box and its width", function () {
             var end = converters.toEnd(650, 43.06640625 /*pixels*/);
-            expect(end).toBe(51.093 /*seconds (unrounded = 51.09297052154195)*/);
+            expect(end).toBe(51.092970522 /*seconds (unrounded = 51.09297052154195)*/);
         });
 
         it("correctly calculates the lowFrequency for an audioEvent from the top position of a box and its width", function () {
             var low = converters.toLow(20, 50 /*pixels*/);
-            expect(low).toBeCloseTo(8010, 1 /*hertz (unrounded = 8010.3515625)*/);
+            expect(low).toBe(8010.351563 /*hertz (unrounded = 8010.3515625)*/);
         });
 
         it("correctly calculates the highFrequency for an audioEvent from the top position of a box", function () {
             var high = converters.toHigh(20 /*pixels*/);
-            expect(high).toBe(10164 /*hertz (unrounded = 10163.671875)*/);
+            expect(high).toBe(10163.671875 /*hertz (unrounded = 10163.671875)*/);
         });
 
     });

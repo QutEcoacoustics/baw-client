@@ -84,7 +84,7 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
             }
         }
 
-        console.debug("unitConverter:calculateUnitConversions: unit update calculated successfully");
+        //console.debug("unitConverter:calculateUnitConversions: unit update calculated successfully");
         return result;
     }
 
