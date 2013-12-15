@@ -10,7 +10,7 @@ $marqueeBorderColorSelectedGlow: #f7ffef;
 $marqueeBorderColorHover: #00ffe9;
 $marqueeBorderColorInactive: #00FF00;
 
-
+//noinspection CssInvalidHtmlTagReference
 baw-annotation-viewer {
 
   width: 100%;
@@ -47,6 +47,9 @@ baw-annotation-viewer {
         z-index: 0;
         background-color: transparent;
 
+        // keep border so element does not resize when border added in .active
+        border-bottom: transparent solid 1px;
+
         @include vendor-prefix(transform-origin, 0 0);
         @include vendor-prefix(transform, rotate3d(0,0,1,-20deg));
 
@@ -57,7 +60,7 @@ baw-annotation-viewer {
   & .active {
     z-index: 100;
     background-color: #ffffff;
-    border-bottom: $tagAlignmentLine solid 1px;
+    border-bottom: $tagAlignmentLine solid 1px !important;
   }
 
 
@@ -146,7 +149,7 @@ baw-annotation-viewer {
     }
 
     &[data-selected="true"] {
-      border-color: $marqueeBorderColorSelected;
+      border-color: $marqueeBorderColorSelected !important;
       @include glow($marqueeBorderColorSelectedGlow);
       z-index: 100;
 
