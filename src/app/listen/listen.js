@@ -4,6 +4,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         '$resource',
         '$routeParams',
         '$route',
+        '$q',
         'conf.paths',
         'conf.constants',
         '$url',
@@ -12,6 +13,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'AudioEvent',
         'Tag',
         'Taggings',
+        'Site',
+        'Project',
         /**
          * The listen controller.
          * @param $scope
@@ -27,10 +30,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param $url
          * @param AudioRecording
          * @param Taggings
+         * @param $q
+         * @param Site
+         * @param Project
          */
-            function ListenCtrl(
-            $scope, $resource, $routeParams, $route, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag,
-            Taggings) {
+            function ListenCtrl($scope, $resource, $routeParams, $route, $q, paths, constants, $url,
+                                AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -75,7 +80,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     audioElement: {},
                     audioEvents: [],
                     media: null,
-                    selectedAudioEvent: null
+                    selectedAudioEvent: null,
+                    audioRecording: null,
+                    project: null,
+                    site: null
                 };
 
                 var formatPaths = function () {
@@ -143,13 +151,47 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         console.error("retrieval of media json failed");
                     });
 
-                $scope.model.audioRecording = AudioRecording.get({recordingId: recordingId}, {},
-                    function audioRecordingGetSuccess() {
-                        // no-op
-                        // if an audioRecording 'model' is ever created, this is where we would transform the returned data
-                    },
-                    function audioRecordingGetFailure() {
-                        console.error("retrieval of audioRecording json failed");
+
+                var promise = (function getResources() {
+                    var deferred = $q.defer();
+
+                    AudioRecording.get({recordingId: recordingId}, {},
+                        function audioRecordingGetSuccess(value) {
+                            // if an audioRecording 'model' is ever created, this is where we would transform the returned data
+                            $scope.model.audioRecording = value;
+                            deferred.resolve(value);
+                        },
+                        function audioRecordingGetFailure() {
+                            deferred.reject("retrieval of audioRecording json failed");
+                        });
+
+                    return deferred.promise;
+                })()
+                    .then(function success(result) {
+                        var siteDeferred = $q.defer();
+                        // get site
+                        Site.get({siteId: result.siteId}, {}, function getSiteSuccess(value) {
+                            $scope.model.site = value;
+                            siteDeferred.resolve(value)
+                        }, function getSiteError() {
+                            siteDeferred.reject("retrieval of site json failed");
+                        });
+
+                        return siteDeferred.promise;
+                    })
+                    .then(function success() {
+                        var projectDeferred = $q.defer();
+                        // get site
+                        Project.get({id: result.projectId}, {}, function getProjectSuccess(value) {
+                            $scope.model.project = value;
+                            projectDeferred.resolve(value)
+                        }, function getSiteError() {
+                            projectDeferred.reject("retrieval of site json failed");
+                        });
+
+                        return projectDeferred.promise;
+                    }).catch(function error(err) {
+                        console.error("An error occurred downloading metadata for this chunk:" + err, err);
                     });
 
 
@@ -179,7 +221,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                             $scope.tags.push(baw.Tag.make(value));
                         });
 
-                        $scope.model.audioEvents.forEach(function(value){
+                        $scope.model.audioEvents.forEach(function (value) {
                             Tag.resolveAll(value.tags, $scope.tags);
                         });
                     },
@@ -249,11 +291,16 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     var offset = base.add({seconds: $scope.model.media.startOffset});
                     return offset;
                 };
-                
+
+
                 $scope.previousEnabled = false;
                 $scope.nextEnabled = false;
-
                 $scope.createNavigationHref = function (linkType, stepBy) {
+                    // skip if resources not available
+                    if (!$scope.model.audioRecording) {
+                        return "#";
+                    }
+
                     if (!angular.isNumber(stepBy)) {
                         stepBy = CHUNK_DURATION_SECONDS;
                     }
@@ -262,13 +309,13 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     if (linkType === "previous") {
                         var lowerBound = ($routeParams.start - stepBy);
-                        
+
                         if ($routeParams.start > 0) {
                             $scope.previousEnabled = true;
                         } else {
-                            $scope.previousEnabled = false; 
+                            $scope.previousEnabled = false;
                         }
-                        
+
                         if (lowerBound === 0) {
                             baseLink.end = lowerBound + stepBy;
                         }
@@ -286,35 +333,39 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return uriPrev;
 
                     }
-                    else if (linkType === "next") {   
-                        
+                    else if (linkType === "next") {
+
                         var maxEnd = Math.floor($scope.model.audioRecording.durationSeconds);
-                        
+
                         var uriNext = $url.formatUri(
                             paths.site.ngRoutes.listen,
                             {
                                 recordingId: recordingId,
                                 start: ($routeParams.start + stepBy),
-                                end: (($routeParams.end + stepBy <  maxEnd) ? $routeParams.end + stepBy : maxEnd)
+                                end: (($routeParams.end + stepBy < maxEnd) ? $routeParams.end + stepBy : maxEnd)
                             });
-                        
+
                         if ($routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds) {
                             $scope.nextEnabled = true;
                         } else {
-                            $scope.nextEnabled = false; 
+                            $scope.nextEnabled = false;
                         }
-                            
+
                         return uriNext;
                     }
 
                     throw "Invalid link type specified in createNavigationHref";
                 };
 
+
                 $scope.clearSelected = function () {
                     $scope.model.audioEvents.forEach(function (value, key) {
                         value.selected = false;
                     });
+
+                    $scope.model.selectedAudioEvent = null;
                 };
+
 
                 $scope.singleEditDisabled = function () {
                     return ($scope.model.selectedAudioEvent === null || $scope.model.selectedAudioEvent.id === undefined);
@@ -338,7 +389,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     templateUrl: "/templates/tags.html",
                     tagTemplateUrl: "/templates/tags.html"
                 };
-
 
                 $scope.$on('decipher.tags.initialized', function (event) {
                     event.stopPropagation();
@@ -409,7 +459,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                             // assumes tags array is kept in sync
                             //delete $scope.model.selectedAudioEvent.tags[index];
 
-                            console.debug("Tag removal success", removedTag.tag.text );
+                            console.debug("Tag removal success", removedTag.tag.text);
                         },
                         function error(response) {
                             console.error("Tagging creation failed", response);
