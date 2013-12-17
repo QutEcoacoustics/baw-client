@@ -4,10 +4,10 @@ volume-control {
   width: 150px;
 
   #volumeControl-mute {
-
+	
     span {
       @extend .glyphicon;
-
+	  font-size: 13.6px;
       &:before {
         @extend .glyphicon-volume-up:before;
       }
@@ -30,6 +30,12 @@ volume-control {
     #volumeControl-slider {
 
       -webkit-appearance: none;
+	  margin-left:-1px;
+	  position:relative;
+	  
+	  &:focus{
+		z-index:1;
+	  }
 
       // track
       $track-height : 2px;
