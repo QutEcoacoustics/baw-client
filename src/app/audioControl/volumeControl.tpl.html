@@ -1,8 +1,13 @@
-<div id="volumeControl-mute">
-    <input type="button">
+<div class="input-group-btn">
+    <button id="volumeControl-mute"
+            class="btn btn-default"
+            ng-class="{muted: muted}"  title="{{muted && 'Unmute' || 'Mute'}}">
+        <span></span>
+    </button>
 </div>
-<div id="volumeControl-slider">
-    <input type="range" value="50" max="100" min="0" title="Volume">
-
-    </input>
-</div>
+    <input id="volumeControl-slider"
+           class="form-control"
+           type="range" value="{{volume}}"
+           max="100" min="0"
+           ng-disabled="muted"
+           title="{{ 'Volume ' + (volume | number:0) }}">
