@@ -4,8 +4,21 @@
     </div>
     <div ng-hide="errorState">
 
-        <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span>
+        <h4 id="chunkInfo" class="row">
+            <span class="col-md-8">
+                Site: {{model.audioRecording.siteId}},
+                <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+                </span>
+            <span class="col-md-4">
+                Jump to minute:
+                <input type="range" ng-model="jumpToMinute" min="0" max="{{jumpToMax}}" step="1" ></input>
+                <span>{{jumpToMinute}}</span>
+                <button class="btn btn-default" ng-click="jumpTo()" >Go</button>
+            </span>
         </h4>
+        <small>The recording started on <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+            and is <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span> long.
+        </small>
         
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
 
@@ -212,8 +225,8 @@
         <h2 class="debug-ui">Stats</h2>
         <ul class="debug-ui">
             <li>
-                Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
-                Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
+
+
             </li>
             <li>
                 Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span

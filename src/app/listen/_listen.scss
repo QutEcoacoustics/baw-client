@@ -1,3 +1,17 @@
+#chunkInfo>span:nth-child(2) {
+  text-align: right;
+
+  input[type="range"] {
+    width: 300px;
+  }
+
+  &>span {
+    width: 40px;
+    display: inline-block;
+  }
+}
+
+
 .position {
   & span {
     margin-left: 10px;
