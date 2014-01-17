@@ -352,7 +352,8 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     outputStyle: 'expanded',
-                    sourceComments: 'map'
+                    sourceComments: 'map',
+                    sourceMap: true
                 },
                 src: '<%= app_files.processedSass %>',
                 dest: '<%= sassDest %>'
