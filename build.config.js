@@ -103,7 +103,7 @@ module.exports = {
             // Don't know what depended on this - disabled because does not exist on disk or in bower
             //'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
             // TODO: the following line is dodgy and bloats the app
-            'vendor/angular-ui-utils/modules/**/*.js', '!vendor/angular-ui-utils/modules/**/*Spec.js',
+            'vendor/angular-ui-utils/*.js',
             'vendor/modernizr/modernizr.js',
             'vendor/lodash/dist/lodash.js',
             //'vendor/select2/select2.js',
