@@ -11,7 +11,7 @@
                 </span>
             <span class="col-md-4">
                 Jump to minute:
-                <input type="range" ng-model="jumpToMinute" min="0" max="{{jumpToMax}}" step="1" ></input>
+                <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}" ng-slider="jumpToMinute"  step="1"  ></input>
                 <span>{{jumpToMinute}}</span>
                 <button class="btn btn-default" ng-click="jumpTo()" >Go</button>
             </span>
