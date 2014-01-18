@@ -72,6 +72,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
 
                 // set up some dummy objects for use later
+                $scope.jumpToHide = true;
                 $scope.model = {
                     audioElement: {},
                     audioEvents: [],
@@ -153,6 +154,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         var maxMinutes = Math.floor(parseFloat($scope.model.audioRecording.durationSeconds) / 60);
                         $scope.jumpToMax = maxMinutes;
                         $scope.jumpToMinute = Math.floor( parseFloat($routeParams.start) / 60);
+                        $scope.jumpToHide = false;
                     },
                     function audioRecordingGetFailure() {
                         console.error("retrieval of audioRecording json failed");
