@@ -8,6 +8,8 @@
 $DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
 //@debug "Debug build is #{$DEBUG}";
 
+$IMAGE_ASSET_PATH: '<%= build_configs.current.siteDir %>';
+
 /**
 * First, we include jlong's Twitter Bootstrap SCSS files. Only the ones used in the
 * project should be imported as the rest are just wasting space.
