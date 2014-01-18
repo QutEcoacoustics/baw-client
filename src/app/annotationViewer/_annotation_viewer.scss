@@ -9,6 +9,7 @@ $marqueeBorderColorSelected: #FFFF00;
 $marqueeBorderColorSelectedGlow: #f7ffef;
 $marqueeBorderColorHover: #00ffe9;
 $marqueeBorderColorInactive: #00FF00;
+$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
 //noinspection CssInvalidHtmlTagReference
 baw-annotation-viewer {
@@ -17,7 +18,7 @@ baw-annotation-viewer {
   text-align: center;
 
   & .annotation-viewer-ctrl {
-    background: url(/assets/img/load.gif) center center no-repeat;
+    background: url(#{$loadGifPath}) center center no-repeat;
   }
 
   & #scroller {
