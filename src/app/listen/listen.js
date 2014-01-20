@@ -169,7 +169,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                             $scope.jumpToMax = maxMinutes;
                             $scope.jumpToMinute = Math.floor( parseFloat($routeParams.start) / 60);
                             $scope.jumpToHide = false;
-
                             deferred.resolve(value);
                         },
                         function audioRecordingGetFailure() {
@@ -389,7 +388,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     $location.url(url);
                 };
-
 
                 $scope.clearSelected = function () {
                     $scope.model.audioEvents.forEach(function (value, key) {
