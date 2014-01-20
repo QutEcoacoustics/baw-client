@@ -112,8 +112,8 @@ module.exports = function (grunt) {
          */
         changelog: {
             options: {
-                after: "2013-09-05T10:18:39.4492679+10:00",
-                before: "now",
+                //after: "2013-09-05T10:18:39.4492679+10:00",
+                //before: "now",
                 dest: 'CHANGELOG.md',
                 template: 'changelog.tpl'
             }
