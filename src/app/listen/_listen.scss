@@ -12,6 +12,35 @@
   }
 }
 
+#chunkInfo>span:nth-child(2) {
+  text-align: right;
+
+  input[type="range"] {
+    width: 300px;
+
+
+  }
+
+  &>span {
+    width: 40px;
+    display: inline-block;
+  }
+}
+
+.hide-thumb {
+
+  &::-ms-thumb {
+    opacity: 0;
+  }
+  &::-moz-range-thumb {
+    opacity: 0;
+  }
+  &::-webkit-slider-thumb {
+    opacity: 0;
+  }
+
+}
+
 .position {
   & span {
     margin-left: 10px;

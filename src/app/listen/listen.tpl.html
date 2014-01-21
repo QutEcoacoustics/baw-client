@@ -4,19 +4,31 @@
     </div>
     <div ng-hide="errorState">
 
-        <h4 class="center-block">
-            <span class="project-names">
-                <span  ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'"  >{{ !$first && ", " || ""}}
-                    <a ng-switch-when="false"  ng-href="{{p.link}}">{{p.name}}</a>
-                    <a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"
-                       data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>
+
+        <h4 id="chunkInfo" class="row">
+            <span class="col-md-8">
+                <span class="project-names">
+                    <span  ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'"  >{{ !$first && ", " || ""}}
+                        <a ng-switch-when="false"  ng-href="{{p.link}}">{{p.name}}</a>
+                        <a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"
+                           data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>
+                    </span>
                 </span>
+                &nbsp;&#47;&nbsp;
+                <a ng-href="{{ model.site.link}}">{{model.site.name}}</a>
+                &nbsp;&#47;&nbsp;
+                <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
             </span>
-            &nbsp;&#47;&nbsp;
-            <a ng-href="{{ model.site.link}}">{{model.site.name}}</a>
-            &nbsp;&#47;&nbsp;
-            <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+            <span class="col-md-4">
+                Jump to minute:
+                <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}" ng-slider="jumpToMinute"  step="1" >
+                <span>{{jumpToMinute}}</span>
+                <button class="btn btn-default" ng-click="jumpTo()" >Go</button>
+            </span>
         </h4>
+        <small>The recording started on <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+            and is <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span> long.
+        </small>
 
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
 
@@ -223,8 +235,8 @@
         <h2 class="debug-ui">Stats</h2>
         <ul class="debug-ui">
             <li>
-                Audio recording: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>,
-                Duration of recording: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>
+
+
             </li>
             <li>
                 Segment: <span class="hint absolute-time hint--top">--TODO--</span>, Duration of segment: <span

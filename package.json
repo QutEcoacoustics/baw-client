@@ -1,7 +1,7 @@
 {
   "author": "QUT Bioacoustics",
   "name": "baw-client",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "The AngularJS client for the QUT Bioacoustics server",
   "licenses": {
     "type": "Apache",
@@ -16,11 +16,11 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-contrib-copy": "0.5.x",
+    "grunt-contrib-jshint": "0.8.x",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-uglify": "0.3.x",
     "grunt-karma": "~0.6.2",
     "karma-chrome-launcher": "~0.1.1",
     "grunt-ngmin": "0.0.3",
@@ -28,9 +28,9 @@
     "grunt-conventional-changelog": "~1.0",
     "grunt-changelog": "~0.1",
     "grunt-bump": "0.0.13",
-    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-connect": "0.6.x",
     "connect-modrewrite": "~0.5.7",
-    "grunt-sass": "~0.9.0",
+    "grunt-sass": "0.10.x",
     "lodash": "~2.4.1",
     "karma-phantomjs-launcher": "~0.1.1"
   },

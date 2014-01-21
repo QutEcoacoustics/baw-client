@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     //grunt.loadNpmTasks('grunt-conventional-changelog');
-    grunt.loadNpmTasks('grunt-conventional-changelog');
+    grunt.loadNpmTasks('grunt-changelog');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-karma');
@@ -112,8 +112,8 @@ module.exports = function (grunt) {
          */
         changelog: {
             options: {
-                after: "2013-09-05T10:18:39.4492679+10:00",
-                before: "today",
+                //after: "2013-09-05T10:18:39.4492679+10:00",
+                //before: "now",
                 dest: 'CHANGELOG.md',
                 template: 'changelog.tpl'
             }
@@ -352,7 +352,8 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     outputStyle: 'expanded',
-                    sourceComments: 'map'
+                    sourceComments: 'map',
+                    sourceMap: true
                 },
                 src: '<%= app_files.processedSass %>',
                 dest: '<%= sassDest %>'

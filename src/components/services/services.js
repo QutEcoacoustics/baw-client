@@ -298,7 +298,14 @@
                 var path = breadcrumbPath(i);
                 var pathPlaceholders = replaceValuesWithPlaceholders(currentParams, path);
                 var foundRoute = getPropertyFromObj(allRoutes, pathPlaceholders);
-                var newTitle = replacePlaceholdersWithValues(currentParams, foundRoute.title);
+
+                var newTitle;
+                if (foundRoute) {
+                    newTitle = replacePlaceholdersWithValues(currentParams, foundRoute.title);
+                }
+                else {
+                    newTitle = pathElements[i];
+                }
 
                 result.push({name: pathElements[i], path: breadcrumbPath(i), title: newTitle});
             }

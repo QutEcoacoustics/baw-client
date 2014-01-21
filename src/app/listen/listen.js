@@ -2,6 +2,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
     .controller('ListenCtrl', ['$scope',
         '$resource',
+        '$location',
         '$routeParams',
         '$route',
         '$q',
@@ -34,7 +35,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param Site
          * @param Project
          */
-            function ListenCtrl($scope, $resource, $routeParams, $route, $q, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project) {
+            function ListenCtrl(
+            $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url,
+            AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project) {
+
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -75,6 +79,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
 
                 // set up some dummy objects for use later
+                $scope.jumpToHide = true;
                 $scope.model = {
                     audioElement: {},
                     audioEvents: [],
@@ -158,7 +163,15 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         function audioRecordingGetSuccess(value) {
                             // if an audioRecording 'model' is ever created, this is where we would transform the returned data
                             $scope.model.audioRecording = value;
+
                             var result = {audioRecording: value};
+
+                            // set up jumpto vars
+                            var maxMinutes = Math.floor(parseFloat($scope.model.audioRecording.durationSeconds) / 60);
+                            $scope.jumpToMax = maxMinutes;
+                            $scope.jumpToMinute = Math.floor( parseFloat($routeParams.start) / 60);
+                            $scope.jumpToHide = false;
+
                             deferred.resolve(result);
                         },
                         function audioRecordingGetFailure() {
@@ -401,7 +414,26 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     throw "Invalid link type specified in createNavigationHref";
                 };
 
+                $scope.jumpTo = function() {
+                    var maxEnd = Math.floor($scope.model.audioRecording.durationSeconds),
+                        seconds = $scope.jumpToMinute * 60;
+                    if (seconds < 0) {
+                        seconds = 0;
+                    }
+                    if (seconds > (maxEnd - CHUNK_DURATION_SECONDS)) {
+                        seconds = (maxEnd - CHUNK_DURATION_SECONDS);
+                    }
 
+                    var url = $url.formatUri(
+                        paths.site.ngRoutes.listen,
+                        {
+                            recordingId: recordingId,
+                            start: seconds,
+                            end: seconds + CHUNK_DURATION_SECONDS
+                        });
+
+                    $location.url(url);
+                };
 
                 $scope.clearSelected = function () {
                     $scope.model.audioEvents.forEach(function (value, key) {
