@@ -93,3 +93,15 @@
         };
     }]);
 
+    bawfs.filter('format', function() {
+       return function stringFormatFilter(string, args) {
+           var restOfArguments = Array.prototype.slice.call(arguments, 2, arguments.length);
+
+           if (angular.isString(string)) {
+               return String.format.apply(string, (arguments));
+           }
+
+           throw "A string is required for the first argument";
+       };
+    });
+

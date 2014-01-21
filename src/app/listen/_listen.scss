@@ -1,3 +1,17 @@
+
+.noPermissions {
+  @extend .alert;
+  @extend .alert-warning;
+}
+
+.project-names>span:not(:last-child) {
+  word-spacing : -0.3em;
+
+  & * {
+    word-spacing: normal;
+  }
+}
+
 .position {
   & span {
     margin-left: 10px;

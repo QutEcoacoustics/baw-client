@@ -34,8 +34,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param Site
          * @param Project
          */
-            function ListenCtrl($scope, $resource, $routeParams, $route, $q, paths, constants, $url,
-                                AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project) {
+            function ListenCtrl($scope, $resource, $routeParams, $route, $q, paths, constants, $url, AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project) {
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -152,47 +151,92 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     });
 
 
-                var promise = (function getResources() {
+                var getAudioRecording = function getAudioRecording(recordingId) {
                     var deferred = $q.defer();
 
                     AudioRecording.get({recordingId: recordingId}, {},
                         function audioRecordingGetSuccess(value) {
                             // if an audioRecording 'model' is ever created, this is where we would transform the returned data
                             $scope.model.audioRecording = value;
-                            deferred.resolve(value);
+                            var result = {audioRecording: value};
+                            deferred.resolve(result);
                         },
                         function audioRecordingGetFailure() {
                             deferred.reject("retrieval of audioRecording json failed");
                         });
 
                     return deferred.promise;
-                })()
-                    .then(function success(result) {
-                        var siteDeferred = $q.defer();
-                        // get site
-                        Site.get({siteId: result.siteId}, {}, function getSiteSuccess(value) {
-                            $scope.model.site = value;
-                            siteDeferred.resolve(value)
-                        }, function getSiteError() {
-                            siteDeferred.reject("retrieval of site json failed");
-                        });
+                };
 
-                        return siteDeferred.promise;
-                    })
-                    .then(function success() {
-                        var projectDeferred = $q.defer();
-                        // get site
-                        Project.get({id: result.projectId}, {}, function getProjectSuccess(value) {
-                            $scope.model.project = value;
-                            projectDeferred.resolve(value)
-                        }, function getSiteError() {
-                            projectDeferred.reject("retrieval of site json failed");
-                        });
+                var getSite = function getSite(result) {
+                    var siteDeferred = $q.defer();
+                    // get site
+                    Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
 
-                        return projectDeferred.promise;
-                    }).catch(function error(err) {
-                        console.error("An error occurred downloading metadata for this chunk:" + err, err);
+                        value.link = paths.api.routes.siteAbsolute.format({"siteId": value.id});
+
+                        $scope.model.site = value;
+                        result.site = value;
+                        siteDeferred.resolve(result);
+                    }, function getSiteError() {
+                        siteDeferred.reject("retrieval of site json failed");
                     });
+
+                    return siteDeferred.promise;
+                };
+
+                var getProjects = function getProjects(result) {
+                    var projectPromises = [];
+
+                    $scope.model.projects = $scope.model.projects || [];
+                    result.projects = result.projects || [];
+
+                    result.site.projectIds.forEach(function (id, index) {
+                        var projectDeferred = $q.defer();
+                        // get project
+                        Project.get({projectId: id}, {}, function getProjectSuccess(value) {
+
+                            value.link = paths.api.routes.projectAbsolute.format({"projectId": value.id});
+
+                            $scope.model.projects[index] = value;
+                            result.projects[index] = value;
+                            projectDeferred.resolve(result);
+                        }, function getProjectError(error) {
+                            if (error.status === 403) {
+                                console.warn("The project %s does not give permissions to current user to access it's content. There are %s projects.", id, result.site.projectIds.length);
+                                // populate field anyway, not really sure what to do here, temp value added
+                                var denied =  {
+                                    id: id,
+                                    permissions: "access denied"
+                                };
+
+                                denied.link = paths.api.routes.projectAbsolute.format({"projectId": denied.id});
+
+                                $scope.model.projects[index] = denied;
+                                result.projects[index] = denied;
+
+                                // we don't mind that this "error" has occurred - there should be at least one project
+                                // that did resolve. Resolve promise anyway
+                                projectDeferred.resolve(result);
+                            }
+                            else {
+                                projectDeferred.reject("retrieval of project json failed");
+                            }
+                        });
+
+                        projectPromises[index] = projectDeferred.promise;
+                    });
+
+                    return $q.all(projectPromises);
+                };
+                getAudioRecording(recordingId).then(getSite).then(getProjects).then(function success(result) {
+                    console.info("Metadata Promise chain success", result);
+                }, function error(err) {
+                    console.error("An error occurred downloading metadata for this chunk:" + err, err);
+                }, function notify() {
+                    // TODO: remove dodgy scope closure from promise functions, and update values here incrementally!
+                    console.debug("All promises notify", arguments);
+                });
 
 
                 AudioEvent.query(
@@ -356,6 +400,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     throw "Invalid link type specified in createNavigationHref";
                 };
+
 
 
                 $scope.clearSelected = function () {

@@ -1,12 +1,23 @@
-<div id="content" data-ng-controller="ListenCtrl">
+<div id="content" >
     <div ng-show="errorState">
         Something has gone wrong - can't load this page.
     </div>
     <div ng-hide="errorState">
 
-        <h4 class="center-block">Site: {{model.audioRecording.siteId}}, <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span><span></span>
+        <h4 class="center-block">
+            <span class="project-names">
+                <span  ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'"  >{{ !$first && ", " || ""}}
+                    <a ng-switch-when="false"  ng-href="{{p.link}}">{{p.name}}</a>
+                    <a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"
+                       data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>
+                </span>
+            </span>
+            &nbsp;&#47;&nbsp;
+            <a ng-href="{{ model.site.link}}">{{model.site.name}}</a>
+            &nbsp;&#47;&nbsp;
+            <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
         </h4>
-        
+
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
 
         <div id="chunkTimeStamps" class="clear-pseudo">
@@ -63,7 +74,7 @@
                 <form id="annotationEditForm" name="annotationEditForm" class="panel-body">
                     <fieldset ng-disabled="singleEditDisabled()" class='tags-fs'>
                         <legend>Tags</legend>
-                        
+
                         <!--<input type="hidden" ng-multiple="true" tags multiple ui-select2="select2Settings"-->
                         <!--ng-model="model.selectedAudioEvent.audioEventTags"-->
                         <!--baw-inject-transformers="select2Transformers"/>-->
@@ -75,7 +86,7 @@
                         <label class="reference">
                             <input type="checkbox" ng-model="model.selectedAudioEvent.isReference">&nbsp; Should this be a reference
                             annotation?
-                        </label> 
+                        </label>
 
                     </fieldset>
                     <fieldset ng-disabled="singleEditDisabled()" class='bounds-fs container'>
@@ -125,7 +136,7 @@
                 </form>
             </div>
         </div>
-            <div class="debug-ui"> 
+            <div class="debug-ui">
                 <h3>Annotations</h3>
                 <table class="details-table">
                     <thead>
