@@ -2,27 +2,26 @@
   "name": "ng-boilerplate",
   "version": "0.0.9",
   "devDependencies": {
-    "angular": "1.2.2",
-    "angular-mocks": "~1.2.0",
-    "angular-route": "~1.2.0",
+    "angular": "1.2.x",
+    "angular-mocks": "~1.2.x",
+    "angular-route": "~1.2.x",
+    "angular-resource": "~1.2.x",
     "angular-bootstrap": "~0.6.0",
     "angular-ui-router": "~0.0.1",
     "angular-ui-utils": "latest",
     "sass-bootstrap": "3.0.0",
     "hint.css": "https://github.com/chinchang/hint.css.git",
-    "angular-resource": "~1.2.0",
     "modernizr": "~2.6.2",
     "jquery-ui": "~1.10.3",
     "momentjs": "~2.3.0",
     "jasmine-matchers": "https://github.com/JamieMason/Jasmine-Matchers.git",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "lodash": "~2.3.0",
-    "select2": "~3.4.5",
-    "angular-ui-select2": "~0.0.2",
     "angular-tags": "~0.2.10"
   },
   "dependencies": {},
   "resolutions": {
-    "angular": "1.2.2"
-  }
+    "angular": "1.2.x"
+  },
+  "private": true
 }

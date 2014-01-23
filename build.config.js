@@ -49,15 +49,11 @@ module.exports = {
         js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
         jsunit: [ 'src/**/*.spec.js' ],
 
-        coffee: [ 'src/**/*.coffee', '!src/**/*.spec.coffee' ],
-        coffeeunit: [ 'src/**/*.spec.coffee' ],
-
         atpl: [ 'src/app/**/*.tpl.html' ],
         ctpl: [ 'src/common/**/*.tpl.html' ],
 
         html: [ 'src/index.html'],
         sass: [ 'src/sass/application.tpl.scss' ]
-        //less: 'src/less/main.less'
     },
 
     /**
