@@ -86,10 +86,10 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 'mozaudioavailable': undefined,
                 'pause': updateState,
                 'play': updateState,
-                'playing': function() {
+                'playing': function(event) {
                     // restart request animation frame
                     audioElementPositionRAF();
-                    updateState();
+                    updateState(event);
                 },
                 'progress': undefined,
                 'ratechange': undefined,
