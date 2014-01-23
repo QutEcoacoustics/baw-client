@@ -86,7 +86,11 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 'mozaudioavailable': undefined,
                 'pause': updateState,
                 'play': updateState,
-                'playing': updateState,
+                'playing': function() {
+                    // restart request animation frame
+                    audioElementPositionRAF();
+                    updateState();
+                },
                 'progress': undefined,
                 'ratechange': undefined,
                 'seeked': undefined,
@@ -107,9 +111,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
 
             // position binding - reverse (element to model)
             // TODO: we can optimise this, it does not always need to be running
-            window.requestAnimationFrame(function audioElementPositionRAF() {
-                // need to request each new frame
-                window.requestAnimationFrame(audioElementPositionRAF);
+            function audioElementPositionRAF() {
                 if (attributes.ngAudio) {
                     var target = scope.$eval(attributes.ngAudio);
                     if (target) {
@@ -121,7 +123,16 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                         }
                     }
                 }
-            }, elements[0]);
+
+                // optimisation - do not request a new frame if element is paused
+                // requires loop to be restarted on play event
+                if (element.paused) {
+                    return;
+                }
+
+                // need to request each new frame
+                window.requestAnimationFrame(audioElementPositionRAF);
+            }
 
         }
     };

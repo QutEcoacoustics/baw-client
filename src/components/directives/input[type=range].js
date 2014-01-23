@@ -12,8 +12,8 @@ bawds.directive("ngSlider", function () {
                     return;
                 }
 
-                console.debug("ngSlider:updateScope: Calling apply!", element.value);
-                
+                //console.debug("ngSlider:updateScope: Calling apply!", element.value);
+
                 scope.$apply(function () {
                     scope[attrs.ngSlider] = element.value;
                 });
