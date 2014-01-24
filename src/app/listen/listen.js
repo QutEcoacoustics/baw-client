@@ -5,6 +5,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         '$location',
         '$routeParams',
         '$route',
+        '$q',
         'conf.paths',
         'conf.constants',
         '$url',
@@ -13,6 +14,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'AudioEvent',
         'Tag',
         'Taggings',
+        'Site',
+        'Project',
         /**
          * The listen controller.
          * @param $scope
@@ -28,10 +31,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param $url
          * @param AudioRecording
          * @param Taggings
+         * @param $q
+         * @param Site
+         * @param Project
          */
             function ListenCtrl(
-            $scope, $resource, $location, $routeParams, $route, paths, constants, $url,
-            AudioRecording, Media, AudioEvent, Tag, Taggings) {
+            $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url,
+            AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project) {
+
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
             function getMediaParameters(format) {
@@ -77,7 +84,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     audioElement: {},
                     audioEvents: [],
                     media: null,
-                    selectedAudioEvent: null
+                    selectedAudioEvent: null,
+                    audioRecording: null,
+                    projects: [],
+                    site: null
                 };
 
                 var formatPaths = function () {
@@ -145,20 +155,101 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         console.error("retrieval of media json failed");
                     });
 
-                $scope.model.audioRecording = AudioRecording.get({recordingId: recordingId}, {},
-                    function audioRecordingGetSuccess() {
-                        // no-op
-                        // if an audioRecording 'model' is ever created, this is where we would transform the returned data
 
-                        // set up jumpto vars
-                        var maxMinutes = Math.floor(parseFloat($scope.model.audioRecording.durationSeconds) / 60);
-                        $scope.jumpToMax = maxMinutes;
-                        $scope.jumpToMinute = Math.floor( parseFloat($routeParams.start) / 60);
-                        $scope.jumpToHide = false;
-                    },
-                    function audioRecordingGetFailure() {
-                        console.error("retrieval of audioRecording json failed");
+                var getAudioRecording = function getAudioRecording(recordingId) {
+                    var deferred = $q.defer();
+
+                    AudioRecording.get({recordingId: recordingId}, {},
+                        function audioRecordingGetSuccess(value) {
+                            // if an audioRecording 'model' is ever created, this is where we would transform the returned data
+                            $scope.model.audioRecording = value;
+
+                            var result = {audioRecording: value};
+
+                            // set up jumpto vars
+                            var maxMinutes = Math.floor(parseFloat($scope.model.audioRecording.durationSeconds) / 60);
+                            $scope.jumpToMax = maxMinutes;
+                            $scope.jumpToMinute = Math.floor( parseFloat($routeParams.start) / 60);
+                            $scope.jumpToHide = false;
+
+                            deferred.resolve(result);
+                        },
+                        function audioRecordingGetFailure() {
+                            deferred.reject("retrieval of audioRecording json failed");
+                        });
+
+                    return deferred.promise;
+                };
+
+                var getSite = function getSite(result) {
+                    var siteDeferred = $q.defer();
+                    // get site
+                    Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
+
+                        value.link = paths.api.routes.siteAbsolute.format({"siteId": value.id});
+
+                        $scope.model.site = value;
+                        result.site = value;
+                        siteDeferred.resolve(result);
+                    }, function getSiteError() {
+                        siteDeferred.reject("retrieval of site json failed");
                     });
+
+                    return siteDeferred.promise;
+                };
+
+                var getProjects = function getProjects(result) {
+                    var projectPromises = [];
+
+                    $scope.model.projects = $scope.model.projects || [];
+                    result.projects = result.projects || [];
+
+                    result.site.projectIds.forEach(function (id, index) {
+                        var projectDeferred = $q.defer();
+                        // get project
+                        Project.get({projectId: id}, {}, function getProjectSuccess(value) {
+
+                            value.link = paths.api.routes.projectAbsolute.format({"projectId": value.id});
+
+                            $scope.model.projects[index] = value;
+                            result.projects[index] = value;
+                            projectDeferred.resolve(result);
+                        }, function getProjectError(error) {
+                            if (error.status === 403) {
+                                console.warn("The project %s does not give permissions to current user to access it's content. There are %s projects.", id, result.site.projectIds.length);
+                                // populate field anyway, not really sure what to do here, temp value added
+                                var denied =  {
+                                    id: id,
+                                    permissions: "access denied"
+                                };
+
+                                denied.link = paths.api.routes.projectAbsolute.format({"projectId": denied.id});
+
+                                $scope.model.projects[index] = denied;
+                                result.projects[index] = denied;
+
+                                // we don't mind that this "error" has occurred - there should be at least one project
+                                // that did resolve. Resolve promise anyway
+                                projectDeferred.resolve(result);
+                            }
+                            else {
+                                projectDeferred.reject("retrieval of project json failed");
+                            }
+                        });
+
+                        projectPromises[index] = projectDeferred.promise;
+                    });
+
+                    return $q.all(projectPromises);
+                };
+                getAudioRecording(recordingId).then(getSite).then(getProjects).then(function success(result) {
+                    console.info("Metadata Promise chain success", result);
+                }, function error(err) {
+                    console.error("An error occurred downloading metadata for this chunk:" + err, err);
+                }, function notify() {
+                    // TODO: remove dodgy scope closure from promise functions, and update values here incrementally!
+                    console.debug("All promises notify", arguments);
+                });
 
 
                 AudioEvent.query(
@@ -187,7 +278,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                             $scope.tags.push(baw.Tag.make(value));
                         });
 
-                        $scope.model.audioEvents.forEach(function(value){
+                        $scope.model.audioEvents.forEach(function (value) {
                             Tag.resolveAll(value.tags, $scope.tags);
                         });
                     },
@@ -257,11 +348,16 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     var offset = base.add({seconds: $scope.model.media.startOffset});
                     return offset;
                 };
-                
+
+
                 $scope.previousEnabled = false;
                 $scope.nextEnabled = false;
-
                 $scope.createNavigationHref = function (linkType, stepBy) {
+                    // skip if resources not available
+                    if (!$scope.model.audioRecording) {
+                        return "#";
+                    }
+
                     if (!angular.isNumber(stepBy)) {
                         stepBy = CHUNK_DURATION_SECONDS;
                     }
@@ -270,13 +366,13 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     if (linkType === "previous") {
                         var lowerBound = ($routeParams.start - stepBy);
-                        
+
                         if ($routeParams.start > 0) {
                             $scope.previousEnabled = true;
                         } else {
-                            $scope.previousEnabled = false; 
+                            $scope.previousEnabled = false;
                         }
-                        
+
                         if (lowerBound === 0) {
                             baseLink.end = lowerBound + stepBy;
                         }
@@ -294,24 +390,24 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return uriPrev;
 
                     }
-                    else if (linkType === "next") {   
-                        
+                    else if (linkType === "next") {
+
                         var maxEnd = Math.floor($scope.model.audioRecording.durationSeconds);
-                        
+
                         var uriNext = $url.formatUri(
                             paths.site.ngRoutes.listen,
                             {
                                 recordingId: recordingId,
                                 start: ($routeParams.start + stepBy),
-                                end: (($routeParams.end + stepBy <  maxEnd) ? $routeParams.end + stepBy : maxEnd)
+                                end: (($routeParams.end + stepBy < maxEnd) ? $routeParams.end + stepBy : maxEnd)
                             });
-                        
+
                         if ($routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds) {
                             $scope.nextEnabled = true;
                         } else {
-                            $scope.nextEnabled = false; 
+                            $scope.nextEnabled = false;
                         }
-                            
+
                         return uriNext;
                     }
 
@@ -343,7 +439,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     $scope.model.audioEvents.forEach(function (value, key) {
                         value.selected = false;
                     });
+
+                    $scope.model.selectedAudioEvent = null;
                 };
+
 
                 $scope.singleEditDisabled = function () {
                     return ($scope.model.selectedAudioEvent === null || $scope.model.selectedAudioEvent.id === undefined);
@@ -367,7 +466,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     templateUrl: "/templates/tags.html",
                     tagTemplateUrl: "/templates/tags.html"
                 };
-
 
                 $scope.$on('decipher.tags.initialized', function (event) {
                     event.stopPropagation();
@@ -438,7 +536,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                             // assumes tags array is kept in sync
                             //delete $scope.model.selectedAudioEvent.tags[index];
 
-                            console.debug("Tag removal success", removedTag.tag.text );
+                            console.debug("Tag removal success", removedTag.tag.text);
                         },
                         function error(response) {
                             console.error("Tagging creation failed", response);

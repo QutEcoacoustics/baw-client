@@ -155,6 +155,11 @@ var app = angular.module('baw',
 
                  // http default configuration
                  $httpProvider.defaults.withCredentials = true;
+
+                 // the default accept type is ` "application/json, text/plain, */*" `
+                 // for angular. This causes rails to do stupid shit for things like 403s... with old header it gives a 302
+                 // and redirects to HTML page. WTF.
+                 $httpProvider.defaults.headers['common']['Accept'] = 'application/json';
              }])
 
 

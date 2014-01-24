@@ -1,3 +1,17 @@
+
+.noPermissions {
+  @extend .alert;
+  @extend .alert-warning;
+}
+
+.project-names>span:not(:last-child) {
+  word-spacing : -0.3em;
+
+  & * {
+    word-spacing: normal;
+  }
+}
+
 #chunkInfo>span:nth-child(2) {
   text-align: right;
 
@@ -26,7 +40,6 @@
   }
 
 }
-
 
 .position {
   & span {
