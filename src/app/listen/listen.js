@@ -86,7 +86,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     media: null,
                     selectedAudioEvent: null,
                     audioRecording: null,
-                    project: null,
+                    projects: [],
                     site: null
                 };
 
