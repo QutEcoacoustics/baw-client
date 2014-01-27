@@ -51,6 +51,7 @@ var app = angular.module('baw',
                          [
                              'ngRoute',
                              'ngResource',
+                             'ngSanitize',
                              'ui.utils', /* angular-ui project */
                              //'ui.select2',
                              'ui.bootstrap',

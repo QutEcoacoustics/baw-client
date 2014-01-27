@@ -17,11 +17,12 @@
     "jasmine-matchers": "https://github.com/JamieMason/Jasmine-Matchers.git",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "lodash": "~2.3.0",
-    "angular-tags": "~0.2.10"
+    "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
+    "angular-sanitize": "~1.2.x"
   },
   "dependencies": {},
   "resolutions": {
-    "angular": "1.2.x"
+    "angular": "1.2.10"
   },
   "private": true
 }

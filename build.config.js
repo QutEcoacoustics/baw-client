@@ -104,7 +104,11 @@ module.exports = {
             'vendor/lodash/dist/lodash.js',
             //'vendor/select2/select2.js',
             //'vendor/angular-ui-select2/src/select2.js'
-            'vendor/angular-tags/dist/angular-tags-0.2.10-tpls.js'
+
+            // This library is all split up - we are using the boneskull version atm,
+            // but we started off using the deciphernic version
+            'vendor/angular-tags/dist/angular-tags-0.3.1-tpls.js',
+            'vendor/angular-sanitize/angular-sanitize.js'
 
         ],
         css: [
@@ -116,7 +120,7 @@ module.exports = {
             //'vendor/select2/select2-bootstrap.css',
             //'vendor/select2/select2.css'
 
-            'vendor/angular-tags/dist/angular-tags-0.2.10.css'
+            'vendor/angular-tags/dist/angular-tags-0.3.1.css'
         ],
         assets: [
             // jquery-ui is stoopid, special case
