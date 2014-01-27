@@ -47,12 +47,14 @@
                     <button class="btn btn-default" ng-click="model.audioElement.toStart()" title='Back to Start'>
                         <span class="glyphicon glyphicon-repeat"></span>
                     </button>
-                    <button class="btn btn-default" ng-click="model.audioElement.pause()" title='Pause'>
-                        <span class="glyphicon glyphicon-pause"></span>
+                    <button ng-disabled="!model.audioElement.canPlay"
+                            class="btn btn-default"
+                            ng-click="togglePlayState()"
+                            title="{{ model.audioElement.isPlaying && 'Pause' || 'Play' }}">
+                        <span ng-class="{'glyphicon-pause': model.audioElement.isPlaying}"
+                              class="glyphicon glyphicon-play"></span>
                     </button>
-                    <button class="btn btn-default" ng-click="model.audioElement.play()" title='Play'>
-                        <span class="glyphicon glyphicon-play"></span>
-                    </button>
+
 
                 </div>
                 <div class="btn-group">

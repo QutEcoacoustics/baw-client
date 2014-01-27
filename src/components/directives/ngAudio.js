@@ -8,6 +8,14 @@ var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration'
  * like a "isBuffering" binding.
  */
 bawds.directive('ngAudio', ['$parse', function ($parse) {
+    /* const */ var readyStates = {
+        "haveNothing": 0,
+        "haveMetadata": 1,
+        "haveCurrentData": 2,
+        "haveFutureData": 3,
+        "haveEnoughData": 4
+    };
+
     return {
         restrict: 'A',
         link: function (scope, elements, attributes, controller) {
@@ -50,7 +58,13 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                         target.toStart = target.toStart || toStart;
 
                         target.currentState = event && event.type || 'unknown';
+
                         updateObject(element ,target);
+
+                        target.isPlaying = event && event.type === "playing";
+
+                        target.canPlay = element.readyState >= readyStates.haveFutureData;
+
                         return;
 
                     }
@@ -62,8 +76,8 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
             // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Events/Media_events
             var events = {
                 'abort': undefined,
-                'canplay': undefined,
-                'canplaythrough': undefined,
+                'canplay': updateState,
+                'canplaythrough': updateState,
                 'durationchange': function (event) {
                     scope.$safeApply2(function () {
                         if (attributes.ngAudio) {
@@ -91,14 +105,14 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                     audioElementPositionRAF();
                     updateState(event);
                 },
-                'progress': undefined,
+                'progress': updateState,
                 'ratechange': undefined,
-                'seeked': undefined,
-                'seeking': undefined,
-                'suspend': undefined,
+                'seeked': updateState,
+                'seeking': updateState,
+                'suspend': updateState,
                 'timeupdate': undefined,
                 'volumechange': updateState,
-                'waiting': undefined};
+                'waiting': updateState};
 
             angular.forEach(events, function (value, key) {
                 if (value) {
@@ -110,7 +124,6 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
             });
 
             // position binding - reverse (element to model)
-            // TODO: we can optimise this, it does not always need to be running
             function audioElementPositionRAF() {
                 if (attributes.ngAudio) {
                     var target = scope.$eval(attributes.ngAudio);
