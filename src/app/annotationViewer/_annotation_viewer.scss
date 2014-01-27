@@ -115,6 +115,10 @@ baw-annotation-viewer {
       top:  0;
       left: 0;
       @include vendor-prefix(transform, translatex(0 px));
+
+      &.hidden {
+        display: none;
+      }
     }
   }
 

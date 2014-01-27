@@ -18,7 +18,7 @@
             <img ng-src="{{model.media.spectrogram.url}}" src=""
                  ng-style="{width: model.converters.conversions.enforcedImageWidth, height: model.converters.conversions.enforcedImageHeight}">
             <div id="spectrogramAnnotations_{{id}}" ></div>
-            <div class="positionLine" baw-translate-x="positionLine()"></div>
+            <div class="positionLine" baw-translate-x="positionLine()" ng-class="{hidden: !model.audioElement.canPlay}" ></div>
         </div>
     </div>
 
