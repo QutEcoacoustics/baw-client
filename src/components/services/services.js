@@ -1,4 +1,4 @@
-(function () {
+
     /**...
      * Helper method for adding a put request onto the standard angular resource service
      * @param $resource - the stub resource
@@ -560,6 +560,3 @@
                     }
                 };
             }]);
-
-
-})();

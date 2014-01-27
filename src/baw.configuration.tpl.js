@@ -84,6 +84,9 @@ angular.module('bawApp.configuration', ['url'])
                     security: {
                         ping: "/security/sign_in",
                         signIn: "/my_account/sign_in"
+                    },
+                    users: {
+                        settings: "I really don't know yet"
                     }
                 },
                 links: {
