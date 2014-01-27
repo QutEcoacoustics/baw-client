@@ -5,6 +5,12 @@ var modRewrite = require('connect-modrewrite'),
 
 module.exports = function (grunt) {
 
+    // bit of bullshit to ensure the build fails for missing files in the concat task
+    // note this overrides normal logging! not cool.
+    // These problems (failing on missing files) are expected to be resolved in grunt 0.5
+    grunt.log.oldWarn = grunt.log.warn;
+    grunt.log.warn = grunt.warn;
+
     /**
      * Load required Grunt tasks. These are installed based on the versions listed
      * in `package.json` when you do `npm install` in this directory.
@@ -278,7 +284,8 @@ module.exports = function (grunt) {
                     banner: '<%= meta.banner %>'
                 },
                 nonull: true,
-                src: [
+                src:
+                    [
                     '<%= vendor_files.css %>',
                     '<%= build_dir %>/assets/styles/*.css'
                 ],
@@ -396,9 +403,13 @@ module.exports = function (grunt) {
                 eqnull: true,
 
                 /* HACK: At some point this should be turned off!" */
-                force: true
-            },
-            globals: {}
+                force: true,
+                globals: {
+                    "angular": false,
+                    "baw": true
+                }
+            }
+
         },
 
         /**
