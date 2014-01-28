@@ -22,7 +22,7 @@
   },
   "dependencies": {},
   "resolutions": {
-    "angular": "1.2.11-build.2186+sha.766b3d5"
+    "angular": "1.2.x"
   },
   "private": true
 }

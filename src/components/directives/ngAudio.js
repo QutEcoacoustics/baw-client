@@ -105,7 +105,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
             var events = {
                 'abort': undefined,
                 'canplay': updateState,
-                'canplaythrough': updateState,,
+                'canplaythrough': updateState,
                 // TODO: why does this event need a special handler?
                 'durationchange': function (event) {
                     scope.$safeApply2(function () {
