@@ -8,8 +8,8 @@ module.exports = function (grunt) {
     // bit of bullshit to ensure the build fails for missing files in the concat task
     // note this overrides normal logging! not cool.
     // These problems (failing on missing files) are expected to be resolved in grunt 0.5
-    grunt.log.oldWarn = grunt.log.warn;
-    grunt.log.warn = grunt.warn;
+    //grunt.log.oldWarn = grunt.log.warn;
+    //grunt.log.warn = grunt.warn;
 
     /**
      * Load required Grunt tasks. These are installed based on the versions listed

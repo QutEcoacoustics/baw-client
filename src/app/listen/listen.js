@@ -81,7 +81,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 // set up some dummy objects for use later
                 $scope.jumpToHide = true;
                 $scope.model = {
-                    audioElement: {},
+                    audioElement: {
+                    },
                     audioEvents: [],
                     media: null,
                     selectedAudioEvent: null,
@@ -89,6 +90,16 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     projects: [],
                     site: null
                 };
+
+                // bind
+                $scope.$watch(function () {
+                    return $scope.model.audioElement;
+                }, function(newValue) {
+                    $scope.$root.userProfile.preferences.volume = newValue;
+                });
+                $scope.$watch("$root.userProfile.preferences.volume", function(newValue) {
+                    $scope.model.audioElement = newValue;
+                });
 
                 var formatPaths = function () {
                     if ($scope.model.media && $scope.model.media.hasOwnProperty('id')) {

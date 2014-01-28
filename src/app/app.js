@@ -164,11 +164,14 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths',
-          function ($rootScope, $location, $route, $http, AudioEvent, paths) {
+    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths', 'UserProfile',
+          function ($rootScope, $location, $route, $http, AudioEvent, paths, UserProfile) {
 
               // embed configuration for easy site-wide binding
               $rootScope.paths = paths;
+
+              // user profile - update user preferences when they change
+              UserProfile.get($rootScope, "userProfile");
 
               // helper function for printing scope objects
               baw.exports.print = $rootScope.print = function () {

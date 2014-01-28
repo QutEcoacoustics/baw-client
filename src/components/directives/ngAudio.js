@@ -16,6 +16,11 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 throw 'Cannot put ngAudio element on an element that is not a <audio />';
             }
 
+            var expression = $parse(attributes.ngAudio),
+                model = expression(scope);
+
+            /* Forward binding */
+
             function play() {
                 element.play();
             }
@@ -28,6 +33,14 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 element.currentTime = 0;
             }
 
+            scope.$watch(function () {
+                return model.volume;
+            }, function(newValue, oldValue) {
+               element.volume = newValue;
+            });
+
+            /* Reverse binding */
+
             var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume'];
             function updateObject(src, dest) {
                 for (var i = 0; i < propertiesToUpdate.length; i++){
@@ -38,7 +51,6 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
             function updateState(event) {
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
-                        var expression = $parse(attributes.ngAudio);
                         var target = expression(scope);
                         if (!target) {
                             expression.assign(scope, {});
