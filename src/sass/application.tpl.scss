@@ -33,6 +33,7 @@ $IMAGE_ASSET_PATH: '<%= build_configs.current.siteDir %>';
 /*
 C:\Work\GitHub\baw-client\src\sass [master +0 ~1 -0]> ls ../app/ -Recurse -Include "*.scss" | Resolve-Path -Relative | %{ '@import "' + $_ + '";'  } | % {$_ -replace '\\', '/'} | % {$_ -replace '/_(.*).scss', '/$1'} | Out-Clipboard
  */
+@import "../app/audioControl/_volumeControl.scss";
 @import "../app/annotationViewer/annotation_viewer";
 @import "../app/audioEvents/audio_events";
 @import "../app/bookmarks/bookmarks";

@@ -16,6 +16,31 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 throw 'Cannot put ngAudio element on an element that is not a <audio />';
             }
 
+            var expression = $parse(attributes.ngAudio);
+
+            /*
+             * FORWARD BINDING
+             *
+             * NOTE: only some properties are bound forward
+             */
+
+            // volume
+            scope.$watch(function() {
+                var target = expression(scope);
+                return target ? target.volume : null;
+            }, function updateVolume(newValue, oldValue) {
+               element.volume = newValue;
+            });
+
+            // muted
+            scope.$watch(function() {
+                var target = expression(scope);
+                return target ? target.muted : null;
+            }, function updateMuted(newValue, oldValue) {
+                element.muted = !!newValue;
+            });
+
+
             function play() {
                 element.play();
             }
@@ -28,7 +53,11 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 element.currentTime = 0;
             }
 
-            var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume'];
+            /*
+             * REVERSE BINDING
+             */
+
+            var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume', 'muted'];
             function updateObject(src, dest) {
                 for (var i = 0; i < propertiesToUpdate.length; i++){
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
@@ -38,7 +67,6 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
             function updateState(event) {
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
-                        var expression = $parse(attributes.ngAudio);
                         var target = expression(scope);
                         if (!target) {
                             expression.assign(scope, {});
@@ -64,6 +92,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 'abort': undefined,
                 'canplay': undefined,
                 'canplaythrough': undefined,
+                // TODO: why does this event need a special handler?
                 'durationchange': function (event) {
                     scope.$safeApply2(function () {
                         if (attributes.ngAudio) {
