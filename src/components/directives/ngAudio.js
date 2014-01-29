@@ -56,7 +56,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
             function pause() {
                 element.pause();
             }
-            
+
             function toStart() {
                 element.currentTime = 0;
             }
@@ -72,7 +72,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 }
             }
 
-            function updateState(event) {
+            function updateState(event, isPlaying) {
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
                         var target = expression(scope);
@@ -89,7 +89,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
 
                         updateObject(element ,target);
 
-                        target.isPlaying = event && event.type === "playing";
+                        target.isPlaying = !element.paused;
 
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
 
