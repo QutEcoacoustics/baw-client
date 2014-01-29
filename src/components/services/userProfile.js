@@ -6,10 +6,16 @@ bawss.factory("UserProfile", [
     "conf.paths",
     "conf.constants",
     function ($rootScope, $http, paths, constants) {
-        var profileUrl = paths.api.routes.user.profileAbsolute;
-        var preferencesUrl = paths.api.routes.user.settingsAbsolute;
+        var profileUrl = paths.api.routes.user.profileAbsolute,
+            preferencesUrl = paths.api.routes.user.settingsAbsolute,
+            eventKeys = {
+                "loaded": "UserProfile:Loaded",
+                "preferencesChanged": "UserProfile:PreferencesChanged"
+            };
 
-        var methods = {};
+        var methods = {
+            eventKeys: eventKeys
+        };
 
         var throttleCount = 0,
             throttleAmount = 1000;
@@ -17,62 +23,59 @@ bawss.factory("UserProfile", [
         /**
          * Update the server's stored settings.
          * Calls to this function are throttled.
-         * @param keyChanged - they key of the property that just changed
          * @param object - the preferences object that will be sent back to the server
          */
-        methods.updatePreferences = function throttleWrapper(object) {
-            console.debug("updatePreferences: throttled", object);
+        methods.updatePreferences = function throttleWrapper() {
+            console.debug("updatePreferences: throttled");
             throttleCount++;
 
-            return _.throttle(
-                function updatePreferences(object) {
-                    console.debug("updatePreferences: sending to server, waited %s attempts", throttleCount);
-                    throttleCount = 0;
+            _.throttle(function updatePreferences() {
+                console.debug("updatePreferences: sending to server, waited %s attempts", throttleCount);
+                throttleCount = 0;
 
-                    $http.put(preferencesUrl).then(
-                        function success(response) {
-                            console.info("updatePreferences:success");
-                        },
-                        function error(response) {
-                            console.error("updatePreferences:failed", response);
-                        }
-                    );
-                }, throttleAmount);
+                $http.put(preferencesUrl, methods.profile.preferences).then(
+                    function success(response) {
+                        console.info("updatePreferences:success");
+                    },
+                    function error(response) {
+                        console.error("updatePreferences:failed", response);
+                    }
+                );
+            }, throttleAmount)();
         };
 
-        methods.get = function (scope, property) {
-            scope[property] = {preferences: null};
+        methods.profile = null;
+
+        methods.get = function () {
 
             $http.get(profileUrl).then(
                 function success(response) {
                     console.log("User profile loaded");
 
-                    scope[property] = (new baw.UserProfile(methods, response.data, constants.defaultProfile));
+                    methods.profile = (new baw.UserProfile(methods, response.data, constants.defaultProfile));
                 },
                 function error(response) {
                     console.error("User profile load failed", response);
 
-                    scope[property] = (new baw.UserProfile(methods, null, constants.defaultProfile));
+                    methods.profile = (new baw.UserProfile(methods, null, constants.defaultProfile));
                 }
             ).finally(function () {
-                    scope.$watch(function () {
-                        return scope[property].preferences;
-                    }, function (newValue, oldValue) {
-                        if (newValue == oldValue) {
-                            return;
-                        }
-
-                        methods.updatePreferences(newValue);
-                    }, true);
+                    $rootScope.$broadcast(eventKeys.loaded, methods);
                 });
         };
 
-        methods.bind = function() {
+        methods.listen = function (events) {
+            angular.forEach(events, function (callback, key) {
+                $rootScope.$on(key, function (event, value) {
 
+                    callback.apply(null, [key, methods, value]);
+                });
+            });
         };
 
+        methods.get();
 
-        return  methods;
+        return methods;
 
     }
 ]);

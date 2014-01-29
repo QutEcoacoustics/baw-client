@@ -1,4 +1,10 @@
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
+var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.configuration']);
+
+
+ngAudio.constant("ngAudioEvents", {
+    volumeChanged: "ngAudio:volumeChanged",
+    muteChanged: "ngAudio:muted"
+});
 
 /**
  * A directive for binding the model to data off an audio element.
@@ -7,7 +13,7 @@ var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration'
  * This directive is incomplete. The potential exists for many other cool bindings,
  * like a "isBuffering" binding.
  */
-bawds.directive('ngAudio', ['$parse', function ($parse) {
+ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents, $parse) {
     return {
         restrict: 'A',
         link: function (scope, elements, attributes, controller) {
@@ -41,8 +47,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
 
             /* Reverse binding */
 
-            var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume'];
-
+            var propertiesToUpdate = ['duration', 'src', 'currentSrc'];
             function updateObject(src, dest) {
                 for (var i = 0; i < propertiesToUpdate.length; i++) {
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
@@ -63,12 +68,23 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                         target.toStart = target.toStart || toStart;
 
                         target.currentState = event && event.type || 'unknown';
-                        updateObject(element, target);
-                        return;
 
+                        if (target.volume != null && target.volume !== element.volume) {
+                            target.volume = element.volume;
+                            scope.$emit(ngAudioEvents.volumeChanged, element.volume);
+                        }
+
+                        if (target.muted != null && target.muted !== element.muted) {
+                            target.muted = element.muted;
+                            scope.$emit(ngAudioEvents.muteChanged, element.muted);
+                        }
+
+                        updateObject(element, target);
                     }
-                    scope.currentState = event && event.type || 'unknown';
-                    updateObject(element, scope);
+                    else {
+                        scope.currentState = event && event.type || 'unknown';
+                        updateObject(element, scope);
+                    }
                 });
             }
 
