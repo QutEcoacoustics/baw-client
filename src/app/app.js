@@ -171,7 +171,7 @@ var app = angular.module('baw',
               $rootScope.paths = paths;
 
               // user profile - update user preferences when they change
-              UserProfile.get($rootScope, "userProfile");
+              //UserProfile.get($rootScope, "userProfile");
 
               // helper function for printing scope objects
               baw.exports.print = $rootScope.print = function () {

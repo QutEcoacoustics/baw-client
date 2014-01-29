@@ -1,10 +1,11 @@
 var bawss = bawss || angular.module("bawApp.services", ["ngResource", "bawApp.configuration"]);
 
 bawss.factory("UserProfile", [
+    "$rootScope",
     "$http",
     "conf.paths",
     "conf.constants",
-    function ($http, paths, constants) {
+    function ($rootScope, $http, paths, constants) {
         var profileUrl = paths.api.routes.user.profileAbsolute;
         var preferencesUrl = paths.api.routes.user.settingsAbsolute;
 
@@ -66,7 +67,12 @@ bawss.factory("UserProfile", [
                 });
         };
 
+        methods.bind = function() {
 
-        return methods;
+        };
+
+
+        return  methods;
+
     }
 ]);

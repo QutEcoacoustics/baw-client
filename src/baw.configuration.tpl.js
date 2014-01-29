@@ -165,7 +165,8 @@ angular.module('bawApp.configuration', ['url'])
             email: null,
             id: null,
             preferences: {
-                volume: 1.0
+                volume: 1.0,
+                muted: false
             },
             userName: "Unknown user"
         }

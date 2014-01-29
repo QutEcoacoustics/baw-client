@@ -28,22 +28,23 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
             function pause() {
                 element.pause();
             }
-            
+
             function toStart() {
                 element.currentTime = 0;
             }
 
             scope.$watch(function () {
                 return model.volume;
-            }, function(newValue, oldValue) {
-               element.volume = newValue;
+            }, function (newValue, oldValue) {
+                element.volume = newValue;
             });
 
             /* Reverse binding */
 
             var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume'];
+
             function updateObject(src, dest) {
-                for (var i = 0; i < propertiesToUpdate.length; i++){
+                for (var i = 0; i < propertiesToUpdate.length; i++) {
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
                 }
             }
@@ -62,7 +63,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                         target.toStart = target.toStart || toStart;
 
                         target.currentState = event && event.type || 'unknown';
-                        updateObject(element ,target);
+                        updateObject(element, target);
                         return;
 
                     }
@@ -98,7 +99,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 'mozaudioavailable': undefined,
                 'pause': updateState,
                 'play': updateState,
-                'playing': function(event) {
+                'playing': function (event) {
                     // restart request animation frame
                     audioElementPositionRAF();
                     updateState(event);
