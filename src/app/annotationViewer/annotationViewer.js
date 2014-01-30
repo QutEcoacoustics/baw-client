@@ -1,6 +1,9 @@
 var avModule = angular.module('bawApp.annotationViewer', []);
 
 avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag',
+
+    // TODO: possible optimisation evaluate these functions once per frame
+
     /**
      * The AnnotationViewer controller
      * @param $scope

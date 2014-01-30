@@ -2,33 +2,46 @@
 $btn-default-color: #333;
 $handle-default-bg: #fff;
 $handle-border-color: darken($handle-default-bg, 5%);
+$smallest-size: 6px;
 
 @mixin size($size) {
   width: $size;
   height: $size;
+
+  margin-left: -($size / 2.0);
+  margin-top: -($size / 2.0);
+  margin-right: -($size / 2.0);
+  margin-bottom: -($size / 2.0);
+
   @include rounded-corners($size / 2.0);
 }
 
 .touch-handle-default {
-  @include size(6px);
+  @include size($smallest-size * 2.0);
+}
+
+.touch-handle-small {
+  @include size($smallest-size);
 }
 
 .touch-handle-large {
-  @include size(6px);
-}
-
-.touch-handle-largest {
-  @include size(6px);
+  @include size($smallest-size * 4.0);
 }
 
 
 .touch-handle {
   background-color: $handle-default-bg;
   border: solid 1px $handle-border-color;
+  margin:0;
+  padding: 0;
 
-  @extend .touch-handle-default; 
+  // lib-sass currently does not support inherited extends
+  // so temporarily change this extend to a mixin
+  //@extend .touch-handle-default;
+  @include size($smallest-size * 2.0);
 
-  position: relative;
+  position: absolute;
+  z-index: 1000;
 }
 
 @mixin curved-tail {
@@ -55,7 +68,40 @@ $handle-border-color: darken($handle-default-bg, 5%);
 
 }
 
+.grab-center {
+  @extend .touch-handle;
 
+  top:50%;
+  left:50%;
+}
+
+.grab-left-center {
+  @extend .touch-handle;
+
+  top:50%;
+  left:0;
+}
+
+.grab-top-center {
+  @extend .touch-handle;
+
+  top:0;
+  left:50%;
+}
+
+.grab-right-center {
+  @extend .touch-handle;
+
+  top:50%;
+  right:0;
+}
+
+.grab-bottom-center {
+  @extend .touch-handle;
+
+  bottom:0;
+  left:50%;
+}
 
 .grab-top-left {
   @extend .touch-handle;
@@ -71,6 +117,13 @@ $handle-border-color: darken($handle-default-bg, 5%);
   right:0;
 }
 
+.grab-top-center {
+  @extend .touch-handle;
+
+  top:0;
+  left:50%;
+}
+
 .grab-bottom-left {
   @extend .touch-handle;
 
@@ -83,4 +136,11 @@ $handle-border-color: darken($handle-default-bg, 5%);
 
   bottom:0;
   right:0;
+}
+
+.grab-bottom-centre {
+  @extend .touch-handle;
+
+  bottom:0;
+  left:0;
 }
