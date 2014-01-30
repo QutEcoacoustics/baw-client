@@ -1,0 +1,86 @@
+
+$btn-default-color: #333;
+$handle-default-bg: #fff;
+$handle-border-color: darken($handle-default-bg, 5%);
+
+@mixin size($size) {
+  width: $size;
+  height: $size;
+  @include rounded-corners($size / 2.0);
+}
+
+.touch-handle-default {
+  @include size(6px);
+}
+
+.touch-handle-large {
+  @include size(6px);
+}
+
+.touch-handle-largest {
+  @include size(6px);
+}
+
+
+.touch-handle {
+  background-color: $handle-default-bg;
+  border: solid 1px $handle-border-color;
+
+  @extend .touch-handle-default; 
+
+  position: relative;
+}
+
+@mixin curved-tail {
+  content: "";
+  position: absolute;
+  border: 0 solid transparent;
+  border-top: 3px solid red;
+  border-radius: 20px 0 0 0;
+  top: -12px;
+  left: -9px;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+}
+
+.touch-handle-tail {
+
+}
+
+.touch-handle-double-tail {
+
+}
+
+
+
+.grab-top-left {
+  @extend .touch-handle;
+
+  top:0;
+  left:0;
+}
+
+.grab-top-right {
+  @extend .touch-handle;
+
+  top:0;
+  right:0;
+}
+
+.grab-bottom-left {
+  @extend .touch-handle;
+
+  bottom:0;
+  left:0;
+}
+
+.grab-bottom-right {
+  @extend .touch-handle;
+
+  bottom:0;
+  right:0;
+}
