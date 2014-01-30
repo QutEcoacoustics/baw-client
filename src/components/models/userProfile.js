@@ -3,31 +3,15 @@ var baw = window.baw = window.baw || {};
 
 baw.UserProfile = (function () {
 
-    /*function makeGetter(key) {
-     return function() {
-     return this[key];
-     };
-     }
-
-     function makeSetter(key, service) {
-     return function(value) {
-     if (value !== this[key]) {
-     this[key] = value;
-     service.updatePreferences(key, this);
-     }
-     };
-     }*/
-
-    function UserProfile(serviceReference, profile, defaultProfile) {
+    function UserProfile(profile, defaultProfile) {
 
         if (!(this instanceof UserProfile)) {
             throw new Error("Constructor called as a function");
         }
 
-        var immediateSave = false;
+
         if (!profile) {
             profile = defaultProfile;
-            immediateSave = true;
         }
 
         if (!defaultProfile) {
@@ -55,27 +39,7 @@ baw.UserProfile = (function () {
             }
 
             this.preferences[key] = merged[key];
-
-            /*
-             Object.defineProperty(this.preferences,  "_" + key, {
-             value: merged[key],
-             writeable: true,
-             enumerable: false,
-             configurable: false
-             });
-
-             Object.defineProperty(this.preferences, key, {
-             get: makeGetter(key),
-             set: makeSetter(key, serviceReference),
-             configurable: false,
-             enumerable: true
-             });*/
         }
-
-        if (immediateSave) {
-
-        }
-
     }
 
     return UserProfile;

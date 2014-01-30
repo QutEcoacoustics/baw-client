@@ -9,11 +9,11 @@ bawss.factory("UserProfile", [
         var profileUrl = paths.api.routes.user.profileAbsolute,
             preferencesUrl = paths.api.routes.user.settingsAbsolute,
             eventKeys = {
-                "loaded": "UserProfile:Loaded",
-                "preferencesChanged": "UserProfile:PreferencesChanged"
+                "loaded": "UserProfile:Loaded"/*,
+                "preferencesChanged": "UserProfile:PreferencesChanged"*/
             };
 
-        var methods = {
+        var exports = {
             eventKeys: eventKeys
         };
 
@@ -23,9 +23,8 @@ bawss.factory("UserProfile", [
         /**
          * Update the server's stored settings.
          * Calls to this function are throttled.
-         * @param object - the preferences object that will be sent back to the server
          */
-        methods.updatePreferences = function throttleWrapper() {
+        exports.updatePreferences = function throttleWrapper() {
             console.debug("updatePreferences: throttled");
             throttleCount++;
 
@@ -33,7 +32,7 @@ bawss.factory("UserProfile", [
                 console.debug("updatePreferences: sending to server, waited %s attempts", throttleCount);
                 throttleCount = 0;
 
-                $http.put(preferencesUrl, methods.profile.preferences).then(
+                $http.put(preferencesUrl, exports.profile.preferences).then(
                     function success(response) {
                         console.info("updatePreferences:success");
                     },
@@ -44,38 +43,40 @@ bawss.factory("UserProfile", [
             }, throttleAmount)();
         };
 
-        methods.profile = null;
+        exports.profile = null;
 
-        methods.get = function () {
+        exports.get = function () {
 
             $http.get(profileUrl).then(
                 function success(response) {
                     console.log("User profile loaded");
 
-                    methods.profile = (new baw.UserProfile(methods, response.data, constants.defaultProfile));
+                    exports.profile = (new baw.UserProfile(response.data, constants.defaultProfile));
                 },
                 function error(response) {
-                    console.error("User profile load failed", response);
+                    console.error("User profile load failed, default profile loaded", response);
 
-                    methods.profile = (new baw.UserProfile(methods, null, constants.defaultProfile));
+                    exports.profile = (new baw.UserProfile(null, constants.defaultProfile));
                 }
             ).finally(function () {
-                    $rootScope.$broadcast(eventKeys.loaded, methods);
+                    $rootScope.$broadcast(eventKeys.loaded, exports);
                 });
         };
 
-        methods.listen = function (events) {
+        exports.listen = function (events) {
             angular.forEach(events, function (callback, key) {
                 $rootScope.$on(key, function (event, value) {
 
-                    callback.apply(null, [key, methods, value]);
+                    callback.apply(null, [key, exports, value]);
                 });
             });
         };
 
-        methods.get();
+        // download asap (async)
+        exports.get();
 
-        return methods;
+        // return api
+        return exports;
 
     }
 ]);
