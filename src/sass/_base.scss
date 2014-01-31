@@ -63,6 +63,10 @@ $footer-height: 40px;
  *
  */
 
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+
 @mixin vendor-prefix($name, $arguments...) {
   #{$name}: $arguments;
   -webkit-#{$name}: $arguments;
@@ -72,12 +76,23 @@ $footer-height: 40px;
 }
 
 @mixin vendor-prefix-function($property, $name, $arguments...) {
-  #{$property}: #{$name}unquote('('#{$arguments}')');
-  #{$property}: -webkit-#{$name}unquote('('#{$arguments}')') ;
-  #{$property}: -ms-#{$name}unquote('('#{$arguments}')') ;
-  #{$property}: -moz-#{$name}unquote('('#{$arguments}')') ;
-  #{$property}: -o-#{$name}unquote('('#{$arguments}')') ;
+
+  #{$property}:  #{$name}(#{$arguments});
+  #{$property}: -webkit-#{$name}(#{$arguments});
+  -webkit-#{$property}: -webkit-#{$name}(#{$arguments});
+  -webkit-#{$property}: #{$name}(#{$arguments});
+  #{$property}: -ms-#{$name}(#{$arguments});
+  -ms-#{$property}: -ms-#{$name}(#{$arguments});
+  -ms-#{$property}: #{$name}(#{$arguments});
+  #{$property}: -moz-#{$name}(#{$arguments});
+  -moz-#{$property}: -moz-#{$name}(#{$arguments});
+  -moz-#{$property}: #{$name}(#{$arguments});
+  #{$property}: -o-#{$name}(#{$arguments});
+  -o-#{$property}: -o-#{$name}(#{$arguments});
+  -o-#{$property}: #{$name}(#{$arguments});
 }
+
+
 
 @mixin gradient($type, $to...) {
   // old browsers
@@ -118,13 +133,3 @@ $footer-height: 40px;
   @include transition(box-shadow border-color,  400ms 50ms, linear linear);
 
 }
-
-
-
-
-/*
- *
- *  Styles
- *  // see ./layout.css.scss
- */
-

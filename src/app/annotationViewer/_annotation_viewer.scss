@@ -2,7 +2,7 @@
 
 // color-swatch
 $spectrogramProgressLine: #FF0000;
-$spectrogramBorder: #666666;
+$spectrogramBorder: #8c8c8c;
 $tagAlignmentLine: #ffa73c;
 
 $marqueeBorderColorSelected: #FFFF00;
@@ -10,6 +10,10 @@ $marqueeBorderColorSelectedGlow: #f7ffef;
 $marqueeBorderColorHover: #00ffe9;
 $marqueeBorderColorInactive: #00FF00;
 $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
+
+// see _touch.scss and annotate.tpl.html
+$grab-handle-radius: 12px;
+$grab-handle-bottom-shift: 17px;
 
 //noinspection CssInvalidHtmlTagReference
 baw-annotation-viewer {
@@ -23,6 +27,14 @@ baw-annotation-viewer {
 
   & #scroller {
     display: inline-block;
+    overflow-x: visible;
+    overflow-y: hidden;
+    line-height: 0;
+    // this padding is for the drag handle
+    padding-top: 0;
+    padding-right: $grab-handle-radius;
+    padding-bottom: (($grab-handle-radius * 2) + $grab-handle-bottom-shift);
+    padding-left: $grab-handle-radius;
   }
 
   & .tag-preview {
@@ -65,19 +77,18 @@ baw-annotation-viewer {
   }
 
 
-  & #scroller{
-
-    overflow-x: visible;
-    overflow-y: hidden;
-    line-height: 0;
-  }
-
   & .annotation-viewer {
+
+    // prevent text-selection of the elements on the draw surface
+    @include vendor-prefix(user-select, none);
+
     display: inline-block;
     position: relative;
     line-height: 0;
-    padding: 0;
+    padding: 0 !important;
     margin: 0;
+    border: 1px dotted $spectrogramBorder;
+    //border-width: 1px 0px 1px 0px;
 
     & img {
       /* set a temporary height to avoid UI jumping around on image load
@@ -85,8 +96,6 @@ baw-annotation-viewer {
           the enforcedImageHeight value model.
         */
       height: 256px;
-      border: 1px solid $spectrogramBorder;
-      border-width: 1px 0px 1px 0px;
 
     }
 
@@ -108,7 +117,8 @@ baw-annotation-viewer {
     }
 
     & .positionLine {
-      border-left: solid 1px $spectrogramProgressLine;
+      //border-left: solid 1px $spectrogramProgressLine;
+      background-color: $spectrogramProgressLine;
       height: 100%;
       width: 1px;
       position: absolute;
@@ -118,6 +128,10 @@ baw-annotation-viewer {
 
       &.hidden {
         display: none;
+      }
+
+      >.grab-bottom-center {
+        bottom: -$grab-handle-bottom-shift;
       }
     }
   }

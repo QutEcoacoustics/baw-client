@@ -1,8 +1,14 @@
-
-$btn-default-color: #333;
-$handle-default-bg: #fff;
-$handle-border-color: darken($handle-default-bg, 5%);
+$handle-default-color: #333;
+$handle-default-bg: #FFF;
+//#fff;
+$handle-border-color: darken($handle-default-bg, 40%);
+$shadow: #666;
 $smallest-size: 6px;
+
+@function tail-svg($size) {
+  $scale: strip-units($size) / 24.002766;
+  @return "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='24' height='24.38'><g transform='translate(0,-40)'><path d='M11.36 40.52C10.92 44.29 8.59 47.54 5.78 49.98 4.28 51.18 2.96 52.64 2.14 54.4 1.31 56.15 0.67 58.05 0.5 59.99c0 1.17 0 2.33 0 3.5 0.81-0.5 0.71-2.32 1.5-3.16 2.25-4.09 7.15-6.48 11.75-5.69 4.57 0.65 8.49 4.34 9.44 8.85 0.53 0.12 0.18-0.64 0.28-0.95-0.05-1.42 0.16-2.87-0.28-4.26-0.7-3.03-2.14-6.02-4.65-7.96-2.83-2.41-5.26-5.54-5.86-9.3 0.14-0.81-0.75-0.41-1.23-0.5l-0.07 0-0.03 0z' style='fill:#{$handle-default-bg};stroke-linecap:rounded;stroke-width:2.0;stroke:#{$handle-border-color}'/></g></svg>";
+}
 
 @mixin size($size) {
   width: $size;
@@ -28,11 +34,10 @@ $smallest-size: 6px;
   @include size($smallest-size * 4.0);
 }
 
-
 .touch-handle {
   background-color: $handle-default-bg;
   border: solid 1px $handle-border-color;
-  margin:0;
+  margin: 0;
   padding: 0;
 
   // lib-sass currently does not support inherited extends
@@ -40,107 +45,163 @@ $smallest-size: 6px;
   //@extend .touch-handle-default;
   @include size($smallest-size * 2.0);
 
+  //box-shadow: 0 0 5px $shadow;
+
   position: absolute;
   z-index: 1000;
+  overflow: visible !important;
+  display: block;
 }
 
-@mixin curved-tail {
-  content: "";
-  position: absolute;
-  border: 0 solid transparent;
-  border-top: 3px solid red;
-  border-radius: 20px 0 0 0;
-  top: -12px;
-  left: -9px;
-  width: 12px;
-  height: 12px;
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-}
-
-.touch-handle-tail {
+@mixin curved-tail-angle($angle) {
+  @include vendor-prefix-function(transform, rotate, $angle);
 
 }
 
-.touch-handle-double-tail {
+@mixin curved-tail($size, $both) {
+  @mixin inner($size) {
+    $svg: tail-svg($size);
+    content: "";
+    background-image: url("data:image/svg+xml;utf8,#{$svg}");
+    position: absolute;
+    width: $size + 0;
+    height: $size + 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    left: -1px;
 
+  }
+
+  &:before {
+    top: -$size + 1px;
+    @include inner($size);
+
+    // TODO: broken
+    //@include vendor-prefix(transform-origin, ($size / 2.0) ($size + 4px) );
+  }
+
+  @if $both {
+    &:after {
+      top: ($size / 2.0) + 2px + 1px;
+      @include inner($size);
+
+      // TODO: broken
+      //@include vendor-prefix(transform-origin, (($size / 2.0) - 4) ($size / 2.0)  );
+    }
+  }
+
+}
+
+.grab-handle-tail {
+  // replace when lib-sass supports better extends
+  @include curved-tail($smallest-size * 2.0, false);
+}
+
+.grab-handle-double-tail {
+  @include curved-tail($smallest-size * 2.0, true);
+}
+
+// generate directional classes
+$angle-size: 45deg;
+$current-angle: 0deg;
+@while $current-angle < 360deg {
+  .grab-handle-tail-#{strip-units($current-angle)}:before {
+    @extend .grab-handle-tail:before;
+    @include curved-tail-angle($current-angle);
+  }
+
+  .grab-handle-tail-#{strip-units($current-angle)}:after {
+    @extend .grab-handle-tail:after;
+    @include curved-tail-angle($current-angle + 180deg);
+  }
+
+  .grab-handle-double-tail-#{strip-units($current-angle)}:before {
+    @extend .grab-handle-double-tail:before;
+    @include curved-tail-angle($current-angle);
+  }
+
+  .grab-handle-double-tail-#{strip-units($current-angle)}:after {
+    @extend .grab-handle-double-tail:after;
+    @include curved-tail-angle($current-angle + 180deg);
+  }
+
+  $current-angle: $current-angle + $angle-size;
 }
 
 .grab-center {
   @extend .touch-handle;
 
-  top:50%;
-  left:50%;
+  top: 50%;
+  left: 50%;
 }
 
 .grab-left-center {
   @extend .touch-handle;
 
-  top:50%;
-  left:0;
+  top: 50%;
+  left: 0;
 }
 
 .grab-top-center {
   @extend .touch-handle;
 
-  top:0;
-  left:50%;
+  top: 0;
+  left: 50%;
 }
 
 .grab-right-center {
   @extend .touch-handle;
 
-  top:50%;
-  right:0;
+  top: 50%;
+  right: 0;
 }
 
 .grab-bottom-center {
   @extend .touch-handle;
 
-  bottom:0;
-  left:50%;
+  bottom: 0;
+  left: 50%;
 }
 
 .grab-top-left {
   @extend .touch-handle;
 
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
 }
 
 .grab-top-right {
   @extend .touch-handle;
 
-  top:0;
-  right:0;
+  top: 0;
+  right: 0;
 }
 
 .grab-top-center {
   @extend .touch-handle;
 
-  top:0;
-  left:50%;
+  top: 0;
+  left: 50%;
 }
 
 .grab-bottom-left {
   @extend .touch-handle;
 
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
 }
 
 .grab-bottom-right {
   @extend .touch-handle;
 
-  bottom:0;
-  right:0;
+  bottom: 0;
+  right: 0;
 }
 
 .grab-bottom-centre {
   @extend .touch-handle;
 
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
 }
