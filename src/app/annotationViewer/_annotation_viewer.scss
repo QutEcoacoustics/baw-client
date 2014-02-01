@@ -13,7 +13,7 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
 // see _touch.scss and annotate.tpl.html
 $grab-handle-radius: 12px;
-$grab-handle-bottom-shift: 17px;
+$grab-handle-bottom-shift: 12px;
 
 //noinspection CssInvalidHtmlTagReference
 baw-annotation-viewer {
@@ -151,6 +151,10 @@ baw-annotation-viewer {
     background-color: rgba(255,255,255,0.05);
     overflow: visible;
     z-index: 0;
+
+    // this needs to be changed because of a jquery-ui bug
+    //http://bugs.jqueryui.com/ticket/8932
+    box-sizing: content-box;
 
     &:before {
       @if not $DEBUG {
