@@ -5,7 +5,10 @@ $handle-border-color: #333;
 $shadow: #666;
 $smallest-size: 6px;
 
-$circle: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M6 0.4L0.4 6 2.4 8C3.3 7.1 4.6 6.6 6 6.6 7.4 6.6 8.7 7.1 9.6 8L11.6 6 6 0.4z' style='fill:#{$handle-default-bg};stroke-width:1.0;stroke:#{$handle-border-color};stroke-opacity:1.0'/></g></svg>";
+$pen-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M6 0.4L0.4 6 2.4 8C3.3 7.1 4.6 6.6 6 6.6 7.4 6.6 8.7 7.1 9.6 8L11.6 6 6 0.4z' style='fill:#{$handle-default-bg};stroke-width:1.0;stroke:#{$handle-border-color};stroke-opacity:1.0'/></g></svg>";
+
+// This has not been tested
+$line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><line x1='6' y1='12' x2='6' y2='0'  style='fill:#{$handle-default-bg};stroke-width:1.0;stroke:#{$handle-border-color};stroke-opacity:1.0'/></g></svg>";
 
 @mixin size($size) {
   width: $size;
@@ -65,7 +68,7 @@ $circle: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2
     background-repeat: no-repeat;
     background-size: contain;
     left: -1px;
-    background-image: url("data:image/svg+xml;utf8,#{$circle}");
+    background-image: url("data:image/svg+xml;utf8,#{$pen-tip}");
   }
 
   &:before {
@@ -91,6 +94,28 @@ $circle: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2
 .grab-handle-double-tail {
   @include curved-tail($smallest-size * 2.0, true);
 }
+
+// not tested
+.grab-line-tail {
+  &,.grab-handle-tail {
+    &:before {
+      background-image: url("data:image/svg+xml;utf8,#{$line-tip}");
+    }
+  }
+
+  &,.grab-handle-double-tail {
+    &:before {
+      background-image: url("data:image/svg+xml;utf8,#{$line-tip}");
+    }
+
+    &:after {
+      &:before {
+        background-image: url("data:image/svg+xml;utf8,#{$line-tip}");
+      }
+    }
+  }
+}
+// end not tested
 
 // generate directional classes
 $angle-size: 45deg;

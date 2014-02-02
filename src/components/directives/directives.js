@@ -242,7 +242,7 @@ bawds.directive('bawImageLoaded', ['$timeout', '$parse', function ($timeout, $pa
         link: function (scope, elements, attr) {
             var element = elements[0];
             if (element.nodeName !== "IMG") {
-                throw 'Cannot put ngAudio element on an element that is not a <audio />';
+                throw 'Cannot put bawImageLoaded element on an element that is not a <image />';
             }
 
             var getter = $parse(attr.bawImageLoaded);
