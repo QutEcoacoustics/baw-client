@@ -2,28 +2,41 @@
 .noPermissions {
   @extend .alert;
   @extend .alert-warning;
+
+  margin-bottom: 0;
+  padding: 5px;
 }
 
-.project-names>span:not(:last-child) {
-  word-spacing : -0.3em;
+.project-names > span:not(:last-child) {
+  word-spacing: -0.3em;
 
   & * {
     word-spacing: normal;
   }
 }
 
-#chunkInfo>span:nth-child(2) {
-  text-align: right;
+#chunkInfo {
 
-  input[type="range"] {
-    width: 300px;
+  // reset h1 style for page
+  font-size: 1.25em;
+  font-weight: 500;
+  line-height: 1.0;
+  margin-top: -10px;
+  margin-bottom: 10px;
 
+  &>span:nth-child(2) {
 
-  }
+    text-align: right;
 
-  &>span {
-    width: 40px;
-    display: inline-block;
+    input[type="range"] {
+      width: 300px;
+
+    }
+
+    & > span {
+      width: 40px;
+      display: inline-block;
+    }
   }
 }
 
@@ -73,26 +86,24 @@
   }
 
   & .reference {
-      margin:10px 10px 0px 10px;
+    margin: 10px 10px 0px 10px;
   }
-
 
 }
 
 #listenEditContainer.disabled {
 
-    & * {
-        color: rgba(0,0,0,0.2);
-       
-    } 
+  & * {
+    color: rgba(0, 0, 0, 0.2);
+
+  }
 
 }
-
 
 #chunkTimeStamps {
   width: 100%;
   text-align: center;
-  position:relative;
+  position: relative;
 
   & .position {
     display: inline-block;
@@ -100,24 +111,24 @@
   }
 
   & .left {
-    position:absolute;
+    position: absolute;
     left: 0px;
     top: 0px;
   }
 
   & .right {
-    position:absolute;
+    position: absolute;
     right: 0px;
-    top: 0px; 
+    top: 0px;
   }
 
   & .btn-toolbar {
-    margin-left:38%;
+    margin-left: 38%;
   }
 }
 
 #mainAudioElement {
-    display: none;
+  display: none;
 }
 
 #timeline {
@@ -171,13 +182,7 @@
     }
   }
 
-
-
-
 }
-
-
-
 
 .details-table {
   @extend .table;
