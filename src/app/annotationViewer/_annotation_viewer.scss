@@ -124,7 +124,7 @@ baw-annotation-viewer {
       position: absolute;
       top:  0;
       left: 0;
-      @include vendor-prefix(transform, translatex(0 px));
+      @include vendor-prefix(transform, translate3d(0px, 0, 0));
 
       &.hidden {
         display: none;

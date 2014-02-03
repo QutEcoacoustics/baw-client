@@ -72,6 +72,7 @@ var app = angular.module('baw',
                              'bawApp.services', /* our services.js    */
                              'bawApp.services.unitConverter',
                              'audio-control',
+                             'draggabilly',
 
                              'http-auth-interceptor', /* the auth module    */
                              'angular-auth', /* the auth module    */

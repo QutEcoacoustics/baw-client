@@ -69,7 +69,9 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                         // We must not reverse bind constantly.
                         // This is an attempt to disable binding loop.
                         // Only a problem when playing (currentTime is constantly changing)
-                        if (rafOn && lastRafPosition === newValue) {
+                        // - lastRafPosition stops the RAF from binding loop
+                        // - on play and pause there are also additional position updates, so ignore those with the currentTime check
+                        if (rafOn && (lastRafPosition === newValue || newValue === element.currentTime)) {
                             return;
                         }
 
@@ -77,7 +79,7 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                     }
                     // else ignore change
                 });
-            }
+            };
 
 
             function play() {
@@ -86,10 +88,6 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
 
             function pause() {
                 element.pause();
-            }
-
-            function toStart() {
-                element.currentTime = 0;
             }
 
             /*
@@ -104,7 +102,7 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                 }
             }
 
-            function updateState(event, isPlaying) {
+            function updateState(event) {
                 console.debug("ngAudio:audioElement:eventType: ", event ? event.type : "<unknown>");
 
                 scope.$safeApply2(function () {
@@ -118,11 +116,14 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                         // attach modification functions to model
                         target.play = target.play || play;
                         target.pause = target.pause || pause;
-                        target.toStart = target.toStart || toStart;
 
                         target.currentState = event && event.type || "unknown";
 
-                        target.position = element.currentTime;
+                        // this event sometimes proceeds playing and causes an unnecessary seek on forward binding
+                        // so do not update position for this event - there may be a better way to do this
+                        if (event.type != "play") {
+                            target.position = element.currentTime;
+                        }
 
                         updateObject(element, target);
 
