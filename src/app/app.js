@@ -173,13 +173,17 @@ var app = angular.module('baw',
 
               // user profile - update user preferences when they change
               var eventCallbacks = {};
-              eventCallbacks[ngAudioEvents.volumeChanged] = function(event, api, value) {
-                  api.profile.preferences.volume = value;
-                  api.updatePreferences();
+              eventCallbacks[ngAudioEvents.volumeChanged] = function (event, api, value) {
+                  if (api.profile.preferences.volume !== value) {
+                      api.profile.preferences.volume = value;
+                      api.updatePreferences();
+                  }
               };
-              eventCallbacks[ngAudioEvents.muteChanged] = function(event, api, value) {
-                  api.profile.preferences.muted = value;
-                  api.updatePreferences();
+              eventCallbacks[ngAudioEvents.muteChanged] = function (event, api, value) {
+                  if (api.profile.preferences.muted !== value) {
+                      api.profile.preferences.muted = value;
+                      api.updatePreferences();
+                  }
               };
               UserProfile.listen(eventCallbacks);
 

@@ -69,12 +69,12 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
 
                         target.currentState = event && event.type || 'unknown';
 
-                        if (target.volume != null && target.volume !== element.volume) {
+                        if (target.volume != null) {
                             target.volume = element.volume;
                             scope.$emit(ngAudioEvents.volumeChanged, element.volume);
                         }
 
-                        if (target.muted != null && target.muted !== element.muted) {
+                        if (target.muted != null) {
                             target.muted = element.muted;
                             scope.$emit(ngAudioEvents.muteChanged, element.muted);
                         }
