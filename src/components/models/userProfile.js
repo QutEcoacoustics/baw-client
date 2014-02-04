@@ -17,7 +17,11 @@ baw.UserProfile = (function () {
         if (!defaultProfile) {
             throw new Error("A default profile must be supplied");
         }
-
+        
+        
+        profile.preferences = profile.preferences || {};
+        
+        
         // make read only properties for all profile props returned
         var props = Object.keys(profile)
             .reduce(function (state, current, index, array) {
@@ -37,7 +41,7 @@ baw.UserProfile = (function () {
             if (!merged.hasOwnProperty(key)) {
                 return;
             }
-
+      
             this.preferences[key] = merged[key];
         }
     }
