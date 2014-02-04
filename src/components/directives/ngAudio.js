@@ -66,8 +66,8 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                 }, function (newValue, oldValue) {
                     if (newValue !== null) {
 
-                        // We must not reverse bind constantly.
-                        // This is an attempt to disable binding loop.
+                        // We must not forward bind constantly.
+                        // This is an attempt to disable bind looping (creates jittery playback).
                         // Only a problem when playing (currentTime is constantly changing)
                         // - lastRafPosition stops the RAF from binding loop
                         // - on play and pause there are also additional position updates, so ignore those with the currentTime check
@@ -103,7 +103,7 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
             }
 
             function updateState(event) {
-                console.debug("ngAudio:audioElement:eventType: ", event ? event.type : "<unknown>");
+                console.debug("ngAudio:audioElement:eventType: ", event ? event.type : "<unknown>", element.currentTime);
 
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
@@ -119,16 +119,20 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
 
                         target.currentState = event && event.type || "unknown";
 
-                        // this event sometimes proceeds playing and causes an unnecessary seek on forward binding
-                        // so do not update position for this event - there may be a better way to do this
-                        if (event.type != "play") {
+
+                        target.isPlaying = !element.paused;
+                        target.canPlay = element.readyState >= readyStates.haveFutureData;
+
+                        // IMPORTANT - setting the position while playing is done by RAF.
+                        // Do not set it here or else jittery playback will occur when any event is raised from the element.
+                        // This includes resuming playback (from a paused state).
+                        if (!target.isPlaying) {
                             target.position = element.currentTime;
                         }
 
                         updateObject(element, target);
 
-                        target.isPlaying = !element.paused;
-                        target.canPlay = element.readyState >= readyStates.haveFutureData;
+
 
                         return;
                     }

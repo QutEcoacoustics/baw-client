@@ -74,7 +74,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
             }
 
             $scope.$parent.$parent.$digest();
-        }, 200);
+        }, 250);
 
         $scope.dragOptions = {
             axis: 'x',
