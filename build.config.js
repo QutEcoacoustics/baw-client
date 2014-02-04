@@ -33,6 +33,7 @@ module.exports = {
             siteDir: "/system/listen_to/"
         },
 
+        // this is dynamically overwritten with one of the above profiles
         current: {}
     },
 
@@ -108,7 +109,18 @@ module.exports = {
             // This library is all split up - we are using the boneskull version atm,
             // but we started off using the deciphernic version
             'vendor/angular-tags/dist/angular-tags-0.3.1-tpls.js',
-            'vendor/angular-sanitize/angular-sanitize.js'
+
+            'vendor/angular-sanitize/angular-sanitize.js',
+
+            // draggabilly
+            'vendor/classie/classie.js',
+            'vendor/eventEmitter/EventEmitter.js',
+            'vendor/eventie/eventie.js',
+            'vendor/get-style-property/get-style-property.js',
+            // get-size depends on get-style-property... it has to come after it
+            'vendor/get-size/get-size.js',
+            'vendor/draggabilly/draggabilly.js'
+
 
         ],
         css: [
