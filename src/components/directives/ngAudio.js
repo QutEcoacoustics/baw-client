@@ -1,4 +1,10 @@
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
+var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.configuration']);
+
+
+ngAudio.constant("ngAudioEvents", {
+    volumeChanged: "ngAudio:volumeChanged",
+    muteChanged: "ngAudio:muted"
+});
 
 /**
  * A directive for binding the model to data off an audio element.
@@ -7,7 +13,9 @@ var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration'
  * This directive is incomplete. The potential exists for many other cool bindings,
  * like a "isBuffering" binding.
  */
-bawds.directive('ngAudio', ['$parse', function ($parse) {
+
+ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents, $parse) {
+
     /* const */ var readyStates = {
         "haveNothing": 0,
         "haveMetadata": 1,
@@ -24,7 +32,9 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 throw 'Cannot put ngAudio element on an element that is not a <audio />';
             }
 
-            var expression = $parse(attributes.ngAudio);
+
+            var expression = $parse(attributes.ngAudio),
+                model = expression(scope);
 
             /*
              * FORWARD BINDING
@@ -48,7 +58,6 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 element.muted = !!newValue;
             });
 
-
             function play() {
                 element.play();
             }
@@ -65,9 +74,10 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
              * REVERSE BINDING
              */
 
-            var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume', 'muted'];
+            var propertiesToUpdate = ['duration', 'src', 'currentSrc'];
+
             function updateObject(src, dest) {
-                for (var i = 0; i < propertiesToUpdate.length; i++){
+                for (var i = 0; i < propertiesToUpdate.length; i++) {
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
                 }
             }
@@ -87,17 +97,28 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
 
                         target.currentState = event && event.type || 'unknown';
 
+
                         updateObject(element ,target);
 
                         target.isPlaying = !element.paused;
-
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
 
-                        return;
+
+                        if (target.volume != null) {
+                            target.volume = element.volume;
+                            scope.$emit(ngAudioEvents.volumeChanged, element.volume);
+                        }
+
+                        if (target.muted != null) {
+                            target.muted = element.muted;
+                            scope.$emit(ngAudioEvents.muteChanged, element.muted);
+                        }
 
                     }
-                    scope.currentState = event && event.type || 'unknown';
-                    updateObject(element, scope);
+                    else {
+                        scope.currentState = event && event.type || 'unknown';
+                        updateObject(element, scope);
+                    }
                 });
             }
 
@@ -129,7 +150,7 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 'mozaudioavailable': undefined,
                 'pause': updateState,
                 'play': updateState,
-                'playing': function(event) {
+                'playing': function (event) {
                     // restart request animation frame
                     audioElementPositionRAF();
                     updateState(event);

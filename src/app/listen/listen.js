@@ -16,6 +16,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'Taggings',
         'Site',
         'Project',
+        'UserProfile',
         /**
          * The listen controller.
          * @param $scope
@@ -37,7 +38,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          */
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url,
-            AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project) {
+            AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile) {
 
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
@@ -81,7 +82,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 // set up some dummy objects for use later
                 $scope.jumpToHide = true;
                 $scope.model = {
-                    audioElement: {},
+                    audioElement: {
+                        volume: null,
+                        muted: null
+                    },
                     audioEvents: [],
                     media: null,
                     selectedAudioEvent: null,
@@ -89,6 +93,17 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     projects: [],
                     site: null
                 };
+
+                // bind user profile
+                var profileLoaded = function updateProfileSettings(event, UserProfile) {
+                    $scope.model.audioElement.volume = UserProfile.profile.preferences.volume;
+                    $scope.model.audioElement.muted = UserProfile.profile.preferences.muted;
+                };
+                $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
+                if (UserProfile.profile && UserProfile.profile.preferences) {
+                    profileLoaded(null, UserProfile);
+                }
+
 
                 var formatPaths = function () {
                     if ($scope.model.media && $scope.model.media.hasOwnProperty('id')) {
