@@ -13,7 +13,17 @@ ngAudio.constant("ngAudioEvents", {
  * This directive is incomplete. The potential exists for many other cool bindings,
  * like a "isBuffering" binding.
  */
+
 ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents, $parse) {
+
+    /* const */ var readyStates = {
+        "haveNothing": 0,
+        "haveMetadata": 1,
+        "haveCurrentData": 2,
+        "haveFutureData": 3,
+        "haveEnoughData": 4
+    };
+
     return {
         restrict: 'A',
         link: function (scope, elements, attributes, controller) {
@@ -22,10 +32,31 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                 throw 'Cannot put ngAudio element on an element that is not a <audio />';
             }
 
+
             var expression = $parse(attributes.ngAudio),
                 model = expression(scope);
 
-            /* Forward binding */
+            /*
+             * FORWARD BINDING
+             *
+             * NOTE: only some properties are bound forward
+             */
+
+            // volume
+            scope.$watch(function() {
+                var target = expression(scope);
+                return target ? target.volume : null;
+            }, function updateVolume(newValue, oldValue) {
+               element.volume = newValue;
+            });
+
+            // muted
+            scope.$watch(function() {
+                var target = expression(scope);
+                return target ? target.muted : null;
+            }, function updateMuted(newValue, oldValue) {
+                element.muted = !!newValue;
+            });
 
             function play() {
                 element.play();
@@ -39,22 +70,19 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                 element.currentTime = 0;
             }
 
-            scope.$watch(function () {
-                return model.volume;
-            }, function (newValue, oldValue) {
-                element.volume = newValue;
-            });
-
-            /* Reverse binding */
+            /*
+             * REVERSE BINDING
+             */
 
             var propertiesToUpdate = ['duration', 'src', 'currentSrc'];
+
             function updateObject(src, dest) {
                 for (var i = 0; i < propertiesToUpdate.length; i++) {
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
                 }
             }
 
-            function updateState(event) {
+            function updateState(event, isPlaying) {
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
                         var target = expression(scope);
@@ -69,6 +97,13 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
 
                         target.currentState = event && event.type || 'unknown';
 
+
+                        updateObject(element ,target);
+
+                        target.isPlaying = !element.paused;
+                        target.canPlay = element.readyState >= readyStates.haveFutureData;
+
+
                         if (target.volume != null) {
                             target.volume = element.volume;
                             scope.$emit(ngAudioEvents.volumeChanged, element.volume);
@@ -79,7 +114,6 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                             scope.$emit(ngAudioEvents.muteChanged, element.muted);
                         }
 
-                        updateObject(element, target);
                     }
                     else {
                         scope.currentState = event && event.type || 'unknown';
@@ -91,8 +125,9 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
             // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Events/Media_events
             var events = {
                 'abort': undefined,
-                'canplay': undefined,
-                'canplaythrough': undefined,
+                'canplay': updateState,
+                'canplaythrough': updateState,
+                // TODO: why does this event need a special handler?
                 'durationchange': function (event) {
                     scope.$safeApply2(function () {
                         if (attributes.ngAudio) {
@@ -120,14 +155,14 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                     audioElementPositionRAF();
                     updateState(event);
                 },
-                'progress': undefined,
+                'progress': updateState,
                 'ratechange': undefined,
-                'seeked': undefined,
-                'seeking': undefined,
-                'suspend': undefined,
+                'seeked': updateState,
+                'seeking': updateState,
+                'suspend': updateState,
                 'timeupdate': undefined,
                 'volumechange': updateState,
-                'waiting': undefined};
+                'waiting': updateState};
 
             angular.forEach(events, function (value, key) {
                 if (value) {
@@ -139,7 +174,6 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
             });
 
             // position binding - reverse (element to model)
-            // TODO: we can optimise this, it does not always need to be running
             function audioElementPositionRAF() {
                 if (attributes.ngAudio) {
                     var target = scope.$eval(attributes.ngAudio);

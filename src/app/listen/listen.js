@@ -458,6 +458,15 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     $scope.model.selectedAudioEvent = null;
                 };
 
+                $scope.togglePlayState = function togglePlay() {
+                    if ($scope.model.audioElement.isPlaying) {
+                        $scope.model.audioElement.pause();
+                    }
+                    else {
+                        $scope.model.audioElement.play();
+                    }
+                };
+
 
                 $scope.singleEditDisabled = function () {
                     return ($scope.model.selectedAudioEvent === null || $scope.model.selectedAudioEvent.id === undefined);

@@ -1,7 +1,7 @@
 {
   "author": "QUT Bioacoustics",
   "name": "baw-client",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "The AngularJS client for the QUT Bioacoustics server",
   "licenses": {
     "type": "Apache",
