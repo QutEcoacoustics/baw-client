@@ -150,7 +150,28 @@
 
                 </form>
             </div>
+
+
         </div>
+        <div class="row">
+            <span class="col-md-offset-8 col-md-4 text-right">Download:
+                <a target="_blank"
+                        ng-href="{{model.media.spectrogram.url}}"
+                        title="Download the spectrogram">Spectrogram</a>&nbsp;|&nbsp;
+                <a target="_blank"
+                        ng-class="{disabled: !model.media.availableAudioFormats['wav'].url}"
+                   ng-href="{{model.media.availableAudioFormats['wav'].url}}"
+                   title="{{ model.media.availableAudioFormats['wav'].url && 'Download the .wav file' || 'This file format is not available'  }}"
+                        >Audio (WAV)</a>&nbsp;|&nbsp;
+                <a target="_blank"
+                        ng-class="{disabled: !model.media.availableAudioFormats['mp3'].url}"
+                   ng-href="{{model.media.availableAudioFormats['mp3'].url}}"
+                   title="{{ model.media.availableAudioFormats['mp3'].url && 'Download the .mp3 file' || 'This file format is not available'  }}"
+                   >Audio (MP3)</a>&nbsp;|&nbsp;
+            </span>
+        </div>
+
+
             <div class="debug-ui">
                 <h3>Annotations</h3>
                 <table class="details-table">
