@@ -20,8 +20,8 @@
             posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
         }
 
-        // FIX: need to take off an extra 10px from y (vertical) for some reason - don't know why.
-        return { posx: posx - 5, posy: posy - 5 };
+        // The minus ones allow a new box to be drawn right up to the edge
+        return { posx: posx - 1, posy: posy - 1 };
     };
 
     var elementPosition = function (obj) {
@@ -104,8 +104,9 @@
         }
 
         var $box = $('#' + currentBoxId);
-        $box.draggable({ containment: 'parent' })
-            .resizable({ containment: 'parent', handles: 'all' });
+        // 02-Feb-14, ANT: removed, seems redundant, removal does not seem to affect functionality
+        //$box.draggable({ containment: 'parent' })
+         //   .resizable({ containment: 'parent', handles: 'all' });
 
         // update stored values
         dataMouseUp.mousedown = false;
@@ -184,7 +185,7 @@
             // add other events
             $newBox.resizable({
                 handles: "all",
-                //containment: "parent",
+                containment: "parent",
                 resize: function (event, ui) { contextData.options.boxResizing($newBox); },
                 stop: function (event, ui) { contextData.options.boxResized($newBox); }
             });
@@ -286,9 +287,12 @@
 
     /**
      * This is dodgy as fuck - if the border width changes...
+     * This varies based on box-sizing as well
+     * This value needs to be set because of a jquery-ui bug with resizeable and border-box
+     * http://bugs.jqueryui.com/ticket/8932
      * @type {number}
      */
-    var BORDER_MODEL_DIFFERANCE = 0;
+    var BORDER_MODEL_DIFFERANCE = 2;
 
     var getBox = function ($element) {
         var selectedAttr = $element.attr(SELECTED_ATTRIBUTE);

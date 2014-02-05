@@ -1,0 +1,261 @@
+$handle-default-color: #333;
+$handle-default-bg: #FFFFFF;
+$handle-border-color: #333;
+
+$handle-hover-bg: #ebebeb;
+$handle-hover-border-color: #adadad;
+
+$handle-active-shadow: inset 0 3px 5px rgba(0,0,0, 0.125);
+
+$shadow: #666;
+$smallest-size: 6px;
+
+$pen-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M6 0.4L0.4 6 2.4 8C3.3 7.1 4.6 6.6 6 6.6 7.4 6.6 8.7 7.1 9.6 8L11.6 6 6 0.4z' style='fill:#{$handle-default-bg};stroke-width:1.0;stroke:#{$handle-border-color};stroke-opacity:1.0'/></g></svg>";
+
+$pen-tip-hover: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M6 0.4L0.4 6 2.4 8C3.3 7.1 4.6 6.6 6 6.6 7.4 6.6 8.7 7.1 9.6 8L11.6 6 6 0.4z' style='fill:#{$handle-hover-bg};stroke-width:1.0;stroke:#{$handle-hover-border-color};stroke-opacity:1.0'/></g></svg>";
+
+
+
+
+// This has not been tested
+$line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><line x1='6' y1='12' x2='6' y2='0'  style='fill:#{$handle-default-bg};stroke-width:1.0;stroke:#{$handle-border-color};stroke-opacity:1.0'/></g></svg>";
+
+@mixin size($size) {
+  width: $size !important;
+  height: $size !important;
+
+  margin-left: -($size / 2.0);
+  margin-top: -($size / 2.0);
+  margin-right: -($size / 2.0);
+  margin-bottom: -($size / 2.0);
+
+  @include rounded-corners($size / 2.0);
+}
+
+
+@mixin touch-handle-hover() {
+  background-color: $handle-hover-bg;
+  border-color: $handle-hover-border-color;
+}
+
+@mixin touch-handle-active() {
+  @include vendor-prefix(box-shadow, $handle-active-shadow);
+}
+
+@mixin interactivity {
+  &:hover {
+    @include touch-handle-hover;
+  }
+
+  &:active {
+    @include touch-handle-active;
+  }
+}
+
+.touch-handle {
+  background-color: $handle-default-bg;
+  border: solid 1px $handle-border-color;
+  margin: 0;
+  padding: 0;
+
+  // lib-sass currently does not support inherited extends
+  // so temporarily change this extend to a mixin
+  //@extend .touch-handle-default;
+  @include size($smallest-size * 2.0);
+
+  //box-shadow: 0 0 5px $shadow;
+
+  position: absolute;
+  z-index: 1000;
+  overflow: visible !important;
+  display: block;
+
+  @include interactivity;
+}
+
+// other sizes broken
+.touch-handle-default {
+  @include size($smallest-size * 2.0);
+}
+
+.touch-handle-small {
+  @include size($smallest-size);
+}
+
+.touch-handle-large {
+  @include size($smallest-size * 3.0);
+}
+// end other sizes broken
+
+@mixin curved-tail-angle($angle) {
+  @include vendor-prefix-function(transform, rotate, $angle);
+
+}
+
+@mixin curved-tail($size, $both) {
+  @mixin inner($size) {
+    content: url("data:image/svg+xml;utf8,#{$pen-tip}");
+    position: absolute;
+    width: $size;
+    height: $size;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    left: -1px;
+    //background-image: url("data:image/svg+xml;utf8,#{$pen-tip}");
+  }
+
+  &:hover:before {
+    content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");
+  }
+
+
+  &:before {
+    top: -($size / 2.0) - 1px;
+    @include inner($size);
+  }
+
+  @if $both {
+    &:hover:after {
+      content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");
+    }
+
+    &:after {
+      top: ($size / 2.0) - 1px;
+      @include inner($size);
+      @include vendor-prefix-function(transform, scaleY, -1);
+    }
+  }
+
+}
+
+.grab-handle-tail {
+  // replace when lib-sass supports better extends
+  @include curved-tail($smallest-size * 2.0, false);
+}
+
+.grab-handle-double-tail {
+  @include curved-tail($smallest-size * 2.0, true);
+}
+
+// not tested
+.grab-line-tail {
+  &,.grab-handle-tail {
+    &:before {
+      background-image: url("data:image/svg+xml;utf8,#{$line-tip}");
+    }
+  }
+
+  &,.grab-handle-double-tail {
+    &:before {
+      background-image: url("data:image/svg+xml;utf8,#{$line-tip}");
+    }
+
+    &:after {
+      &:before {
+        background-image: url("data:image/svg+xml;utf8,#{$line-tip}");
+      }
+    }
+  }
+}
+// end not tested
+
+// generate directional classes
+$angle-size: 45deg;
+$current-angle: 0deg;
+@while $current-angle < 360deg {
+
+  .grab-handle-angle-#{strip-units($current-angle)} {
+    @include curved-tail-angle($current-angle);
+  }
+
+  $current-angle: $current-angle + $angle-size;
+}
+
+.grab-center {
+  @extend .touch-handle;
+  @include interactivity;
+
+  top: 50%;
+  left: 50%;
+}
+
+.grab-left-center {
+  @extend .touch-handle;
+  @include interactivity;
+
+  top: 50%;
+  left: 0;
+}
+
+.grab-top-center {
+  @extend .touch-handle;
+  @include interactivity;
+
+  top: 0;
+  left: 50%;
+}
+
+.grab-right-center {
+  @extend .touch-handle;
+  @include interactivity;;
+
+  top: 50%;
+  right: 0;
+}
+
+.grab-bottom-center {
+  @extend .touch-handle;
+  @include interactivity;
+
+  bottom: 0;
+  left: 50%;
+}
+
+.grab-top-left {
+  @extend .touch-handle;
+  @include interactivity;
+
+  top: 0;
+  left: 0;
+}
+
+.grab-top-right {
+  @extend .touch-handle;
+  @include interactivity;
+
+  top: 0;
+  right: 0;
+}
+
+.grab-top-center {
+  @extend .touch-handle;
+  @include interactivity;
+
+  top: 0;
+  left: 50%;
+}
+
+.grab-bottom-left {
+  @extend .touch-handle;
+  @include interactivity;
+
+  bottom: 0;
+  left: 0;
+}
+
+.grab-bottom-right {
+  @extend .touch-handle;
+  @include interactivity;
+
+  bottom: 0;
+  right: 0;
+}
+
+.grab-bottom-centre {
+  @extend .touch-handle;
+  @include interactivity;
+
+  bottom: 0;
+  left: 0;
+}

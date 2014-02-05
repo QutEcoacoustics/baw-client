@@ -212,26 +212,28 @@ bawds.directive('bawChecked', ['$parse', function ($parse) {
  */
 bawds.directive('bawTranslateX', function () {
 
-    var transformSupport = Modernizr.csstransforms;
+    var transformSupport = Modernizr.csstransforms3d;
     var transformProperty = 'left';
     if (transformSupport) {
         transformProperty = Modernizr.prefixed('transform');
     }
-
 
     return {
         restrict: 'A',
         link: function (scope, elements, attributes, controller) {
             var element = elements[0];
 
-            scope.$watch(attributes.bawTranslateX, function (newValue, oldValue) {
-                if (transformSupport) {
-                    element.style[transformProperty] = 'translateX(' + newValue.toFixed(3) + 'px)';
-                }
-                else {
-                    element.style[transformProperty] = '' + newValue.toFixed(3) + 'px';
-                }
-            });
+            function leftWatcher(newValue, oldValue) {
+                element.style[transformProperty] = '' + newValue.toFixed(3) + 'px';
+            }
+
+            function transformWatcher(newValue, oldValue) {
+                element.style[transformProperty] = 'translate3d(' + newValue.toFixed(3) + 'px, 0, 0)';
+            }
+
+            var watcher = transformSupport ? transformWatcher : leftWatcher;
+
+            scope.$watch(attributes.bawTranslateX, watcher);
         }
     };
 });
@@ -242,7 +244,7 @@ bawds.directive('bawImageLoaded', ['$timeout', '$parse', function ($timeout, $pa
         link: function (scope, elements, attr) {
             var element = elements[0];
             if (element.nodeName !== "IMG") {
-                throw 'Cannot put ngAudio element on an element that is not a <audio />';
+                throw 'Cannot put bawImageLoaded element on an element that is not a <image />';
             }
 
             var getter = $parse(attr.bawImageLoaded);

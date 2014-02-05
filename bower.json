@@ -1,6 +1,6 @@
 {
   "name": "ng-boilerplate",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "devDependencies": {
     "angular": "1.2.x",
     "angular-mocks": "~1.2.x",
@@ -18,7 +18,8 @@
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "lodash": "~2.3.0",
     "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
-    "angular-sanitize": "~1.2.x"
+    "angular-sanitize": "~1.2.x",
+    "draggabilly": "~1.0.9"
   },
   "dependencies": {},
   "resolutions": {

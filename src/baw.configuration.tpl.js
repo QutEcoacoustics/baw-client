@@ -13,7 +13,7 @@ angular.module('bawApp.configuration', ['url'])
          * @param {...[string]} fragments
          * @returns {*}
          */
-       function joinPathFragments(fragments) {
+        function joinPathFragments(fragments) {
             fragments = Array.prototype.slice.call(arguments, 0);
 
             if (fragments.length === 0) {
@@ -33,14 +33,14 @@ angular.module('bawApp.configuration', ['url'])
                     var f = fragments[i];
 
                     if ((typeof f) !== "string") {
-                        throw "Path fragment " + f + " is not a string";
+                        throw "joingPathFragments: Path fragment " + f + " is not a string";
                     }
 
                     var hasFirst = f[0] === "/";
                     var hasLast = (f.slice(-1))[0] === "/";
 
                     if (!hasFirst) {
-                        f =  "/" + f;
+                        f = "/" + f;
                     }
 
                     if (hasLast && i !== (fragments.length - 1)) {
@@ -64,19 +64,19 @@ angular.module('bawApp.configuration', ['url'])
                         listShort: "/audio_recordings/{recordingId}",
                         show: "/audio_recordings/{recordingId}",
                         list: "/audio_recordings/"
-                        },
+                    },
                     audioEvent: {
                         list: "/audio_recordings/{recordingId}/audio_events",
                         show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}",
-                        csv : "/audio_events/download."
+                        csv: "/audio_events/download."
                     },
                     tagging: {
                         list: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings",
                         show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings/{taggingId}"
                     },
                     tag: {
-                      list: '/tags/',
-                      show: '/tags/{tagId}'
+                        list: '/tags/',
+                        show: '/tags/{tagId}'
                     },
                     media: {
                         show: "/audio_recordings/{recordingId}/media.{format}"
@@ -84,6 +84,10 @@ angular.module('bawApp.configuration', ['url'])
                     security: {
                         ping: "/security/sign_in",
                         signIn: "/my_account/sign_in"
+                    },
+                    user: {
+                        profile: "/my_account",
+                        settings: "/my_account/prefs"
                     }
                 },
                 links: {
@@ -101,7 +105,7 @@ angular.module('bawApp.configuration', ['url'])
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
                     navigation: 'navigation/navigation.tpl.html',
-                    birdWalk : {
+                    birdWalk: {
                         list: 'birdWalks/birdWalks.tpl.html',
                         detail: 'birdWalks/birdWalk.tpl.html',
                         spec: 'assets/bird_walk/bird_walk_spec.json',
@@ -119,7 +123,6 @@ angular.module('bawApp.configuration', ['url'])
                 }
             }
         };
-
 
 
         // add helper paths
@@ -156,6 +159,15 @@ angular.module('bawApp.configuration', ['url'])
         unitConverter: {
             precisionSeconds: 9,
             precisionHertz: 6
-
+        },
+        defaultProfile: {
+            createdAt: null,
+            email: null,
+            id: null,
+            preferences: {
+                volume: 1.0,
+                muted: false
+            },
+            userName: "Unknown user"
         }
     });

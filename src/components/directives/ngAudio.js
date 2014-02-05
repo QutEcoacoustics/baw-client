@@ -1,4 +1,10 @@
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
+var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.configuration']);
+
+
+ngAudio.constant("ngAudioEvents", {
+    volumeChanged: "ngAudio:volumeChanged",
+    muteChanged: "ngAudio:muted"
+});
 
 /**
  * A directive for binding the model to data off an audio element.
@@ -7,7 +13,9 @@ var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration'
  * This directive is incomplete. The potential exists for many other cool bindings,
  * like a "isBuffering" binding.
  */
-bawds.directive('ngAudio', ['$parse', function ($parse) {
+
+ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents, $parse) {
+
     /* const */ var readyStates = {
         "haveNothing": 0,
         "haveMetadata": 1,
@@ -17,14 +25,17 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
     };
 
     return {
-        restrict: 'A',
+        restrict: "A",
         link: function (scope, elements, attributes, controller) {
             var element = elements[0];
             if (element.nodeName !== "AUDIO") {
-                throw 'Cannot put ngAudio element on an element that is not a <audio />';
+                throw "Cannot put ngAudio element on an element that is not a <audio />";
             }
 
-            var expression = $parse(attributes.ngAudio);
+            var expression;
+            attributes.$observe("ngAudio", function (interpolatedValue) {
+                expression = $parse(attributes.ngAudio);
+            });
 
             /*
              * FORWARD BINDING
@@ -32,22 +43,50 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
              * NOTE: only some properties are bound forward
              */
 
+            var target;
+            scope.$watch(function () {
+                return expression(scope);
+            }, function (newValue, oldValue) {
+                target = newValue;
+            });
+
             // volume
-            scope.$watch(function() {
-                var target = expression(scope);
+            scope.$watch(function () {
                 return target ? target.volume : null;
             }, function updateVolume(newValue, oldValue) {
-               element.volume = newValue;
+                element.volume = newValue;
             });
 
             // muted
-            scope.$watch(function() {
-                var target = expression(scope);
+            scope.$watch(function () {
                 return target ? target.muted : null;
             }, function updateMuted(newValue, oldValue) {
-                element.muted = !!newValue;
+                element.muted = newValue === null ? null : !!newValue;
             });
 
+            // currentTime - this watcher is registered once there"s enough data loaded to seek
+            var rafOn = false;
+            var lastRafPosition = null;
+            var watchPosition = function () {
+                scope.$watch(function () {
+                    return target ? target.position : null;
+                }, function (newValue, oldValue) {
+                    if (newValue !== null) {
+
+                        // We must not forward bind constantly.
+                        // This is an attempt to disable bind looping (creates jittery playback).
+                        // Only a problem when playing (currentTime is constantly changing)
+                        // - lastRafPosition stops the RAF from binding loop
+                        // - on play and pause there are also additional position updates, so ignore those with the currentTime check
+                        if (rafOn && (lastRafPosition === newValue || newValue === element.currentTime)) {
+                            return;
+                        }
+
+                        element.currentTime = newValue;
+                    }
+                    // else ignore change
+                });
+            };
 
             function play() {
                 element.play();
@@ -57,22 +96,20 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 element.pause();
             }
 
-            function toStart() {
-                element.currentTime = 0;
-            }
-
             /*
              * REVERSE BINDING
              */
 
-            var propertiesToUpdate = ['duration', 'src', 'currentSrc', 'volume', 'muted'];
+            var propertiesToUpdate = ["duration", "src", "currentSrc", "playbackRate", "readyState"];
             function updateObject(src, dest) {
-                for (var i = 0; i < propertiesToUpdate.length; i++){
+                for (var i = 0; i < propertiesToUpdate.length; i++) {
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
                 }
             }
 
-            function updateState(event, isPlaying) {
+            function updateState(event) {
+                console.debug("ngAudio:audioElement:eventType: ", event ? event.type : "<unknown>", element.currentTime);
+
                 scope.$safeApply2(function () {
                     if (attributes.ngAudio) {
                         var target = expression(scope);
@@ -81,87 +118,107 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                             target = expression(scope);
                         }
 
+                        // attach modification functions to model
                         target.play = target.play || play;
                         target.pause = target.pause || pause;
-                        target.toStart = target.toStart || toStart;
 
-                        target.currentState = event && event.type || 'unknown';
+                        target.currentState = event && event.type || "unknown";
+
 
                         updateObject(element ,target);
 
                         target.isPlaying = !element.paused;
-
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
 
-                        return;
+                       // IMPORTANT - setting the position while playing is done by RAF.
+                        // Do not set it here or else jittery playback will occur when any event is raised from the element.
+                        // This includes resuming playback (from a paused state).
+                        if (!target.isPlaying) {
+                            target.position = element.currentTime;
+                        }
 
+                        if (target.volume != null) {
+                            target.volume = element.volume;
+                            scope.$emit(ngAudioEvents.volumeChanged, element.volume);
+                        }
+
+                        if (target.muted != null) {
+                            target.muted = element.muted;
+                            scope.$emit(ngAudioEvents.muteChanged, element.muted);
+                        }
                     }
-                    scope.currentState = event && event.type || 'unknown';
-                    updateObject(element, scope);
+                    else {
+                        scope.currentState = event && event.type || 'unknown';
+                        updateObject(element, scope);
+                    }
+
                 });
             }
 
             // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Events/Media_events
             var events = {
-                'abort': undefined,
-                'canplay': updateState,
-                'canplaythrough': updateState,
-                // TODO: why does this event need a special handler?
-                'durationchange': function (event) {
-                    scope.$safeApply2(function () {
-                        if (attributes.ngAudio) {
-                            var target = scope.$eval(attributes.ngAudio);
-                            if (target) {
-                                target.duration = element.duration;
-                                return;
-                            }
-
-                        }
-                        scope.duration = element.duration;
-                    });
+                "abort": updateState,
+                "canplay": updateState,
+                "canplaythrough": updateState,
+                "durationchange": updateState,
+                "emptied": updateState,
+                "ended": updateState,
+                "error": function (event) {
+                    console.error("ngAudio:audioElement:errorEvent", event);
+                    updateState(event);
                 },
-                'emptied': updateState,
-                'ended': updateState,
-                'error': undefined,
-                'loadeddata': updateState,
-                'loadedmetadata': updateState,
-                'loadstart': updateState,
-                'mozaudioavailable': undefined,
-                'pause': updateState,
-                'play': updateState,
-                'playing': function(event) {
+
+                "loadeddata": updateState,
+                "loadedmetadata": function(event) {
+                    watchPosition();
+                    updateState(event);
+                },
+                "loadstart": updateState,
+                "mozaudioavailable": undefined,
+                "pause": updateState,
+                "play": updateState,
+                "playing": function (event) {
                     // restart request animation frame
                     audioElementPositionRAF();
                     updateState(event);
                 },
-                'progress': updateState,
-                'ratechange': undefined,
-                'seeked': updateState,
-                'seeking': updateState,
-                'suspend': updateState,
-                'timeupdate': undefined,
-                'volumechange': updateState,
-                'waiting': updateState};
+                "progress": updateState,
+                "ratechange": updateState,
+                "seeked": updateState,
+                "seeking": updateState,
+                "suspend": updateState,
+                // this event would update progress
+                // however it does not update often enough and is not smooth
+                // thus we use request animation frame instead
+                "timeupdate": undefined,
+                "volumechange": updateState,
+                "waiting": updateState};
 
             angular.forEach(events, function (value, key) {
                 if (value) {
                     element.addEventListener(key, value, false);
-
-                    // initialise first time
-                    value();
                 }
             });
 
             // position binding - reverse (element to model)
             function audioElementPositionRAF() {
+                rafOn = true;
                 if (attributes.ngAudio) {
                     var target = scope.$eval(attributes.ngAudio);
                     if (target) {
                         var position = element.currentTime;
                         if (target.position != position) {
-                            scope.$safeApply2(function () {
-                                target.position = position;
-                            });
+                            //scope.$safeApply2(function () {
+                            target.position = position;
+                            //});
+
+                            lastRafPosition = position;
+
+                            // trialing $digest, it is slightly faster than $watch and
+                            // we don"t need all the logic of $watch
+                            if (!scope.$$phase) {
+                                scope.$digest();
+                            }
                         }
                     }
                 }
@@ -169,12 +226,16 @@ bawds.directive('ngAudio', ['$parse', function ($parse) {
                 // optimisation - do not request a new frame if element is paused
                 // requires loop to be restarted on play event
                 if (element.paused) {
+                    rafOn = false;
                     return;
                 }
 
                 // need to request each new frame
                 window.requestAnimationFrame(audioElementPositionRAF);
             }
+
+            // initialise
+            audioElementPositionRAF();
 
         }
     };

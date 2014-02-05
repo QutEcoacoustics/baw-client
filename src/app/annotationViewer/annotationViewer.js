@@ -1,6 +1,9 @@
 var avModule = angular.module('bawApp.annotationViewer', []);
 
 avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag',
+
+    // TODO: possible optimisation evaluate these functions once per frame
+
     /**
      * The AnnotationViewer controller
      * @param $scope
@@ -10,7 +13,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      * @constructor
      * @param Tag
      */
-    function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
+        function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
 
         var emptyTag = {
             text: "<no tags>",
@@ -28,7 +31,6 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
             }
 
             var first = tags[0];
-
 
 
             // optimise for most common case
@@ -62,6 +64,37 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
 
         $scope.positionLine = function () {
             return $scope.model.converters.secondsToPixels($scope.model.audioElement.position);
+        };
+
+        var updateScope = _.throttle(function updateScope() {
+            console.debug("annotationViewer:updateScope: digest triggered");
+
+            if ($scope.$parent.$parent.$$phase) {
+                return;
+            }
+
+            $scope.$parent.$parent.$digest();
+        }, 250);
+
+        $scope.dragOptions = {
+            axis: 'x',
+            containment: true,
+            useLeftTop: false,
+            dragMove: function dragMoveSetPosition(scope, draggie, event, pointer) {
+
+                var position = $scope.model.converters.pixelsToSeconds(draggie.position.x);
+
+                $scope.model.audioElement.position = position;
+
+                // using a delayed digest instead of apply improves the animation performance of the dragging
+                // substantially... it's also a ugly hack (and if you care to notice, the current time
+                // number updates more choppily, every 200ms to be precise
+                // we could remove all of this if the $apply was faster!
+                //$scope.$apply();
+                console.debug("annotationViewer:updateScope: digest delayed");
+
+                updateScope();
+            }
         };
 
 
