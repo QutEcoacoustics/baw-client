@@ -87,7 +87,7 @@
 <div id="listenEditContainer" ng-class="{disabled : singleEditDisabled()}">
     <div class="panel panel-default">
 
-        <form id="annotationEditForm" name="annotationEditForm" class="panel-body">
+        <form id="annotationEditForm" name="annotationEditForm" class="panel-body form-inline" role="form">
             <fieldset ng-disabled="singleEditDisabled()" class='tags-fs'>
                 <legend>Tags</legend>
 
@@ -110,44 +110,52 @@
                 <legend>
                     Bounds
                 </legend>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <label>
-                            <span>Start</span>
-                            <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
-                                   ng-disabled="singleEditDisabled()"
-                                   ng-model="model.selectedAudioEvent.startTimeSeconds"/>
-                        </label>
-                    </div>
-                    <div class="col-xs-6">
-                        <label> <span>High Frequency</span>
-                            <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
-                                   ng-disabled="singleEditDisabled()"
-                                   ng-model="model.selectedAudioEvent.highFrequencyHertz"/>
+				<div class="container-fluid">
+					<div class="row">
+		
+							<label class="col-xs-2" for="start-time">
+								<span>Start</span>
+							</label>
+								<input class="col-xs-3" id="start-time" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
+									   ng-disabled="singleEditDisabled()"
+									   ng-model="model.selectedAudioEvent.startTimeSeconds"/>
+							
+					   
 
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
+							<label class="col-xs-4" for="high-frequency" > 
+								<span>High Frequency</span>
+							</label>
 
-                    <div class="col-xs-6">
+								<input class="col-xs-3" id="high-frequency" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
+									   ng-disabled="singleEditDisabled()"
+									   ng-model="model.selectedAudioEvent.highFrequencyHertz"/>
 
-                        <label><span>End</span>
-                            <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
-                                   ng-disabled="singleEditDisabled()"
-                                   ng-model="model.selectedAudioEvent.endTimeSeconds"/>
-                        </label>
-                    </div>
-                    <div class="col-xs-6">
-                        <label>
-                            <span>Low Frequency</span>
-                            <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
-                                   ng-disabled="singleEditDisabled()"
-                                   ng-model="model.selectedAudioEvent.lowFrequencyHertz"/>
-                        </label>
-                    </div>
+							
+					</div>
+					<div class="row">
 
-                </div>
+
+
+							<label class="col-xs-2" for="end-time">
+								<span>End</span>
+							</label>
+								<input class="col-xs-3" id="end-time" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
+									   ng-disabled="singleEditDisabled()"
+									   ng-model="model.selectedAudioEvent.endTimeSeconds"/>
+						 
+
+
+							<label class="col-xs-4" for="low-frequyency">
+								<span>Low Frequency</span>
+							</label>
+								<input class="col-xs-3" id="low-frequyency" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
+									   ng-disabled="singleEditDisabled()"
+									   ng-model="model.selectedAudioEvent.lowFrequencyHertz"/>
+							
+
+
+					</div>
+				</div>
             </fieldset>
 
         </form>

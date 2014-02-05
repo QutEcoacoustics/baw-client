@@ -83,13 +83,14 @@
   }
 
   & .bounds-fs {
-    width: 40%;
+    width: 45%;
     float: right;
-    & input {
-      width: 100px;
-    }
+
     & label {
-      width: 220px;
+      text-align: right;
+    }
+    & .row {
+      padding-bottom: 5px;
     }
   }
 
