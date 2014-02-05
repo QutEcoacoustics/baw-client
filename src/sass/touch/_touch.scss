@@ -21,8 +21,8 @@ $pen-tip-hover: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w
 $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><line x1='6' y1='12' x2='6' y2='0'  style='fill:#{$handle-default-bg};stroke-width:1.0;stroke:#{$handle-border-color};stroke-opacity:1.0'/></g></svg>";
 
 @mixin size($size) {
-  width: $size;
-  height: $size;
+  width: $size !important;
+  height: $size !important;
 
   margin-left: -($size / 2.0);
   margin-top: -($size / 2.0);
@@ -32,17 +32,6 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
   @include rounded-corners($size / 2.0);
 }
 
-.touch-handle-default {
-  @include size($smallest-size * 2.0);
-}
-
-.touch-handle-small {
-  @include size($smallest-size);
-}
-
-.touch-handle-large {
-  @include size($smallest-size * 4.0);
-}
 
 @mixin touch-handle-hover() {
   background-color: $handle-hover-bg;
@@ -83,6 +72,20 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
 
   @include interactivity;
 }
+
+// other sizes broken
+.touch-handle-default {
+  @include size($smallest-size * 2.0);
+}
+
+.touch-handle-small {
+  @include size($smallest-size);
+}
+
+.touch-handle-large {
+  @include size($smallest-size * 3.0);
+}
+// end other sizes broken
 
 @mixin curved-tail-angle($angle) {
   @include vendor-prefix-function(transform, rotate, $angle);

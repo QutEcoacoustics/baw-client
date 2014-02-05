@@ -55,10 +55,18 @@
 }
 
 .position {
-  & span {
-    margin-left: 10px;
-    margin-right: 10px;
+  color: #333333;
+  background-color: white;
+  border-color: #cccccc;
+  cursor: default;
+
+  &:hover,&:active,&:focus {
+    @include vendor-prefix(box-shadow, none);
+    color: #333333;
+    background-color: white;
+    border-color: #cccccc;
   }
+
 }
 
 #listenEditContainer {
@@ -101,9 +109,11 @@
 }
 
 #chunkTimeStamps {
-  width: 100%;
+  // HACK! this should be automatically defined
+  width: 1292px;
   text-align: center;
   position: relative;
+  margin: -10px auto 0 auto;
 
   & .position {
     display: inline-block;

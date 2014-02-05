@@ -22,7 +22,7 @@
 
 
 
-  @include vendor-prefix(box-shadow, 1px 1px 8px -1px rgba($color, 0.5));
+  //@include vendor-prefix(box-shadow, 1px 1px 8px -1px rgba($color, 0.5));
   &:before {
     //border-top-color: $color;
   }
@@ -38,10 +38,11 @@
 }
 
 .time {
-  background-color: rgba(255, 255, 255, 0.3);
-  @include rounded-corners($standard-border-radius);
+  //background-color: rgba(255, 255, 255, 0.3);
+  //@include rounded-corners($standard-border-radius);
   //color:            nth($master-dark, 1);
-  border-style:     solid;
+  //border-style:     solid;
+  border-bottom: solid;
   border-width:     1px;
   /*@extend .hint;*/
 
@@ -50,7 +51,7 @@
 
 .relative-recording-time {
   @extend .time;
-  @include hint-custom-color($time-recording-relative-color, "Time measured from the start of the audio file");
+  @include hint-custom-color($time-recording-relative-color, "Time measured from the start of the audio recording");
 
   @include arrow-border-color($time-recording-relative-color, "true");
 
@@ -72,14 +73,14 @@
 
 .absolute-time {
   @extend .time;
-  @include hint-custom-color($time-absolute-color, "An absolute point in time");
+  @include hint-custom-color($time-absolute-color, "A date and time");
 
   @include arrow-border-color($time-absolute-color, "true");
 }
 
 .duration {
   @extend .time;
-  @include hint-custom-color($time-duration-color, "A span of time (a length)");
+  @include hint-custom-color($time-duration-color, "A duration");
 
   @include arrow-border-color($time-duration-color, "true");
 }
