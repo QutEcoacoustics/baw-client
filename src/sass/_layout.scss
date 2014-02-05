@@ -76,6 +76,16 @@ h3 {
   margin: 0.70em 0;
 }*/
 
+a.disabled {
+  @extend .btn.disabled;
+  @extend .text-muted;
+  // allow the title to still show
+  pointer-events: auto;
+  cursor: default;
+  text-decoration: none;
+
+}
+
 baw-debug-info {
   margin-top: 2em;
 }

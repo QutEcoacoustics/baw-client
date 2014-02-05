@@ -5,10 +5,10 @@
     <div ng-hide="errorState">
 
 
-        <h4 id="chunkInfo" class="row">
-            <span class="col-md-8">
+        <h1 id="chunkInfo" class="row">
+            <span class="col-md-7">
                 <span class="project-names">
-                    <span  ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'"  >{{ !$first && ", " || ""}}
+                    <span ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'"  >{{ !$first && ", " || ""}}
                         <a ng-switch-when="false"  ng-href="{{p.link}}">{{p.name}}</a>
                         <a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"
                            data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>
@@ -19,15 +19,15 @@
                 &nbsp;&#47;&nbsp;
                 <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
             </span>
-            <span class="col-md-4">
+            <span class="col-md-5">
                 Jump to minute:
                 <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}" ng-slider="jumpToMinute"  step="1" >
                 <span>{{jumpToMinute}}</span>
                 <button class="btn btn-default" ng-click="jumpTo()" >Go</button>
             </span>
-        </h4>
-        <small>The recording started on <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
-            and is <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span> long.
+        </h1>
+        <small>Recording start: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"YY-MM-DD, HH:mm:ss ZZ"}}</span>
+            . Duration: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
         </small>
 
         <baw-annotation-viewer model="model"></baw-annotation-viewer>
@@ -147,7 +147,28 @@
 
                 </form>
             </div>
+
+
         </div>
+        <div class="row">
+            <span class="col-md-offset-8 col-md-4 text-right">Download:
+                <a target="_blank"
+                        ng-href="{{model.media.spectrogram.url}}"
+                        title="Download the spectrogram">Spectrogram</a>&nbsp;|&nbsp;
+                <a target="_blank"
+                        ng-class="{disabled: !model.media.availableAudioFormats['wav'].url}"
+                   ng-href="{{model.media.availableAudioFormats['wav'].url}}"
+                   title="{{ model.media.availableAudioFormats['wav'].url && 'Download the .wav file' || 'This file format is not available'  }}"
+                        >Audio (WAV)</a>&nbsp;|&nbsp;
+                <a target="_blank"
+                        ng-class="{disabled: !model.media.availableAudioFormats['mp3'].url}"
+                   ng-href="{{model.media.availableAudioFormats['mp3'].url}}"
+                   title="{{ model.media.availableAudioFormats['mp3'].url && 'Download the .mp3 file' || 'This file format is not available'  }}"
+                   >Audio (MP3)</a>&nbsp;|&nbsp;
+            </span>
+        </div>
+
+
             <div class="debug-ui">
                 <h3>Annotations</h3>
                 <table class="details-table">
