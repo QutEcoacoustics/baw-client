@@ -113,14 +113,14 @@ var app = angular.module('baw',
                  $routeProvider.
                      when('/home', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
 
-                     whenDefaults("projects", "project", ":projectId", 'ProjectsCtrl', 'ProjectCtrl').
-                     whenDefaults("sites", "site", ":siteId", 'SitesCtrl', 'SiteCtrl').
-                     whenDefaults("photos", "photo", ":photoId", 'PhotosCtrl', 'PhotoCtrl').
-                     whenDefaults("bookmarks", "bookmark", ":bookmarkId", 'BookmarksCtrl', 'BookmarkCtrl').
-                     whenDefaults("searches", "search", ":searchId", 'SearchesCtrl', 'SearchCtrl').
-                     whenDefaults("tags", "tag", ":tagId", 'TagsCtrl', 'TagCtrl').
-                     whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
-                     whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
+                     //whenDefaults("projects", "project", ":projectId", 'ProjectsCtrl', 'ProjectCtrl').
+                     //whenDefaults("sites", "site", ":siteId", 'SitesCtrl', 'SiteCtrl').
+                     //whenDefaults("photos", "photo", ":photoId", 'PhotosCtrl', 'PhotoCtrl').
+                     //whenDefaults("bookmarks", "bookmark", ":bookmarkId", 'BookmarksCtrl', 'BookmarkCtrl').
+                     //whenDefaults("searches", "search", ":searchId", 'SearchesCtrl', 'SearchCtrl').
+                     //whenDefaults("tags", "tag", ":tagId", 'TagsCtrl', 'TagCtrl').
+                     //whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
+                     //whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
 
                      when('/recordings', {templateUrl: '/assets/recordings.html', controller: 'RecordingsCtrl' }).
                      when('/recordings/:recordingId',
