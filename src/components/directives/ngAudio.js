@@ -1,4 +1,10 @@
-var bawds = bawds || angular.module("bawApp.directives", ["bawApp.configuration"]);
+var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.configuration']);
+
+
+ngAudio.constant("ngAudioEvents", {
+    volumeChanged: "ngAudio:volumeChanged",
+    muteChanged: "ngAudio:muted"
+});
 
 /**
  * A directive for binding the model to data off an audio element.
@@ -7,9 +13,10 @@ var bawds = bawds || angular.module("bawApp.directives", ["bawApp.configuration"
  * This directive is incomplete. The potential exists for many other cool bindings,
  * like a "isBuffering" binding.
  */
-bawds.directive("ngAudio", ["$parse", function ($parse) {
-    /* const */
-    var readyStates = {
+
+ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents, $parse) {
+
+    /* const */ var readyStates = {
         "haveNothing": 0,
         "haveMetadata": 1,
         "haveCurrentData": 2,
@@ -81,7 +88,6 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                 });
             };
 
-
             function play() {
                 element.play();
             }
@@ -94,8 +100,7 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
              * REVERSE BINDING
              */
 
-            var propertiesToUpdate = ["duration", "src", "currentSrc", "volume", "muted", "playbackRate", "readyState"];
-
+            var propertiesToUpdate = ["duration", "src", "currentSrc", "playbackRate", "readyState"];
             function updateObject(src, dest) {
                 for (var i = 0; i < propertiesToUpdate.length; i++) {
                     dest[propertiesToUpdate[i]] = src[propertiesToUpdate[i]];
@@ -120,24 +125,33 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                         target.currentState = event && event.type || "unknown";
 
 
+                        updateObject(element ,target);
+
                         target.isPlaying = !element.paused;
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
 
-                        // IMPORTANT - setting the position while playing is done by RAF.
+                       // IMPORTANT - setting the position while playing is done by RAF.
                         // Do not set it here or else jittery playback will occur when any event is raised from the element.
                         // This includes resuming playback (from a paused state).
                         if (!target.isPlaying) {
                             target.position = element.currentTime;
                         }
 
-                        updateObject(element, target);
+                        if (target.volume != null) {
+                            target.volume = element.volume;
+                            scope.$emit(ngAudioEvents.volumeChanged, element.volume);
+                        }
 
-
-
-                        return;
+                        if (target.muted != null) {
+                            target.muted = element.muted;
+                            scope.$emit(ngAudioEvents.muteChanged, element.muted);
+                        }
                     }
-                    scope.currentState = event && event.type || "unknown";
-                    updateObject(element, scope);
+                    else {
+                        scope.currentState = event && event.type || 'unknown';
+                        updateObject(element, scope);
+                    }
+
                 });
             }
 
@@ -153,6 +167,7 @@ bawds.directive("ngAudio", ["$parse", function ($parse) {
                     console.error("ngAudio:audioElement:errorEvent", event);
                     updateState(event);
                 },
+
                 "loadeddata": updateState,
                 "loadedmetadata": function(event) {
                     watchPosition();

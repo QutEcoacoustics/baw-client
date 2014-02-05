@@ -68,6 +68,7 @@ var app = angular.module('baw',
                              'templates-common',
 
                              'bawApp.directives', /* our directives.js  */
+                             'bawApp.directives.ngAudio', /* our directives.js  */
                              'bawApp.filters', /* our filters.js     */
                              'bawApp.services', /* our services.js    */
                              'bawApp.services.unitConverter',
@@ -166,11 +167,27 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths',
-          function ($rootScope, $location, $route, $http, AudioEvent, paths) {
+    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents',
+          function ($rootScope, $location, $route, $http, AudioEvent, paths, UserProfile, ngAudioEvents) {
 
               // embed configuration for easy site-wide binding
               $rootScope.paths = paths;
+
+              // user profile - update user preferences when they change
+              var eventCallbacks = {};
+              eventCallbacks[ngAudioEvents.volumeChanged] = function (event, api, value) {
+                  if (api.profile.preferences.volume !== value) {
+                      api.profile.preferences.volume = value;
+                      api.updatePreferences();
+                  }
+              };
+              eventCallbacks[ngAudioEvents.muteChanged] = function (event, api, value) {
+                  if (api.profile.preferences.muted !== value) {
+                      api.profile.preferences.muted = value;
+                      api.updatePreferences();
+                  }
+              };
+              UserProfile.listen(eventCallbacks);
 
               // helper function for printing scope objects
               baw.exports.print = $rootScope.print = function () {
