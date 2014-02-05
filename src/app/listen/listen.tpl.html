@@ -86,7 +86,7 @@
         <div id="listenEditContainer" ng-class="{disabled : singleEditDisabled()}">
             <div class="panel panel-default">
 
-                <form id="annotationEditForm" name="annotationEditForm" class="panel-body">
+                <form id="annotationEditForm" name="annotationEditForm" class="panel-body form-inline" role="form">
                     <fieldset ng-disabled="singleEditDisabled()" class='tags-fs'>
                         <legend>Tags</legend>
 
@@ -108,47 +108,46 @@
                         <legend>
                             Bounds
                         </legend>
+                        <div class="container-fluid">
                         <div class="row">
-                            <div class="col-xs-6">
-                                <label>
-                                    <span>Start</span>
-                                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
+                            <label class="col-xs-2">
+                                <span>Start</span>
+                            </label>
+                            <input class="col-xs-3" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
                                            ng-disabled="singleEditDisabled()"
                                            ng-model="model.selectedAudioEvent.startTimeSeconds"/>
-                                </label>
-                            </div>
-                            <div class="col-xs-6">
-                                                                <label> <span>High Frequency</span>
-                                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
+
+                             <label class="col-xs-4">
+                                 <span>High Frequency</span>
+                             </label>
+                             <input class="col-xs-3" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
                                            ng-disabled="singleEditDisabled()"
                                            ng-model="model.selectedAudioEvent.highFrequencyHertz"/>
 
-                                </label>
-                            </div>
+
                         </div>
                         <div class="row">
-
-                            <div class="col-xs-6">
-
-                                <label><span>End</span>
-                                    <input type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
+                            <label class="col-xs-2">
+                               <span>End</span>
+                            </label>
+                            <input class="col-xs-3" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
                                            ng-disabled="singleEditDisabled()"
                                            ng-model="model.selectedAudioEvent.endTimeSeconds"/>
-                                </label>
-                            </div>
-                            <div class="col-xs-6">
-                                <label>
+
+                            <label class="col-xs-4">
                                     <span>Low Frequency</span>
-                                    <input type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
+                            </label>
+                            <input class="col-xs-3" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
                                            ng-disabled="singleEditDisabled()"
                                            ng-model="model.selectedAudioEvent.lowFrequencyHertz"/>
-                                </label>
-                            </div>
+
+
 
                         </div>
+                        </div>
                     </fieldset>
-
                 </form>
+
             </div>
         </div>
             <div class="debug-ui">
