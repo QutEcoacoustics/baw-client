@@ -7,14 +7,6 @@
   padding: 5px;
 }
 
-.project-names > span:not(:last-child) {
-  word-spacing: -0.3em;
-
-  & * {
-    word-spacing: normal;
-  }
-}
-
 #chunkInfo {
 
   // reset h1 style for page

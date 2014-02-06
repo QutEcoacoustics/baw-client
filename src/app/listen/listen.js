@@ -201,7 +201,9 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     // get site
                     Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
 
-                        value.link = paths.api.routes.siteAbsolute.format({"siteId": value.id});
+                        value.links = value.projectIds.map(function(id) {
+                            return paths.api.routes.site.nestedAbsolute.format({"siteId": value.id, "projectId": id});
+                        });
 
                         $scope.model.site = value;
                         result.site = value;

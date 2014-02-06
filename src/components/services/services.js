@@ -24,7 +24,7 @@
     }]);
 
     bawss.factory('Site', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.siteAbsolute), {projectId: "@projectId", siteId: "@siteId"});
+        return resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
     }]);
 
     // NOTE: deleted photo resource, API for photos no longer exposed

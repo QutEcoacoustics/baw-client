@@ -11,14 +11,17 @@
 
                     <span ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'">
                         <!--{{ $first && "" || ", "}}-->
-                        <a ng-switch-when="false" ng-href="{{p.link}}">{{p.name}}</a>
+                        <a ng-switch-when="false" ng-href="{{p.link}}" target="_self">{{p.name}}</a>
                         <!--<a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"-->
                            <!--data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>-->
+
+                           &nbsp;&#47;&nbsp;
+                           <a ng-switch-when="false"  ng-href="{{ model.site.links[$index]}}" target="_self">{{model.site.name}}</a>
+
                     </span>
                 </span>
-                &nbsp;&#47;&nbsp;
-                <a ng-href="{{ model.site.link}}">{{model.site.name}}</a>
-                &nbsp;&#47;&nbsp;
+
+                <!--&nbsp;&#47;&nbsp;-->
                 <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
             </span>
 

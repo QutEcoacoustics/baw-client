@@ -59,7 +59,10 @@ angular.module('bawApp.configuration', ['url'])
                 root: "<%= current.apiRoot %>",
                 routes: {
                     project: "/projects/{projectId}",
-                    site: "/sites/{siteId}",
+                    site: {
+                        flattened: "/sites/{siteId}",
+                        nested: "/projects/{projectId}/sites/{siteId}"
+                    },
                     audioRecording: {
                         listShort: "/audio_recordings/{recordingId}",
                         show: "/audio_recordings/{recordingId}",
