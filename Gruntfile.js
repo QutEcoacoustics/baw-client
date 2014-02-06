@@ -96,7 +96,8 @@ module.exports = function (grunt) {
          */
         pkg: grunt.file.readJSON("package.json"),
 
-        sassDest: '<%= build_dir %>/assets/styles/<%= pkg.name %>-<%= pkg.version %>.css',
+        sassDestName: '<%= pkg.name %>-<%= pkg.version %>.css',
+        sassDest: '<%= build_dir %>/assets/styles/<%= sassDestName %>',
 
         /**
          * The banner is the comment that is placed at the top of our compiled
@@ -359,8 +360,8 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     outputStyle: 'expanded',
-                    sourceComments: 'map',
-                    sourceMap: true
+                    sourceComments: 'normal' /*'map',
+                    sourceMap: '<%= sassDestName %>.map'*/
                 },
                 src: '<%= app_files.processedSass %>',
                 dest: '<%= sassDest %>'
@@ -526,12 +527,19 @@ module.exports = function (grunt) {
                     base: '<%= build_dir %>',
                     debug: true,
                     livereload: true,
-                    /*keepalive: true,*/
+                    //keepalive: true,
                     middleware: function (connect, options) {
                         return [
                             modRewrite([
+
+                                // for source maps
+                                '^/assets/styles/vendor(.*) /vendor$1 [L]',
+                                '^/assets/styles/src(.*) /src$1 [L]',
+
                                 // this rule should match anything under assets and basically not rewrite it
                                 '^/assets(.*) /assets$1 [L]',
+
+
 
                                 // this rule matches anything without an extension
                                 // if matched, the root (index.html) is sent back instead.
@@ -540,7 +548,10 @@ module.exports = function (grunt) {
                             ]),
                             // this specifies that the build_dir, ('build') is a static directory where content
                             // will be served from.
-                            connect.static(options.base)
+                            connect.static(options.base),
+
+                            // for source maps
+                            connect.static(__dirname)
                         ];
                     }
                 }
