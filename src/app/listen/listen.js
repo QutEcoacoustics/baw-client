@@ -382,6 +382,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 };
 
                 $scope.jumpToMinuteAbsolute = function jumpToMinuteCalculation() {
+                    if (!$scope.model.media) {
+                        return undefined;
+                    }
+                    
                     return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("HH:mm:ss");
                 };
 
