@@ -10,26 +10,17 @@
 #chunkInfo {
 
   // reset h1 style for page
-  font-size: 1.25em;
+  font-size: 1.5em;
   font-weight: 500;
   line-height: 1.0;
   margin-top: -10px;
   margin-bottom: 10px;
+}
 
-  &>span:nth-child(2) {
+#navigator input[type="range"] {
+  width: 300px;
+  height: 1em;
 
-    text-align: right;
-
-    input[type="range"] {
-      width: 300px;
-
-    }
-
-    & > span {
-      width: 40px;
-      display: inline-block;
-    }
-  }
 }
 
 .hide-thumb {

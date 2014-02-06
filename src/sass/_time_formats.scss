@@ -18,8 +18,8 @@
 }
 
 @mixin hint-custom-color($color, $content) {
-  border-color: $color;
-
+  //border-color: $color;
+  background-color: rgba($color, 0.04);
 
 
   //@include vendor-prefix(box-shadow, 1px 1px 8px -1px rgba($color, 0.5));
@@ -42,8 +42,8 @@
   //@include rounded-corners($standard-border-radius);
   //color:            nth($master-dark, 1);
   //border-style:     solid;
-  border-bottom: solid;
-  border-width:     1px;
+  //border-bottom: solid;
+  //border-width:     1px;
   /*@extend .hint;*/
 
   padding:          0 $standard-padding-horizontal;

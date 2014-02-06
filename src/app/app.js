@@ -309,4 +309,8 @@ var app = angular.module('baw',
                          r.style.display = "none";
                      };
 
+                     $scope.activePath = function activePath(pathFragment) {
+                         return $location.path().indexOf(pathFragment) != -1;
+                     }
+
                  }]);

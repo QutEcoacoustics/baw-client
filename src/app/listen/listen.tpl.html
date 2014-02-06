@@ -6,35 +6,41 @@
 
 
 <h1 id="chunkInfo" class="row">
-            <span class="col-md-6 col-md-offset-3 text-center">
-                <span class="project-names">
-
+            <span class="col-md-6">
                     <span ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'">
                         <!--{{ $first && "" || ", "}}-->
-                        <a ng-switch-when="false" ng-href="{{p.link}}" target="_self">{{p.name}}</a>
+                        <span ng-switch-when="false">
+                            <a ng-href="{{p.link}}" target="_self">{{p.name}}</a>
                         <!--<a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"-->
                            <!--data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>-->
 
                            &nbsp;&#47;&nbsp;
-                           <a ng-switch-when="false"  ng-href="{{ model.site.links[$index]}}" target="_self">{{model.site.name}}</a>
+                           <a ng-href="{{ model.site.links[$index]}}" target="_self">{{model.site.name}}</a>
+                       </span>
 
                     </span>
-                </span>
-
-                <!--&nbsp;&#47;&nbsp;-->
-                <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
             </span>
 
 </h1>
 <div class="row">
-            <span class="col-md-6 col-md-offset-3 text-center">
+    <span class="col-md-3" class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
+</div>
+<div class="row">
+    <span class="col-md-6">
+        Recording start: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"YY-MMM-DD, HH:mm:ss ZZ"}}</span>.
+        Duration: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
+
+    </span>
+</div>
+<div id="navigator" class="row">
+            <span class="col-md-4">
                 Jump to minute:
                 <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}"
                        ng-slider="jumpToMinute" step="1">
                 <span>{{jumpToMinute}}</span>
                 <button class="btn btn-default" ng-click="jumpTo()">Go</button>
             </span>
-    </div>
+</div>
 
 <baw-annotation-viewer class="clearfix" model="model"></baw-annotation-viewer>
 
@@ -103,9 +109,7 @@
                       src="t as t.name for t in tags"></tags>
 
                 <label class="reference">
-                    <input type="checkbox" ng-model="model.selectedAudioEvent.isReference">&nbsp; Should this be a
-                    reference
-                    annotation?
+                    <input type="checkbox" ng-model="model.selectedAudioEvent.isReference">&nbsp; Reference annotation?
                 </label>
 
             </fieldset>
@@ -125,7 +129,7 @@
 							
 					   
 
-							<label class="col-xs-4" for="high-frequency" > 
+							<label class="col-xs-2 col-md-offset-1" for="high-frequency" >
 								<span>High Frequency</span>
 							</label>
 
@@ -148,7 +152,7 @@
 						 
 
 
-							<label class="col-xs-4" for="low-frequyency">
+							<label class="col-xs-2 col-md-offset-1" for="low-frequyency">
 								<span>Low Frequency</span>
 							</label>
 								<input class="col-xs-3" id="low-frequyency" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
@@ -158,6 +162,20 @@
 
 
 					</div>
+                    <div class="row">
+                        <small class="col-xs-2 text-right">
+                            Duration
+                        </small>
+                        <small class="col-xs-3">
+                            {{model.selectedAudioEvent.endTimeSeconds -  model.selectedAudioEvent.startTimeSeconds | number:3}}
+                        </small>
+                        <small class="col-xs-2 col-md-offset-1 text-right">
+                            Difference
+                        </small>
+                        <small class="col-xs-3">
+                            {{model.selectedAudioEvent.highFrequencyHertz -  model.selectedAudioEvent.lowFrequencyHertz | number:0}}
+                        </small>
+                    </div>
 				</div>
             </fieldset>
 
@@ -167,12 +185,8 @@
 
 </div>
 <div class="row">
-    <span class="col-md-4">
-        <small>Recording start: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"YY-MM-DD, HH:mm:ss ZZ"}}</span>
-            . Duration: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
-        </small>
-    </span>
-            <span class="col-md-offset-4 col-md-4 text-right">Download:
+
+            <span class="col-md-offset-4 col-md-8 text-right">Download:
                 <a target="_blank"
                    ng-href="{{model.media.spectrogram.url}}"
                    title="Download the spectrogram">Spectrogram</a>&nbsp;|&nbsp;
