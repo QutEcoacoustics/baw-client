@@ -73,7 +73,7 @@
 
 .absolute-time {
   @extend .time;
-  @include hint-custom-color($time-absolute-color, "A date and time");
+  @include hint-custom-color($time-absolute-color, "A real point in time");
 
   @include arrow-border-color($time-absolute-color, "true");
 }

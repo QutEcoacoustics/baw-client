@@ -81,6 +81,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                 // set up some dummy objects for use later
                 $scope.jumpToHide = true;
+                $scope.startOffsetAbsolute = null;
+                $scope.endOffsetAbsolute = null;
                 $scope.model = {
                     audioElement: {
                         volume: null,
@@ -164,6 +166,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         else {
                             throw "The provided sample rate for the Media json must be a number!";
                         }
+
+
+                        var // moment works by reference - need to parse the date twice - sigh
+                            absoluteStartChunk = moment($scope.model.media.datetime).add('s', parseFloat($scope.model.media.startOffset)),
+                            absoluteEndChunk = moment($scope.model.media.datetime).add('s', parseFloat($scope.model.media.endOffset));
+
+                        $scope.startOffsetAbsolute = absoluteStartChunk.format("HH:mm:ss");
+                        $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
 
                     },
                     function mediaGetFailure() {
@@ -312,19 +322,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 };
 
 
-                $scope.startOffsetChunk = function () {
-                    if (!$scope.model.media) {
-                        return undefined;
-                    }
 
-                    return baw.secondsToDurationFormat($scope.model.media.startOffset);
-                };
-                $scope.endOffsetChunk = function () {
-                    if (!$scope.model.media) {
-                        return undefined;
-                    }
-                    return baw.secondsToDurationFormat($scope.model.media.endOffset);
-                };
 
                 $scope.durationChunk = function () {
                     if (!$scope.model.media) {
@@ -356,6 +354,23 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     return baw.secondsToDurationFormat(start + offset);
                 };
 
+                $scope.currentOffsetAbsolute = function () {
+                    var chunkOffset = 0;
+                    if ($scope.model.audioElement) {
+                        chunkOffset = $scope.model.audioElement.position;
+                    }
+
+                    if (!$scope.model.media) {
+                        return undefined;
+                    }
+
+                    var baseDate = moment($scope.model.media.datetime),
+                        recordingOffset = parseFloat($scope.model.media.startOffset),
+                        absolute = baseDate.add('s', recordingOffset + chunkOffset);
+
+                    return absolute.format("HH:mm:ss.SSS");
+                };
+
                 $scope.absoluteDateChunkStart = function () {
                     if (!$scope.model.media || !$scope.model.audioRecording) {
                         return undefined;
@@ -364,6 +379,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     var base = moment($scope.model.audioRecording.recordedDate);
                     var offset = base.add({seconds: $scope.model.media.startOffset});
                     return offset;
+                };
+
+                $scope.jumpToMinuteAbsolute = function jumpToMinuteCalculation() {
+                    return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("HH:mm:ss");
                 };
 
 
@@ -384,11 +403,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     if (linkType === "previous") {
                         var lowerBound = ($routeParams.start - stepBy);
 
-                        if ($routeParams.start > 0) {
-                            $scope.previousEnabled = true;
-                        } else {
-                            $scope.previousEnabled = false;
-                        }
+                        $scope.previousEnabled = $routeParams.start > 0;
 
                         if (lowerBound === 0) {
                             baseLink.end = lowerBound + stepBy;
@@ -419,11 +434,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                                 end: (($routeParams.end + stepBy < maxEnd) ? $routeParams.end + stepBy : maxEnd)
                             });
 
-                        if ($routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds) {
-                            $scope.nextEnabled = true;
-                        } else {
-                            $scope.nextEnabled = false;
-                        }
+                        $scope.nextEnabled = $routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds;
 
                         return uriNext;
                     }

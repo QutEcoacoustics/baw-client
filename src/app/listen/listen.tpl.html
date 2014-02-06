@@ -37,7 +37,7 @@
                 Jump to minute:
                 <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}"
                        ng-slider="jumpToMinute" step="1">
-                <span>{{jumpToMinute}}</span>
+                <span>{{jumpToMinuteAbsolute()}}</span>
                 <button class="btn btn-default" ng-click="jumpTo()">Go</button>
             </span>
 </div>
@@ -46,7 +46,7 @@
 
 <div id="chunkTimeStamps" class="clear-pseudo center-block">
 
-    <span class="left"> <span class="hint relative-recording-time hint--right">{{startOffsetChunk()}}</span></span>
+    <span class="left"> <span class="hint absolute-time hint--right">{{startOffsetAbsolute}}</span></span>
 
     <div class="btn-toolbar">
 
@@ -73,7 +73,7 @@
         <div class="btn-group">
             <span class="position btn btn-default">
                 <!--<span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br/>-->
-                <span class="hint relative-recording-time hint--bottom">{{currentOffsetRecording()}}</span>
+                <span class="hint absolute-time hint--bottom">{{currentOffsetAbsolute()}}</span>
             </span>
 
         </div>
@@ -83,7 +83,7 @@
 
     </div>
 
-    <span class="right"> <span class="hint relative-recording-time hint--left">{{endOffsetChunk()}}</span></span>
+    <span class="right"> <span class="hint absolute-time hint--left">{{endOffsetAbsolute}}</span></span>
 
 </div>
 
@@ -302,6 +302,8 @@
         On screen: <span class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
         , Duration of chunk: <span class="hint duration hint--top">{{durationChunk()}} </span>
     </li>
+
+    <span class="hint relative-recording-time hint--bottom">{{currentOffsetRecording()}}</span>
 </ul>
 
 <!--<baw-debug-info></baw-debug-info>-->
