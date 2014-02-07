@@ -4,6 +4,7 @@
 $spectrogramProgressLine: #FF0000;
 $spectrogramBorder: #8c8c8c;
 $tagAlignmentLine: #ffa73c;
+$gridLines: rgba(0, 0, 255, 0.5);
 
 $marqueeBorderColorSelected: #FFFF00;
 $marqueeBorderColorSelectedGlow: #f7ffef;
@@ -102,8 +103,39 @@ baw-annotation-viewer {
 
     }
 
+    & #gridLines {
+      width: 100%;
+      height: 100%;
+
+      & #xLines {
+        width: 100%;
+        height: 100%;
+
+        &>div {
+          border-width: 1px 0 1px 0;
+          border-color: $gridLines;
+          height: 12.5%;
+          margin-top: 12.5%;
+          width: 100%;
+        }
+      }
+
+      & #yLines {
+        width: 100%;
+        height: 100%;
+
+        &>div {
+          border-width:0  1px 0 1px;
+          border-color: $gridLines;
+          width: 12.5%;
+          margin-left: 12.5%;
+          height: 100%;
+        }
+      }
+    }
+
     // overlay
-    & img + div {
+    & #annotationOverlay {
       width: 100%;
       height: 100%;
       position: absolute;

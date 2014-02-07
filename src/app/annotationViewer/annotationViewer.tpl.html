@@ -18,7 +18,21 @@
             <img ng-src="{{model.media.spectrogram.url}}" src=""
                  ng-style="{width: model.converters.conversions.enforcedImageWidth, height: model.converters.conversions.enforcedImageHeight}">
 
-            <div id="spectrogramAnnotations_{{id}}"></div>
+            <div id="gridLines">
+                <div id="xLines">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div id="yLines">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="annotationOverlay" id="spectrogramAnnotations_{{id}}"></div>
             <div class="positionLine" baw-translate-x="positionLine()"
                  ng-class="{hidden: !model.audioElement.canPlay}"
                  draggie drag-options="dragOptions"
