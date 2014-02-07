@@ -15,11 +15,23 @@
   line-height: 1.0;
   margin-top: -10px;
   margin-bottom: 10px;
+
+
 }
 
-#navigator input[type="range"] {
-  width: 300px;
-  height: 1em;
+#recordingDetails {
+  &>p>span {
+    white-space: nowrap;
+  }
+}
+
+#navigator  {
+
+
+  & input[type="range"] {
+    width: 300px;
+    height: 1em;
+  }
 
 }
 

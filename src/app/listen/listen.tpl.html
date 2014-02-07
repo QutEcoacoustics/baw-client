@@ -22,26 +22,28 @@
             </span>
 
 </h1>
-<div class="row">
-    <span class="col-md-3" class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>
-</div>
-<div class="row">
-    <span class="col-md-6">
-        Recording start: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"YY-MMM-DD, HH:mm:ss ZZ"}}</span>.
-        Duration: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
+<div id="recordingDetails" class="row">
+    <p class="col-md-12">
+        <span  class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>.
+        <span >
+            Recording start: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"YYYY-MMM-DD, HH:mm:ss ZZ"}}</span>,
+        </span>
+        <span>
+            duration: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
 
-    </span>
+        </span>
+    </p>
 </div>
 <div id="navigator" class="row">
-            <span class="col-md-4">
+            <p class="col-md-12">
                 Jump to minute:
                 <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}"
                        ng-slider="jumpToMinute" step="1">
                 <span>{{jumpToMinuteAbsolute()}}</span>
-                <button class="btn btn-default" ng-click="jumpTo()">Go</button>
-            </span>
+                <button class="btn btn-default btn-xs" ng-click="jumpTo()">Go</button>
+            </p>
 </div>
-
+<br/>
 <baw-annotation-viewer class="clearfix" model="model"></baw-annotation-viewer>
 
 <div id="chunkTimeStamps" class="clear-pseudo center-block">
