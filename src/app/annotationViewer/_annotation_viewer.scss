@@ -20,6 +20,7 @@ baw-annotation-viewer {
 
   width: 100%;
   text-align: center;
+  display: block;
 
   & .annotation-viewer-ctrl {
     background: url(#{$loadGifPath}) center center no-repeat;
@@ -28,7 +29,10 @@ baw-annotation-viewer {
   & #scroller {
     display: inline-block;
     overflow-x: visible;
-    overflow-y: hidden;
+
+    // overflow-y disabled due to: https://github.com/QutBioacoustics/baw-client/issues/90
+    // not sure of side affects.
+    //overflow-y: hidden;
     line-height: 0;
     // this padding is for the drag handle
     padding-top: 0;
