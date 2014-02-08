@@ -1,4 +1,4 @@
-var avModule = angular.module('bawApp.annotationViewer', []);
+var avModule = angular.module('bawApp.annotationViewer', ['bawApp.annotationViewer.gridLines']);
 
 avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag',
 
@@ -14,6 +14,26 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      * @param Tag
      */
         function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
+
+        $scope.gridConfig = {
+            y: {
+                show: true,
+                max: 356,
+                min: 100,
+                step: 50,
+                numberOfLines: null,
+                offset: 10
+            },
+            x: {
+                show: true,
+                max: 60,
+                min: 30,
+                step: 5,
+                numberOfLines: 10,
+                offset: 0
+            }
+        };
+
 
         var emptyTag = {
             text: "<no tags>",

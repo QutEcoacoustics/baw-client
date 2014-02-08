@@ -4,7 +4,7 @@
 $spectrogramProgressLine: #FF0000;
 $spectrogramBorder: #8c8c8c;
 $tagAlignmentLine: #ffa73c;
-$gridLines: rgba(0, 0, 255, 0.5);
+$gridLines: rgba(0, 0, 255, 1.0);
 
 $marqueeBorderColorSelected: #FFFF00;
 $marqueeBorderColorSelectedGlow: #f7ffef;
@@ -100,48 +100,27 @@ baw-annotation-viewer {
           the enforcedImageHeight value model.
         */
       height: 256px;
-
+      z-index: 0;
     }
 
-    & #gridLines {
+    & grid-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-
-      & #xLines {
-        width: 100%;
-        height: 100%;
-
-        &>div {
-          border-width: 1px 0 1px 0;
-          border-color: $gridLines;
-          height: 12.5%;
-          margin-top: 12.5%;
-          width: 100%;
-        }
-      }
-
-      & #yLines {
-        width: 100%;
-        height: 100%;
-
-        &>div {
-          border-width:0  1px 0 1px;
-          border-color: $gridLines;
-          width: 12.5%;
-          margin-left: 12.5%;
-          height: 100%;
-        }
-      }
+      z-index: 1;
     }
 
     // overlay
-    & #annotationOverlay {
+    & .annotationOverlay {
       width: 100%;
       height: 100%;
       position: absolute;
       top: 0;
       left: 0;
       overflow: hidden;
+      z-index: 2;
 
       // debug
       // @if $DEBUG { background-color: rgba(255,0,0,0.15) ;}
@@ -157,6 +136,7 @@ baw-annotation-viewer {
       height: 100%;
       width: 1px;
       position: absolute;
+      z-index: 1000;
       top: 0;
       left: 0;
       @include vendor-prefix(transform, translate3d(0px, 0, 0));

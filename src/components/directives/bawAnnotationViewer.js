@@ -471,7 +471,7 @@ bawds.directive('bawAnnotationViewer',
                 //            },
                 link: function (scope, $element, attributes, controller) {
 
-                    scope.$drawaboxElement = $element.find(".annotation-viewer img + div").first();
+                    scope.$drawaboxElement = $element.find(".annotation-viewer .annotationOverlay").first();
                     scope.$image = $element.find("img");
 
 

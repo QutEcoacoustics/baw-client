@@ -1,0 +1,53 @@
+& .gridLines {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  & .xLines {
+    z-index: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    &>div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 20px;
+      width: 100%;
+      border-width: 1px 0 1px 0;
+      border-color: $gridLines;
+      border-style: solid;
+      margin: 0 0 0 0;
+
+      background-color: greenyellow;
+    }
+  }
+
+  & .yLines {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    &>div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 100%;
+      border-width:0  1px 0 1px;
+      border-color: $gridLines;
+      border-style: solid;
+      margin: 0 0 0 0;
+
+      background-color: greenyellow;
+    }
+  }
+}

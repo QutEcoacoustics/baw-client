@@ -30,6 +30,7 @@ $IMAGE_ASSET_PATH: '<%= build_configs.current.siteDir %>';
 
 @import "../app/audioControl/_volumeControl.scss";
 @import "../app/annotationViewer/annotation_viewer";
+@import "../app/annotationViewer/gridLines/gridLines";
 @import "../app/audioEvents/audio_events";
 @import "../app/bookmarks/bookmarks";
 @import "../app/home/home";
