@@ -4,7 +4,6 @@
 $spectrogramProgressLine: #FF0000;
 $spectrogramBorder: #8c8c8c;
 $tagAlignmentLine: #ffa73c;
-$gridLines: rgba(0, 0, 255, 1.0);
 
 $marqueeBorderColorSelected: #FFFF00;
 $marqueeBorderColorSelectedGlow: #f7ffef;
@@ -58,7 +57,8 @@ baw-annotation-viewer {
 
       li {
 
-        margin-left: -4px;
+        // I think this is affected by .boxItem's box-sizing
+        margin-left: -3px;
         position: absolute;
         bottom: -1px;
         padding-left: 2px;

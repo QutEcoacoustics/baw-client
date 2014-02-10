@@ -5,102 +5,135 @@ bawGLs.directive('gridLines',
         function (paths) {
 
             var defaultAxis = {
-                    show: false,
+                    showGrid: false,
+                    showScale: false,
                     max: null,
                     min: null,
                     step: null,
                     numberOfLines: null,
-                    offset: 0
+                    labelFormatter: function(number) { return number;}
                 },
                 defaultConfig = {
                     x: angular.copy(defaultAxis),
-                    y: angular.copy(defaultAxis),
-                    width: null,
-                    height: null
+                    y: angular.copy(defaultAxis)
                 };
 
-            function hideElements(container) {
-                angular.forEach(container.children, function(child) {
-                    child.style.display = 'none';
-                });
-            }
+            defaultConfig.x.width = null;
+            defaultConfig.x.title = "X Axis";
+            defaultConfig.y.height = null;
+            defaultConfig.y.title = "Y Axis";
 
-            function drawGridLines(container, elementSize, xOrY,  show, max, min, offset, step, numberOfLines) {
-                if (!show) {
-                    hideElements(container);
+
+            function calculateSteps(size, max, min, step, numberOfLines) {
+                if (!angular.isNumber(max) || !angular.isNumber(min) || !angular.isNumber(step) || !angular.isNumber(size)) {
                     return;
                 }
 
-                if (!angular.isNumber(max) ||
-                    !angular.isNumber(min) ||
-                    !angular.isNumber(offset) ||
-                    !angular.isNumber(elementSize)) {
-                    hideElements(container);
-                    return;
-                }
-
-                if (!step && !numberOfLines) {
+                if (step && numberOfLines) {
                     throw "gridLines:drawGridLines: the step and numberOfLines properties can not be set simultaneously";
                 }
 
-                // retrieve number of child elements currently available
-                var children = container.children,
-                    length = children.length;
-
                 var difference = max - min,
-                    width = null;
+                    thickness = null;
 
                 if (step && angular.isNumber(step) && step > 0) {
-                    width = (difference / step) * elementsSize;
-                    numberOfLines = math.floor(difference / step);
+                    thickness = (step / difference) * size;
+                    numberOfLines = Math.floor(difference / step);
+
+                    // if the steps fit perfectly into the size, don't draw the last line (we don't draw lines on the edges)
+                    // the actual calculation also includes an extra pixel of thickness
+                    var fitsIn = size / thickness;
+                    if ((fitsIn - Math.floor(fitsIn)) < (1 / thickness)) {
+                        numberOfLines--;
+                    }
+
                 }
                 else if (numberOfLines && angular.isNumber(numberOfLines) && numberOfLines > 0) {
-                    width = elementsSize / numberOfLines;
+                    // subtract one because numberofLines = divisions + 2
+                    thickness = size / (numberOfLines + 1);
                 }
                 else {
                     throw "invalid";
                 }
 
-                // there are two gridLines drawn by every child
-                var diffLines = numberOfLines - (length * 2);
+                var result = [];
+                result.push({value: min, position: 0});
+                for (var i = 1; i <= numberOfLines; i++) {
+                    var offset = i * thickness;
+                    result.push({
+                        value: ((offset / size ) * difference) + min,
+                        position: offset
+                    });
+                }
+                result.push({value: max, position: size});
+
+                return result;
+            }
+
+            function diffElementsChildren(container, expectedNumber, newElementTagName) {
+                var diffLines = expectedNumber - container.children.length;
                 if (diffLines < 0) {
-                    // too many lines - remove some children
+                    // too many elements - remove some children
                     for (var i = 0; i > diffLines; i--) {
-                        container.removeChild(children[i]);
+                        // remove any child, they are all the same
+                        container.removeChild(children[0]);
                     }
                 }
                 else if (diffLines > 0) {
+                    // too few elements, add some
                     for (var k = 0; k < diffLines; k++) {
-                        var newDiv = document.createElement("div");
+                        var newDiv = document.createElement(newElementTagName);
                         container.appendChild(newDiv);
                     }
                 }
+            }
 
-                // finally set style of child nodes
-                if (diffLines !== 0) {
-                    children = container.children;
-                    length = children.length;
-                }
+            function render(container, xOrY, size, steps, innerText, skipEnds, formatter) {
+                var start = skipEnds ? 1 : 0,
+                    end = skipEnds ? steps.length - 1 : steps.length;
 
-                for (var j = 0; j < length; j++) {
-                    var element = children[j];
+                for (var j = start; j < end; j++) {
+                    var element = container.children[j - start];
 
-                    // shift all values by offset
-                    // we have a inverted y-axis so subtract offset instead
-                    var top = (j * width) - offset;
-
-                    if (xOrY === 'x') {
-                        element.style.height = width + 'px';
-                        element.style.top = top + 'px';
-                    }
-                    else if (xOrY === 'y') {
-                        element.style.width = width + 'px';
-                        element.style.left = top + 'px';
+                    if (innerText) {
+                        element.innerText = formatter(steps[j].value);
                     }
 
-                    // ensure all children are visible
-                    element.style.display = 'visible';
+                    var position = steps[j].position;
+
+                    if (xOrY === 'y') {
+                        element.style.top = (size - position) + 'px';
+                    }
+                    else if (xOrY === 'x') {
+                        element.style.left = position + 'px';
+                    }
                 }
+            }
+
+            function drawLines(lineContainer, elementSize, xOrY, steps, formatter) {
+                if (!steps) {
+                    lineContainer.style.display = 'none';
+                    return;
+                }
+
+                diffElementsChildren(lineContainer, steps.length - 2, "div");
+                render(lineContainer, xOrY, elementSize, steps, false, true, formatter);
+
+                // ensure grid lines are visible
+                lineContainer.style.display = '';
+            }
+
+            function drawScales(scaleContainer, elementSize, xOrY, steps, formatter) {
+                if (!steps) {
+                    scaleContainer.style.display = 'none';
+                    return;
+                }
+
+                diffElementsChildren(scaleContainer, steps.length, "span");
+                render(scaleContainer, xOrY, elementSize, steps, true, false, formatter);
+
+                // ensure scales are visible
+                scaleContainer.style.display = '';
             }
 
             return {
@@ -108,41 +141,53 @@ bawGLs.directive('gridLines',
                     configuration: "=configuration"
                 },
                 restrict: 'E',
-                templateUrl:  paths.site.files.gridLines,
+                templateUrl: paths.site.files.gridLines,
                 link: function linker(scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
 
-                    attributes.$observe("gridLines", function(interpolatedValue) {
+                    attributes.$observe("gridLines", function (interpolatedValue) {
                         console.debug("grisLines:observe: do something", interpolatedValue);
                     });
 
-                    var xContainer = element.querySelector(".xLines");
-                    var yContainer = element.querySelector(".yLines");
+                    var xLineContainer = element.querySelector(".xLines");
+                    var xScaleContainer = element.querySelector(".xScale");
+                    var yLineContainer = element.querySelector(".yLines");
+                    var yScaleContainer = element.querySelector(".yScale");
 
                     scope.configuration = angular.extend(defaultConfig, scope.configuration);
 
-                    scope.$watch(function() {
+                    scope.$watch(function () {
                         return scope.configuration.x;
                     }, function (newValue, oldValue) {
                         if (!newValue) {
                             return;
                         }
 
-                        drawGridLines(xContainer, newValue.width, 'x', newValue.show,
-                            newValue.max, newValue.min, newValue.offset,
-                            newValue.step, newValue.numberOfLines);
+                        var steps;
+                        if (newValue.showScale || newValue.showGrid) {
+                            steps = calculateSteps(newValue.width, newValue.max, newValue.min,
+                                newValue.step, newValue.numberOfLines);
+                        }
+
+                        drawLines(xLineContainer, newValue.width, 'x', newValue.showGrid ? steps : undefined);
+                        drawScales(xScaleContainer, newValue.width, 'x', newValue.showScale ? steps : undefined, newValue.labelFormatter);
                     }, true);
 
-                    scope.$watch(function() {
-                        return scope.configuration.x;
+                    scope.$watch(function () {
+                        return scope.configuration.y;
                     }, function (newValue, oldValue) {
                         if (!newValue) {
                             return;
                         }
 
-                        drawGridLines(yContainer, newValue.height,  'y', newValue.show,
-                            newValue.max, newValue.min, newValue.offset,
-                            newValue.step, newValue.numberOfLines);
+                        var steps;
+                        if (newValue.showScale || newValue.showGrid) {
+                            steps = calculateSteps(newValue.height, newValue.max, newValue.min,
+                                newValue.step, newValue.numberOfLines);
+                        }
+
+                        drawLines(yLineContainer, newValue.height, 'y', newValue.showGrid ? steps : undefined);
+                        drawScales(yScaleContainer, newValue.height, 'y', newValue.showScale ? steps : undefined, newValue.labelFormatter);
                     }, true);
                 }
             };

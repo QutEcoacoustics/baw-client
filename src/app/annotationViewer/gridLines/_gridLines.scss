@@ -1,3 +1,14 @@
+$gridLines: rgba(0, 0, 255, 0.30);
+$scale-background:  #f5f5f5; //#7eff5f
+
+@mixin scale-base() {
+  background-color: $scale-background;
+  font-family: $font-family-monospace;
+  font-size: $font-size-small;
+  line-height: 1.0;
+  position: absolute;
+}
+
 & .gridLines {
   width: 100%;
   height: 100%;
@@ -5,7 +16,7 @@
   top: 0;
   left: 0;
 
-  & .xLines {
+  & .yLines {
     z-index: 0;
     position: absolute;
     width: 100%;
@@ -15,20 +26,17 @@
 
     &>div {
       position: absolute;
+      // top gets modified
       top: 0;
       left: 0;
-      height: 20px;
+      height: 1px;
       width: 100%;
-      border-width: 1px 0 1px 0;
-      border-color: $gridLines;
-      border-style: solid;
-      margin: 0 0 0 0;
 
-      background-color: greenyellow;
+      background-color: $gridLines;
     }
   }
 
-  & .yLines {
+  & .xLines {
     z-index: 1;
     position: absolute;
     width: 100%;
@@ -39,15 +47,47 @@
     &>div {
       position: absolute;
       top: 0;
+      // left gets modified
       left: 0;
-      width: 20px;
+      width: 1px;
       height: 100%;
-      border-width:0  1px 0 1px;
-      border-color: $gridLines;
-      border-style: solid;
       margin: 0 0 0 0;
 
-      background-color: greenyellow;
+      background-color: $gridLines;
+    }
+  }
+
+  & .yScale {
+    @include scale-base;
+
+    height: 100%;
+    width: auto;
+
+    top: 0;
+    left: -1px;
+    @include vendor-prefix(transform, translateX(-100%));
+
+    & span {
+      position: absolute;
+      @include vendor-prefix(transform, translateY(-50%) translateX(-100%));
+      background-color: $scale-background;
+    }
+  }
+
+  & .xScale {
+    @include scale-base;
+
+    height: auto;
+    width: 100%;
+
+    bottom: -1px;
+    left: 0;
+    @include vendor-prefix(transform, translateY(100%));
+
+    & span {
+      position: absolute;
+      @include vendor-prefix(transform, translateX(-50%));
+      background-color: $scale-background;
     }
   }
 }

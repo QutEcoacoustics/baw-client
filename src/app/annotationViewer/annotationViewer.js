@@ -15,22 +15,58 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      */
         function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
 
+        $scope.$watch(function () {
+            // updated in directive
+            return $scope.model.converters;
+        }, function (newValue, oldValue) {
+            if (newValue && newValue.conversions.enforcedImageWidth && newValue.conversions.enforcedImageHeight) {
+                $scope.gridConfig.x.width = newValue.conversions.enforcedImageWidth;
+                $scope.gridConfig.x.min = newValue.input.startOffset;
+                $scope.gridConfig.x.max = newValue.input.endOffset;
+
+
+                $scope.gridConfig.y.height = newValue.conversions.enforcedImageHeight;
+                $scope.gridConfig.y.min = 0;
+                $scope.gridConfig.y.max = newValue.conversions.nyquistFrequency;
+
+                $scope.gridConfig.x.showScale =
+                    $scope.gridConfig.x.showGrid =
+                        $scope.gridConfig.y.showScale =
+                            $scope.gridConfig.y.showGrid = true;
+            }
+            else {
+                $scope.gridConfig.x.showScale =
+                    $scope.gridConfig.x.showGrid =
+                        $scope.gridConfig.y.showScale =
+                            $scope.gridConfig.y.showGrid = false;
+            }
+        });
+
+        // set common/sensible defaults, but hide the elements
         $scope.gridConfig = {
             y: {
-                show: true,
-                max: 356,
-                min: 100,
-                step: 50,
-                numberOfLines: null,
-                offset: 10
+                showGrid: false,
+                showScale: false,
+                max: 11025,
+                min: 0,
+                step: 1000,
+                height: 256,
+                labelFormatter: function(value) {
+                    return (value / 1000).toFixed(1);
+                },
+                title: "Frequency (KHz)"
             },
             x: {
-                show: true,
-                max: 60,
-                min: 30,
-                step: 5,
-                numberOfLines: 10,
-                offset: 0
+                showGrid: false,
+                showScale: false,
+                max: 30,
+                min: 0,
+                step: 1,
+                width: 1292,
+                labelFormatter: function(value) {
+                    return value.toFixed(0);
+                },
+                title: "Time offset (seconds)"
             }
         };
 
@@ -116,10 +152,6 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
                 updateScope();
             }
         };
-
-
-        // updated in directive
-        $scope.model.converters = $scope.model.converters || {};
     }]);
 
 
