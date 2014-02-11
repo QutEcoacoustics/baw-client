@@ -1,12 +1,13 @@
-$gridLines: rgba(0, 0, 255, 0.30);
+$gridLines: rgba(66, 139, 202, 0.40);
 $scale-background:  #f5f5f5; //#7eff5f
 
 @mixin scale-base() {
   background-color: $scale-background;
   font-family: $font-family-monospace;
-  font-size: $font-size-small;
+  font-size: $font-size-small;;
   line-height: 1.0;
   position: absolute;
+  color: $gray;
 }
 
 & .gridLines {
@@ -71,6 +72,9 @@ $scale-background:  #f5f5f5; //#7eff5f
       position: absolute;
       @include vendor-prefix(transform, translateY(-50%) translateX(-100%));
       background-color: $scale-background;
+      &:first-child {
+        left: -0.5em;
+      }
     }
   }
 

@@ -67,6 +67,10 @@ bawGLs.directive('gridLines',
                 }
                 result.push({value: max, position: size});
 
+                // lastly tag return object with data - a bit hacky
+                result.min = min;
+                result.max = max;
+
                 return result;
             }
 
@@ -96,7 +100,7 @@ bawGLs.directive('gridLines',
                     var element = container.children[j - start];
 
                     if (innerText) {
-                        element.innerText = formatter(steps[j].value);
+                        element.innerText = formatter(steps[j].value, j, steps.min, steps.max);
                     }
 
                     var position = steps[j].position;

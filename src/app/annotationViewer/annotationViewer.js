@@ -51,7 +51,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
                 min: 0,
                 step: 1000,
                 height: 256,
-                labelFormatter: function(value) {
+                labelFormatter: function(value, index, min, max) {
                     return (value / 1000).toFixed(1);
                 },
                 title: "Frequency (KHz)"
@@ -63,8 +63,11 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
                 min: 0,
                 step: 1,
                 width: 1292,
-                labelFormatter: function(value) {
-                    return value.toFixed(0);
+                labelFormatter: function(value, index, min, max) {
+                    // show 'absolute' time.... i.e. seconds of the minute
+                    var offset = (value % 60);
+
+                    return (offset).toFixed(0);
                 },
                 title: "Time offset (seconds)"
             }

@@ -125,12 +125,14 @@
     position: absolute;
     left: 0px;
     top: 0px;
+    @include vendor-prefix(transform, translateX(-50%));
   }
 
   & .right {
     position: absolute;
     right: 0px;
     top: 0px;
+    @include vendor-prefix(transform, translateX(50%));
   }
 
   & .btn-toolbar {
