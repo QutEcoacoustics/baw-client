@@ -107,6 +107,7 @@ angular.module('bawApp.configuration', ['url'])
                     home: 'home/home.tpl.html',
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
+                    gridLines: 'annotationViewer/gridLines/gridLines.tpl.html',
                     navigation: 'navigation/navigation.tpl.html',
                     birdWalk: {
                         list: 'birdWalks/birdWalks.tpl.html',

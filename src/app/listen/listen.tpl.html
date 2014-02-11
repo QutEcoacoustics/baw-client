@@ -24,12 +24,12 @@
 </h1>
 <div id="recordingDetails" class="row">
     <p class="col-md-12">
-        <span  class="hint absolute-time hint--top">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>.
+        <span  class="time">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>.
         <span >
-            Recording start: <span class="hint absolute-time hint--top">{{model.audioRecording.recordedDate | moment:"format":"YYYY-MMM-DD, HH:mm:ss ZZ"}}</span>,
+            Recording start: <span class="time">{{model.audioRecording.recordedDate | moment:"format":"YYYY-MMM-DD, HH:mm:ss ZZ"}}</span>,
         </span>
         <span>
-            duration: <span class="hint duration hint--top">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
+            duration: <span class="time">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
 
         </span>
     </p>
@@ -39,7 +39,7 @@
                 Jump to minute:
                 <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}"
                        ng-slider="jumpToMinute" step="1">
-                <span>{{jumpToMinuteAbsolute()}}</span>
+                <span class="time">{{jumpToMinuteAbsolute()}}</span>
                 <button class="btn btn-default btn-xs" ng-click="jumpTo()">Go</button>
             </p>
 </div>
@@ -48,7 +48,7 @@
 
 <div id="chunkTimeStamps" class="clear-pseudo center-block">
 
-    <span class="left"> <span class="hint absolute-time hint--right">{{startOffsetAbsolute}}</span></span>
+    <span class="left"> <span class="time">{{startOffsetAbsolute}}</span></span>
 
     <div class="btn-toolbar">
 
@@ -75,7 +75,7 @@
         <div class="btn-group">
             <span class="position btn btn-default">
                 <!--<span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br/>-->
-                <span class="hint absolute-time hint--bottom">{{currentOffsetAbsolute()}}</span>
+                <span class="time">{{currentOffsetAbsolute()}}</span>
             </span>
 
         </div>
@@ -85,7 +85,7 @@
 
     </div>
 
-    <span class="right"> <span class="hint absolute-time hint--left">{{endOffsetAbsolute}}</span></span>
+    <span class="right"> <span class="time">{{endOffsetAbsolute}}</span></span>
 
 </div>
 

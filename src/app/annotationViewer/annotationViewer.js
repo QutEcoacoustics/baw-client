@@ -1,4 +1,4 @@
-var avModule = angular.module('bawApp.annotationViewer', []);
+var avModule = angular.module('bawApp.annotationViewer', ['bawApp.annotationViewer.gridLines']);
 
 avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag',
 
@@ -14,6 +14,65 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      * @param Tag
      */
         function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
+
+        $scope.$watch(function () {
+            // updated in directive
+            return $scope.model.converters;
+        }, function (newValue, oldValue) {
+            if (newValue && newValue.conversions.enforcedImageWidth && newValue.conversions.enforcedImageHeight) {
+                $scope.gridConfig.x.width = newValue.conversions.enforcedImageWidth;
+                $scope.gridConfig.x.min = newValue.input.startOffset;
+                $scope.gridConfig.x.max = newValue.input.endOffset;
+
+
+                $scope.gridConfig.y.height = newValue.conversions.enforcedImageHeight;
+                $scope.gridConfig.y.min = 0;
+                $scope.gridConfig.y.max = newValue.conversions.nyquistFrequency;
+
+                $scope.gridConfig.x.showScale =
+                    $scope.gridConfig.x.showGrid =
+                        $scope.gridConfig.y.showScale =
+                            $scope.gridConfig.y.showGrid = true;
+            }
+            else {
+                $scope.gridConfig.x.showScale =
+                    $scope.gridConfig.x.showGrid =
+                        $scope.gridConfig.y.showScale =
+                            $scope.gridConfig.y.showGrid = false;
+            }
+        });
+
+        // set common/sensible defaults, but hide the elements
+        $scope.gridConfig = {
+            y: {
+                showGrid: false,
+                showScale: false,
+                max: 11025,
+                min: 0,
+                step: 1000,
+                height: 256,
+                labelFormatter: function(value, index, min, max) {
+                    return (value / 1000).toFixed(1);
+                },
+                title: "Frequency (KHz)"
+            },
+            x: {
+                showGrid: false,
+                showScale: false,
+                max: 30,
+                min: 0,
+                step: 1,
+                width: 1292,
+                labelFormatter: function(value, index, min, max) {
+                    // show 'absolute' time.... i.e. seconds of the minute
+                    var offset = (value % 60);
+
+                    return (offset).toFixed(0);
+                },
+                title: "Time offset (seconds)"
+            }
+        };
+
 
         var emptyTag = {
             text: "<no tags>",
@@ -96,10 +155,6 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
                 updateScope();
             }
         };
-
-
-        // updated in directive
-        $scope.model.converters = $scope.model.converters || {};
     }]);
 
 
