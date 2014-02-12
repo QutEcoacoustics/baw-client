@@ -1,33 +1,85 @@
-<div class="tagitem ReadingSummary" style="min-width: 250px; max-width: 129px;
-                    height: 299px; background-color:#7E7E7E;">
-    <div style="position:relative; width:129px; margin:0 auto;">
-        <img src="/Spectrogram.ashx?height=256&amp;ppms=0.045&amp;ID=761c2204-2ed3-4f3e-b5b2-97878daf0431&amp;start=382379&amp;end=385244" alt="spectrogram" style="z-index: 1; width: 129px; height: 256px;">
-        <!-- div for displaying tag -->
-        <div style="position: absolute; z-index: 2; width: 89px;
-                            border: 1px solid #51FF00; left: 20px;
-                            top: 62px; height: 183px;
-                            opacity: .9; filter: alpha(opacity=90);">
+<div id="content" data-ng-controller="AnnotationLibraryCtrl">
+    <h1>Annotation Library</h1>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="refLibraryTags" class="col-sm-1 control-label">Tags</label>
+
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="refLibraryTags" placeholder="Tags"
+                               ng-model="filterSettings.tagsPartial">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="refLibraryDuration" class="col-sm-1 control-label">Duration</label>
+
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control" id="refLibraryDuration" placeholder="Duration"
+                               ng-model="filterSettings.duration">
+                    </div>
+
+                    <label for="refLibraryFreqMin" class="col-sm-1 control-label">Min Frequency</label>
+
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control" id="refLibraryFreqMin"
+                               placeholder="Minimum Frequency" ng-model="filterSettings.freqMin">
+                    </div>
+
+                    <label for="refLibraryFreqMax" class="col-sm-1 control-label">Max Frequency</label>
+
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control" id="refLibraryFreqMax"
+                               placeholder="Maximum Frequency" ng-model="filterSettings.freqMax">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="refLibraryReference" class="col-sm-1 control-label">Annotations</label>
+
+                    <div class="col-sm-3">
+                        <label class="radio-inline">
+                            <input type="radio" name="refLibraryReference" id="refLibraryReference1"
+                                   value="" checked> No Restriction
+                        </label>
+
+
+                        <label class="radio-inline">
+                            <input type="radio" name="refLibraryReference" id="refLibraryReference2"
+                                   value="true" ng-value="filterSettings.reference"> Reference Only
+                        </label>
+
+
+                        <label class="radio-inline">
+                            <input type="radio" name="refLibraryReference" id="refLibraryReference3"
+                                   value="false" ng-value="filterSettings.reference"> Not Reference
+                        </label>
+                    </div>
+
+                    <label for="refLibraryPage" class="col-sm-1 control-label">Page Number</label>
+
+                    <div class="col-sm-1">
+                        <input type="number" class="form-control" id="refLibraryPage" placeholder="Page"
+                               ng-model="filterSettings.page">
+                    </div>
+
+                    <label for="refLibraryItems" class="col-sm-1 control-label">Items</label>
+
+                    <div class="col-sm-1">
+                        <input type="number" class="form-control" id="refLibraryItems" placeholder="Items"
+                               ng-model="filterSettings.items">
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-10">
+                        <button type="submit" class="btn btn-default" ng-click="setFilter()">Filter</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-    <div class="spectrogramShow">
-        <a href="#t13471" name="t13471" id="t13471" class="audiotaglink" title="Tag: (no name) --
-Start: 2011 Mar 24 05:06:22 -- 
-Duration: 1 sec 1 ms excl. padding. -- 
-Frequency: 474 - 8355 --
-Sensor: Open Forest 24th Morning_Team 2994" audiomp3="/sensors/ByID/761c2204-2ed3-4f3e-b5b2-97878daf0431.mp3?start=382379&amp;end=385244" audioogg="/sensors/ByID/761c2204-2ed3-4f3e-b5b2-97878daf0431.ogg?start=382379&amp;end=385244">
-            (no name)</a>
-        <div class="freqLine freqLine10">10</div>
-        <div class="freqLine freqLine9">9</div>
-        <div class="freqLine freqLine8">8</div>
-        <div class="freqLine freqLine7">7</div>
-        <div class="freqLine freqLine6">6</div>
-        <div class="freqLine freqLine5">5</div>
-        <div class="freqLine freqLine4">4</div>
-        <div class="freqLine freqLine3">3</div>
-        <div class="freqLine freqLine2">2</div>
-        <div class="freqLine freqLine1">1</div>
-    </div>
-    <div style="height: 22px; overflow: hidden; text-align: center; background-color:#D9EBFF;">
-        [<a href="/UI/AudioReading/AudioReadingData.aspx?AudioReadingIds=761c2204-2ed3-4f3e-b5b2-97878daf0431&amp;subitemtoload=360000&amp;jumptotimeoffsetms=22823" title="Go to tag in audio player" target="_blank">link</a>] [<a href="/UI/Tag/ReferenceTagList.aspx?duration=1977&amp;maxfrequency=8355&amp;minfrequency=474">find similar</a>]
+    <div ng-repeat="item in library">
+        {{item}}
     </div>
 </div>
