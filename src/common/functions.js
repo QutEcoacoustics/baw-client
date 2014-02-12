@@ -309,11 +309,13 @@ if (!Array.prototype.filter) {
         this.toKeyValue = function toKeyValue(obj) {
             var parts = [];
             angular.forEach(obj, function (value, key) {
-                parts.push(encodeUriQuery(key, true) + (value === true ? '' : '=' + encodeUriQuery(value, true)));
+                if(value !== undefined){
+                    parts.push(encodeUriQuery(key, true) + (value === true ? '' : '=' + encodeUriQuery(value, true)));
+                }
             });
             return parts.length ? parts.join('&') : '';
         };
-        this.encodeUriQuery = function encodeUriQuery(val, pctEncodeSpaces) {
+        function encodeUriQuery(val, pctEncodeSpaces) {
             val = val || "";
             return encodeURIComponent(val).
                 replace(/%40/gi, '@').
@@ -322,6 +324,8 @@ if (!Array.prototype.filter) {
                 replace(/%2C/gi, ',').
                 replace((pctEncodeSpaces ? null : /%20/g), '+');
         };
+
+        this.encodeUriQuery = encodeUriQuery;
 
         this.isUndefined = function isUndefined(value) {
             return typeof value == 'undefined';

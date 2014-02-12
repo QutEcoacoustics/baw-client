@@ -74,11 +74,21 @@
             return formattedUrl;
         }
 
+        var baseLibraryUri = paths.api.routes.audioEvent.libraryAbsolute;
+
         var resource = resourcePut($resource, uriConvert(paths.api.routes.audioEvent.showAbsolute),
             {
                 recordingId: '@recordingId',
                 audioEventId: '@audioEventId'
-            });
+            },
+            {
+                library: {
+                    method:'GET',
+                    url: baseLibraryUri,
+                    isArray: true
+                }
+            }
+        );
         resource.csvLink = makeCsvLink;
         return resource;
     }]);
