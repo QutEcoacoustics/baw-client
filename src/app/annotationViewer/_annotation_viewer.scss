@@ -12,7 +12,7 @@ $marqueeBorderColorInactive: #00FF00;
 $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
 // see _touch.scss and annotate.tpl.html
-$grab-handle-radius: 12px;
+$grab-handle-radius: 32px;
 $grab-handle-bottom-shift: 12px;
 
 //noinspection CssInvalidHtmlTagReference
@@ -101,6 +101,7 @@ baw-annotation-viewer {
         */
       height: 256px;
       z-index: 0;
+
     }
 
     & grid-lines {
@@ -127,6 +128,7 @@ baw-annotation-viewer {
 
       // required for IE10
       background-color: rgba(255, 255, 255, 0);
+      cursor: crosshair;
 
     }
 
@@ -159,7 +161,7 @@ baw-annotation-viewer {
           @include touch-handle-active;
 
           &:before {
-            content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");
+            content: url("data:image/svg+xml;utf8,#{$triangle-hover}");
           }
         }
       }
@@ -182,6 +184,7 @@ baw-annotation-viewer {
     background-color: rgba(255, 255, 255, 0.05);
     overflow: visible;
     z-index: 0;
+    cursor: move;
 
     // this needs to be changed because of a jquery-ui bug
     //http://bugs.jqueryui.com/ticket/8932
