@@ -14,6 +14,16 @@ $pen-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/
 
 $pen-tip-hover: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M6 0.4L0.4 6 2.4 8C3.3 7.1 4.6 6.6 6 6.6 7.4 6.6 8.7 7.1 9.6 8L11.6 6 6 0.4z' style='fill:#{$handle-hover-bg};stroke-width:1.0;stroke:#{$handle-hover-border-color};stroke-opacity:1.0'/></g></svg>";
 
+$triangle: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='13' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M0.4 7 L6 0.4 L12 7' style='fill:#{$handle-default-bg};stroke-width:1.0;stroke:#{$handle-border-color};stroke-opacity:1.0'/></g></svg>";
+$triangle-hover: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='12' height='13' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M0.4 7 L6 0.4 L12 7' style='fill:#{$handle-hover-bg};stroke-width:1.0;stroke:#{$handle-hover-border-color};stroke-opacity:1.0'/></g></svg>";
+
+$gt: 2; // top of grip bars
+$gb: 11; // bottom of grip bars
+$gs: 5; // separation of grip bars
+
+// there are 4 grip bars, they are 2 vertical lines each to simulate shadow, therefore width is 4x separation plus 2
+$grip:  "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='#{$gs*3+2}' height='12' version='1.1'>  <g transform='scale(1.0, 1.0)'><path d='M#{$gs*0} #{$gt} L#{$gs*0} #{$gb} M#{$gs*1} #{$gt} L#{$gs*1} #{$gb} M#{$gs*2} #{$gt} L#{$gs*2} #{$gb} M#{$gs*3} #{$gt} L#{$gs*3} #{$gb}z' fill='none' style='stroke-width:1.0;stroke:#666;stroke-opacity:0.5'/><path d='M#{$gs*0+1} #{$gt} L#{$gs*0+1} #{$gb} M#{$gs*1+1} #{$gt} L#{$gs*1+1} #{$gb} M#{$gs*2+1} #{$gt} L#{$gs*2+1} #{$gb} M#{$gs*3+1} #{$gt} L#{$gs*3+1} #{$gb}z' fill='none' style='stroke-width:1.0;stroke:#bbbbbb;stroke-opacity:0.5'/></g></svg>";
+
 
 
 
@@ -30,6 +40,19 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
   margin-bottom: -($size / 2.0);
 
   @include rounded-corners($size / 2.0);
+}
+
+
+@mixin drag-handle($w, $h) {
+  width: $w !important;
+  height: $h !important;
+
+  margin-left: -($w / 2.0);
+  margin-top: -($h / 2.0);
+  margin-right: -($w / 2.0);
+  margin-bottom: -($h / 2.0);
+
+  @include rounded-corners(3px);
 }
 
 
@@ -52,7 +75,7 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
   }
 }
 
-.touch-handle {
+.touch-handle-old {
   background-color: $handle-default-bg;
   border: solid 1px $handle-border-color;
   margin: 0;
@@ -71,6 +94,35 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
   display: block;
 
   @include interactivity;
+}
+
+
+.touch-handle {
+  background-color: $handle-default-bg;
+  border: solid 1px $handle-border-color;
+  margin: 0;
+  padding: 0;
+
+  // lib-sass currently does not support inherited extends
+  // so temporarily change this extend to a mixin
+  //@extend .touch-handle-default;
+  //@include size($smallest-size * 2.0);
+  @include drag-handle(30.0px,15.0px);
+
+  //box-shadow: 0 0 5px $shadow;
+
+  position: absolute;
+  z-index: 1000;
+  overflow: visible !important;
+  display: block;
+
+  @include interactivity;
+
+    text-align: center;
+
+  cursor: move;
+
+
 }
 
 // other sizes broken
@@ -92,21 +144,22 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
 
 }
 
-@mixin curved-tail($size, $both) {
+@mixin curved-tail($size, $both, $yoffset: -1px) {
   @mixin inner($size) {
-    content: url("data:image/svg+xml;utf8,#{$pen-tip}");
+    content: url("data:image/svg+xml;utf8,#{$triangle}");
     position: absolute;
     width: $size;
     height: $size;
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    left: -1px;
+    left: $yoffset;
     //background-image: url("data:image/svg+xml;utf8,#{$pen-tip}");
   }
 
   &:hover:before {
-    content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");
+    content: url("data:image/svg+xml;utf8,#{$triangle-hover}");
+
   }
 
 
@@ -117,7 +170,7 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
 
   @if $both {
     &:hover:after {
-      content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");
+      content: url("data:image/svg+xml;utf8,#{$triangle}");
     }
 
     &:after {
@@ -131,7 +184,7 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
 
 .grab-handle-tail {
   // replace when lib-sass supports better extends
-  @include curved-tail($smallest-size * 2.0, false);
+  @include curved-tail($smallest-size * 2.0, false, 9px);
 }
 
 .grab-handle-double-tail {
@@ -210,6 +263,17 @@ $current-angle: 0deg;
 
   bottom: 0;
   left: 50%;
+
+
+  &:after {
+    content: url("data:image/svg+xml;utf8,#{$grip}");
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.1);
+
 }
 
 .grab-top-left {
