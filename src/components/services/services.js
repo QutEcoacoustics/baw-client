@@ -75,6 +75,8 @@
         }
 
         var baseLibraryUri = paths.api.routes.audioEvent.libraryAbsolute;
+            //'http://localhost:3000'+paths.api.routes.audioEvent.library;
+            //paths.api.routes.audioEvent.libraryAbsolute;
 
         var resource = resourcePut($resource, uriConvert(paths.api.routes.audioEvent.showAbsolute),
             {

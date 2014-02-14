@@ -4,26 +4,40 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
         function ($scope, $location, $resource, $routeParams, AudioEvent) {
 
             $scope.filterSettings = {
-                tagsPartial: $routeParams.tagsPartial,
-                reference: $routeParams.reference,
-                duration: $routeParams.duration,
-                freqMin: $routeParams.freqMin,
-                freqMax: $routeParams.freqMax,
-                page: $routeParams.page,
-                items: $routeParams.items
+                tagsPartial: null,
+                reference: null,
+                annotationDuration: null,
+                freqMin: null,
+                freqMax: null,
+                page: null,
+                items: null
             };
 
             $scope.setFilter = function setFilter() {
-                // update the url from the filter settings
-                var newUrl = '/library?' + baw.angularCopies.toKeyValue($scope.filterSettings);
-                if ($scope.filterSettings.tagsPartial !== undefined) {
-                    newUrl = newUrl + '&tags_partial=' + $scope.filterSettings.tagsPartial;
-                }
-                console.log(newUrl);
-                //$location.path(newUrl);
-                // get the results from the server
+                $location.path('/library').search($scope.createQuery($scope.filterSettings));
+            };
+            $scope.loadFilter = function loadFilter() {
+                $scope.filterSettings = $scope.createQuery($routeParams);
                 $scope.library = AudioEvent.library($scope.filterSettings);
             };
-
-            $scope.setFilter();
+            $scope.createQuery = function createQuery(params) {
+                var hash = {};
+                for (var key in params) {
+                    if (params.hasOwnProperty(key)) {
+                        var value = params[key];
+                        if (value !== undefined && value !== null && (typeof(value) === "string" ? value.length > 0 : true)) {
+                            hash[key] = value;
+                        }
+                    }
+                }
+                console.log(hash);
+                return hash;
+            };
+            $scope.calcOffsetStart = function calcOffsetStart(startOffset) {
+                return Math.floor(startOffset / 30) * 30;
+            };
+            $scope.calcOffsetEnd = function calcOffsetEnd(startOffset) {
+                return  (Math.floor(startOffset / 30) * 30) + 30;
+            };
+            $scope.loadFilter();
         }]);

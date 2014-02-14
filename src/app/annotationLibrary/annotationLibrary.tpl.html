@@ -17,7 +17,7 @@
 
                     <div class="col-sm-2">
                         <input type="number" class="form-control" id="refLibraryDuration" placeholder="Duration"
-                               ng-model="filterSettings.duration">
+                               ng-model="filterSettings.annotationDuration">
                     </div>
 
                     <label for="refLibraryFreqMin" class="col-sm-1 control-label">Min Frequency</label>
@@ -79,7 +79,8 @@
             </form>
         </div>
     </div>
-    <div ng-repeat="item in library">
-        {{item}}
-    </div>
+    <a ng-repeat="item in library"
+       ng-href="/listen/{{item.audioRecordingId}}?start={{calcOffsetStart(item.startTimeSeconds)}}&end={{calcOffsetEnd(item.startTimeSeconds)}}">
+        <span ng-repeat="tag in item.tags">{{tag.text}}&nbsp;&nbsp;</span><br>
+    </a>
 </div>
