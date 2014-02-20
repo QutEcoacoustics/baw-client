@@ -80,20 +80,22 @@
         </div>
     </div>
 
-    <div ng-repeat="item in library">
-        <div>
-            <grid-lines></grid-lines>
-            <img ng-src="{{item.media.availableImageFormats.png.url}}">
+    <div style="margin:30px;">
+        <div ng-repeat="item in library" style="float:left;">
+            <div class="annotationLibraryItem">
+                <img ng-src="{{item.media.availableImageFormats.png.url}}" >
+                <grid-lines configuration="item.gridConfig" class="annotationLibraryItemSpectrogram"></grid-lines>
+                <div class="annotationLibraryItemBounds" ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
+            </div>
+            <a style="display:block;clear:both;margin-top:20px;" ng-href="/listen/{{item.audioRecordingId}}?start={{calcOffsetStart(item.startTimeSeconds)}}&end={{calcOffsetEnd(item.startTimeSeconds)}}">
+                Annotation: <span ng-repeat="tag in item.tags">{{tag.text}}&nbsp;&nbsp;</span><br>
+            </a>
+            <audio controls>
+                <source ng-repeat="resource in item.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
+                        type="{{resource.mimeType}}">
+                Your browser does not support the audio element.
+            </audio>
         </div>
-        <a ng-href="/listen/{{item.audioRecordingId}}?start={{calcOffsetStart(item.startTimeSeconds)}}&end={{calcOffsetEnd(item.startTimeSeconds)}}">
-            Annotation: <span ng-repeat="tag in item.tags">{{tag.text}}&nbsp;&nbsp;</span><br>
-        </a>
-        <audio controls>
-            <source ng-repeat="resource in item.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
-                    type="{{resource.mimeType}}">
-            Your browser does not support the audio element.
-        </audio>
+
     </div>
-
-
 </div>

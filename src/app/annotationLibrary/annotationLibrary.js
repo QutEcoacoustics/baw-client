@@ -1,7 +1,7 @@
 angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
-    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'conf.constants', 'AudioEvent', 'Media',
-        function ($scope, $location, $resource, $routeParams, paths, constants, AudioEvent, Media) {
+    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Media',
+        function ($scope, $location, $resource, $routeParams, paths, constants, unitConverter, AudioEvent, Media) {
 
             $scope.filterSettings = {
                 tagsPartial: null,
@@ -58,6 +58,55 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         // adds a media resource to each audio event
                         formatPaths(mediaValue);
                         value.media = mediaValue;
+
+                        value.media.sampleRate = value.media.availableAudioFormats.mp3.sampleRate;
+
+                        value.converters = unitConverter.getConversions({
+                            sampleRate: value.media.sampleRate,
+                            spectrogramWindowSize: value.media.availableImageFormats.png.window,
+                            endOffset: value.media.endOffset,
+                            startOffset: value.media.startOffset,
+                            imageElement: null
+                        });
+
+                        value.bounds = {
+                            top: value.converters.toTop(value.highFrequencyHertz),
+                            left : value.converters.toLeft(value.startTimeSeconds),
+                            width : value.converters.toWidth(value.endTimeSeconds, value.startTimeSeconds),
+                            height : value.converters.toHeight(value.highFrequencyHertz, value.lowFrequencyHertz)
+                        };
+
+                        // set common/sensible defaults, but hide the elements
+                        value.gridConfig = {
+                            y: {
+                                showGrid: true,
+                                showScale: true,
+                                max: value.converters.conversions.nyquistFrequency,
+                                min: 0,
+                                step: 1000,
+                                height: value.converters.conversions.enforcedImageHeight,
+                                labelFormatter: function(value, index, min, max) {
+                                    return (value / 1000).toFixed(1);
+                                },
+                                title: "Frequency (KHz)"
+                            },
+                            x: {
+                                showGrid: true,
+                                showScale: true,
+                                max: value.media.endOffset,
+                                min: value.media.startOffset,
+                                step: 1,
+                                width: value.converters.conversions.enforcedImageWidth,
+                                labelFormatter: function(value, index, min, max) {
+                                    // show 'absolute' time.... i.e. seconds of the minute
+                                    var offset = (value % 60);
+
+                                    return (offset).toFixed(0);
+                                },
+                                title: "Time offset (seconds)"
+                            }
+                        };
+
                         //console.debug(value.media);
                     });
             }
