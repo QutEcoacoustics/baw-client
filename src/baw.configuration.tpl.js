@@ -108,6 +108,10 @@ angular.module('bawApp.configuration', ['url'])
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
                     gridLines: 'annotationViewer/gridLines/gridLines.tpl.html',
+                    library: {
+                        list: 'annotationLibrary/annotationLibrary.tpl.html',
+                        item: 'annotationLibrary/annotationItem.tpl.html'
+                    },
                     navigation: 'navigation/navigation.tpl.html',
                     birdWalk: {
                         list: 'birdWalks/birdWalks.tpl.html',
@@ -119,7 +123,9 @@ angular.module('bawApp.configuration', ['url'])
                 },
                 // routes used by angular
                 ngRoutes: {
-                    listen: "/listen/{recordingId}"
+                    listen: "/listen/{recordingId}",
+                    library: "/library",
+                    libraryItem: "/library/{annotationId}"
                 },
                 // general links for use in <a />'s
                 links: {

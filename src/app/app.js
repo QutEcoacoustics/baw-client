@@ -82,6 +82,7 @@ var app = angular.module('baw',
                              'bawApp.accounts',
                              'bawApp.annotationViewer',
                              'bawApp.audioEvents',
+                             'bawApp.annotationLibrary',
                              'bawApp.bookmarks',
                              'bawApp.error',
                              'bawApp.home',
@@ -143,6 +144,8 @@ var app = angular.module('baw',
                      when('/experiments/:experiment',
                           {templateUrl: '/assets/experiment_base.html', controller: 'ExperimentsCtrl'}).
 
+                     when('/library', {templateUrl: paths.site.files.library.list, controller: 'AnnotationLibraryCtrl', title: 'Reference Library' }).
+                     when('/library/:annotationId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationLibraryCtrl', title: ':annotationId'}).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).

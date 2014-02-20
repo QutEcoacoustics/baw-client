@@ -32,6 +32,7 @@ $IMAGE_ASSET_PATH: '<%= build_configs.current.siteDir %>';
 @import "../app/annotationViewer/annotation_viewer";
 @import "../app/annotationViewer/gridLines/gridLines";
 @import "../app/audioEvents/audio_events";
+@import "../app/annotationLibrary/annotationLibrary";
 @import "../app/bookmarks/bookmarks";
 @import "../app/home/home";
 @import "../app/listen/listen";
@@ -44,6 +45,7 @@ $IMAGE_ASSET_PATH: '<%= build_configs.current.siteDir %>';
 @import "../app/sites/sites";
 @import "../app/tags/tags";
 @import "../app/birdWalks/birdWalks";
+
 
 
 
