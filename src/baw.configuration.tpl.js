@@ -179,5 +179,8 @@ angular.module('bawApp.configuration', ['url'])
                 muted: false
             },
             userName: "Unknown user"
+        },
+        annotationLibrary: {
+            paddingSeconds: 1.0
         }
     });
