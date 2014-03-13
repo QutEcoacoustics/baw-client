@@ -13,7 +13,7 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
 // see _touch.scss and annotate.tpl.html
 $grab-handle-radius: 12px;
-$grab-handle-bottom-shift: 12px;
+$grab-handle-bottom-shift: 24px;
 
 //noinspection CssInvalidHtmlTagReference
 baw-annotation-viewer {
@@ -154,12 +154,12 @@ baw-annotation-viewer {
         > .grab-bottom-center {
           // simulate the :hover and :active styles when dragging
 
-          @include touch-handle-hover;
+         // @include touch-handle-hover;
 
-          @include touch-handle-active;
+         // @include touch-handle-active;
 
           &:before {
-            content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");
+            //content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");
           }
         }
       }
