@@ -127,7 +127,7 @@ baw-annotation-viewer {
 
       // required for IE10
       background-color: rgba(255, 255, 255, 0);
-
+      cursor:url(#{$IMAGE_ASSET_PATH + 'assets/cursor/crosshair.gif'}) 8 9, url(#{$IMAGE_ASSET_PATH + 'assets/cursor/crosshair.cur'}) 8 9, crosshair;
     }
 
     & .positionLine {
@@ -182,6 +182,7 @@ baw-annotation-viewer {
     background-color: rgba(255, 255, 255, 0.05);
     overflow: visible;
     z-index: 0;
+    cursor: move;
 
     // this needs to be changed because of a jquery-ui bug
     //http://bugs.jqueryui.com/ticket/8932
