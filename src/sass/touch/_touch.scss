@@ -1,12 +1,15 @@
 
-// firefox doesnt like the # symbol
-$handle-border-color: '#333333';
-$handle-hover-border-color: '#111111';
-$handle-active-border-color: '#000000';
+// firefox doesnt like hash 
+// use url encoding for hash instead
+$handle-border-color: '%23333333';
+$handle-hover-border-color: '%23111111';
+$handle-active-border-color: '%23000000';
 
-$handle-bg: '#FFFFFF';
-$handle-hover-bg: '#ebebeb';
-$handle-active-bg: '#adadad';
+$handle-bg: '%23FFFFFF';
+$handle-hover-bg: '%23ebebeb';
+$handle-active-bg: '%23adadad';
+
+$arrow-color: '%23000000';
 
 $handle-active-shadow: inset 0 3px 5px rgba(0,0,0, 0.125);
 
@@ -51,7 +54,13 @@ $stroke: 1.0;
     $stroke-col: $handle-active-border-color;
     $bg-col: $handle-active-bg
   }
-  $single-arrow: "<polyline fill='#000000' points='#{$center},1.5 #{$center + 2},3.5 #{$center - 2},3.5 ' />"; 
+  
+  $t-tip: 2;
+  $t-height: (1.5 * $size + 2) / $size;
+  $t-width: $t-height;
+  
+  
+  $single-arrow: "<polyline fill='#{$arrow-color}' points='#{$center},#{$t-tip} #{$center + $t-width},#{$t-tip + $t-height} #{$center - $t-width}, #{$t-tip + $t-height} ' />"; 
   $arrow: "";
   @if $num-directions > 0 {
       $arrow: "#{$single-arrow}";

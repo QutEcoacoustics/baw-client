@@ -12,7 +12,7 @@ $marqueeBorderColorInactive: #00FF00;
 $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
 // see _touch.scss and annotate.tpl.html
-$grab-handle-radius: 12px;
+$grab-handle-radius: 14px;
 $grab-handle-bottom-shift: 24px;
 
 //noinspection CssInvalidHtmlTagReference
@@ -57,7 +57,7 @@ baw-annotation-viewer {
 
       li {
 
-        // I think this is affected by .boxItem's box-sizing
+        // I think this is affected by .boxItems box-sizing
         margin-left: -3px;
         position: absolute;
         bottom: -1px;
