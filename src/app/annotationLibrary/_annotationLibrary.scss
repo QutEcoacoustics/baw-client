@@ -1,27 +1,62 @@
-.annotationLibraryItem {
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  display: inline-block;
-  position: relative;
-  line-height: 0;
-  padding: 0 !important;
-  margin: 0;
-  border: 1px dotted #8c8c8c;
+$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
+
+.annoLib {
+  margintop: 30px;
+
+  & .annoLibItem {
+    padding: 10px 0 0 40px;
+    margin: 5px;
+
+    & .annoLibSpectrogram {
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      display: inline-block;
+      position: relative;
+      line-height: 0;
+      padding: 0 !important;
+      margin: 0;
+      border: 1px dotted #8c8c8c;
+
+      & img {
+
+      }
+
+      & .annoLibGrid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background: url(#{$loadGifPath}) center center no-repeat;
+      }
+
+      & .annoLibBounds {
+        position: absolute;
+        border: 1px solid red;
+      }
+    }
+
+    & .annoLibInfo {
+      display: block;
+      clear: both;
+      margin-top: 20px;
+
+      & audio {
+        max-width:150px;
+        /*@include vendor-prefix(transform, scale(0.8));*/
+      }
+
+      & .annoLibInfoItem {
+        font-size: small;
+        display:block;
+        margin:2px 5px;
+      }
+    }
+  }
 }
 
-.annotationLibraryItemBounds {
-  position:absolute;
-  border:1px solid red;
-}
 
-grid-lines.annotationLibrarySpectrogram {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}

@@ -72,7 +72,7 @@ angular.module('bawApp.configuration', ['url'])
                         list: "/audio_recordings/{recordingId}/audio_events",
                         show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}",
                         csv: "/audio_events/download.",
-                        library: "/audio_events/library"
+                        library: "/audio_events/library/paged"
                     },
                     tagging: {
                         list: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings",

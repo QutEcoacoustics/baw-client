@@ -11,6 +11,9 @@
                         <input type="text" class="form-control" id="refLibraryTags" placeholder="Tags"
                                ng-model="filterSettings.tagsPartial">
                     </div>
+
+                    <p class="help-block text-muted">Use ',' (comma) to separate tags.</p>
+
                 </div>
                 <div class="form-group">
                     <label for="refLibraryDuration" class="col-sm-1 control-label">Duration</label>
@@ -35,24 +38,22 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="refLibraryReference" class="col-sm-1 control-label">Annotations</label>
+                    <label for="refLibraryReference1" class="col-sm-1 control-label">Annotations</label>
 
                     <div class="col-sm-3">
                         <label class="radio-inline">
                             <input type="radio" name="refLibraryReference" id="refLibraryReference1"
-                                   value="" checked> No Restriction
+                                   value="" checked ng-model="filterSettings.reference"> No Restriction
                         </label>
-
 
                         <label class="radio-inline">
                             <input type="radio" name="refLibraryReference" id="refLibraryReference2"
-                                   value="true" ng-value="filterSettings.reference"> Reference Only
+                                   value="true" ng-model="filterSettings.reference"> Reference Only
                         </label>
-
 
                         <label class="radio-inline">
                             <input type="radio" name="refLibraryReference" id="refLibraryReference3"
-                                   value="false" ng-value="filterSettings.reference"> Not Reference
+                                   value="false" ng-model="filterSettings.reference"> Not Reference
                         </label>
                     </div>
 
@@ -69,32 +70,76 @@
                         <input type="number" class="form-control" id="refLibraryItems" placeholder="Items"
                                ng-model="filterSettings.items">
                     </div>
-
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-1 col-sm-10">
-                        <button type="submit" class="btn btn-default" ng-click="setFilter()">Filter</button>
+                        <button type="submit" class="btn btn-primary" ng-click="setFilter()">Filter</button>
+                        <button type="submit" class="btn btn-warning" ng-click="clearFilter()">Clear</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <div style="margin:30px;">
-        <div ng-repeat="item in library" style="float:left;">
-            <div class="annotationLibraryItem">
-                <img ng-src="{{item.media.availableImageFormats.png.url}}" >
-                <grid-lines configuration="item.gridConfig" class="annotationLibraryItemSpectrogram"></grid-lines>
-                <div class="annotationLibraryItemBounds" ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
+    <ul class="pagination">
+        <li><a href="#">&laquo;</a></li>
+        <li ng-repeat="pageItem in paginationLinks"><a ng-href="{{pageItem}}">{{$index + 1}}</a></li>
+        <li><a href="#">&raquo;</a></li>
+    </ul>
+
+    <div class="annoLib">
+        <div ng-repeat="item in library.entries" class="pull-left annoLibItem">
+            <div class="annoLibSpectrogram">
+                <img ng-src=""
+                     ng-style="{width: item.converters.conversions.enforcedImageWidth, height: item.converters.conversions.enforcedImageHeight}">
+                <!-- {{item.media.availableImageFormats.png.url}} -->
+                <grid-lines configuration="item.gridConfig" class="annoLibGrid"></grid-lines>
+                <div class="annoLibBounds"
+                     ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
             </div>
-            <a style="display:block;clear:both;margin-top:20px;" ng-href="/listen/{{item.audioRecordingId}}?start={{calcOffsetStart(item.startTimeSeconds)}}&end={{calcOffsetEnd(item.startTimeSeconds)}}">
-                Annotation: <span ng-repeat="tag in item.tags">{{tag.text}}&nbsp;&nbsp;</span><br>
-            </a>
-            <audio controls>
-                <source ng-repeat="resource in item.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
-                        type="{{resource.mimeType}}">
-                Your browser does not support the audio element.
-            </audio>
+
+            <div class="annoLibInfo"
+                 ng-style="{'min-width':150, width:item.converters.conversions.enforcedImageWidth}">
+                <audio id="annotationLibraryItemInfoAudio{{$index}}" controls
+                       ng-style="{width:item.converters.conversions.enforcedImageWidth}">
+                    <!--source ng-repeat="resource in item.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
+                            type="{{resource.mimeType}}"-->
+                    <!--Your browser does not support the audio element. -->
+                </audio>
+                <span data-ng-show="item.tags.length > 0">
+                    <span class="annoLibInfoItem">
+                        <span class="glyphicon glyphicon-tags"></span>
+                        <a ng-href="{{item.tagSearchUrl}}">
+                            {{item.priorityTag.text}}
+                        </a>
+                    </span>
+                </span>
+                <span class="annoLibInfoItem">
+                    <span class="glyphicon glyphicon-map-marker"></span>
+                    <a ng-href="{{item.siteUrl}}">
+                        {{item.siteName}}
+                    </a>
+                </span>
+
+                <span class="annoLibInfoItem">
+                    <span class="glyphicon glyphicon-time"></span>
+                    <a ng-href="{{item.listenUrl}}">
+                        {{item.audioEventStartDate | date: 'MMM d, yyyy HH:mm'}}
+                    </a>
+                </span>
+                <span class="annoLibInfoItem">
+                    <span class="glyphicon glyphicon-user"></span>
+                    <a ng-href="{{item.userUrl}}">
+                        {{item.ownerName }}
+                    </a>
+                </span>
+                <span class="annoLibInfoItem">
+                    <span class="glyphicon glyphicon-search"></span>
+                    <a ng-href="{{item.similarUrl}}">
+                        Find Similar
+                    </a>
+                </span>
+            </div>
         </div>
 
     </div>

@@ -86,8 +86,8 @@
             {
                 library: {
                     method:'GET',
-                    url: baseLibraryUri,
-                    isArray: true
+                    url: baseLibraryUri
+                    //isArray: true
                 }
             }
         );
@@ -178,6 +178,49 @@
                         srcArray[i] = found;
                     }
                 }
+            }
+        };
+
+
+        var emptyTag = {
+            text: "<no tags>",
+            typeOfTag: ""
+        };
+
+        resource.selectSinglePriorityTag = function selectSinglePriorityTag(tags){
+
+            // which tag to show?
+            // common name, then species_name, then if all else fails... whatever is first
+
+            if (!tags || tags.length === 0) {
+                return emptyTag;
+            }
+
+            var first = tags[0];
+
+
+            // optimise for most common case
+            // also: on load, only incomplete tags will be listed --> the tag resolver then runs for every tag, just below
+            if (first.typeOfTag == baw.Tag.tagTypes.commonName) {
+                return first;
+            }
+            else {
+                var commonName, speciesName, firstOther;
+                tags.forEach(function (value) {
+
+
+                    if (value.typeOfTag == baw.Tag.tagTypes.commonName && !commonName) {
+                        commonName = value;
+                    }
+                    if (value.typeOfTag == baw.Tag.tagTypes.speciesName && !speciesName) {
+                        speciesName = value;
+                    }
+                    if (!firstOther) {
+                        firstOther = value;
+                    }
+                });
+
+                return commonName || speciesName || firstOther;
             }
         };
 
