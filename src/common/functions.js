@@ -361,7 +361,7 @@ if (!Array.prototype.filter) {
         this.toKeyValue = function toKeyValue(obj) {
             var parts = [];
             angular.forEach(obj, function (value, key) {
-                if(value !== undefined){
+                if(value !== undefined && value !== null && (typeof(value) === "string" ? value.length > 0 : true)){
                     parts.push(encodeUriQuery(key, true) + (value === true ? '' : '=' + encodeUriQuery(value, true)));
                 }
             });
@@ -375,7 +375,7 @@ if (!Array.prototype.filter) {
                 replace(/%24/g, '$').
                 replace(/%2C/gi, ',').
                 replace((pctEncodeSpaces ? null : /%20/g), '+');
-        };
+        }
 
         this.encodeUriQuery = encodeUriQuery;
 

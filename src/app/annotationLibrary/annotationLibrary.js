@@ -16,7 +16,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             loadFilter();
 
             $scope.setFilter = function setFilter() {
-                $location.path('/library').search(createQuery($scope.filterSettings));
+                $location.path('/library').search(baw.angularCopies.toKeyValue($scope.filterSettings));
             };
 
             $scope.clearFilter = function clearFilter() {
@@ -39,19 +39,10 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 $scope.setFilter();
             };
 
-            function createQuery(params) {
-                var hash = {};
-                for (var key in params) {
-                    if (params.hasOwnProperty(key)) {
-                        var value = params[key];
-                        if (value !== undefined && value !== null && (typeof(value) === "string" ? value.length > 0 : true)) {
-                            hash[key] = value;
-                        }
-                    }
-                }
-                //console.log(hash);
-                return hash;
-            }
+
+            $scope.createFilterUrl = function createFilterUrl(paramObj) {
+                return '/library/?' + baw.angularCopies.toKeyValue(paramObj);
+            };
 
             function getTag(tags) {
                 return Tag.selectSinglePriorityTag(tags);
@@ -66,7 +57,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             }
 
             function loadFilter() {
-                $scope.filterSettings = angular.extend($scope.filterSettings, $routeParams);
+                $scope.filterSettings = angular.extend({}, $scope.filterSettings, $routeParams);
 
                 [
                     'annotationDuration',
@@ -83,14 +74,72 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 $scope.library = AudioEvent.library($scope.filterSettings, null, function librarySuccess(value) {
                     value.entries.map(getMedia);
 
-                    var pageCount = Math.max(Math.ceil($scope.library.total / $scope.library.items), 7);
-                    $scope.paginationLinks = [];
-                    for (var p = 1; p < pageCount; p++) {
-                        var link = '/library?page=' + p + '&items=' + $scope.library.items;
-                        $scope.paginationLinks.push(link);
-                    }
-
+                    $scope.paging = getPagingSettings($scope.library.page, $scope.library.items, $scope.library.total);
                 });
+            }
+
+            function getPagingSettings(page, items, total) {
+                var paging = {
+                    maxPageLinks: 7,
+                    surroundingCurrentLinks: 3,
+                    minPageNumber: 1,
+                    total: total,
+                    items: items,
+                    page: page
+                };
+
+                paging.maxPageNumber = Math.max(Math.ceil(paging.total / paging.items), paging.maxPageLinks);
+                paging.minCount = Math.max(paging.page - paging.surroundingCurrentLinks, paging.minPageNumber);
+                paging.maxCount = Math.min(paging.page + paging.surroundingCurrentLinks, paging.maxPageNumber);
+
+                paging.links = {};
+
+                paging.links.first =
+                    $scope.createFilterUrl(
+                        angular.extend({}, $scope.filterSettings,
+                            {page: paging.minPageNumber, items: paging.items})
+                    );
+
+                paging.links.prev =
+                    $scope.createFilterUrl(
+                        angular.extend({}, $scope.filterSettings,
+                            {page: Math.max(paging.page - 1, paging.minPageNumber), items: paging.items})
+                    );
+
+                paging.links.current =
+                    $scope.createFilterUrl(
+                        angular.extend({}, $scope.filterSettings,
+                            {page: paging.page, items: paging.items})
+                    );
+
+                paging.links.next =
+                    $scope.createFilterUrl(
+                        angular.extend({}, $scope.filterSettings,
+                            {page: Math.min(paging.page + 1, paging.maxPageNumber), items: paging.items})
+                    );
+
+                paging.links.last =
+                    $scope.createFilterUrl(
+                        angular.extend({}, $scope.filterSettings,
+                            {page: paging.maxPageNumber, items: paging.items})
+                    );
+
+                paging.links.before = [];
+                paging.links.after = [];
+
+                for (var p = paging.minCount; p <= paging.maxCount; p++) {
+                    if (p != paging.page && p != paging.minPageNumber && p != paging.maxPageNumber) {
+                        var linkObj = angular.extend({}, $scope.filterSettings, {page: p, items: paging.items});
+                        var link = $scope.createFilterUrl(linkObj);
+                        if (p < paging.page) {
+                            paging.links.before.push({page: p, link: link});
+                        } else {
+                            paging.links.after.push({page: p, link: link});
+                        }
+                    }
+                }
+
+                return paging;
             }
 
             function getMediaParameters(value) {
@@ -120,7 +169,6 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
                         value.priorityTag = getTag(value.tags);
 
-
                         value.converters = unitConverter.getConversions({
                             sampleRate: value.media.sampleRate,
                             spectrogramWindowSize: value.media.availableImageFormats.png.window,
@@ -139,11 +187,11 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         value.annotationDuration = value.endTimeSeconds - value.startTimeSeconds;
 
                         // urls
-                        value.listenUrl = '/listen/' + audioRecordingIdValue
-                            + '?start=' + calcOffsetStartValue
-                            + '&end=' + calcOffsetEndValue;
-                        value.siteUrl = '/projects/' + value.projects[0].id
-                            + '/sites/' + value.siteId;
+                        value.listenUrl = '/listen/' + audioRecordingIdValue +
+                            '?start=' + calcOffsetStartValue +
+                            '&end=' + calcOffsetEndValue;
+                        value.siteUrl = '/projects/' + value.projects[0].id +
+                            '/sites/' + value.siteId;
                         value.userUrl = '/user_accounts/' + value.ownerId;
 
                         // updateFilter({tagsPartial:item.priorityTag.text})
@@ -151,9 +199,9 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                             baw.angularCopies.fixedEncodeURI(value.priorityTag.text);
 
                         // updateFilter({annotationDuration:Math.round10(value.annotationDuration, -3), ...})
-                        value.similarUrl = '/library?annotationDuration=' + Math.round10(value.annotationDuration, -3)
-                            + '&freqMin=' + Math.round(value.lowFrequencyHertz)
-                            + '&freqMax=' + Math.round(value.highFrequencyHertz);
+                        value.similarUrl = '/library?annotationDuration=' + Math.round10(value.annotationDuration, -3) +
+                            '&freqMin=' + Math.round(value.lowFrequencyHertz) +
+                            '&freqMax=' + Math.round(value.highFrequencyHertz);
 
                         // set common/sensible defaults, but hide the elements
                         value.gridConfig = {
@@ -190,7 +238,6 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     });
             }
 
-
             function formatPaths(media) {
 
                 var imgKeys = Object.keys(media.availableImageFormats);
@@ -209,5 +256,5 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     this[key].url = paths.joinFragments(paths.api.root, value.url);
 
                 }, media.availableAudioFormats);
-            };
+            }
         }]);
