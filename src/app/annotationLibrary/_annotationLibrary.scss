@@ -1,11 +1,18 @@
 $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
+.annoLibPaging {
+  margin: 0 !important;
+}
+
 .annoLib {
-  margintop: 30px;
+  margin-top: 30px;
 
   & .annoLibItem {
-    padding: 10px 0 0 40px;
+    padding: 10px 10px 0 40px;
     margin: 5px;
+    position: relative;
+    max-height:500px;
+    height:385px;
 
     & .annoLibSpectrogram {
       user-select: none;
@@ -46,14 +53,18 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
       margin-top: 20px;
 
       & audio {
-        max-width:150px;
+        width:75%;
+        min-width:110px;
+        max-width:300px;
+        margin:0 auto 0 auto;
+        display:block;
         /*@include vendor-prefix(transform, scale(0.8));*/
       }
 
       & .annoLibInfoItem {
         font-size: small;
-        display:block;
-        margin:2px 5px;
+
+        margin: 5px 10px;
       }
     }
   }

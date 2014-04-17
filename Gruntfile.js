@@ -544,7 +544,14 @@ module.exports = function (grunt) {
                                 // this rule matches anything without an extension
                                 // if matched, the root (index.html) is sent back instead.
                                 // from there, angular deals with the route information
-                                '!(\\..+)$ / [L]'
+                                //'!(\\.[a-zA-Z]+)$ / [L]'
+
+
+                                // does not match urls that contain a filename and extension
+                                // with or without a querystring
+                                // if matched, the root (index.html) is sent back instead.
+                                // from there, angular deals with the route information
+                                '!(\\/[^\\.\\/\\?]+\\.\\w+) / [L]'
                             ]),
                             // this specifies that the build_dir, ('build') is a static directory where content
                             // will be served from.

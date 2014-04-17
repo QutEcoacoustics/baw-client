@@ -9,7 +9,7 @@
 
                     <div class="col-sm-5">
                         <input type="text" class="form-control" id="refLibraryTags" placeholder="Tags"
-                               ng-model="filterSettings.tagsPartial">
+                               data-ng-model="filterSettings.tagsPartial">
                     </div>
 
                     <p class="help-block text-muted col-sm-6">Use comma (,) to separate tags.</p>
@@ -18,25 +18,24 @@
                 <div class="form-group">
                     <label for="refLibraryDuration" class="col-sm-1 control-label">Duration</label>
 
-                    <div class="col-sm-2">
-                        <input type="number" class="form-control" id="refLibraryDuration" placeholder="Duration (in milliseconds)"
-                               ng-model="filterSettings.annotationDuration">
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" id="refLibraryDuration"
+                               placeholder="Duration (in seconds)"
+                               data-ng-model="filterSettings.annotationDuration">
                     </div>
-
-                    <p class="help-block text-muted col-sm-1">milliseconds</p>
 
                     <label for="refLibraryFreqMin" class="col-sm-2 control-label">Min Frequency</label>
 
                     <div class="col-sm-2">
                         <input type="number" class="form-control" id="refLibraryFreqMin"
-                               placeholder="Minimum Frequency" ng-model="filterSettings.freqMin">
+                               placeholder="Minimum Frequency" data-ng-model="filterSettings.freqMin">
                     </div>
 
                     <label for="refLibraryFreqMax" class="col-sm-2 control-label">Max Frequency</label>
 
                     <div class="col-sm-2">
                         <input type="number" class="form-control" id="refLibraryFreqMax"
-                               placeholder="Maximum Frequency" ng-model="filterSettings.freqMax">
+                               placeholder="Maximum Frequency" data-ng-model="filterSettings.freqMax">
                     </div>
                 </div>
                 <div class="form-group">
@@ -45,17 +44,17 @@
                     <div class="col-sm-4">
                         <label class="radio-inline">
                             <input type="radio" name="refLibraryReference" id="refLibraryReference1"
-                                   value="" checked ng-model="filterSettings.reference"> All
+                                   value="" checked data-ng-model="filterSettings.reference"> All
                         </label>
 
                         <label class="radio-inline">
                             <input type="radio" name="refLibraryReference" id="refLibraryReference2"
-                                   value="true" ng-model="filterSettings.reference"> Only Reference
+                                   value="true" data-ng-model="filterSettings.reference"> Only Reference
                         </label>
 
                         <label class="radio-inline">
                             <input type="radio" name="refLibraryReference" id="refLibraryReference3"
-                                   value="false" ng-model="filterSettings.reference"> Not Reference
+                                   value="false" data-ng-model="filterSettings.reference"> Not Reference
                         </label>
                     </div>
 
@@ -63,52 +62,54 @@
 
                     <div class="col-sm-2">
                         <input type="number" class="form-control" id="refLibraryPage" placeholder="Page"
-                               ng-model="filterSettings.page">
+                               data-ng-model="filterSettings.page">
                     </div>
 
                     <label for="refLibraryItems" class="col-sm-2 control-label">Items</label>
 
                     <div class="col-sm-2">
                         <input type="number" class="form-control" id="refLibraryItems" placeholder="Items"
-                               ng-model="filterSettings.items">
+                               data-ng-model="filterSettings.items">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-1 col-sm-2">
-                        <button type="submit" class="btn btn-primary" ng-click="setFilter()">Filter</button>
-                        <button type="submit" class="btn btn-warning" ng-click="clearFilter()">Clear</button>
+                        <button type="submit" class="btn btn-primary" data-ng-click="setFilter()">Filter</button>
+                        <button type="submit" class="btn btn-warning" data-ng-click="clearFilter()">Clear</button>
                     </div>
-                    <div class="col-sm-1">
-                        {{}}
+                    <div class="col-sm-2">
+                        <span data-ng-show="loaded">{{paging.total}} results</span>
+                        <span data-ng-show="loaded && paging.total < 1">The filter did not match any annotations.</span>
+                        <span data-ng-show="!loaded">Loading results...</span>
                     </div>
-                    <div class="col-sm-8">
-                        <ul class="pagination">
-                            <li ng-show="paging.page != paging.minPageNumber">
-                                <a ng-href="{{paging.links.prev}}">&laquo;</a>
+                    <div class="col-sm-7">
+                        <ul class="pagination annoLibPaging" data-ng-show="loaded && paging.total > paging.items">
+                            <li data-ng-show="paging.page != paging.minPageNumber">
+                                <a data-ng-href="{{paging.links.prev}}">&laquo;</a>
                             </li>
-                            <li ng-show="paging.page != paging.minPageNumber">
-                                <a ng-href="{{paging.links.first}}">{{paging.minPageNumber}}</a>
+                            <li data-ng-show="paging.page != paging.minPageNumber">
+                                <a data-ng-href="{{paging.links.first}}">{{paging.minPageNumber}}</a>
                             </li>
-                            <li ng-show="paging.minCount > paging.minPageNumber">
+                            <li data-ng-show="paging.minCount > paging.minPageNumber">
                                 <span>&hellip;</span>
                             </li>
-                            <li ng-repeat="pageItem in paging.links.before">
-                                <a ng-href="{{pageItem.link}}">{{pageItem.page}}</a>
+                            <li data-ng-repeat="pageItem in paging.links.before">
+                                <a data-ng-href="{{pageItem.link}}">{{pageItem.page}}</a>
                             </li>
                             <li class="active">
-                                <a ng-href="{{paging.current}}">{{paging.page}}</a>
+                                <a data-ng-href="{{paging.current}}">{{paging.page}}</a>
                             </li>
-                            <li ng-repeat="pageItem in paging.links.after">
-                                <a ng-href="{{pageItem.link}}">{{pageItem.page}}</a>
+                            <li data-ng-repeat="pageItem in paging.links.after">
+                                <a data-ng-href="{{pageItem.link}}">{{pageItem.page}}</a>
                             </li>
-                            <li ng-show="paging.maxCount < paging.maxPageNumber">
+                            <li data-ng-show="paging.maxCount < paging.maxPageNumber">
                                 <span>&hellip;</span>
                             </li>
-                            <li ng-show="paging.page != paging.maxPageNumber">
-                                <a ng-href="{{paging.links.last}}">{{paging.maxPageNumber}}</a>
+                            <li data-ng-show="paging.page != paging.maxPageNumber">
+                                <a data-ng-href="{{paging.links.last}}">{{paging.maxPageNumber}}</a>
                             </li>
-                            <li ng-show="paging.page != paging.maxPageNumber">
-                                <a ng-href="{{paging.links.next}}">&raquo;</a>
+                            <li data-ng-show="paging.page != paging.maxPageNumber">
+                                <a data-ng-href="{{paging.links.next}}">&raquo;</a>
                             </li>
                         </ul>
                     </div>
@@ -118,57 +119,50 @@
     </div>
 
     <div class="annoLib">
-        <div ng-repeat="item in library.entries" class="pull-left annoLibItem">
+        <div data-ng-repeat="item in library.entries" class="pull-left annoLibItem thumbnail">
             <div class="annoLibSpectrogram">
-                <img ng-src=""
-                     ng-style="{width: item.converters.conversions.enforcedImageWidth, height: item.converters.conversions.enforcedImageHeight}">
+                <img data-ng-src=""
+                     data-ng-style="{width: item.converters.conversions.enforcedImageWidth, height: item.converters.conversions.enforcedImageHeight}">
                 <!-- {{item.media.availableImageFormats.png.url}} -->
                 <grid-lines configuration="item.gridConfig" class="annoLibGrid"></grid-lines>
                 <div class="annoLibBounds"
-                     ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
+                     data-ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
             </div>
 
             <div class="annoLibInfo"
-                 ng-style="{'min-width':150, width:item.converters.conversions.enforcedImageWidth}">
+                 data-ng-style="{'min-width':150, width:item.converters.conversions.enforcedImageWidth}">
                 <audio id="annotationLibraryItemInfoAudio{{$index}}" controls
-                       ng-style="{width:item.converters.conversions.enforcedImageWidth}">
-                    <!--source ng-repeat="resource in item.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
+                       data-ng-style="{width:item.converters.conversions.enforcedImageWidth}">
+                    <!--source data-ng-repeat="resource in item.media.availableAudioFormats" data-ng-src="{{resource.url}}" src=""
                             type="{{resource.mimeType}}"-->
                     <!--Your browser does not support the audio element. -->
                 </audio>
-                <span data-ng-show="item.tags.length > 0">
-                    <span class="annoLibInfoItem">
-                        <span class="glyphicon glyphicon-tags"></span>
-                        <a ng-href="{{item.tagSearchUrl}}">
-                            {{item.priorityTag.text}}
-                        </a>
-                    </span>
-                </span>
+            <span data-ng-show="item.tags.length > 0">
                 <span class="annoLibInfoItem">
-                    <span class="glyphicon glyphicon-map-marker"></span>
-                    <a ng-href="{{item.siteUrl}}">
-                        {{item.siteName}}
+                    <span class="glyphicon glyphicon-tags"></span>
+                    <a data-ng-href="{{item.tagSearchUrl}}">
+                        {{item.priorityTag.text}}
                     </a>
                 </span>
-
-                <span class="annoLibInfoItem">
-                    <span class="glyphicon glyphicon-time"></span>
-                    <a ng-href="{{item.listenUrl}}">
-                        {{item.audioEventStartDate | date: 'MMM d, yyyy HH:mm'}}
-                    </a>
-                </span>
-                <span class="annoLibInfoItem">
-                    <span class="glyphicon glyphicon-user"></span>
-                    <a ng-href="{{item.userUrl}}">
-                        {{item.ownerName }}
-                    </a>
-                </span>
-                <span class="annoLibInfoItem">
-                    <span class="glyphicon glyphicon-search"></span>
-                    <a ng-href="{{item.similarUrl}}">
-                        Find Similar
-                    </a>
-                </span>
+            </span>
+            <span class="annoLibInfoItem">
+                <span class="glyphicon glyphicon-map-marker"></span>
+                <a data-ng-href="{{item.siteUrl}}">
+                    {{item.siteName}}
+                </a>
+            </span>
+            <span class="annoLibInfoItem">
+                <span class="glyphicon glyphicon-music"></span>
+                <a data-ng-href="{{item.listenUrl}}">
+                    {{item.audioEventStartDate | date: 'MMM d, yyyy HH:mm'}}
+                </a>
+            </span>
+            <span class="annoLibInfoItem">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                <a data-ng-href="{{item.singleItemUrl}}" style="cursor: pointer;">
+                    More info
+                </a>
+            </span>
             </div>
         </div>
 

@@ -126,7 +126,7 @@ angular.module('bawApp.configuration', ['url'])
                 ngRoutes: {
                     listen: "/listen/{recordingId}",
                     library: "/library",
-                    libraryItem: "/library/{annotationId}"
+                    libraryItem: "/library/{recordingId}/audio_events/{audioEventId}"
                 },
                 // general links for use in <a />'s
                 links: {

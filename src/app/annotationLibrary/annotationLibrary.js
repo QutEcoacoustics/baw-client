@@ -1,7 +1,8 @@
 angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
+    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'AudioEvent', 'Media',
+        function ($scope, $location, $resource, $routeParams, paths, AudioEvent, Media) {
 
-    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Media', 'Tag',
-        function ($scope, $location, $resource, $routeParams, paths, constants, unitConverter, AudioEvent, Media, Tag) {
+            $scope.loaded = false;
 
             $scope.filterSettings = {
                 tagsPartial: null,
@@ -44,19 +45,8 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 return '/library/?' + baw.angularCopies.toKeyValue(paramObj);
             };
 
-            function getTag(tags) {
-                return Tag.selectSinglePriorityTag(tags);
-            }
-
-            function calcOffsetStart(startOffset) {
-                return Math.floor(startOffset / 30) * 30;
-            }
-
-            function calcOffsetEnd(startOffset) {
-                return  (Math.floor(startOffset / 30) * 30) + 30;
-            }
-
             function loadFilter() {
+                $scope.loaded = false;
                 $scope.filterSettings = angular.extend({}, $scope.filterSettings, $routeParams);
 
                 [
@@ -71,10 +61,11 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     });
 
                 //$scope.filterSettings = $scope.createQuery($routeParams);
-                $scope.library = AudioEvent.library($scope.filterSettings, null, function librarySuccess(value) {
-                    value.entries.map(getMedia);
 
+                $scope.library = AudioEvent.library($scope.filterSettings, null, function librarySuccess(value) {
+                    value.entries.map(Media.getMediaItem);
                     $scope.paging = getPagingSettings($scope.library.page, $scope.library.items, $scope.library.total);
+                    $scope.loaded = true;
                 });
             }
 
@@ -88,7 +79,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     page: page
                 };
 
-                paging.maxPageNumber = Math.max(Math.ceil(paging.total / paging.items), paging.maxPageLinks);
+                paging.maxPageNumber = Math.ceil(paging.total / paging.items);
                 paging.minCount = Math.max(paging.page - paging.surroundingCurrentLinks, paging.minPageNumber);
                 paging.maxCount = Math.min(paging.page + paging.surroundingCurrentLinks, paging.maxPageNumber);
 
@@ -141,120 +132,41 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
                 return paging;
             }
+        }])
+    .controller('AnnotationItemCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'AudioEvent', 'Media',
+        function ($scope, $location, $resource, $routeParams, paths, AudioEvent, Media) {
 
-            function getMediaParameters(value) {
-                return {
-                    start_offset: Math.floor(value.startTimeSeconds - constants.annotationLibrary.paddingSeconds),
-                    end_offset: Math.ceil(value.endTimeSeconds + constants.annotationLibrary.paddingSeconds),
-                    // this one is different, it is encoded into the path of the request by angular
-                    recordingId: value.audioRecordingId,
-                    format: "json"
-                };
-            }
+            var parameters = {
+                audioEventId: $routeParams.audioEventId,
+                recordingId: $routeParams.recordingId
+            };
 
-            function getMedia(value, index, array) {
-                Media
-                    .get(getMediaParameters(value), null, function getMediaSuccess(mediaValue) {
-                        // adds a media resource to each audio event
-                        formatPaths(mediaValue);
-                        value.media = mediaValue;
+            $scope.model = AudioEvent.get(parameters,
+                function annotationShowSuccess(value, responseHeaders) {
+                    //$scope.response = JSON.stringify(value, null, "  ");
+                    Media.getMediaItem(value);
+                    $scope.model = value;
 
-                        value.audioElement = null;
+                    if ($scope.model.paging.nextEvent.hasOwnProperty('audioEventId')) {
+                        $scope.model.paging.nextEvent.link = '/library/' +
+                            $scope.model.paging.nextEvent.audioRecordingId +
+                            '/audio_events/' + $scope.model.paging.nextEvent.audioEventId;
+                    }
 
-                        value.media.sampleRate = value.media.availableAudioFormats.mp3.sampleRate;
+                    if ($scope.model.paging.prevEvent.hasOwnProperty('audioEventId')) {
+                        $scope.model.paging.prevEvent.link = '/library/' +
+                            $scope.model.paging.prevEvent.audioRecordingId +
+                            '/audio_events/' + $scope.model.paging.prevEvent.audioEventId;
+                    }
 
-                        var audioRecordingIdValue = value.audioRecordingId;
-                        var calcOffsetStartValue = calcOffsetStart(value.startTimeSeconds);
-                        var calcOffsetEndValue = calcOffsetEnd(value.startTimeSeconds);
+                    $scope.model.audioEventDuration = Math.round10(value.endTimeSeconds - value.startTimeSeconds, -3);
 
-                        value.priorityTag = getTag(value.tags);
+                }, function annotationShowError(httpResponse) {
+                    console.error(httpResponse);
+                });
 
-                        value.converters = unitConverter.getConversions({
-                            sampleRate: value.media.sampleRate,
-                            spectrogramWindowSize: value.media.availableImageFormats.png.window,
-                            endOffset: value.media.endOffset,
-                            startOffset: value.media.startOffset,
-                            imageElement: null
-                        });
+            $scope.createFilterUrl = function createFilterUrl(paramObj) {
+                return '/library/?' + baw.angularCopies.toKeyValue(paramObj);
+            };
 
-                        value.bounds = {
-                            top: value.converters.toTop(value.highFrequencyHertz),
-                            left: value.converters.toLeft(value.startTimeSeconds),
-                            width: value.converters.toWidth(value.endTimeSeconds, value.startTimeSeconds),
-                            height: value.converters.toHeight(value.highFrequencyHertz, value.lowFrequencyHertz)
-                        };
-
-                        value.annotationDuration = value.endTimeSeconds - value.startTimeSeconds;
-
-                        // urls
-                        value.listenUrl = '/listen/' + audioRecordingIdValue +
-                            '?start=' + calcOffsetStartValue +
-                            '&end=' + calcOffsetEndValue;
-                        value.siteUrl = '/projects/' + value.projects[0].id +
-                            '/sites/' + value.siteId;
-                        value.userUrl = '/user_accounts/' + value.ownerId;
-
-                        // updateFilter({tagsPartial:item.priorityTag.text})
-                        value.tagSearchUrl = '/library?tagsPartial=' +
-                            baw.angularCopies.fixedEncodeURI(value.priorityTag.text);
-
-                        // updateFilter({annotationDuration:Math.round10(value.annotationDuration, -3), ...})
-                        value.similarUrl = '/library?annotationDuration=' + Math.round10(value.annotationDuration, -3) +
-                            '&freqMin=' + Math.round(value.lowFrequencyHertz) +
-                            '&freqMax=' + Math.round(value.highFrequencyHertz);
-
-                        // set common/sensible defaults, but hide the elements
-                        value.gridConfig = {
-                            y: {
-                                showGrid: true,
-                                showScale: true,
-                                max: value.converters.conversions.nyquistFrequency,
-                                min: 0,
-                                step: 1000,
-                                height: value.converters.conversions.enforcedImageHeight,
-                                labelFormatter: function (value, index, min, max) {
-                                    return (value / 1000).toFixed(1);
-                                },
-                                title: "Frequency (KHz)"
-                            },
-                            x: {
-                                showGrid: true,
-                                showScale: true,
-                                max: value.media.endOffset,
-                                min: value.media.startOffset,
-                                step: 1,
-                                width: value.converters.conversions.enforcedImageWidth,
-                                labelFormatter: function (value, index, min, max) {
-                                    // show 'absolute' time.... i.e. seconds of the minute
-                                    var offset = (value % 60);
-
-                                    return (offset).toFixed(0);
-                                },
-                                title: "Time offset (seconds)"
-                            }
-                        };
-
-                        //console.debug(value.media);
-                    });
-            }
-
-            function formatPaths(media) {
-
-                var imgKeys = Object.keys(media.availableImageFormats);
-                if (imgKeys.length > 1) {
-                    throw "don't know how to handle more than one image format!";
-                }
-
-                media.availableImageFormats[imgKeys[0]].url =
-                    paths.joinFragments(
-                        paths.api.root,
-                        media.availableImageFormats[imgKeys[0]].url);
-
-                angular.forEach(media.availableAudioFormats, function (value, key) {
-
-                    // just update the url so it is an absolute uri
-                    this[key].url = paths.joinFragments(paths.api.root, value.url);
-
-                }, media.availableAudioFormats);
-            }
         }]);

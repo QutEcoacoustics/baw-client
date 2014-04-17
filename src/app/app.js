@@ -144,8 +144,8 @@ var app = angular.module('baw',
                      when('/experiments/:experiment',
                           {templateUrl: '/assets/experiment_base.html', controller: 'ExperimentsCtrl'}).
 
-                     when('/library', {templateUrl: paths.site.files.library.list, controller: 'AnnotationLibraryCtrl', title: 'Reference Library' }).
-                     when('/library/:annotationId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationLibraryCtrl', title: ':annotationId'}).
+                     when('/library', {templateUrl: paths.site.files.library.list, controller: 'AnnotationLibraryCtrl', title: 'Annotation Library' }).
+                     when('/library/:recordingId/audio_events/:audioEventId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationItemCtrl', title: 'Annotation :audioEventId'}).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
