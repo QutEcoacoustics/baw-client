@@ -2,7 +2,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
     .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'AudioEvent', 'Media',
         function ($scope, $location, $resource, $routeParams, paths, AudioEvent, Media) {
 
-            $scope.loaded = false;
+            $scope.status = 'idle';
 
             $scope.filterSettings = {
                 tagsPartial: null,
@@ -46,7 +46,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             };
 
             function loadFilter() {
-                $scope.loaded = false;
+                $scope.status = 'loading';
                 $scope.filterSettings = angular.extend({}, $scope.filterSettings, $routeParams);
 
                 [
@@ -62,10 +62,14 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
                 //$scope.filterSettings = $scope.createQuery($routeParams);
 
-                $scope.library = AudioEvent.library($scope.filterSettings, null, function librarySuccess(value) {
+                $scope.library = AudioEvent.library($scope.filterSettings, null, function librarySuccess(value, responseHeaders) {
                     value.entries.map(Media.getMediaItem);
                     $scope.paging = getPagingSettings($scope.library.page, $scope.library.items, $scope.library.total);
-                    $scope.loaded = true;
+                    $scope.status = 'loaded';
+                    $scope.responseDetails = responseHeaders;
+                }, function libraryError(httpResponse){
+                    $scope.status = 'error';
+                    //$scope.errorDetails = httpResponse;
                 });
             }
 

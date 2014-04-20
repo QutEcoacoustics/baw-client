@@ -78,12 +78,13 @@
                         <button type="submit" class="btn btn-warning" data-ng-click="clearFilter()">Clear</button>
                     </div>
                     <div class="col-sm-2">
-                        <span data-ng-show="loaded">{{paging.total}} results</span>
-                        <span data-ng-show="loaded && paging.total < 1">The filter did not match any annotations.</span>
-                        <span data-ng-show="!loaded">Loading results...</span>
+                        <span data-ng-show="status == 'loaded'">{{paging.total}} results</span>
+                        <span data-ng-show="status == 'loaded' && paging.total < 1">The filter did not match any annotations.</span>
+                        <span data-ng-show="status == 'loading'">Loading results...</span>
+                        <span data-ng-show="status == 'error'">Results could not be loaded.</span>
                     </div>
                     <div class="col-sm-7">
-                        <ul class="pagination annoLibPaging" data-ng-show="loaded && paging.total > paging.items">
+                        <ul class="pagination annoLibPaging" data-ng-show="status == 'loaded' && paging.total > paging.items">
                             <li data-ng-show="paging.page != paging.minPageNumber">
                                 <a data-ng-href="{{paging.links.prev}}">&laquo;</a>
                             </li>

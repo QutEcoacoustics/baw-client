@@ -10,6 +10,8 @@ The AngularJS client for the bioacoustic workbench
 
 cd to your cloned directory and then
 
+	$ npm i -g karma@0.10.10
+
 	$ npm install
 
 	$ bower install

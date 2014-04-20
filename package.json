@@ -12,7 +12,10 @@
     "type": "git",
     "url": "https://github.com/QutBioacoustics/baw-client.git"
   },
-  "//": "THE karma-chrome-launcher IS NEEDED TO LAUNCH CHROME PROPERLY ON WINDOWS. REMOVE WHEN PULL REQUEST COMPLETED https://github.com/karma-runner/karma-chrome-launcher",
+  "//": [
+      "THE karma-chrome-launcher IS NEEDED TO LAUNCH CHROME PROPERLY ON WINDOWS. REMOVE WHEN PULL REQUEST COMPLETED https://github.com/karma-runner/karma-chrome-launcher",
+      "to install specific version of karma: npm i -g karma@0.10.10"
+  ],
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-clean": "~0.5.0",
