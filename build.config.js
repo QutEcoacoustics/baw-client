@@ -86,7 +86,7 @@ module.exports = {
      */
     vendor_files: {
         js: [
-            'vendor/jquery/jquery.js',
+            'vendor/jquery/dist/jquery.js',
             // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
             'vendor/jquery-ui/ui/jquery-ui.js',
             // NOTE: bootstrap css imported in application.tpl.scss
