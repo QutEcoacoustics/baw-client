@@ -2,6 +2,7 @@ language: node_js
 node_js:
   - "0.10"
 
+# Karma requires a specific version due to dependency issues.
 before_install:
   - npm install --quiet -g karma@0.10.10
 
