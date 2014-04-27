@@ -309,7 +309,19 @@ if (!Array.prototype.filter) {
         this.toKeyValue = function toKeyValue(obj) {
             var parts = [];
             angular.forEach(obj, function (value, key) {
-                parts.push(encodeUriQuery(key, true) + (value === true ? '' : '=' + encodeUriQuery(value, true)));
+
+                // only add key value pair if value is not undefined, not null, and is not an empty string
+                var valueIsUndefined = value == undefined;
+                var valueIsNull = value == null;
+                var valueIsEmptyString = typeof(value) === "string" && value.length < 1;
+
+                if(!valueIsUndefined && !valueIsNull && !valueIsEmptyString){
+                    var encodedKey = encodeUriQuery(key, /* encode spaces */ true);
+                    // if value is true, just include the key without a value
+                    // TODO: why is this done?
+                    var encodedValue = value === true ? '' : '=' + encodeUriQuery(value, /* encode spaces */ true);
+                    parts.push(encodedKey + encodedValue);
+                }
             });
             return parts.length ? parts.join('&') : '';
         };
