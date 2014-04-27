@@ -3,14 +3,14 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="annoSingleItem"
+            <div class="library-single"
                  data-ng-style="{width:model.converters.conversions.enforcedImageWidth + 100}">
-                <div class="annoSingleSpectrogram">
+                <div class="library-spectrogram">
                     <img data-ng-src=""
                          data-ng-style="{width: model.converters.conversions.enforcedImageWidth, height: model.converters.conversions.enforcedImageHeight}">
                     <!-- {{item.media.availableImageFormats.png.url}} -->
-                    <grid-lines configuration="model.gridConfig" class="annoSingleGrid"></grid-lines>
-                    <div class="annoSingleBounds"
+                    <grid-lines configuration="model.gridConfig" class="library-spectrogram-grid"></grid-lines>
+                    <div class="library-spectrogram-bounds"
                          data-ng-style="{top: model.bounds.top, left: model.bounds.left, width: model.bounds.width, height: model.bounds.height}"></div>
                 </div>
                 <audio id="annoSingleAudio{{$index}}" controls
@@ -39,7 +39,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <div class="annoSingleItemInfo panel panel-default">
+            <div class="library-single-info panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left">Details</h3>
                 </div>
@@ -84,7 +84,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="annoSingleItemInfo panel panel-default">
+            <div class="library-single-info panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left">Comments</h3>
                 </div>

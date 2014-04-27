@@ -4,15 +4,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
             $scope.status = 'idle';
 
-            $scope.filterSettings = {
-                tagsPartial: null,
-                reference: '', // set to empty string to match value of radio button
-                annotationDuration: null,
-                freqMin: null,
-                freqMax: null,
-                page: null,
-                items: null
-            };
+            $scope.filterSettings = getEmptyFilterSettings();
 
             loadFilter();
 
@@ -22,15 +14,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
             $scope.clearFilter = function clearFilter() {
 
-                $scope.filterSettings = {
-                    tagsPartial: null,
-                    reference: '', // set to empty string to match value of radio button
-                    annotationDuration: null,
-                    freqMin: null,
-                    freqMax: null,
-                    page: null,
-                    items: null
-                };
+                $scope.filterSettings = getEmptyFilterSettings();
 
                 $scope.setFilter();
             };
@@ -45,31 +29,45 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 return '/library/?' + baw.angularCopies.toKeyValue(paramObj);
             };
 
+            function getEmptyFilterSettings(){
+                return {
+                    tagsPartial: null,
+                    reference: '', // set to empty string to match value of radio button
+                    annotationDuration: null,
+                    freqMin: null,
+                    freqMax: null,
+                    page: null,
+                    items: null
+                };
+            }
+
             function loadFilter() {
                 $scope.status = 'loading';
                 $scope.filterSettings = angular.extend({}, $scope.filterSettings, $routeParams);
 
+                // ensure properties that need to be numeric are actually numbers
                 [
                     'annotationDuration',
                     'freqMin',
                     'freqMax',
                     'page',
                     'items'
-                ].forEach(function (currentvalue, index, array) {
+                ].forEach(
+                    function (currentvalue, index, array) {
                         var stringValue = $scope.filterSettings[currentvalue];
                         $scope.filterSettings[currentvalue] = stringValue === null ? null : Number(stringValue);
-                    });
-
-                //$scope.filterSettings = $scope.createQuery($routeParams);
+                    }
+                );
 
                 $scope.library = AudioEvent.library($scope.filterSettings, null, function librarySuccess(value, responseHeaders) {
                     value.entries.map(Media.getMediaItem);
+                    value.audioElement = null;
                     $scope.paging = getPagingSettings($scope.library.page, $scope.library.items, $scope.library.total);
                     $scope.status = 'loaded';
                     $scope.responseDetails = responseHeaders;
                 }, function libraryError(httpResponse){
                     $scope.status = 'error';
-                    //$scope.errorDetails = httpResponse;
+                    console.error('Failed to load library response.', $scope.filterSettings, httpResponse);
                 });
             }
 
@@ -87,6 +85,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 paging.minCount = Math.max(paging.page - paging.surroundingCurrentLinks, paging.minPageNumber);
                 paging.maxCount = Math.min(paging.page + paging.surroundingCurrentLinks, paging.maxPageNumber);
 
+                // make accessing links easy via properties, rather than having to use array indexing
                 paging.links = {};
 
                 paging.links.first =
@@ -147,8 +146,8 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
             $scope.model = AudioEvent.get(parameters,
                 function annotationShowSuccess(value, responseHeaders) {
-                    //$scope.response = JSON.stringify(value, null, "  ");
                     Media.getMediaItem(value);
+                    value.audioElement = null;
                     $scope.model = value;
 
                     if ($scope.model.paging.nextEvent.hasOwnProperty('audioEventId')) {
@@ -166,7 +165,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     $scope.model.audioEventDuration = Math.round10(value.endTimeSeconds - value.startTimeSeconds, -3);
 
                 }, function annotationShowError(httpResponse) {
-                    console.error(httpResponse);
+                    console.error('Failed to load library single item response.', parameters, httpResponse);
                 });
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {

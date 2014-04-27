@@ -84,7 +84,7 @@
                         <span data-ng-show="status == 'error'">Results could not be loaded.</span>
                     </div>
                     <div class="col-sm-7">
-                        <ul class="pagination annoLibPaging" data-ng-show="status == 'loaded' && paging.total > paging.items">
+                        <ul class="pagination annotation-paging" data-ng-show="status == 'loaded' && paging.total > paging.items">
                             <li data-ng-show="paging.page != paging.minPageNumber">
                                 <a data-ng-href="{{paging.links.prev}}">&laquo;</a>
                             </li>
@@ -119,18 +119,18 @@
         </div>
     </div>
 
-    <div class="annoLib">
-        <div data-ng-repeat="item in library.entries" class="pull-left annoLibItem thumbnail">
-            <div class="annoLibSpectrogram">
+    <div class="annotation-library">
+        <div data-ng-repeat="item in library.entries" class="pull-left library-item thumbnail">
+            <div class="library-spectrogram">
                 <img data-ng-src=""
                      data-ng-style="{width: item.converters.conversions.enforcedImageWidth, height: item.converters.conversions.enforcedImageHeight}">
                 <!-- {{item.media.availableImageFormats.png.url}} -->
-                <grid-lines configuration="item.gridConfig" class="annoLibGrid"></grid-lines>
-                <div class="annoLibBounds"
+                <grid-lines configuration="item.gridConfig" class="library-spectrogram-grid"></grid-lines>
+                <div class="library-spectrogram-bounds"
                      data-ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
             </div>
 
-            <div class="annoLibInfo"
+            <div class="library-item-info"
                  data-ng-style="{'min-width':150, width:item.converters.conversions.enforcedImageWidth}">
                 <audio id="annotationLibraryItemInfoAudio{{$index}}" controls
                        data-ng-style="{width:item.converters.conversions.enforcedImageWidth}">
@@ -139,26 +139,26 @@
                     <!--Your browser does not support the audio element. -->
                 </audio>
             <span data-ng-show="item.tags.length > 0">
-                <span class="annoLibInfoItem">
+                <span class="info-entry">
                     <span class="glyphicon glyphicon-tags"></span>
                     <a data-ng-href="{{item.tagSearchUrl}}">
                         {{item.priorityTag.text}}
                     </a>
                 </span>
             </span>
-            <span class="annoLibInfoItem">
+            <span class="info-entry">
                 <span class="glyphicon glyphicon-map-marker"></span>
                 <a data-ng-href="{{item.siteUrl}}">
                     {{item.siteName}}
                 </a>
             </span>
-            <span class="annoLibInfoItem">
+            <span class="info-entry">
                 <span class="glyphicon glyphicon-music"></span>
                 <a data-ng-href="{{item.listenUrl}}">
                     {{item.audioEventStartDate | date: 'MMM d, yyyy HH:mm'}}
                 </a>
             </span>
-            <span class="annoLibInfoItem">
+            <span class="info-entry">
                 <span class="glyphicon glyphicon-info-sign"></span>
                 <a data-ng-href="{{item.singleItemUrl}}" style="cursor: pointer;">
                     More info

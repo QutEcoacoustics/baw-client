@@ -90,14 +90,6 @@
         );
         resource.csvLink = makeCsvLink;
 
-        resource.calcOffsetStart = function calcOffsetStart(startOffset) {
-            return Math.floor(startOffset / 30) * 30;
-        };
-
-        resource.calcOffsetEnd = function calcOffsetEnd(startOffset) {
-            return  (Math.floor(startOffset / 30) * 30) + 30;
-        };
-
         return resource;
     }]);
 
@@ -247,6 +239,7 @@
         delete  mediaResource["delete"];
         //delete  mediaResource.update;
 
+            // TODO: should be in AnnotationLibrary service
         function getMediaParameters(value) {
             return {
                 start_offset: Math.floor(value.startTimeSeconds - constants.annotationLibrary.paddingSeconds),
@@ -283,9 +276,6 @@
                 mediaResource.formatPaths(mediaValue);
                 value.media = mediaValue;
 
-                value.audioElement = null;
-                value.moreInfoDisplayed = true;
-
                 value.media.sampleRate = value.media.availableAudioFormats.mp3.sampleRate;
 
                 var audioRecordingIdValue = value.audioRecordingId;
@@ -311,57 +301,9 @@
 
                 value.annotationDuration = value.endTimeSeconds - value.startTimeSeconds;
 
-                // urls
-                value.listenUrl = '/listen/' + audioRecordingIdValue +
-                    '?start=' + calcOffsetStartValue +
-                    '&end=' + calcOffsetEndValue;
-                value.siteUrl = '/projects/' + value.projects[0].id +
-                    '/sites/' + value.siteId;
-                value.userUrl = '/user_accounts/' + value.ownerId;
 
-                // updateFilter({tagsPartial:item.priorityTag.text})
-                value.tagSearchUrl = '/library?tagsPartial=' +
-                    baw.angularCopies.fixedEncodeURI(value.priorityTag.text);
 
-                // updateFilter({annotationDuration:Math.round10(value.annotationDuration, -3), ...})
-                value.similarUrl = '/library?annotationDuration=' + Math.round10(value.annotationDuration, -3) +
-                    '&freqMin=' + Math.round(value.lowFrequencyHertz) +
-                    '&freqMax=' + Math.round(value.highFrequencyHertz);
 
-                value.singleItemUrl = '/library/' +
-                    value.audioRecordingId + '/audio_events/' +
-                    value.audioEventId;
-
-                // set common/sensible defaults, but hide the elements
-                value.gridConfig = {
-                    y: {
-                        showGrid: true,
-                        showScale: true,
-                        max: value.converters.conversions.nyquistFrequency,
-                        min: 0,
-                        step: 1000,
-                        height: value.converters.conversions.enforcedImageHeight,
-                        labelFormatter: function (value, index, min, max) {
-                            return (value / 1000).toFixed(1);
-                        },
-                        title: "Frequency (KHz)"
-                    },
-                    x: {
-                        showGrid: true,
-                        showScale: true,
-                        max: value.media.endOffset,
-                        min: value.media.startOffset,
-                        step: 1,
-                        width: value.converters.conversions.enforcedImageWidth,
-                        labelFormatter: function (value, index, min, max) {
-                            // show 'absolute' time.... i.e. seconds of the minute
-                            var offset = (value % 60);
-
-                            return (offset).toFixed(0);
-                        },
-                        title: "Time offset (seconds)"
-                    }
-                };
 
                 //console.debug(value.media);
             });
@@ -403,6 +345,82 @@
 
         return birdWalkService;
     }]);
+
+    bawss.factory('AnnotationLibrary', [ '$resource', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Tag',
+        function ($resource, paths, constants, unitConverter, AudioEvent, Tag) {
+
+            var libraryService = {};
+
+            libraryService.getItem = function GetItem(){
+
+            };
+
+            function getGridConfig(){
+                // set common/sensible defaults, but hide the elements
+                return {
+                    y: {
+                        showGrid: true,
+                        showScale: true,
+                        max: value.converters.conversions.nyquistFrequency,
+                        min: 0,
+                        step: 1000,
+                        height: value.converters.conversions.enforcedImageHeight,
+                        labelFormatter: function (value, index, min, max) {
+                            return (value / 1000).toFixed(1);
+                        },
+                        title: "Frequency (KHz)"
+                    },
+                    x: {
+                        showGrid: true,
+                        showScale: true,
+                        max: value.media.endOffset,
+                        min: value.media.startOffset,
+                        step: 1,
+                        width: value.converters.conversions.enforcedImageWidth,
+                        labelFormatter: function (value, index, min, max) {
+                            // show 'absolute' time.... i.e. seconds of the minute
+                            var offset = (value % 60);
+
+                            return (offset).toFixed(0);
+                        },
+                        title: "Time offset (seconds)"
+                    }
+                };
+            }
+
+            function calcOffsetStart(startOffset) {
+                return Math.floor(startOffset / 30) * 30;
+            }
+
+            function calcOffsetEnd(startOffset) {
+                return  (Math.floor(startOffset / 30) * 30) + 30;
+            }
+
+            function getUrls(){
+                // urls
+                value.listenUrl = '/listen/' + audioRecordingIdValue +
+                    '?start=' + calcOffsetStartValue +
+                    '&end=' + calcOffsetEndValue;
+                value.siteUrl = '/projects/' + value.projects[0].id +
+                    '/sites/' + value.siteId;
+                value.userUrl = '/user_accounts/' + value.ownerId;
+
+                // updateFilter({tagsPartial:item.priorityTag.text})
+                value.tagSearchUrl = '/library?tagsPartial=' +
+                    baw.angularCopies.fixedEncodeURI(value.priorityTag.text);
+
+                // updateFilter({annotationDuration:Math.round10(value.annotationDuration, -3), ...})
+                value.similarUrl = '/library?annotationDuration=' + Math.round10(value.annotationDuration, -3) +
+                    '&freqMin=' + Math.round(value.lowFrequencyHertz) +
+                    '&freqMax=' + Math.round(value.highFrequencyHertz);
+
+                value.singleItemUrl = '/library/' +
+                    value.audioRecordingId + '/audio_events/' +
+                    value.audioEventId;
+            }
+
+            return libraryService;
+        }]);
 
     // breadcrumbs - from https://github.com/angular-app/angular-app/blob/master/client/src/common/services/breadcrumbs.js
     bawss.factory('breadcrumbs', ['$rootScope', '$location', '$route', '$routeParams',  'conf.paths', function ($rootScope, $location, $route, $routeParams, paths) {

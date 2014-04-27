@@ -361,7 +361,11 @@ if (!Array.prototype.filter) {
         this.toKeyValue = function toKeyValue(obj) {
             var parts = [];
             angular.forEach(obj, function (value, key) {
-                if(value !== undefined && value !== null && (typeof(value) === "string" ? value.length > 0 : true)){
+                // only add key value pair if value is not undefined, not null, and is not an empty string
+                var valueIsUndefined = value == undefined;
+                var valueIsNull = value == null;
+                var valueIsEmptyString = typeof(value) === "string" && value.length < 1;
+                if(!valueIsUndefined && !valueIsNull && !valueIsEmptyString){
                     parts.push(encodeUriQuery(key, true) + (value === true ? '' : '=' + encodeUriQuery(value, true)));
                 }
             });
