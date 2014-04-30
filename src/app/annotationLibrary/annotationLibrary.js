@@ -1,6 +1,6 @@
 angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
-    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'AudioEvent', 'Media',
-        function ($scope, $location, $resource, $routeParams, paths, AudioEvent, Media) {
+    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', '$url', 'conf.paths', 'AudioEvent', 'Media',
+        function ($scope, $location, $resource, $routeParams, $url, paths, AudioEvent, Media) {
 
             $scope.status = 'idle';
 
@@ -17,7 +17,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             loadFilter();
 
             $scope.setFilter = function setFilter() {
-                $location.path('/library').search(baw.angularCopies.toKeyValue($scope.filterSettings));
+                $location.path('/library').search($url.toKeyValue($scope.filterSettings));
             };
 
             $scope.clearFilter = function clearFilter() {
@@ -42,7 +42,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return '/library/?' + baw.angularCopies.toKeyValue(paramObj);
+                return '/library/?' + $url.toKeyValue(paramObj);
             };
 
             function loadFilter() {
@@ -137,8 +137,8 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 return paging;
             }
         }])
-    .controller('AnnotationItemCtrl', ['$scope', '$location', '$resource', '$routeParams', 'conf.paths', 'AudioEvent', 'Media',
-        function ($scope, $location, $resource, $routeParams, paths, AudioEvent, Media) {
+    .controller('AnnotationItemCtrl', ['$scope', '$location', '$resource', '$routeParams', '$url', 'conf.paths', 'AudioEvent', 'Media',
+        function ($scope, $location, $resource, $routeParams, $url, paths, AudioEvent, Media) {
 
             var parameters = {
                 audioEventId: $routeParams.audioEventId,
@@ -170,7 +170,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 });
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return '/library/?' + baw.angularCopies.toKeyValue(paramObj);
+                return '/library/?' + $url.toKeyValue(paramObj);
             };
 
         }]);

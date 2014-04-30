@@ -46,7 +46,7 @@
                 <div class="panel-body">
                     <div class="list-group">
                         <a data-ng-repeat="tag in model.tags"
-                           data-ng-href="{{$parent.createFilterUrl({tagsPartial: tag.text})}}"
+                           data-ng-href="{{model.tagSearchUrl}}"
                            class="list-group-item" title="Tag.">
                             <span class="glyphicon glyphicon-tags"></span>&nbsp;
                             <span class="badge">{{tag.typeOfTag.replace('_',' ')}}</span>

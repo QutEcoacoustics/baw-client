@@ -233,8 +233,8 @@
         return resource;
     }]);
 
-    bawss.factory('Media', [ '$resource', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Tag',
-        function ($resource, paths, constants, unitConverter, AudioEvent, Tag) {
+    bawss.factory('Media', [ '$resource', '$url', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Tag',
+        function ($resource, $url, paths, constants, unitConverter, AudioEvent, Tag) {
         var mediaResource = $resource(uriConvert(paths.api.routes.media.showAbsolute),
             {
                 recordingId: '@recordingId',
@@ -312,21 +312,28 @@
                 value.annotationDuration = value.endTimeSeconds - value.startTimeSeconds;
 
                 // urls
+                var offsetparams = {
+                    start:  calcOffsetStartValue,
+                    end: calcOffsetEndValue
+                };
                 value.listenUrl = '/listen/' + audioRecordingIdValue +
-                    '?start=' + calcOffsetStartValue +
-                    '&end=' + calcOffsetEndValue;
+                    '?' + $url.toKeyValue(offsetparams);
                 value.siteUrl = '/projects/' + value.projects[0].id +
                     '/sites/' + value.siteId;
                 value.userUrl = '/user_accounts/' + value.ownerId;
 
                 // updateFilter({tagsPartial:item.priorityTag.text})
-                value.tagSearchUrl = '/library?tagsPartial=' +
-                    baw.angularCopies.fixedEncodeURI(value.priorityTag.text);
+                var similarParams = {
+                    annotationDuration:  Math.round10(value.annotationDuration, -3),
+                    freqMin: Math.round(value.lowFrequencyHertz),
+                    freqMax: Math.round(value.highFrequencyHertz)
+                };
+                value.tagSearchUrl = '/library?' +
+                    $url.toKeyValue(angular.extend({}, similarParams, {tagsPartial: value.priorityTag.text }));
 
                 // updateFilter({annotationDuration:Math.round10(value.annotationDuration, -3), ...})
-                value.similarUrl = '/library?annotationDuration=' + Math.round10(value.annotationDuration, -3) +
-                    '&freqMin=' + Math.round(value.lowFrequencyHertz) +
-                    '&freqMax=' + Math.round(value.highFrequencyHertz);
+                value.similarUrl = '/library?' +
+                    $url.toKeyValue(similarParams);
 
                 value.singleItemUrl = '/library/' +
                     value.audioRecordingId + '/audio_events/' +
