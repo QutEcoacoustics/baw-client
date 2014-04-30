@@ -28,8 +28,8 @@ module.exports = {
             siteDir: "/system/listen_to/"
         },
         production: {
-            apiRoot: "http://awb.ecosounds.org",
-            siteRoot: "http://awb.ecosounds.org/system/listen_to",
+            apiRoot: "http://baw.ecosounds.org",
+            siteRoot: "http://baw.ecosounds.org/system/listen_to",
             siteDir: "/system/listen_to/"
         },
 
