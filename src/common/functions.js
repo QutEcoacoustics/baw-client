@@ -296,37 +296,9 @@ if (!Array.prototype.filter) {
     };
 
     function Angular() {
-        this.fixedEncodeURIComponent = function fixedEncodeURIComponent(str) {
-            str = str || "";
-            return encodeURIComponent(str)
-                .replace(/!/g, '%21')
-                .replace(/'/g, '%27')
-                .replace(/\(/g, '%28')
-                .replace(/\)/g, '%29')
-                .replace(/\*/g, '%2A')
-                .replace(/%20/g, '+');
-        };
-        this.toKeyValue = function toKeyValue(obj) {
-            var parts = [];
-            angular.forEach(obj, function (value, key) {
-                parts.push(encodeUriQuery(key, true) + (value === true ? '' : '=' + encodeUriQuery(value, true)));
-            });
-            return parts.length ? parts.join('&') : '';
-        };
-        this.encodeUriQuery = function encodeUriQuery(val, pctEncodeSpaces) {
-            val = val || "";
-            return encodeURIComponent(val).
-                replace(/%40/gi, '@').
-                replace(/%3A/gi, ':').
-                replace(/%24/g, '$').
-                replace(/%2C/gi, ',').
-                replace((pctEncodeSpaces ? null : /%20/g), '+');
-        };
-
         this.isUndefined = function isUndefined(value) {
             return typeof value == 'undefined';
         };
-
     }
 
     baw.angularCopies = new Angular();
