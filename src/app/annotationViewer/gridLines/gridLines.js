@@ -80,7 +80,7 @@ bawGLs.directive('gridLines',
                     // too many elements - remove some children
                     for (var i = 0; i > diffLines; i--) {
                         // remove any child, they are all the same
-                        container.removeChild(children[0]);
+                        container.removeChild(container.children[0]);
                     }
                 }
                 else if (diffLines > 0) {
