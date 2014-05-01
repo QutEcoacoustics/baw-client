@@ -348,47 +348,8 @@ if (!Array.prototype.filter) {
     };
 
     function Angular() {
-        this.fixedEncodeURIComponent = function fixedEncodeURIComponent(str) {
-            str = str || "";
-            return encodeURIComponent(str)
-                .replace(/!/g, '%21')
-                .replace(/'/g, '%27')
-                .replace(/\(/g, '%28')
-                .replace(/\)/g, '%29')
-                .replace(/\*/g, '%2A')
-                .replace(/%20/g, '+');
-        };
-        this.toKeyValue = function toKeyValue(obj) {
-            var parts = [];
-            angular.forEach(obj, function (value, key) {
-                // only add key value pair if value is not undefined, not null, and is not an empty string
-                var valueIsUndefined = value == undefined;
-                var valueIsNull = value == null;
-                var valueIsEmptyString = typeof(value) === "string" && value.length < 1;
-                if(!valueIsUndefined && !valueIsNull && !valueIsEmptyString){
-                    parts.push(encodeUriQuery(key, true) + (value === true ? '' : '=' + encodeUriQuery(value, true)));
-                }
-            });
-            return parts.length ? parts.join('&') : '';
-        };
-        function encodeUriQuery(val, pctEncodeSpaces) {
-            val = val || "";
-            return encodeURIComponent(val).
-                replace(/%40/gi, '@').
-                replace(/%3A/gi, ':').
-                replace(/%24/g, '$').
-                replace(/%2C/gi, ',').
-                replace((pctEncodeSpaces ? null : /%20/g), '+');
-        }
-
-        this.encodeUriQuery = encodeUriQuery;
-
         this.isUndefined = function isUndefined(value) {
             return typeof value == 'undefined';
-        };
-
-        this.fixedEncodeURI = function fixedEncodeURI (str) {
-            return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']');
         };
 
     }

@@ -170,8 +170,8 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents',
-          function ($rootScope, $location, $route, $http, AudioEvent, paths, UserProfile, ngAudioEvents) {
+    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url',
+          function ($rootScope, $location, $route, $http, AudioEvent, paths, UserProfile, ngAudioEvents, $url) {
 
               // embed configuration for easy site-wide binding
               $rootScope.paths = paths;
@@ -283,7 +283,7 @@ var app = angular.module('baw',
                   return {};
               };
               $rootScope.authTokenQuery = function () {
-                  return baw.angularCopies.toKeyValue($rootScope.authTokenParams());
+                  return $url.toKeyValue($rootScope.authTokenParams());
               };
 
               $rootScope.loggedIn = false;

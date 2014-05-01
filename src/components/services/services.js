@@ -225,8 +225,8 @@
         return resource;
     }]);
 
-    bawss.factory('Media', [ '$resource', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Tag',
-        function ($resource, paths, constants, unitConverter, AudioEvent, Tag) {
+    bawss.factory('Media', [ '$resource', '$url', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Tag',
+        function ($resource, $url, paths, constants, unitConverter, AudioEvent, Tag) {
         var mediaResource = $resource(uriConvert(paths.api.routes.media.showAbsolute),
             {
                 recordingId: '@recordingId',
@@ -300,10 +300,6 @@
                 };
 
                 value.annotationDuration = value.endTimeSeconds - value.startTimeSeconds;
-
-
-
-
 
                 //console.debug(value.media);
             });
@@ -630,8 +626,8 @@
         }]);
 
     bawss.factory('AuthenticationProviders',
-        ['$rootScope', 'authService', '$http', 'Authenticator', 'railsFieldRenamingInterceptor', '$q',
-            function ($rootScope, authService, $http, Authenticator, railsFieldRenamingInterceptor, $q) {
+        ['$rootScope', 'authService', '$http', 'Authenticator', 'railsFieldRenamingInterceptor', '$q','$url',
+            function ($rootScope, authService, $http, Authenticator, railsFieldRenamingInterceptor, $q, $url) {
                 var signOutPath = '/security/sign_out';
 
                 function signOut() {
@@ -667,7 +663,7 @@
 
                 function openIdLogin(url) {
                     var popPath = "/security/auth/open_id?openid_url=" +
-                        baw.angularCopies.fixedEncodeURIComponent(url);
+                        $url.fixedEncodeURIComponent(url);
                     baw.popUpWindow(popPath, 700, 500, function (data) {
                         data = data || {};
 
