@@ -60,16 +60,23 @@
 
                     <label for="refLibraryPage" class="col-sm-1 control-label">Page</label>
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <input type="number" class="form-control" id="refLibraryPage" placeholder="Page"
                                data-ng-model="filterSettings.page">
                     </div>
 
-                    <label for="refLibraryItems" class="col-sm-2 control-label">Items</label>
+                    <label for="refLibraryItems" class="col-sm-1 control-label">Items</label>
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <input type="number" class="form-control" id="refLibraryItems" placeholder="Items"
                                data-ng-model="filterSettings.items">
+                    </div>
+
+                    <label for="refLibraryUserId" class="col-sm-1 control-label">User Id</label>
+
+                    <div class="col-sm-1">
+                        <input type="number" class="form-control" id="refLibraryUserId" placeholder="User Id"
+                               data-ng-model="filterSettings.userId">
                     </div>
                 </div>
                 <div class="form-group">
@@ -120,11 +127,10 @@
     </div>
 
     <div class="annotation-library">
-        <div data-ng-repeat="item in library.entries" class="pull-left library-item thumbnail">
+        <div data-ng-repeat="item in annotations" class="pull-left library-item thumbnail">
             <div class="library-spectrogram">
-                <img data-ng-src=""
+                <img data-ng-src="{{item.media.availableImageFormats.png.url}}"
                      data-ng-style="{width: item.converters.conversions.enforcedImageWidth, height: item.converters.conversions.enforcedImageHeight}">
-                <!-- {{item.media.availableImageFormats.png.url}} -->
                 <grid-lines configuration="item.gridConfig" class="library-spectrogram-grid"></grid-lines>
                 <div class="library-spectrogram-bounds"
                      data-ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
@@ -134,33 +140,33 @@
                  data-ng-style="{'min-width':150, width:item.converters.conversions.enforcedImageWidth}">
                 <audio id="annotationLibraryItemInfoAudio{{$index}}" controls
                        data-ng-style="{width:item.converters.conversions.enforcedImageWidth}">
-                    <!--source data-ng-repeat="resource in item.media.availableAudioFormats" data-ng-src="{{resource.url}}" src=""
-                            type="{{resource.mimeType}}"-->
-                    <!--Your browser does not support the audio element. -->
+                    <source data-ng-repeat="resource in item.media.availableAudioFormats" data-ng-src="{{resource.url}}" src=""
+                            type="{{resource.mimeType}}">
+                    Your browser does not support the audio element.
                 </audio>
             <span data-ng-show="item.tags.length > 0">
                 <span class="info-entry">
                     <span class="glyphicon glyphicon-tags"></span>
-                    <a data-ng-href="{{item.tagSearchUrl}}">
+                    <a data-ng-href="{{item.urls.tagSearch}}">
                         {{item.priorityTag.text}}
                     </a>
                 </span>
             </span>
             <span class="info-entry">
                 <span class="glyphicon glyphicon-map-marker"></span>
-                <a data-ng-href="{{item.siteUrl}}">
+                <a data-ng-href="{{item.urls.site}}">
                     {{item.siteName}}
                 </a>
             </span>
             <span class="info-entry">
-                <span class="glyphicon glyphicon-music"></span>
-                <a data-ng-href="{{item.listenUrl}}">
+                <span class="glyphicon glyphicon-record"></span>
+                <a data-ng-href="{{item.urls.listen}}">
                     {{item.audioEventStartDate | date: 'MMM d, yyyy HH:mm'}}
                 </a>
             </span>
             <span class="info-entry">
                 <span class="glyphicon glyphicon-info-sign"></span>
-                <a data-ng-href="{{item.singleItemUrl}}" style="cursor: pointer;">
+                <a data-ng-href="{{item.urls.singleItem}}" style="cursor: pointer;">
                     More info
                 </a>
             </span>

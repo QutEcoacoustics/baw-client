@@ -3,8 +3,8 @@
      * Helper method for adding a put request onto the standard angular resource service
      * @param $resource - the stub resource
      * @param {string} path - the web server path
-     * @param {Object} paramDefaults
-     * @param {Object} [actions] a set of actions to also add (extend)
+     * @param {Object} paramDefaults - the default parameters
+     * @param {Object} [actions] - a set of actions to also add (extend)
      * @return {*}
      */
     function resourcePut($resource, path, paramDefaults, actions) {
@@ -12,8 +12,14 @@
         a.update = a.update || { method: 'PUT' };
         return $resource(path, paramDefaults, a);
     }
-
+    /**
+     *
+     * @param uri
+     * @returns {*}
+     */
     function uriConvert(uri) {
+        // find all place holders in this form: '{identifier}'
+        // replace with placeholder in this form: ':identifier'
         return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
@@ -36,7 +42,8 @@
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
     }]);
 
-    bawss.factory('AudioEvent', [ '$resource', 'conf.paths', function ($resource, paths) {
+    bawss.factory('AudioEvent', [ '$resource', '$url', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'Media',
+        function ($resource, $url, paths, constants, unitConverter, Media) {
         var baseCsvUri = paths.api.routes.audioEvent.csvAbsolute;
 
         // TODO: move this to paths conf object
@@ -74,21 +81,119 @@
             return formattedUrl;
         }
 
-        var baseLibraryUri = paths.api.routes.audioEvent.libraryAbsolute;
-        var baseAnnotationShowUri = paths.api.routes.audioEvent.showAbsolute;
-            //'http://localhost:3000'+paths.api.routes.audioEvent.library;
-            //paths.api.routes.audioEvent.libraryAbsolute;
-
         var resource = resourcePut($resource, uriConvert(paths.api.routes.audioEvent.showAbsolute),
             {recordingId: '@recordingId',audioEventId: '@audioEventId'},
             {
                 library: {
                     method:'GET',
-                    url: uriConvert(baseLibraryUri)
+                    url: uriConvert(paths.api.routes.audioEvent.libraryAbsolute)
                 }
             }
         );
         resource.csvLink = makeCsvLink;
+
+        resource.addCalculatedProperties = function addCalculatedProperties(audioEvent){
+
+            audioEvent.annotationDuration = audioEvent.endTimeSeconds - audioEvent.startTimeSeconds;
+            audioEvent.annotationDurationRounded = Math.round10(audioEvent.endTimeSeconds - audioEvent.startTimeSeconds, -3);
+            audioEvent.annotationFrequencyRange = audioEvent.highFrequencyHertz - audioEvent.lowFrequencyHertz;
+            audioEvent.calcOffsetStart = Math.floor(audioEvent.startTimeSeconds / 30) * 30;
+            audioEvent.calcOffsetEnd = (Math.floor(audioEvent.startTimeSeconds / 30) * 30) + 30;
+
+            audioEvent.urls = {
+                site: '/projects/' + audioEvent.projects[0].id +
+                    '/sites/' + audioEvent.siteId,
+                user: '/user_accounts/' + audioEvent.ownerId,
+                tagSearch: '/library?' + $url.toKeyValue({tagsPartial: audioEvent.priorityTag.text}),
+                similar: '/library?' + $url.toKeyValue(
+                    {
+                        annotationDuration: Math.round10(audioEvent.annotationDuration, -3),
+                        freqMin: Math.round(audioEvent.lowFrequencyHertz),
+                        freqMax: Math.round(audioEvent.highFrequencyHertz)
+                    }),
+                singleItem: '/library/' + audioEvent.audioRecordingId +
+                    '/audio_events/' + audioEvent.audioEventId,
+                listen: '/listen/' + audioEvent.audioRecordingId +
+                    '?start=' + audioEvent.calcOffsetStart +
+                    '&end=' + audioEvent.calcOffsetEnd,
+                listenWithoutPadding: '/listen/' + audioEvent.audioRecordingId +
+                    '?start=' + audioEvent.startTimeSeconds +
+                    '&end=' + audioEvent.endTimeSeconds
+            };
+
+            return audioEvent;
+        };
+
+        resource.getBoundSettings = function getBoundSettings(audioEvent){
+            var mediaItemParameters = {
+                recordingId: audioEvent.audioRecordingId,
+                start_offset: Math.floor(audioEvent.startTimeSeconds - constants.annotationLibrary.paddingSeconds),
+                end_offset: Math.ceil(audioEvent.endTimeSeconds + constants.annotationLibrary.paddingSeconds),
+                format: "json"
+            };
+
+            audioEvent.media = Media.get(
+                mediaItemParameters,
+                function mediaGetSuccess(mediaValue, responseHeaders) {
+
+                    Media.formatPaths(mediaValue);
+                    mediaValue = new baw.Media(mediaValue);
+
+                    // create properties that depend on Media
+                    audioEvent.converters = unitConverter.getConversions({
+                        sampleRate: audioEvent.media.sampleRate,
+                        spectrogramWindowSize: audioEvent.media.availableImageFormats.png.window,
+                        endOffset: audioEvent.media.endOffset,
+                        startOffset: audioEvent.media.startOffset,
+                        imageElement: null
+                    });
+
+                    audioEvent.bounds = {
+                        top: audioEvent.converters.toTop(audioEvent.highFrequencyHertz),
+                        left: audioEvent.converters.toLeft(audioEvent.startTimeSeconds),
+                        width: audioEvent.converters.toWidth(audioEvent.endTimeSeconds, audioEvent.startTimeSeconds),
+                        height: audioEvent.converters.toHeight(audioEvent.highFrequencyHertz, audioEvent.lowFrequencyHertz)
+                    };
+
+                    // set common/sensible defaults, but hide the elements
+                    audioEvent.gridConfig = {
+                        y: {
+                            showGrid: true,
+                            showScale: true,
+                            max: audioEvent.converters.conversions.nyquistFrequency,
+                            min: 0,
+                            step: 1000,
+                            height: audioEvent.converters.conversions.enforcedImageHeight,
+                            labelFormatter: function (value, index, min, max) {
+                                return (value / 1000).toFixed(1);
+                            },
+                            title: "Frequency (KHz)"
+                        },
+                        x: {
+                            showGrid: true,
+                            showScale: true,
+                            max: audioEvent.media.endOffset,
+                            min: audioEvent.media.startOffset,
+                            step: 1,
+                            width: audioEvent.converters.conversions.enforcedImageWidth,
+                            labelFormatter: function (value, index, min, max) {
+                                // show 'absolute' time.... i.e. seconds of the minute
+                                var offset = (value % 60);
+
+                                return (offset).toFixed(0);
+                            },
+                            title: "Time offset (seconds)"
+                        }
+                    };
+
+
+                }, function mediaGetFailure(httpResponse) {
+                    console.error("Failed to get Media.", httpResponse);
+                }
+            );
+
+            return audioEvent;
+        };
 
         return resource;
     }]);
@@ -225,85 +330,45 @@
         return resource;
     }]);
 
-    bawss.factory('Media', [ '$resource', '$url', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Tag',
-        function ($resource, $url, paths, constants, unitConverter, AudioEvent, Tag) {
-        var mediaResource = $resource(uriConvert(paths.api.routes.media.showAbsolute),
+    bawss.factory('Media', [ '$resource', '$url', 'conf.paths',
+        function ($resource, $url, paths) {
+
+            // create resource for rest requests to media api
+            var mediaResource = $resource(uriConvert(paths.api.routes.media.showAbsolute),
             {
                 recordingId: '@recordingId',
                 format: '@format'
             });
 
-        // this is a read only service, remove unnecessary methods
-        delete  mediaResource.save;
-        delete  mediaResource.remove;
-        delete  mediaResource["delete"];
-        //delete  mediaResource.update;
+            // this is a read only service, remove unnecessary methods
+            // keep get
+            delete  mediaResource["save"];
+            delete  mediaResource["query"];
+            delete  mediaResource["remove"];
+            delete  mediaResource["delete"];
 
-            // TODO: should be in AnnotationLibrary service
-        function getMediaParameters(value) {
-            return {
-                start_offset: Math.floor(value.startTimeSeconds - constants.annotationLibrary.paddingSeconds),
-                end_offset: Math.ceil(value.endTimeSeconds + constants.annotationLibrary.paddingSeconds),
-                // this one is different, it is encoded into the path of the request by angular
-                recordingId: value.audioRecordingId,
-                format: "json"
+            /**
+             * Change relative image and audio urls into absolute urls
+             * @param {Object} mediaItem
+             */
+            mediaResource.formatPaths = function formatPaths(mediaItem) {
+
+                var imgKeys = Object.keys(mediaItem.availableImageFormats);
+                if (imgKeys.length > 1) {
+                    throw "don't know how to handle more than one image format!";
+                }
+
+                var imageKey = imgKeys[0];
+                var imageFormat = mediaItem.availableImageFormats[imageKey];
+                mediaItem.availableImageFormats[imageKey].url = paths.joinFragments(paths.api.root, imageFormat.url);
+                mediaItem.spectrogram = imageFormat;
+
+                angular.forEach(mediaItem.availableAudioFormats, function (value, key) {
+                    // just update the url so it is an absolute uri
+                    this[key].url = paths.joinFragments(paths.api.root, value.url);
+
+                }, mediaItem.availableAudioFormats);
             };
-        }
-
-        mediaResource.formatPaths = function formatPaths(mediaItem) {
-
-            var imgKeys = Object.keys(mediaItem.availableImageFormats);
-            if (imgKeys.length > 1) {
-                throw "don't know how to handle more than one image format!";
-            }
-
-            mediaItem.availableImageFormats[imgKeys[0]].url =
-                paths.joinFragments(
-                    paths.api.root,
-                    mediaItem.availableImageFormats[imgKeys[0]].url);
-
-            angular.forEach(mediaItem.availableAudioFormats, function (value, key) {
-
-                // just update the url so it is an absolute uri
-                this[key].url = paths.joinFragments(paths.api.root, value.url);
-
-            }, mediaItem.availableAudioFormats);
-        };
-
-        mediaResource.getMediaItem = function getMedia(value, index, array) {
-            mediaResource.get(getMediaParameters(value), null, function getMediaSuccess(mediaValue) {
-                // adds a media resource to each audio event
-                mediaResource.formatPaths(mediaValue);
-                value.media = mediaValue;
-
-                value.media.sampleRate = value.media.availableAudioFormats.mp3.sampleRate;
-
-                var audioRecordingIdValue = value.audioRecordingId;
-                var calcOffsetStartValue = AudioEvent.calcOffsetStart(value.startTimeSeconds);
-                var calcOffsetEndValue = AudioEvent.calcOffsetEnd(value.startTimeSeconds);
-
-                value.priorityTag = Tag.selectSinglePriorityTag(value.tags);
-
-                value.converters = unitConverter.getConversions({
-                    sampleRate: value.media.sampleRate,
-                    spectrogramWindowSize: value.media.availableImageFormats.png.window,
-                    endOffset: value.media.endOffset,
-                    startOffset: value.media.startOffset,
-                    imageElement: null
-                });
-
-                value.bounds = {
-                    top: value.converters.toTop(value.highFrequencyHertz),
-                    left: value.converters.toLeft(value.startTimeSeconds),
-                    width: value.converters.toWidth(value.endTimeSeconds, value.startTimeSeconds),
-                    height: value.converters.toHeight(value.highFrequencyHertz, value.lowFrequencyHertz)
-                };
-
-                value.annotationDuration = value.endTimeSeconds - value.startTimeSeconds;
-
-                //console.debug(value.media);
-            });
-        };
 
         return mediaResource;
     }]);
@@ -341,82 +406,6 @@
 
         return birdWalkService;
     }]);
-
-    bawss.factory('AnnotationLibrary', [ '$resource', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'AudioEvent', 'Tag',
-        function ($resource, paths, constants, unitConverter, AudioEvent, Tag) {
-
-            var libraryService = {};
-
-            libraryService.getItem = function GetItem(){
-
-            };
-
-            function getGridConfig(){
-                // set common/sensible defaults, but hide the elements
-                return {
-                    y: {
-                        showGrid: true,
-                        showScale: true,
-                        max: value.converters.conversions.nyquistFrequency,
-                        min: 0,
-                        step: 1000,
-                        height: value.converters.conversions.enforcedImageHeight,
-                        labelFormatter: function (value, index, min, max) {
-                            return (value / 1000).toFixed(1);
-                        },
-                        title: "Frequency (KHz)"
-                    },
-                    x: {
-                        showGrid: true,
-                        showScale: true,
-                        max: value.media.endOffset,
-                        min: value.media.startOffset,
-                        step: 1,
-                        width: value.converters.conversions.enforcedImageWidth,
-                        labelFormatter: function (value, index, min, max) {
-                            // show 'absolute' time.... i.e. seconds of the minute
-                            var offset = (value % 60);
-
-                            return (offset).toFixed(0);
-                        },
-                        title: "Time offset (seconds)"
-                    }
-                };
-            }
-
-            function calcOffsetStart(startOffset) {
-                return Math.floor(startOffset / 30) * 30;
-            }
-
-            function calcOffsetEnd(startOffset) {
-                return  (Math.floor(startOffset / 30) * 30) + 30;
-            }
-
-            function getUrls(){
-                // urls
-                value.listenUrl = '/listen/' + audioRecordingIdValue +
-                    '?start=' + calcOffsetStartValue +
-                    '&end=' + calcOffsetEndValue;
-                value.siteUrl = '/projects/' + value.projects[0].id +
-                    '/sites/' + value.siteId;
-                value.userUrl = '/user_accounts/' + value.ownerId;
-
-                // updateFilter({tagsPartial:item.priorityTag.text})
-                value.tagSearchUrl = '/library?tagsPartial=' +
-                    baw.angularCopies.fixedEncodeURI(value.priorityTag.text);
-
-                // updateFilter({annotationDuration:Math.round10(value.annotationDuration, -3), ...})
-                value.similarUrl = '/library?annotationDuration=' + Math.round10(value.annotationDuration, -3) +
-                    '&freqMin=' + Math.round(value.lowFrequencyHertz) +
-                    '&freqMax=' + Math.round(value.highFrequencyHertz);
-
-                value.singleItemUrl = '/library/' +
-                    value.audioRecordingId + '/audio_events/' +
-                    value.audioEventId;
-            }
-
-            return libraryService;
-        }]);
 
     // breadcrumbs - from https://github.com/angular-app/angular-app/blob/master/client/src/common/services/breadcrumbs.js
     bawss.factory('breadcrumbs', ['$rootScope', '$location', '$route', '$routeParams',  'conf.paths', function ($rootScope, $location, $route, $routeParams, paths) {

@@ -246,6 +246,13 @@ if (!Array.prototype.filter) {
         return output;
     };
 
+    // http://stackoverflow.com/a/1199420
+    baw.stringTrunc = function (str, n, useWordBoundary) {
+        var toLong = str.length > n,
+            s_ = toLong ? str.substr(0, n - 1) : str;
+        s_ = useWordBoundary && toLong ? s_.substr(0, s_.lastIndexOf(' ')) : s_;
+        return  toLong ? s_ + '&hellip;' : s_;
+    };
 
     /**
      * A custom formatter for TimeSpans - accepts seconds only

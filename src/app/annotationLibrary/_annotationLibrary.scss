@@ -12,8 +12,8 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
     padding: 10px 10px 0 40px;
     margin: 5px;
     position: relative;
-    max-height:500px;
-    height:385px;
+    max-height:410px;
+    height:410px;
     min-width: 180px;
 
     & .library-item-info {
@@ -32,8 +32,11 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
       & .info-entry {
         font-size: small;
-
-        margin: 5px 10px;
+        display:block;
+        margin: 3px 5px;
+        overflow-x: hidden;
+        min-width:110px;
+        max-width:300px;
       }
     }
   }

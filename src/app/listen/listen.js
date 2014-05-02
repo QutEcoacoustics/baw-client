@@ -42,16 +42,6 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
-            function getMediaParameters(format) {
-                return {
-                    start_offset: $routeParams.start,
-                    end_offset: $routeParams.end,
-                    // this one is different, it is encoded into the path of the request by angular
-                    recordingId: $routeParams.recordingId,
-                    format: format
-                };
-            }
-
             $scope.errorState = !(baw.isNumber($routeParams.recordingId) &&
                 baw.parseInt($routeParams.recordingId) >= 0);
 
@@ -106,67 +96,24 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     profileLoaded(null, UserProfile);
                 }
 
-
-                var formatPaths = function () {
-                    if ($scope.model.media && $scope.model.media.hasOwnProperty('id')) {
-                        //var authToken = $scope.authTokenQuery();
-
-                        var imgKeys = Object.keys($scope.model.media.availableImageFormats);
-                        if (imgKeys.length > 1) {
-                            throw "don't know how to handle more than one image format!";
-                        }
-
-                        $scope.model.media.availableImageFormats[imgKeys[0]].url =
-                            paths.joinFragments(paths.api.root,
-                                $scope.model.media.availableImageFormats[imgKeys[0]].url);
-                        $scope.model.media.spectrogram = $scope.model.media.availableImageFormats[imgKeys[0]];
-
-                        angular.forEach($scope.model.media.availableAudioFormats, function (value, key) {
-
-                            // just update the url so it is an absolute uri
-                            this[key].url = paths.joinFragments(paths.api.root, value.url);
-
-                        }, $scope.model.media.availableAudioFormats);
-
-                    }
-                };
-
                 /* // NOT NECESSARY - we aren't using auth keys atm    */
-                $scope.$on('event:auth-loginRequired', formatPaths);
-                $scope.$on('event:auth-loginConfirmed', formatPaths);
+                $scope.$on('event:auth-loginRequired', function(){ Media.formatPaths($scope.model.media); });
+                $scope.$on('event:auth-loginConfirmed', function(){ Media.formatPaths($scope.model.media); });
 
-                $scope.model.media = Media.get(getMediaParameters("json"), {},
-                    function mediaGetSuccess() {
+                $scope.model.media = Media.get(
+                    {
+                        recordingId: $routeParams.recordingId,
+                        start_offset: $routeParams.start,
+                        end_offset: $routeParams.end,
+                        format: "json"
+                    },
+                    function mediaGetSuccess(value, responseHeaders) {
                         // reformat urls
-                        formatPaths();
+                        Media.formatPaths($scope.model.media);
+
+                        value = new baw.Media(value);
 
                         //                        fixMediaApi();
-
-                        // additionally do a check on the sample rate
-                        // the sample rate is used in the unit calculations.
-                        // it must be exposed and must be consistent for all sub-resources.
-                        var sampleRate = null;
-                        var sampleRateChecker = function (value, key) {
-                            if (sampleRate === null) {
-                                sampleRate = value.sampleRate;
-                            }
-                            else {
-                                if (value.sampleRate !== sampleRate) {
-                                    throw "The sample rates are not consistent for the media.json request. At the current time all sub-resources returned must be equal!";
-                                }
-                            }
-                        };
-
-                        angular.forEach($scope.model.media.availableAudioFormats, sampleRateChecker);
-                        angular.forEach($scope.model.media.availableImageFormats, sampleRateChecker);
-
-                        if (angular.isNumber(sampleRate)) {
-                            $scope.model.media.sampleRate = sampleRate;
-                        }
-                        else {
-                            throw "The provided sample rate for the Media json must be a number!";
-                        }
-
 
                         var // moment works by reference - need to parse the date twice - sigh
                             absoluteStartChunk = moment($scope.model.media.datetime).add('s', parseFloat($scope.model.media.startOffset)),

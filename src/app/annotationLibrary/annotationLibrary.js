@@ -1,6 +1,8 @@
 angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
-    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', '$url', 'conf.paths', 'AudioEvent', 'Media',
-        function ($scope, $location, $resource, $routeParams, $url, paths, AudioEvent, Media) {
+    .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', '$url',
+        'conf.paths', 'conf.constants', 'bawApp.unitConverter',
+        'AudioEvent', 'Tag',
+        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag) {
 
             $scope.status = 'idle';
 
@@ -13,9 +15,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             };
 
             $scope.clearFilter = function clearFilter() {
-
                 $scope.filterSettings = getEmptyFilterSettings();
-
                 $scope.setFilter();
             };
 
@@ -29,10 +29,11 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 return '/library/?' + $url.toKeyValue(paramObj);
             };
 
-            function getEmptyFilterSettings(){
+            function getEmptyFilterSettings() {
                 return {
                     tagsPartial: null,
                     reference: '', // set to empty string to match value of radio button
+                    userId: null,
                     annotationDuration: null,
                     freqMin: null,
                     freqMax: null,
@@ -41,8 +42,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 };
             }
 
-            function loadFilter() {
-                $scope.status = 'loading';
+            function normaliseFilterSettings() {
                 $scope.filterSettings = angular.extend({}, $scope.filterSettings, $routeParams);
 
                 // ensure properties that need to be numeric are actually numbers
@@ -58,17 +58,6 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         $scope.filterSettings[currentvalue] = stringValue === null ? null : Number(stringValue);
                     }
                 );
-
-                $scope.library = AudioEvent.library($scope.filterSettings, null, function librarySuccess(value, responseHeaders) {
-                    value.entries.map(Media.getMediaItem);
-                    value.audioElement = null;
-                    $scope.paging = getPagingSettings($scope.library.page, $scope.library.items, $scope.library.total);
-                    $scope.status = 'loaded';
-                    $scope.responseDetails = responseHeaders;
-                }, function libraryError(httpResponse){
-                    $scope.status = 'error';
-                    console.error('Failed to load library response.', $scope.filterSettings, httpResponse);
-                });
             }
 
             function getPagingSettings(page, items, total) {
@@ -135,35 +124,66 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
                 return paging;
             }
+
+            function loadFilter() {
+                $scope.status = 'loading';
+
+                normaliseFilterSettings();
+
+                AudioEvent.library($scope.filterSettings, null, function librarySuccess(value, responseHeaders) {
+
+                    $scope.status = 'loaded';
+                    $scope.responseDetails = responseHeaders;
+                    $scope.paging = getPagingSettings(value.page, value.items, value.total);
+                    $scope.annotations = [];
+
+                    angular.forEach(value.entries, function (audioEventValue, key) {
+                        var annotation = angular.extend({}, audioEventValue);
+                        annotation.priorityTag = Tag.selectSinglePriorityTag(annotation.tags);
+                        AudioEvent.addCalculatedProperties(annotation);
+                        AudioEvent.getBoundSettings(annotation);
+                        this.push(annotation);
+                    }, $scope.annotations);
+
+                }, function libraryError(httpResponse) {
+                    $scope.status = 'error';
+                    console.error('Failed to load library response.', $scope.filterSettings, httpResponse);
+                });
+            }
         }])
-    .controller('AnnotationItemCtrl', ['$scope', '$location', '$resource', '$routeParams', '$url', 'conf.paths', 'AudioEvent', 'Media',
-        function ($scope, $location, $resource, $routeParams, $url, paths, AudioEvent, Media) {
+    .controller('AnnotationItemCtrl',
+    ['$scope', '$location', '$resource', '$routeParams', '$url',
+        'conf.paths', 'conf.constants',
+        'AudioEvent', 'Tag',
+        function ($scope, $location, $resource, $routeParams, $url, paths, constants, AudioEvent, Tag) {
 
             var parameters = {
                 audioEventId: $routeParams.audioEventId,
                 recordingId: $routeParams.recordingId
             };
 
-            $scope.model = AudioEvent.get(parameters,
-                function annotationShowSuccess(value, responseHeaders) {
-                    Media.getMediaItem(value);
-                    value.audioElement = null;
-                    $scope.model = value;
+            AudioEvent.get(parameters,
+                function annotationShowSuccess(audioEventValue, responseHeaders) {
 
-                    if ($scope.model.paging.nextEvent.hasOwnProperty('audioEventId')) {
-                        $scope.model.paging.nextEvent.link = '/library/' +
-                            $scope.model.paging.nextEvent.audioRecordingId +
-                            '/audio_events/' + $scope.model.paging.nextEvent.audioEventId;
+                    var annotation = angular.extend({}, audioEventValue);
+                    annotation.priorityTag = Tag.selectSinglePriorityTag(annotation.tags);
+                    AudioEvent.addCalculatedProperties(annotation);
+                    AudioEvent.getBoundSettings(annotation);
+
+                    $scope.annotation = annotation;
+
+                    // paging
+                    if ($scope.annotation.paging.nextEvent.hasOwnProperty('audioEventId')) {
+                        $scope.annotation.paging.nextEvent.link = '/library/' +
+                            $scope.annotation.paging.nextEvent.audioRecordingId +
+                            '/audio_events/' + $scope.annotation.paging.nextEvent.audioEventId;
                     }
 
-                    if ($scope.model.paging.prevEvent.hasOwnProperty('audioEventId')) {
-                        $scope.model.paging.prevEvent.link = '/library/' +
-                            $scope.model.paging.prevEvent.audioRecordingId +
-                            '/audio_events/' + $scope.model.paging.prevEvent.audioEventId;
+                    if ($scope.annotation.paging.prevEvent.hasOwnProperty('audioEventId')) {
+                        $scope.annotation.paging.prevEvent.link = '/library/' +
+                            $scope.annotation.paging.prevEvent.audioRecordingId +
+                            '/audio_events/' + $scope.annotation.paging.prevEvent.audioEventId;
                     }
-
-                    $scope.model.audioEventDuration = Math.round10(value.endTimeSeconds - value.startTimeSeconds, -3);
-
                 }, function annotationShowError(httpResponse) {
                     console.error('Failed to load library single item response.', parameters, httpResponse);
                 });
