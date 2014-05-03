@@ -71,6 +71,7 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
   padding: 0 !important;
   margin: 0;
   border: 1px dotted #8c8c8c;
+  background: url(#{$loadGifPath}) center center no-repeat;
 
   & img {
 
@@ -83,7 +84,6 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
     width: 100%;
     height: 100%;
     z-index: 1;
-    background: url(#{$loadGifPath}) center center no-repeat;
   }
 
   & .library-spectrogram-bounds {

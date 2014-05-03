@@ -42,8 +42,8 @@
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
     }]);
 
-    bawss.factory('AudioEvent', [ '$resource', '$url', 'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'Media',
-        function ($resource, $url, paths, constants, unitConverter, Media) {
+    bawss.factory('AudioEvent', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
         var baseCsvUri = paths.api.routes.audioEvent.csvAbsolute;
 
         // TODO: move this to paths conf object
@@ -92,114 +92,12 @@
         );
         resource.csvLink = makeCsvLink;
 
-        resource.addCalculatedProperties = function addCalculatedProperties(audioEvent){
-
-            audioEvent.annotationDuration = audioEvent.endTimeSeconds - audioEvent.startTimeSeconds;
-            audioEvent.annotationDurationRounded = Math.round10(audioEvent.endTimeSeconds - audioEvent.startTimeSeconds, -3);
-            audioEvent.annotationFrequencyRange = audioEvent.highFrequencyHertz - audioEvent.lowFrequencyHertz;
-            audioEvent.calcOffsetStart = Math.floor(audioEvent.startTimeSeconds / 30) * 30;
-            audioEvent.calcOffsetEnd = (Math.floor(audioEvent.startTimeSeconds / 30) * 30) + 30;
-
-            audioEvent.urls = {
-                site: '/projects/' + audioEvent.projects[0].id +
-                    '/sites/' + audioEvent.siteId,
-                user: '/user_accounts/' + audioEvent.ownerId,
-                tagSearch: '/library?' + $url.toKeyValue({tagsPartial: audioEvent.priorityTag.text}),
-                similar: '/library?' + $url.toKeyValue(
-                    {
-                        annotationDuration: Math.round10(audioEvent.annotationDuration, -3),
-                        freqMin: Math.round(audioEvent.lowFrequencyHertz),
-                        freqMax: Math.round(audioEvent.highFrequencyHertz)
-                    }),
-                singleItem: '/library/' + audioEvent.audioRecordingId +
-                    '/audio_events/' + audioEvent.audioEventId,
-                listen: '/listen/' + audioEvent.audioRecordingId +
-                    '?start=' + audioEvent.calcOffsetStart +
-                    '&end=' + audioEvent.calcOffsetEnd,
-                listenWithoutPadding: '/listen/' + audioEvent.audioRecordingId +
-                    '?start=' + audioEvent.startTimeSeconds +
-                    '&end=' + audioEvent.endTimeSeconds
-            };
-
-            return audioEvent;
-        };
-
-        resource.getBoundSettings = function getBoundSettings(audioEvent){
-            var mediaItemParameters = {
-                recordingId: audioEvent.audioRecordingId,
-                start_offset: Math.floor(audioEvent.startTimeSeconds - constants.annotationLibrary.paddingSeconds),
-                end_offset: Math.ceil(audioEvent.endTimeSeconds + constants.annotationLibrary.paddingSeconds),
-                format: "json"
-            };
-
-            audioEvent.media = Media.get(
-                mediaItemParameters,
-                function mediaGetSuccess(mediaValue, responseHeaders) {
-
-                    Media.formatPaths(mediaValue);
-                    mediaValue = new baw.Media(mediaValue);
-
-                    // create properties that depend on Media
-                    audioEvent.converters = unitConverter.getConversions({
-                        sampleRate: audioEvent.media.sampleRate,
-                        spectrogramWindowSize: audioEvent.media.availableImageFormats.png.window,
-                        endOffset: audioEvent.media.endOffset,
-                        startOffset: audioEvent.media.startOffset,
-                        imageElement: null
-                    });
-
-                    audioEvent.bounds = {
-                        top: audioEvent.converters.toTop(audioEvent.highFrequencyHertz),
-                        left: audioEvent.converters.toLeft(audioEvent.startTimeSeconds),
-                        width: audioEvent.converters.toWidth(audioEvent.endTimeSeconds, audioEvent.startTimeSeconds),
-                        height: audioEvent.converters.toHeight(audioEvent.highFrequencyHertz, audioEvent.lowFrequencyHertz)
-                    };
-
-                    // set common/sensible defaults, but hide the elements
-                    audioEvent.gridConfig = {
-                        y: {
-                            showGrid: true,
-                            showScale: true,
-                            max: audioEvent.converters.conversions.nyquistFrequency,
-                            min: 0,
-                            step: 1000,
-                            height: audioEvent.converters.conversions.enforcedImageHeight,
-                            labelFormatter: function (value, index, min, max) {
-                                return (value / 1000).toFixed(1);
-                            },
-                            title: "Frequency (KHz)"
-                        },
-                        x: {
-                            showGrid: true,
-                            showScale: true,
-                            max: audioEvent.media.endOffset,
-                            min: audioEvent.media.startOffset,
-                            step: 1,
-                            width: audioEvent.converters.conversions.enforcedImageWidth,
-                            labelFormatter: function (value, index, min, max) {
-                                // show 'absolute' time.... i.e. seconds of the minute
-                                var offset = (value % 60);
-
-                                return (offset).toFixed(0);
-                            },
-                            title: "Time offset (seconds)"
-                        }
-                    };
-
-
-                }, function mediaGetFailure(httpResponse) {
-                    console.error("Failed to get Media.", httpResponse);
-                }
-            );
-
-            return audioEvent;
-        };
-
         return resource;
     }]);
 
 
-    bawss.factory('Taggings', [ '$resource', 'conf.paths', function ($resource, paths) {
+    bawss.factory('Taggings', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
         var resource = resourcePut($resource, uriConvert(paths.api.routes.tagging.showAbsolute),
             {
                 recordingId: '@recordingId',
@@ -233,7 +131,8 @@
      *
      * This service memoises requests for tags
      */
-    bawss.factory('Tag', [ '$resource', 'conf.paths', '$q', function ($resource, paths, $q) {
+    bawss.factory('Tag', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
         var resource = $resource(uriConvert(paths.api.routes.tag.showAbsolute), {tagId: '@tagId'}, {});
 
         var tags = {};
@@ -330,8 +229,8 @@
         return resource;
     }]);
 
-    bawss.factory('Media', [ '$resource', '$url', 'conf.paths',
-        function ($resource, $url, paths) {
+    bawss.factory('Media', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
 
             // create resource for rest requests to media api
             var mediaResource = $resource(uriConvert(paths.api.routes.media.showAbsolute),
@@ -373,7 +272,8 @@
         return mediaResource;
     }]);
 
-    bawss.factory('BirdWalkService', ['$rootScope', '$location', '$route', '$routeParams', '$http', function ($rootScope, $location, $route, $routeParams, $http) {
+    bawss.factory('BirdWalkService', ['$rootScope', '$location', '$route', '$routeParams', '$http',
+        function ($rootScope, $location, $route, $routeParams, $http) {
 
         var birdWalkService = {};
 
