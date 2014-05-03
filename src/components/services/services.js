@@ -3,8 +3,8 @@
      * Helper method for adding a put request onto the standard angular resource service
      * @param $resource - the stub resource
      * @param {string} path - the web server path
-     * @param {Object} paramDefaults
-     * @param {Object} [actions] a set of actions to also add (extend)
+     * @param {Object} paramDefaults - the default parameters
+     * @param {Object} [actions] - a set of actions to also add (extend)
      * @return {*}
      */
     function resourcePut($resource, path, paramDefaults, actions) {
@@ -12,8 +12,14 @@
         a.update = a.update || { method: 'PUT' };
         return $resource(path, paramDefaults, a);
     }
-
+    /**
+     *
+     * @param uri
+     * @returns {*}
+     */
     function uriConvert(uri) {
+        // find all place holders in this form: '{identifier}'
+        // replace with placeholder in this form: ':identifier'
         return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
@@ -36,7 +42,8 @@
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
     }]);
 
-    bawss.factory('AudioEvent', [ '$resource', 'conf.paths', function ($resource, paths) {
+    bawss.factory('AudioEvent', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
         var baseCsvUri = paths.api.routes.audioEvent.csvAbsolute;
 
         // TODO: move this to paths conf object
@@ -75,16 +82,22 @@
         }
 
         var resource = resourcePut($resource, uriConvert(paths.api.routes.audioEvent.showAbsolute),
+            {recordingId: '@recordingId',audioEventId: '@audioEventId'},
             {
-                recordingId: '@recordingId',
-                audioEventId: '@audioEventId'
-            });
+                library: {
+                    method:'GET',
+                    url: uriConvert(paths.api.routes.audioEvent.libraryAbsolute)
+                }
+            }
+        );
         resource.csvLink = makeCsvLink;
+
         return resource;
     }]);
 
 
-    bawss.factory('Taggings', [ '$resource', 'conf.paths', function ($resource, paths) {
+    bawss.factory('Taggings', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
         var resource = resourcePut($resource, uriConvert(paths.api.routes.tagging.showAbsolute),
             {
                 recordingId: '@recordingId',
@@ -118,7 +131,8 @@
      *
      * This service memoises requests for tags
      */
-    bawss.factory('Tag', [ '$resource', 'conf.paths', '$q', function ($resource, paths, $q) {
+    bawss.factory('Tag', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
         var resource = $resource(uriConvert(paths.api.routes.tag.showAbsolute), {tagId: '@tagId'}, {});
 
         var tags = {};
@@ -169,26 +183,97 @@
             }
         };
 
+
+        var emptyTag = {
+            text: "<no tags>",
+            typeOfTag: ""
+        };
+
+        resource.selectSinglePriorityTag = function selectSinglePriorityTag(tags){
+
+            // which tag to show?
+            // common name, then species_name, then if all else fails... whatever is first
+
+            if (!tags || tags.length === 0) {
+                return emptyTag;
+            }
+
+            var first = tags[0];
+
+
+            // optimise for most common case
+            // also: on load, only incomplete tags will be listed --> the tag resolver then runs for every tag, just below
+            if (first.typeOfTag == baw.Tag.tagTypes.commonName) {
+                return first;
+            }
+            else {
+                var commonName, speciesName, firstOther;
+                tags.forEach(function (value) {
+
+
+                    if (value.typeOfTag == baw.Tag.tagTypes.commonName && !commonName) {
+                        commonName = value;
+                    }
+                    if (value.typeOfTag == baw.Tag.tagTypes.speciesName && !speciesName) {
+                        speciesName = value;
+                    }
+                    if (!firstOther) {
+                        firstOther = value;
+                    }
+                });
+
+                return commonName || speciesName || firstOther;
+            }
+        };
+
         return resource;
     }]);
 
-    bawss.factory('Media', [ '$resource', 'conf.paths', function ($resource, paths) {
-        var mediaResource = $resource(uriConvert(paths.api.routes.media.showAbsolute),
+    bawss.factory('Media', [ '$resource', 'conf.paths',
+        function ($resource, paths) {
+
+            // create resource for rest requests to media api
+            var mediaResource = $resource(uriConvert(paths.api.routes.media.showAbsolute),
             {
                 recordingId: '@recordingId',
                 format: '@format'
             });
 
-        // this is a read only service, remove unnecessary methods
-        delete  mediaResource.save;
-        delete  mediaResource.remove;
-        delete  mediaResource["delete"];
-        //delete  mediaResource.update;
+            // this is a read only service, remove unnecessary methods
+            // keep get
+            delete  mediaResource["save"];
+            delete  mediaResource["query"];
+            delete  mediaResource["remove"];
+            delete  mediaResource["delete"];
+
+            /**
+             * Change relative image and audio urls into absolute urls
+             * @param {Object} mediaItem
+             */
+            mediaResource.formatPaths = function formatPaths(mediaItem) {
+
+                var imgKeys = Object.keys(mediaItem.availableImageFormats);
+                if (imgKeys.length > 1) {
+                    throw "don't know how to handle more than one image format!";
+                }
+
+                var imageKey = imgKeys[0];
+                var imageFormat = mediaItem.availableImageFormats[imageKey];
+                mediaItem.availableImageFormats[imageKey].url = paths.joinFragments(paths.api.root, imageFormat.url);
+                mediaItem.spectrogram = imageFormat;
+
+                angular.forEach(mediaItem.availableAudioFormats, function (value, key) {
+                    // just update the url so it is an absolute uri
+                    this[key].url = paths.joinFragments(paths.api.root, value.url);
+
+                }, mediaItem.availableAudioFormats);
+            };
 
         return mediaResource;
     }]);
 
-    bawss.factory('BirdWalkService', ['$rootScope', '$location', '$route', '$routeParams', '$http', function ($rootScope, $location, $route, $routeParams, $http) {
+    bawss.factory('BirdWalkService', ['$rootScope', '$location', '$route', '$routeParams', '$http',
+        function ($rootScope, $location, $route, $routeParams, $http) {
 
         var birdWalkService = {};
 

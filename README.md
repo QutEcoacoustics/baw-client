@@ -17,6 +17,8 @@ Temporary fix:
 	
 cd to your cloned directory and then install `npm` and `bower` modules.
 
+	$ npm i -g karma@0.10.10
+
 	$ npm install
 
 	$ bower install

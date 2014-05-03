@@ -19,7 +19,6 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
         if (data.sampleRate === undefined ||
             data.spectrogramWindowSize === undefined ||
             data.startOffset === undefined ||
-            data.startOffset === undefined ||
             data.endOffset === undefined) {
             console.warn("unitConverter:calculateUnitConversions: not enough information available to calculate unit conversions");
             return result;

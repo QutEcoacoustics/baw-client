@@ -73,48 +73,8 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
             }
         };
 
-
-        var emptyTag = {
-            text: "<no tags>",
-            typeOfTag: ""
-        };
-        $scope.getTag = function getTag(annotation) {
-
-            // which tag to show?
-            // common name, then species_name, then if all else fails... whatever is first
-
-            var tags = annotation.tags;
-
-            if (!tags || tags.length === 0) {
-                return emptyTag;
-            }
-
-            var first = tags[0];
-
-
-            // optimise for most common case
-            // also: on load, only incomplete tags will be listed --> the tag resolver then runs for every tag, just below
-            if (first.typeOfTag == baw.Tag.tagTypes.commonName) {
-                return first;
-            }
-            else {
-                var commonName, speciesName, firstOther;
-                tags.forEach(function (value) {
-
-
-                    if (value.typeOfTag == baw.Tag.tagTypes.commonName && !commonName) {
-                        commonName = value;
-                    }
-                    if (value.typeOfTag == baw.Tag.tagTypes.speciesName && !speciesName) {
-                        speciesName = value;
-                    }
-                    if (!firstOther) {
-                        firstOther = value;
-                    }
-                });
-
-                return commonName || speciesName || firstOther;
-            }
+        $scope.getTag = function(annotation){
+            return Tag.selectSinglePriorityTag(annotation.tags);
         };
 
         $scope.positionLabel = function (audioEvent) {

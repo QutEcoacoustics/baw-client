@@ -1,0 +1,93 @@
+$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
+
+/* Library list */
+.annotation-paging {
+  margin: 0 !important;
+}
+
+.annotation-library {
+  margin-top: 30px;
+
+  & .library-item {
+    padding: 10px 10px 0 40px;
+    margin: 5px;
+    position: relative;
+    max-height:410px;
+    height:410px;
+    min-width: 180px;
+
+    & .library-item-info {
+      display: block;
+      clear: both;
+      margin-top: 20px;
+
+      & audio {
+        width:75%;
+        min-width:110px;
+        max-width:300px;
+        margin:0 auto 0 auto;
+        display:block;
+        /*@include vendor-prefix(transform, scale(0.8));*/
+      }
+
+      & .info-entry {
+        font-size: small;
+        display:block;
+        margin: 3px 5px;
+        overflow-x: hidden;
+        min-width:110px;
+        max-width:300px;
+      }
+    }
+  }
+}
+
+/* Library single item */
+.library-single {
+  padding: 10px 0 0 40px;
+  position: relative;
+  margin: 0 auto 0 auto;
+
+
+  & audio {
+    margin-top: 30px;
+  }
+}
+
+.library-single-info {
+  margin: 0 auto 0 auto;
+}
+
+/* Shared spectrogram and grid  */
+.library-spectrogram {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  display: inline-block;
+  position: relative;
+  line-height: 0;
+  padding: 0 !important;
+  margin: 0;
+  border: 1px dotted #8c8c8c;
+  background: url(#{$loadGifPath}) center center no-repeat;
+
+  & img {
+
+  }
+
+  & .library-spectrogram-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  & .library-spectrogram-bounds {
+    position: absolute;
+    border: 1px solid red;
+  }
+}

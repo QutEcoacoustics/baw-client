@@ -1,0 +1,92 @@
+<div id="content" data-ng-controller="AnnotationItemCtrl">
+    <h3>Annotation {{model.audioEventId}}</h3>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="library-single"
+                 data-ng-style="{width:annotation.converters.conversions.enforcedImageWidth + 100}">
+                <div class="library-spectrogram">
+                    <img data-ng-src="{{annotation.media.availableImageFormats.png.url}}"
+                         data-ng-style="{width: annotation.converters.conversions.enforcedImageWidth, height: annotation.converters.conversions.enforcedImageHeight}">
+                    <grid-lines configuration="annotation.gridConfig" class="library-spectrogram-grid"></grid-lines>
+                    <div class="library-spectrogram-bounds"
+                         data-ng-style="{top: annotation.bounds.top, left: annotation.bounds.left, width: annotation.bounds.width, height: annotation.bounds.height}"></div>
+                </div>
+                <audio id="annoSingleAudio{{$index}}" controls
+                       data-ng-style="{width:annotation.converters.conversions.enforcedImageWidth}">
+                    <source data-ng-repeat="resource in annotation.media.availableAudioFormats" data-ng-src="{{resource.url}}" src=""
+                                            type="{{resource.mimeType}}">
+                    Your browser does not support the audio element.
+                </audio>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="pager">
+                <li class="previous" data-ng-show="annotation.paging.prevEvent.link">
+                    <a data-ng-href="{{annotation.paging.prevEvent.link}}">&larr; Previous</a>
+                </li>
+                <li class="next" data-ng-show="annotation.paging.nextEvent.link">
+                    <a data-ng-href="{{annotation.paging.nextEvent.link}}">Next &rarr;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="library-single-info panel panel-default">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">Details</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="list-group">
+                        <a data-ng-repeat="tag in annotation.tags"
+                           data-ng-href="{{annotation.urls.tagSearch}}"
+                           class="list-group-item" title="Tag.">
+                            <span class="glyphicon glyphicon-tags"></span>&nbsp;
+                            <span class="badge">{{tag.typeOfTag.replace('_',' ')}}</span>
+                            <span class="badge" data-ng-show="tag.retired">retired</span>
+                            <span class="badge" data-ng-show="tag.isTaxanomic">taxonomic</span>
+                            {{tag.text}} (ID {{tag.id}})
+                        </a>
+                        <a data-ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Start date.">
+                            <span class="glyphicon glyphicon-record"></span>&nbsp;
+                            Created {{annotation.audioEventStartDate | date: 'medium'}}
+                        </a>
+                        <a data-ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Duration.">
+                            <span class="glyphicon glyphicon-time"></span>&nbsp;
+                            {{annotation.annotationDurationRounded}} seconds duration
+                        </a>
+                        <a data-ng-href="{{annotation.urls.site}}" class="list-group-item" title="Site name.">
+                            <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
+                            {{annotation.siteName}}
+                        </a>
+                        <a data-ng-href="{{annotation.urls.user}}" class="list-group-item" title="User.">
+                            <span class="glyphicon glyphicon-user"></span>&nbsp;
+                            {{annotation.ownerName }}
+                        </a>
+                        <a data-ng-href="{{annotation.urls.similar}}" class="list-group-item"
+                           title="Find similar annotations.">
+                            <span class="glyphicon glyphicon-search"></span>&nbsp;
+                            Find Similar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="library-single-info panel panel-default">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left"><span class="glyphicon glyphicon-comment"></span>&nbsp;Comments</h3>
+                </div>
+                <div class="panel-body">
+                    <em>Coming soon...</em>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -30,6 +30,58 @@ Math.randomInt = function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
+// from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#Example:_Decimal_rounding
+// Closure
+(function(){
+
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param	{String}	type	The type of adjustment.
+     * @param	{Number}	value	The number.
+     * @param	{Integer}	exp		The exponent (the 10 logarithm of the adjustment base).
+     * @returns	{Number}			The adjusted value.
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    if (!Math.round10) {
+        Math.round10 = function(value, exp) {
+            return decimalAdjust('round', value, exp);
+        };
+    }
+    // Decimal floor
+    if (!Math.floor10) {
+        Math.floor10 = function(value, exp) {
+            return decimalAdjust('floor', value, exp);
+        };
+    }
+    // Decimal ceil
+    if (!Math.ceil10) {
+        Math.ceil10 = function(value, exp) {
+            return decimalAdjust('ceil', value, exp);
+        };
+    }
+
+})();
+
 
 /**
  * IndexOf Shim
@@ -194,6 +246,13 @@ if (!Array.prototype.filter) {
         return output;
     };
 
+    // http://stackoverflow.com/a/1199420
+    baw.stringTrunc = function (str, n, useWordBoundary) {
+        var toLong = str.length > n,
+            s_ = toLong ? str.substr(0, n - 1) : str;
+        s_ = useWordBoundary && toLong ? s_.substr(0, s_.lastIndexOf(' ')) : s_;
+        return  toLong ? s_ + '&hellip;' : s_;
+    };
 
     /**
      * A custom formatter for TimeSpans - accepts seconds only
@@ -299,6 +358,7 @@ if (!Array.prototype.filter) {
         this.isUndefined = function isUndefined(value) {
             return typeof value == 'undefined';
         };
+
     }
 
     baw.angularCopies = new Angular();

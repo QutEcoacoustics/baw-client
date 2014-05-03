@@ -71,7 +71,8 @@ angular.module('bawApp.configuration', ['url'])
                     audioEvent: {
                         list: "/audio_recordings/{recordingId}/audio_events",
                         show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}",
-                        csv: "/audio_events/download."
+                        csv: "/audio_events/download.",
+                        library: "/audio_events/library/paged"
                     },
                     tagging: {
                         list: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings",
@@ -108,6 +109,10 @@ angular.module('bawApp.configuration', ['url'])
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
                     gridLines: 'annotationViewer/gridLines/gridLines.tpl.html',
+                    library: {
+                        list: 'annotationLibrary/annotationLibrary.tpl.html',
+                        item: 'annotationLibrary/annotationItem.tpl.html'
+                    },
                     navigation: 'navigation/navigation.tpl.html',
                     birdWalk: {
                         list: 'birdWalks/birdWalks.tpl.html',
@@ -119,7 +124,9 @@ angular.module('bawApp.configuration', ['url'])
                 },
                 // routes used by angular
                 ngRoutes: {
-                    listen: "/listen/{recordingId}"
+                    listen: "/listen/{recordingId}",
+                    library: "/library",
+                    libraryItem: "/library/{recordingId}/audio_events/{audioEventId}"
                 },
                 // general links for use in <a />'s
                 links: {
@@ -173,5 +180,8 @@ angular.module('bawApp.configuration', ['url'])
                 muted: false
             },
             userName: "Unknown user"
+        },
+        annotationLibrary: {
+            paddingSeconds: 1.0
         }
     });
