@@ -165,6 +165,9 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         $scope.filterSettings[currentvalue] = isVoid ? null : Number(stringValue);
                     }
                 );
+                
+                // disable other options for reference filter
+                $scope.filterSettings.reference = 'true';
             }
 
             function getPagingSettings(page, items, total) {
