@@ -138,7 +138,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             function getEmptyFilterSettings() {
                 return {
                     tagsPartial: null,
-                    reference: '', // set to empty string to match value of radio button
+                    reference: 'true', // set to empty string to match value of radio button
                     userId: null,
                     annotationDuration: null,
                     freqMin: null,
@@ -161,7 +161,8 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 ].forEach(
                     function (currentvalue, index, array) {
                         var stringValue = $scope.filterSettings[currentvalue];
-                        $scope.filterSettings[currentvalue] = stringValue === null ? null : Number(stringValue);
+                        var isVoid = stringValue === null || stringValue === undefined || stringValue === "";
+                        $scope.filterSettings[currentvalue] = isVoid ? null : Number(stringValue);
                     }
                 );
             }
