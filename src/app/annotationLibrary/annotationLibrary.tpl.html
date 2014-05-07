@@ -1,4 +1,4 @@
-<div id="content" data-ng-controller="AnnotationLibraryCtrl">
+<div id="content">
     <h3>Annotation Library</h3>
 
     <div class="panel panel-default">
@@ -12,7 +12,15 @@
                                data-ng-model="filterSettings.tagsPartial">
                     </div>
 
-                    <p class="help-block text-muted col-sm-6">Use comma (,) to separate tags.</p>
+                    <p class="help-block text-muted col-sm-3">Use comma (,) to separate tags.</p>
+
+                    <label for="refLibraryAudioRecordingId" class="col-sm-1 control-label">Recording Id</label>
+
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control" id="refLibraryAudioRecordingId"
+                               placeholder="Audio Recording Id" step="1" min="1"
+                               data-ng-model="filterSettings.audioRecordingId">
+                    </div>
 
                 </div>
                 <div class="form-group">
@@ -20,21 +28,21 @@
 
                     <div class="col-sm-3">
                         <input type="number" class="form-control" id="refLibraryDuration"
-                               placeholder="Duration (in seconds)"
+                               placeholder="Duration (in seconds)" step="any"
                                data-ng-model="filterSettings.annotationDuration">
                     </div>
 
                     <label for="refLibraryFreqMin" class="col-sm-2 control-label">Min Frequency</label>
 
                     <div class="col-sm-2">
-                        <input type="number" class="form-control" id="refLibraryFreqMin"
+                        <input type="number" class="form-control" id="refLibraryFreqMin" step="any"
                                placeholder="Minimum Frequency" data-ng-model="filterSettings.freqMin">
                     </div>
 
                     <label for="refLibraryFreqMax" class="col-sm-2 control-label">Max Frequency</label>
 
                     <div class="col-sm-2">
-                        <input type="number" class="form-control" id="refLibraryFreqMax"
+                        <input type="number" class="form-control" id="refLibraryFreqMax"  step="any"
                                placeholder="Maximum Frequency" data-ng-model="filterSettings.freqMax">
                     </div>
                 </div>
@@ -62,21 +70,21 @@
 
                     <div class="col-sm-1">
                         <input type="number" class="form-control" id="refLibraryPage" placeholder="Page"
-                               data-ng-model="filterSettings.page">
+                               data-ng-model="filterSettings.page" step="1" min="1">
                     </div>
 
                     <label for="refLibraryItems" class="col-sm-1 control-label">Items</label>
 
                     <div class="col-sm-1">
                         <input type="number" class="form-control" id="refLibraryItems" placeholder="Items"
-                               data-ng-model="filterSettings.items">
+                               data-ng-model="filterSettings.items" step="1" min="1">
                     </div>
 
                     <label for="refLibraryUserId" class="col-sm-1 control-label">User Id</label>
 
                     <div class="col-sm-1">
                         <input type="number" class="form-control" id="refLibraryUserId" placeholder="User Id"
-                               data-ng-model="filterSettings.userId">
+                               data-ng-model="filterSettings.userId" step="1" min="1">
                     </div>
                 </div>
                 <div class="form-group">
