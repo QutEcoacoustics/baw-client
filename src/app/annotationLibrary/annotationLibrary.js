@@ -288,8 +288,14 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
     .controller('AnnotationItemCtrl',
     ['$scope', '$location', '$resource', '$routeParams', '$url',
         'conf.paths', 'conf.constants', 'bawApp.unitConverter',
-        'AudioEvent', 'Tag', 'Media',
-        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag, Media) {
+        'AudioEvent', 'Tag', 'Media', 'UserProfile',
+        function ($scope, $location, $resource, $routeParams, $url,
+                  paths, constants, unitConverter, AudioEvent, Tag, Media, UserProfile) {
+
+            $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
+            if (UserProfile.profile && UserProfile.profile.preferences) {
+                profileLoaded(null, UserProfile);
+            }
 
             var parameters = {
                 audioEventId: $routeParams.audioEventId,
@@ -339,5 +345,9 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             $scope.createProjectUrl = function createProjectUrl(projectId){
                 return $url.formatUri(paths.api.links.projectAbsolute, {projectId: projectId});
             };
+
+            function profileLoaded(event, userProfile){
+                $scope.profile = userProfile.profile;
+            }
 
         }]);
