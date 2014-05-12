@@ -1,4 +1,4 @@
-<div id="content" data-ng-controller="AnnotationItemCtrl">
+<div id="content">
     <h3>Annotation {{model.audioEventId}}</h3>
 
     <div class="row">
@@ -69,13 +69,18 @@
                             {{annotation.annotationDurationRounded}} seconds duration
                         </a>
                         <a data-ng-repeat="project in annotation.projects"
-                           data-ng-href="{{$parent.createProjectUrl(project.id)}}" class="list-group-item" title="Project name.">
+                           data-ng-href="{{$parent.createProjectUrl(project.id)}}" class="list-group-item"
+                           title="Project name.">
                             <span class="glyphicon glyphicon-home"></span>&nbsp;
                             Project: {{project.name}}
                         </a>
                         <a data-ng-href="{{annotation.urls.site}}" class="list-group-item" title="Site name.">
-                            <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
+                            <span class="glyphicon glyphicon-music"></span>&nbsp;
                             Site: {{annotation.siteName}}
+                        </a>
+                        <a data-ng-href="{{annotation.urls.audioRecording}}" class="list-group-item" title="Site name.">
+                            <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
+                            Audio recording: {{annotation.audioRecordingId}}
                         </a>
                         <a data-ng-href="{{annotation.urls.user}}" class="list-group-item" title="User.">
                             <span class="glyphicon glyphicon-user"></span>&nbsp;
@@ -97,7 +102,70 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <em>Coming soon...</em>
+                    <ul class="media-list">
+                        <li class="media">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" src="" alt="">
+                            </a>
+
+                            <div class="media-body">
+                                <p class="pull-right">
+                                    <a href="#">link</a> | <a href="#">report</a>
+                                </p>
+                                <h4 class="media-heading">
+                                    UserName
+                                    <small title="absolute timestamp">time ago in words</small>
+                                </h4>
+                                <p>
+                                    Comment body
+                                </p>
+                            </div>
+                        </li>
+                        <li class="media">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" src="" alt="">
+                            </a>
+
+                            <div class="media-body">
+                                <p class="pull-right">
+                                    <a href="#">link</a> | <a href="#">report</a>
+                                </p>
+                                <h4 class="media-heading">
+                                    UserName
+                                    <small title="absolute timestamp">time ago in words</small>
+                                </h4>
+                                <p>
+                                    Comment body
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="media-list">
+                        <li class="media">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" src="" alt="">
+                            </a>
+
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    {{profile.userName}}
+                                    <small title="now">now</small>
+                                </h4>
+
+                                <form role="form">
+                                    <div class="form-group">
+                                        <textarea class="form-control"
+                                                  placeholder="Add a comment / Continue the discussion"
+                                                  style="width:90%" id="addAnnotationComment"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-default">Post</button>
+                                </form>
+
+                            </div>
+                        </li>
+                    </ul>
+
+
                 </div>
             </div>
         </div>
