@@ -147,7 +147,7 @@
                                 <h4 class="media-heading">
                                     {{comment.updater.userName}}
                                     <small title="{{comment.updatedAt}}">
-                                        {{$parent.formatTimeAgo(comment.updatedAt, 'YYYY-MM-DDTHH:mm:ssZZ')}}
+                                        last change {{$parent.formatTimeAgo(comment.updatedAt, 'YYYY-MM-DDTHH:mm:ssZZ')}}
                                     </small>
                                 </h4>
                                 <p ng-show="$parent.editComment.id != comment.id">
