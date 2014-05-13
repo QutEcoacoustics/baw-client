@@ -21,7 +21,7 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
                 annotationDuration: Math.round10(audioEvent.annotationDuration, -3),
                 freqMin: Math.round(audioEvent.lowFrequencyHertz),
                 freqMax: Math.round(audioEvent.highFrequencyHertz)
-            },true),
+            }, true),
         singleItem: '/library/' + audioEvent.audioRecordingId +
             '/audio_events/' + audioEvent.audioEventId,
         listen: '/listen/' + audioEvent.audioRecordingId +
@@ -30,7 +30,7 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
         listenWithoutPadding: '/listen/' + audioEvent.audioRecordingId +
             '?start=' + audioEvent.startTimeSeconds +
             '&end=' + audioEvent.endTimeSeconds,
-        audioRecording: '/library?' + $url.toKeyValue({audioRecordingId: audioEvent.audioRecordingId}, true),
+        audioRecording: '/library?' + $url.toKeyValue({audioRecordingId: audioEvent.audioRecordingId}, true)
     };
 
     return audioEvent;
@@ -171,7 +171,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         $scope.filterSettings[currentvalue] = isVoid ? null : Number(stringValue);
                     }
                 );
-                
+
                 // disable other options for reference filter
                 $scope.filterSettings.reference = 'true';
             }
@@ -270,9 +270,9 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
     .controller('AnnotationItemCtrl',
     ['$scope', '$location', '$resource', '$routeParams', '$url',
         'conf.paths', 'conf.constants', 'bawApp.unitConverter',
-        'AudioEvent', 'Tag', 'Media', 'UserProfile',
-        function ($scope, $location, $resource, $routeParams, $url,
-                  paths, constants, unitConverter, AudioEvent, Tag, Media, UserProfile) {
+        'AudioEvent', 'Tag',
+        'Media', 'UserProfile', 'AudioEventComment',
+        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag, Media, UserProfile, AudioEventComment) {
 
             $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
             if (UserProfile.profile && UserProfile.profile.preferences) {
@@ -284,6 +284,19 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 recordingId: $routeParams.recordingId
             };
 
+            // new comment text and errors
+            $scope.newComment = {
+                // bind to new comment textarea
+                text: '',
+                errors: []
+            };
+
+            $scope.editComment = {
+                id: null,
+                text: null,
+                errors: []
+                };
+
             AudioEvent.get(parameters,
                 function annotationShowSuccess(audioEventValue, responseHeaders) {
 
@@ -293,6 +306,9 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, Media);
 
                     $scope.annotation = annotation;
+
+                    // comments
+                    reloadComments();
 
                     // paging
                     if ($scope.annotation.paging.nextEvent.hasOwnProperty('audioEventId')) {
@@ -314,12 +330,94 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 return '/library/?' + $url.toKeyValue(paramObj, true);
             };
 
-            $scope.createProjectUrl = function createProjectUrl(projectId){
+            $scope.createProjectUrl = function createProjectUrl(projectId) {
                 return '/projects/' + projectId;
             };
 
-            function profileLoaded(event, userProfile){
+            $scope.createCommentLinkUrl = function createCommentLinkUrl(audioEventCommentId) {
+                return '/library/' + $routeParams.recordingId + '/audio_events/' +
+                    $routeParams.audioEventId + '#' + audioEventCommentId
+            };
+
+            $scope.formatTimeAgo = function formatTimeAgo(time, formatString){
+                return moment(time, formatString).fromNow();
+            };
+
+            $scope.createComment = function createComment() {
+                AudioEventComment.save(
+                    {audioEventId: $routeParams.audioEventId}, // parameters
+                    {comment: $scope.newComment.text}, // post data
+                    function createCommentSuccess(value, responseHeaders) {
+                        console.log('create success', arguments);
+                        $scope.newComment.errors = [];
+                        $scope.newComment.text = '';
+                        reloadComments();
+                    },
+                    function createCommentError(httpResponse) {
+                        console.log('create failure', arguments);
+                        $scope.newComment.errors = httpResponse.data.comment;
+                    });
+            };
+
+            $scope.deleteComment = function deleteComment(commentText, audioEventCommentId) {
+                var isConfirmed = confirm('Are you sure you want to delete this comment? "' + commentText + '"');
+                if (isConfirmed === true) {
+                    AudioEventComment.delete(
+                        {
+                            audioEventId: $routeParams.audioEventId,
+                            audioEventCommentId: audioEventCommentId
+                        }, // parameters
+                        null, // post data
+                        function deleteCommentSuccess(value, responseHeaders) {
+                            console.log('delete success', arguments);
+                            $scope.newComment.errors = [];
+                            $scope.newComment.text = '';
+                            reloadComments();
+                        },
+                        function deleteCommentError(httpResponse) {
+                            console.log('delete failure', arguments);
+                            $scope.newComment.errors = httpResponse.data.comment;
+                        });
+                }
+            };
+
+            $scope.updateComment = function updateComment(audioEventCommentId){
+                AudioEventComment.update(
+                    {
+                        audioEventId: $routeParams.audioEventId,
+                        audioEventCommentId: audioEventCommentId
+                    }, // parameters
+                    {comment: $scope.editComment.text}, // post data
+                    function updateCommentSuccess(value, responseHeaders) {
+                        console.log('update success', arguments);
+                        $scope.editComment.errors = [];
+                        $scope.editComment.text = null;
+                        $scope.editComment.id = null;
+                        reloadComments();
+                    },
+                    function updateCommentError(httpResponse) {
+                        console.log('update failure', arguments);
+                        $scope.editComment.errors = httpResponse.data.comment;
+                    });
+            };
+
+            $scope.editComment = function editComment(commentText, audioEventCommentId){
+                $scope.editComment.id = audioEventCommentId;
+                $scope.editComment.text = commentText;
+            };
+
+            function profileLoaded(event, userProfile) {
                 $scope.profile = userProfile.profile;
+            }
+
+            function reloadComments() {
+                // get array of comment for the current audio event
+                AudioEventComment.query(
+                    {audioEventId: $routeParams.audioEventId},
+                    function audioEventCommentSuccess(value, responseHeaders) {
+                        $scope.comments = value;
+                    });
+
             }
 
         }]);

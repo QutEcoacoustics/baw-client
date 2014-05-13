@@ -92,6 +92,9 @@ angular.module('bawApp.configuration', ['url'])
                     user: {
                         profile: "/my_account",
                         settings: "/my_account/prefs"
+                    },
+                    audioEventComment:{
+                        show: '/audio_events/{audioEventId}/audio_event_comments/{audioEventCommentId}'
                     }
                 },
                 links: {
@@ -109,6 +112,7 @@ angular.module('bawApp.configuration', ['url'])
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
                     gridLines: 'annotationViewer/gridLines/gridLines.tpl.html',
+                    annotationComments: 'annotationLibrary/comments/comments.tpl.html',
                     library: {
                         list: 'annotationLibrary/annotationLibrary.tpl.html',
                         item: 'annotationLibrary/annotationItem.tpl.html'

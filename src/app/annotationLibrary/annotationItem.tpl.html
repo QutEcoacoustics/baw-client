@@ -109,62 +109,75 @@
                             </a>
 
                             <div class="media-body">
-                                <p class="pull-right">
-                                    <a href="#">link</a> | <a href="#">report</a>
-                                </p>
-                                <h4 class="media-heading">
-                                    UserName
-                                    <small title="absolute timestamp">time ago in words</small>
-                                </h4>
-                                <p>
-                                    Comment body
-                                </p>
-                            </div>
-                        </li>
-                        <li class="media">
-                            <a class="pull-left" href="#">
-                                <img class="media-object" src="" alt="">
-                            </a>
-
-                            <div class="media-body">
-                                <p class="pull-right">
-                                    <a href="#">link</a> | <a href="#">report</a>
-                                </p>
-                                <h4 class="media-heading">
-                                    UserName
-                                    <small title="absolute timestamp">time ago in words</small>
-                                </h4>
-                                <p>
-                                    Comment body
-                                </p>
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="media-list">
-                        <li class="media">
-                            <a class="pull-left" href="#">
-                                <img class="media-object" src="" alt="">
-                            </a>
-
-                            <div class="media-body">
                                 <h4 class="media-heading">
                                     {{profile.userName}}
                                     <small title="now">now</small>
                                 </h4>
 
                                 <form role="form">
-                                    <div class="form-group">
+                                    <div class="form-group" ng-class="{'has-error': newComment.errors.length > 0}">
                                         <textarea class="form-control"
                                                   placeholder="Add a comment / Continue the discussion"
-                                                  style="width:90%" id="addAnnotationComment"></textarea>
+                                                  style="width:90%" id="addAnnotationComment"
+                                                  ng-model="newComment.text"></textarea>
+                                        <span class="help-block" ng-show="newComment.errors.length > 0"
+                                              ng-repeat="error in newComment.errors">{{error}}</span>
                                     </div>
-                                    <button type="submit" class="btn btn-default">Post</button>
+                                    <button type="submit" class="btn btn-default" ng-click="createComment()">Post
+                                    </button>
                                 </form>
 
                             </div>
                         </li>
                     </ul>
+                    <ul class="media-list">
+                        <li class="media" ng-repeat="comment in comments"
+                            id="{{comment.id}}">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" src="" alt="">
+                            </a>
 
+                            <div class="media-body">
+                                <p class="pull-right" ng-show="comment.updaterId == profile.id">
+                                    <a href="{{$parent.createCommentLinkUrl(comment.id)}}">link</a> |
+                                    <a href="" ng-click="editComment(comment.comment, comment.id)">edit</a> |
+                                    <a href="" ng-click="deleteComment(comment.comment, comment.id)">delete</a>
+                                </p>
+
+                                <p class="pull-right" ng-show="comment.updaterId != profile.id">
+                                    <a href="{{$parent.createCommentLinkUrl(comment.id)}}">link</a> |
+                                    <a href="" ng-click="reportComment(comment.id)">report</a>
+                                </p>
+                                <h4 class="media-heading">
+                                    {{comment.updater.userName}}
+                                    <small title="{{comment.updatedAt}}">
+                                        {{$parent.formatTimeAgo(comment.updatedAt, 'YYYY-MM-DDTHH:mm:ssZZ')}}
+                                    </small>
+                                </h4>
+                                <p ng-show="$parent.editComment.id != comment.id">
+                                    {{comment.comment}}
+                                </p>
+
+                                <form role="form" ng-show="$parent.editComment.id == comment.id">
+                                    <div class="form-group" ng-class="{'has-error': editComment.errors.length > 0}">
+                                        <textarea class="form-control"
+                                                  placeholder="Add a comment / Continue the discussion"
+                                                  style="width:90%" id="{{'editAnnotationComment'+comment.id}}"
+                                                  ng-model="$parent.editComment.text"></textarea>
+                                        <span class="help-block" ng-show="$parent.editComment.errors.length > 0"
+                                              ng-repeat="error in $parent.editComment.errors">{{error}}</span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" ng-click="updateComment(comment.id)">
+                                        Update
+                                    </button>
+                                    <button type="submit" class="btn btn-default"
+                                            ng-click="$parent.editComment.id = null">
+                                        cancel
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
 
                 </div>
             </div>

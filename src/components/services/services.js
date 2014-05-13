@@ -37,6 +37,11 @@
 
     // NOTE: deleted user resource, API for users no longer exposed
 
+    bawss.factory('AudioEventComment', [ '$resource', 'conf.paths', function ($resource, paths) {
+        return resourcePut($resource, uriConvert(paths.api.routes.audioEventComment.showAbsolute),
+            {audioEventId: "@audioEventId", audioEventCommentId: '@audioEventCommentId'});
+    }]);
+
     bawss.factory('AudioRecording', [ '$resource', 'conf.paths', function ($resource, paths) {
         return resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
