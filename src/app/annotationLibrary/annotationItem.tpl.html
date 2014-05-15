@@ -98,7 +98,9 @@
         <div class="col-md-6">
             <div class="library-single-info panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title pull-left"><span class="glyphicon glyphicon-comment"></span>&nbsp;Comments
+                    <h3 class="panel-title pull-left">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        &nbsp;{{comments.length == 0 ? 'No Comments Yet' : (comments.length == 1 ? '1 Comment' : comments.length + ' Comments') }}
                     </h3>
                 </div>
                 <div class="panel-body">
@@ -117,7 +119,7 @@
                                 <form role="form">
                                     <div class="form-group" ng-class="{'has-error': newComment.errors.length > 0}">
                                         <textarea class="form-control"
-                                                  placeholder="Add a comment / Continue the discussion"
+                                                  placeholder="{{comments.length < 1 ? 'Add a comment' : 'Continue the discussion'}}"
                                                   style="width:90%" id="addAnnotationComment"
                                                   ng-model="newComment.text"></textarea>
                                         <span class="help-block" ng-show="newComment.errors.length > 0"
