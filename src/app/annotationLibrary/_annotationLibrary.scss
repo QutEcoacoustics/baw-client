@@ -60,11 +60,8 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
 /* Shared spectrogram and grid  */
 .library-spectrogram {
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
+  @include vendor-prefix(user-select, none);
+
   display: inline-block;
   position: relative;
   line-height: 0;
@@ -88,6 +85,8 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 
   & .library-spectrogram-bounds {
     position: absolute;
-    border: 1px solid red;
+
+    // from _annotation_viewer.scss
+    border: 1px solid $marqueeBorderColorInactive;
   }
 }

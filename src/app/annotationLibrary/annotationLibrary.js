@@ -9,17 +9,19 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
     audioEvent.calcOffsetStart = Math.floor(audioEvent.startTimeSeconds / 30) * 30;
     audioEvent.calcOffsetEnd = (Math.floor(audioEvent.startTimeSeconds / 30) * 30) + 30;
 
+    //console.log(audioEvent);
+
     audioEvent.urls = {
         site: '/projects/' + audioEvent.projects[0].id +
             '/sites/' + audioEvent.siteId,
         user: '/user_accounts/' + audioEvent.ownerId,
-        tagSearch: '/library?' + $url.toKeyValue({tagsPartial: audioEvent.priorityTag.text}),
+        tagSearch: '/library?' + $url.toKeyValue({tagsPartial: audioEvent.priorityTag.text}, true),
         similar: '/library?' + $url.toKeyValue(
             {
                 annotationDuration: Math.round10(audioEvent.annotationDuration, -3),
                 freqMin: Math.round(audioEvent.lowFrequencyHertz),
                 freqMax: Math.round(audioEvent.highFrequencyHertz)
-            }),
+            },true),
         singleItem: '/library/' + audioEvent.audioRecordingId +
             '/audio_events/' + audioEvent.audioEventId,
         listen: '/listen/' + audioEvent.audioRecordingId +
@@ -117,7 +119,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             loadFilter();
 
             $scope.setFilter = function setFilter() {
-                $location.path('/library').search($url.toKeyValue($scope.filterSettings));
+                $location.path('/library').search($url.toKeyValue($scope.filterSettings, true));
             };
 
             $scope.clearFilter = function clearFilter() {
@@ -132,7 +134,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return '/library/?' + $url.toKeyValue(paramObj);
+                return '/library/?' + $url.toKeyValue(paramObj, true);
             };
 
             function getEmptyFilterSettings() {
@@ -140,6 +142,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     tagsPartial: null,
                     reference: 'true', // set to empty string to match value of radio button
                     userId: null,
+                    audioRecordingId: null,
                     annotationDuration: null,
                     freqMin: null,
                     freqMax: null,
@@ -157,7 +160,9 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     'freqMin',
                     'freqMax',
                     'page',
-                    'items'
+                    'items',
+                    'userId',
+                    'audioRecordingId'
                 ].forEach(
                     function (currentvalue, index, array) {
                         var stringValue = $scope.filterSettings[currentvalue];
@@ -299,7 +304,11 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 });
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return '/library/?' + $url.toKeyValue(paramObj);
+                return '/library/?' + $url.toKeyValue(paramObj, true);
+            };
+
+            $scope.createProjectUrl = function createProjectUrl(projectId){
+                return '/projects/' + projectId;
             };
 
         }]);

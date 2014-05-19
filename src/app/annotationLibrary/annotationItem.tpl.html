@@ -14,8 +14,9 @@
                 </div>
                 <audio id="annoSingleAudio{{$index}}" controls
                        data-ng-style="{width:annotation.converters.conversions.enforcedImageWidth}">
-                    <source data-ng-repeat="resource in annotation.media.availableAudioFormats" data-ng-src="{{resource.url}}" src=""
-                                            type="{{resource.mimeType}}">
+                    <source data-ng-repeat="resource in annotation.media.availableAudioFormats"
+                            data-ng-src="{{resource.url}}" src=""
+                            type="{{resource.mimeType}}">
                     Your browser does not support the audio element.
                 </audio>
 
@@ -45,13 +46,19 @@
                 <div class="panel-body">
                     <div class="list-group">
                         <a data-ng-repeat="tag in annotation.tags"
-                           data-ng-href="{{annotation.urls.tagSearch}}"
+                           data-ng-href="{{$parent.createFilterUrl({'tagsPartial': tag.text})}}"
                            class="list-group-item" title="Tag.">
                             <span class="glyphicon glyphicon-tags"></span>&nbsp;
                             <span class="badge">{{tag.typeOfTag.replace('_',' ')}}</span>
                             <span class="badge" data-ng-show="tag.retired">retired</span>
                             <span class="badge" data-ng-show="tag.isTaxanomic">taxonomic</span>
                             {{tag.text}} (ID {{tag.id}})
+                        </a>
+                        <a data-ng-show="annotation.isReference"
+                           data-ng-href="{{$parent.createFilterUrl({'reference': annotation.isReference})}}"
+                           class="list-group-item" title="Reference tag.">
+                            <span class="glyphicon glyphicon-book"></span>&nbsp;
+                            Reference Tag
                         </a>
                         <a data-ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Start date.">
                             <span class="glyphicon glyphicon-record"></span>&nbsp;
@@ -61,9 +68,14 @@
                             <span class="glyphicon glyphicon-time"></span>&nbsp;
                             {{annotation.annotationDurationRounded}} seconds duration
                         </a>
+                        <a data-ng-repeat="project in annotation.projects"
+                           data-ng-href="{{$parent.createProjectUrl(project.id)}}" class="list-group-item" title="Project name.">
+                            <span class="glyphicon glyphicon-home"></span>&nbsp;
+                            Project: {{project.name}}
+                        </a>
                         <a data-ng-href="{{annotation.urls.site}}" class="list-group-item" title="Site name.">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
-                            {{annotation.siteName}}
+                            Site: {{annotation.siteName}}
                         </a>
                         <a data-ng-href="{{annotation.urls.user}}" class="list-group-item" title="User.">
                             <span class="glyphicon glyphicon-user"></span>&nbsp;
@@ -81,7 +93,8 @@
         <div class="col-md-6">
             <div class="library-single-info panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title pull-left"><span class="glyphicon glyphicon-comment"></span>&nbsp;Comments</h3>
+                    <h3 class="panel-title pull-left"><span class="glyphicon glyphicon-comment"></span>&nbsp;Comments
+                    </h3>
                 </div>
                 <div class="panel-body">
                     <em>Coming soon...</em>
