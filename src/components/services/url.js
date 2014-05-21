@@ -49,7 +49,7 @@ angular.module('url', ['ng']).
         }
         this.encodeUriQuery = encodeUriQuery;
 
-        this.toKeyValue = function toKeyValue(obj, validateKeys) {
+        function toKeyValue(obj, validateKeys) {
             var parts = [];
             angular.forEach(obj, function (value, key) {
                 if (validateKeys) {
@@ -68,9 +68,10 @@ angular.module('url', ['ng']).
                 parts.push(encodedKey + encodedValue);
             });
             return parts.length ? parts.join('&') : '';
-        };
+        }
+        this.toKeyValue = toKeyValue;
 
-        this.formatUri = function(uri, values) {
+            this.formatUri = function(uri, values) {
 
             // first format string
             var result = uri.formatReturnUnused(values),
@@ -87,23 +88,10 @@ angular.module('url', ['ng']).
                 //    formatted = formatted.slice(0, 1);
                 //}
 
-                if  (formatted.indexOf("?") === -1) {
+                var query =  toKeyValue(unused, true);
+
+                if  (formatted.indexOf("?") === -1 && query.length > 0) {
                     formatted += "?";
-                }
-
-                var query =  "";
-                var first = true;
-                for (var key in unused) {
-
-                    if (!unused.hasOwnProperty(key)) {
-                        continue;
-                    }
-
-                    query += (first ? "" : "&") + this.encodeUriQuery(key) + "=" + this.encodeUriQuery(unused[key]);
-
-                    if (first) {
-                        first = false;
-                    }
                 }
 
                 formatted += query;

@@ -189,11 +189,18 @@ returns: 'some string with first value and second value injected using {property
             }
 			
 			//reference to the type of params
-			var t = typeof params;
-			
-			//if it (has format or not an object) and not an array)
-			if ((params.format || t != 'object') && t != 'array' ) {
-				params = [ params ]; //put the param inside an array
+			var t = Object.prototype.toString.call(params);
+            if (t === "[object String]") {
+                params = [params];
+            }
+            else if (t === "[object Array]") {
+                // no op
+            }
+            else if (t === "[object Object]") {
+                // no op
+            }
+            else {
+                params = [params];
             }
 		}
 		

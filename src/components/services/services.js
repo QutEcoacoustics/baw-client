@@ -42,43 +42,24 @@
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
     }]);
 
-    bawss.factory('AudioEvent', [ '$resource', 'conf.paths',
-        function ($resource, paths) {
+    bawss.factory('AudioEvent', [ '$resource', '$url', 'conf.paths',
+        function ($resource, $url, paths) {
         var baseCsvUri = paths.api.routes.audioEvent.csvAbsolute;
 
+        var csvOptions = {
+            format: "csv", // "csv", "xml", "json"
+            projectId: null,
+            siteId: null,
+            audioRecordingId: null,
+            startOffset: null,
+            endOffset: null
+
+        };
         // TODO: move this to paths conf object
+
         function makeCsvLink(options) {
-            var formattedUrl = baseCsvUri;
-            if (!angular.isObject(options)) {
-                // overwrite input then continue to format
-                options = {};
-            }
-
-            if (options.format) {
-                formattedUrl += options.format;
-            }
-            else {
-                formattedUrl += "csv";
-            }
-
-            if (options.projectId || options.siteId) {
-                formattedUrl += "?";
-            }
-
-            if (options.projectId) {
-                formattedUrl += "project_id=" + options.projectId.toString();
-            }
-
-            if (options.projectId && options.siteId) {
-                formattedUrl += "&";
-            }
-
-            if (options.siteId) {
-                formattedUrl += "site_id=" + options.siteId.toString();
-            }
-
-
-            return formattedUrl;
+            var query = angular.extend(csvOptions, options);
+            return $url.formatUri(baseCsvUri, query);
         }
 
         var resource = resourcePut($resource, uriConvert(paths.api.routes.audioEvent.showAbsolute),
