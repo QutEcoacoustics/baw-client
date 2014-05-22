@@ -202,6 +202,11 @@
                    ng-href="{{model.media.availableAudioFormats['mp3'].url}}"
                    title="{{ model.media.availableAudioFormats['mp3'].url && 'Download the .mp3 file' || 'This file format is not available'  }}"
                         >Audio (MP3)</a>&nbsp;|&nbsp;
+                <a target="_blank"
+                   ng-class="{disabled: !downloadAnnotationsLink}"
+                   ng-href="{{downloadAnnotationsLink}}"
+                   title="Download annotations seen on this screen"
+                   >Annotations (CSV)</a>
             </span>
 </div>
 

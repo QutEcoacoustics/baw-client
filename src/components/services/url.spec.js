@@ -34,4 +34,54 @@ describe("The url service", function () {
         expect(result).toBe('blah=1&tornado=attack&hello&chocolate-chips=ring-ring&monkeys=dancing%20dancing');
     });
 
+
+    describe("formatUri", function() {
+
+        it("will format a templated uri", function() {
+            var uri = "{protocol}://www.google.com";
+            var values = {protocol: "http"};
+
+            var expected = "http://www.google.com";
+            var actual = $url.formatUri(uri, values);
+
+            expect(actual).toBe(expected);
+
+        });
+
+
+        it("will format a templated uri, encoding unmatched placeholders", function() {
+            var uri = "{protocol}://www.google.com{path}";
+            var values = {protocol: "http"};
+
+            var expected = "http://www.google.com%7Bpath%7D";
+            var actual = $url.formatUri(uri, values);
+
+            expect(actual).toBe(expected);
+
+        });
+
+        it("will format a templated uri, inserting placeholders and then add a query string with remaining values", function() {
+            var uri = "{protocol}://www.google.com";
+            var values = {protocol: "http", page: 1, query: "hello"};
+
+            var expected = "http://www.google.com?page=1&query=hello";
+            var actual = $url.formatUri(uri, values);
+
+            expect(actual).toBe(expected);
+
+        });
+
+        it("will format a templated uri, removing empty values", function() {
+            var uri = "{protocol}://www.google.com";
+            var values = {protocol: "http", page: 1, query: "hello", shouldNotBeHere: null, norI: "", orI: undefined};
+
+            var expected = "http://www.google.com?page=1&query=hello";
+            var actual = $url.formatUri(uri, values);
+
+            expect(actual).toBe(expected);
+
+        });
+
+    });
+
 });

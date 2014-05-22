@@ -33,7 +33,7 @@ angular.module('bawApp.configuration', ['url'])
                     var f = fragments[i];
 
                     if ((typeof f) !== "string") {
-                        throw "joingPathFragments: Path fragment " + f + " is not a string";
+                        throw "joinPathFragments: Path fragment " + f + " is not a string";
                     }
 
                     var hasFirst = f[0] === "/";
@@ -71,7 +71,7 @@ angular.module('bawApp.configuration', ['url'])
                     audioEvent: {
                         list: "/audio_recordings/{recordingId}/audio_events",
                         show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}",
-                        csv: "/audio_events/download.",
+                        csv: "/audio_events/download.{format}",
                         library: "/audio_events/library/paged"
                     },
                     tagging: {

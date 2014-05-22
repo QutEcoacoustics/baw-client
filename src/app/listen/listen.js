@@ -121,6 +121,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                         $scope.startOffsetAbsolute = absoluteStartChunk.format("HH:mm:ss");
                         $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
+                        $scope.downloadAnnotationsLink  = AudioEvent.csvLink(
+                            {
+                                audioRecordingId: value.id,
+                                startOffset: value.startOffset,
+                                endOffset: value.endOffset
+                            });
 
                     },
                     function mediaGetFailure() {
