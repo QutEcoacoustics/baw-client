@@ -11,6 +11,7 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
 
     //console.log(audioEvent);
 
+    // TODO: remove hard coded paths and query strings, yuck!
     audioEvent.urls = {
         site: '/projects/' + audioEvent.projects[0].id +
             '/sites/' + audioEvent.siteId,
