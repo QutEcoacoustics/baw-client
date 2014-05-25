@@ -37,10 +37,14 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
 };
 
 baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, constants, unitConverter, Media) {
+
+    var minDuration = 0;
+var audioDurationSeconds = Math.floor(audioEvent.audioRecordingDurationSeconds) || audioEvent.endTimeSeconds;
+
     var mediaItemParameters = {
         recordingId: audioEvent.audioRecordingId,
-        start_offset: Math.floor(audioEvent.startTimeSeconds - constants.annotationLibrary.paddingSeconds),
-        end_offset: Math.ceil(audioEvent.endTimeSeconds + constants.annotationLibrary.paddingSeconds),
+        start_offset: Math.max(Math.floor(audioEvent.startTimeSeconds - constants.annotationLibrary.paddingSeconds), minDuration),
+        end_offset: Math.min(Math.ceil(audioEvent.endTimeSeconds + constants.annotationLibrary.paddingSeconds), audioDurationSeconds),
         format: "json"
     };
 
