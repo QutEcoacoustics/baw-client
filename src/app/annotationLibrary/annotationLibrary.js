@@ -39,7 +39,9 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
 baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, constants, unitConverter, Media) {
 
     var minDuration = 0;
-var audioDurationSeconds = Math.floor(audioEvent.audioRecordingDurationSeconds) || audioEvent.endTimeSeconds;
+    var audioDurationSeconds =
+        Math.floor(audioEvent.audioRecordingDurationSeconds) ||
+        (Math.ceil(audioEvent.endTimeSeconds + constants.annotationLibrary.paddingSeconds));
 
     var mediaItemParameters = {
         recordingId: audioEvent.audioRecordingId,
