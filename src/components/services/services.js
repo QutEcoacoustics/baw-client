@@ -50,7 +50,7 @@
             format: "csv", // "csv", "xml", "json"
             projectId: null,
             siteId: null,
-            audioRecordingId: null,
+            recordingId: null,
             startOffset: null,
             endOffset: null
 

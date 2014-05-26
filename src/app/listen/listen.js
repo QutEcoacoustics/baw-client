@@ -123,7 +123,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
                         $scope.downloadAnnotationsLink  = AudioEvent.csvLink(
                             {
-                                audioRecordingId: value.id,
+                                recordingId: value.id,
                                 startOffset: value.startOffset,
                                 endOffset: value.endOffset
                             });
