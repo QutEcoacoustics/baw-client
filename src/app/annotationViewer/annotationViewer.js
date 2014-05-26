@@ -31,14 +31,20 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
 
                 $scope.gridConfig.x.showScale =
                     $scope.gridConfig.x.showGrid =
-                        $scope.gridConfig.y.showScale =
-                            $scope.gridConfig.y.showGrid = true;
+                        $scope.gridConfig.x.showTitle =
+                            $scope.gridConfig.y.showScale =
+                                $scope.gridConfig.y.showGrid =
+                                    $scope.gridConfig.y.showTitle =
+                                        true;
             }
             else {
                 $scope.gridConfig.x.showScale =
                     $scope.gridConfig.x.showGrid =
-                        $scope.gridConfig.y.showScale =
-                            $scope.gridConfig.y.showGrid = false;
+                        $scope.gridConfig.x.showTitle =
+                            $scope.gridConfig.y.showScale =
+                                $scope.gridConfig.y.showGrid =
+                                    $scope.gridConfig.y.showTitle =
+                                        false;
             }
         });
 
@@ -47,6 +53,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
             y: {
                 showGrid: false,
                 showScale: false,
+                showTitle: false,
                 max: 11025,
                 min: 0,
                 step: 1000,
@@ -59,6 +66,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
             x: {
                 showGrid: false,
                 showScale: false,
+                showTitle: false,
                 max: 30,
                 min: 0,
                 step: 1,

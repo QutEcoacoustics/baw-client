@@ -284,6 +284,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     return baw.secondsToDurationFormat($scope.model.media.endOffset - $scope.model.media.startOffset);
                 };
 
+                $scope.endRecordingAbsolute = function () {
+                    if (!$scope.model.audioRecording) {
+                        return undefined;
+                    }
+                    return moment($scope.model.audioRecording.recordedDate).add('s', $scope.model.audioRecording.durationSeconds).format("YYYY-MMM-DD, HH:mm:ss");
+                };
+
+
                 $scope.currentOffsetChunk = function () {
                     var offset = 0;
                     if ($scope.model.audioElement) {
@@ -339,7 +347,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return undefined;
                     }
                     
-                    return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("HH:mm:ss");
+                    return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 
