@@ -134,6 +134,13 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 $scope.setFilter();
             };
 
+            $scope.searchFilter = function searchFilter() {
+                // reset page number on search
+                $scope.filterSettings.page = 1;
+
+                $scope.setFilter();
+            };
+
             $scope.updateFilter = function updateFilter(filterSettings) {
                 $scope.filterSettings = filterSettings;
                 $scope.setFilter();

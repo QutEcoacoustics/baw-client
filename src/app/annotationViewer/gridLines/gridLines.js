@@ -102,7 +102,7 @@ bawGLs.directive('gridLines',
                     var element = container.children[j - start];
 
                     if (innerText) {
-                        var label = formatter(steps[j].value, j, steps.min, steps.max)
+                        var label = formatter(steps[j].value, j, steps.min, steps.max);
                         element.innerText = label;
                         biggest = label.length > biggest ? label.length : biggest;
                     }

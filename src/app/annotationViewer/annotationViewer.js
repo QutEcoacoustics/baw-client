@@ -77,7 +77,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
 
                     return (offset).toFixed(0);
                 },
-                title: "Time offset (seconds)"
+                title: "Time (seconds)"
             }
         };
 

@@ -138,7 +138,7 @@
 					<div class="row">
 		
 							<label class="col-xs-2" for="start-time">
-								<span>Start</span>
+								<span>Start (s)</span>
 							</label>
 								<input class="col-xs-3" id="start-time" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
 									   ng-disabled="singleEditDisabled()"
@@ -147,7 +147,7 @@
 					   
 
 							<label class="col-xs-2 col-md-offset-1" for="high-frequency" >
-								<span>High Frequency</span>
+								<span>High Frequency (Hz)</span>
 							</label>
 
 								<input class="col-xs-3" id="high-frequency" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
@@ -161,7 +161,7 @@
 
 
 							<label class="col-xs-2" for="end-time">
-								<span>End</span>
+								<span>End (s)</span>
 							</label>
 								<input class="col-xs-3" id="end-time" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
 									   ng-disabled="singleEditDisabled()"
@@ -170,7 +170,7 @@
 
 
 							<label class="col-xs-2 col-md-offset-1" for="low-frequyency">
-								<span>Low Frequency</span>
+								<span>Low Frequency (Hz)</span>
 							</label>
 								<input class="col-xs-3" id="low-frequyency" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
 									   ng-disabled="singleEditDisabled()"
@@ -181,13 +181,13 @@
 					</div>
                     <div class="row">
                         <small class="col-xs-2 text-right">
-                            Duration
+                            Duration (s)
                         </small>
                         <small class="col-xs-3">
                             {{model.selectedAudioEvent.endTimeSeconds -  model.selectedAudioEvent.startTimeSeconds | number:3}}
                         </small>
                         <small class="col-xs-2 col-md-offset-1 text-right">
-                            Difference
+                            Difference (Hz)
                         </small>
                         <small class="col-xs-3">
                             {{model.selectedAudioEvent.highFrequencyHertz -  model.selectedAudioEvent.lowFrequencyHertz | number:0}}
