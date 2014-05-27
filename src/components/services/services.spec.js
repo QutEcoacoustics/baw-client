@@ -16,12 +16,12 @@ describe("The service suite", function () {
         var parameters = {
             projectId: 12,
             siteId: 13,
-            audioRecordingId: 42,
+            recordingId: 42,
             startOffset: 123456,
             endOffset: 654321
         };
 
-        var expected = pathService.api.root + "/audio_events/download.csv?projectId=12&siteId=13&audioRecordingId=42&startOffset=123456&endOffset=654321";
+        var expected = pathService.api.root + "/audio_recordings/42/audio_events/download.csv?projectId=12&siteId=13&startOffset=123456&endOffset=654321";
 
         var actual = audioEventService.csvLink(parameters);
 
@@ -31,7 +31,7 @@ describe("The service suite", function () {
 
     it("should format the csv link correctly with an empty parameter set", function () {
         var parameters;
-        var expected = pathService.api.root + "/audio_events/download.csv";
+        var expected = pathService.api.root + "/audio_recordings//audio_events/download.csv";
 
         var actual = audioEventService.csvLink(parameters);
 

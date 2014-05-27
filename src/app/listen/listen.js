@@ -9,6 +9,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'conf.paths',
         'conf.constants',
         '$url',
+        'ngAudioEvents',
         'AudioRecording',
         'Media',
         'AudioEvent',
@@ -35,9 +36,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param $q
          * @param Site
          * @param Project
+         * @param $location
+         * @param ngAudioEvents
+         * @param UserProfile
          */
             function ListenCtrl(
-            $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url,
+            $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,
             AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile) {
 
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
@@ -76,7 +80,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 $scope.model = {
                     audioElement: {
                         volume: null,
-                        muted: null
+                        muted: null,
+                        autoPlay: $routeParams.autoPlay || false
                     },
                     audioEvents: [],
                     media: null,
@@ -95,6 +100,20 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 if (UserProfile.profile && UserProfile.profile.preferences) {
                     profileLoaded(null, UserProfile);
                 }
+
+                // auto play feature
+                $scope.$on(ngAudioEvents.ended, function navigate(event) {
+
+                    if ($scope.nextEnabled) {
+                        console.info("Changing page to next segment...");
+                        $scope.$apply(function() {
+                            $location.search({autoPlay: true, start: nextStart, end: nextEnd});
+                        });
+                    }
+                    else {
+                        console.warn("Continuous playback cannot continue");
+                    }
+                });
 
                 /* // NOT NECESSARY - we aren't using auth keys atm    */
                 $scope.$on('event:auth-loginRequired', function(){ Media.formatPaths($scope.model.media); });
@@ -123,7 +142,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
                         $scope.downloadAnnotationsLink  = AudioEvent.csvLink(
                             {
-                                audioRecordingId: value.id,
+                                recordingId: value.id,
                                 startOffset: value.startOffset,
                                 endOffset: value.endOffset
                             });
@@ -284,6 +303,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     return baw.secondsToDurationFormat($scope.model.media.endOffset - $scope.model.media.startOffset);
                 };
 
+                $scope.endRecordingAbsolute = function () {
+                    if (!$scope.model.audioRecording) {
+                        return undefined;
+                    }
+                    return moment($scope.model.audioRecording.recordedDate).add('s', $scope.model.audioRecording.durationSeconds).format("YYYY-MMM-DD, HH:mm:ss");
+                };
+
+
                 $scope.currentOffsetChunk = function () {
                     var offset = 0;
                     if ($scope.model.audioElement) {
@@ -339,12 +366,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return undefined;
                     }
                     
-                    return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("HH:mm:ss");
+                    return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 
                 $scope.previousEnabled = false;
                 $scope.nextEnabled = false;
+                // hacky hack for continuous playback
+                var nextStart, nextEnd;
                 $scope.createNavigationHref = function (linkType, stepBy) {
                     // skip if resources not available
                     if (!$scope.model.audioRecording) {
@@ -383,12 +412,16 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                         var maxEnd = Math.floor($scope.model.audioRecording.durationSeconds);
 
+                        var start = ($routeParams.start + stepBy),
+                            end = (($routeParams.end + stepBy < maxEnd) ? $routeParams.end + stepBy : maxEnd);
+                        nextStart = start;
+                        nextEnd = end;
                         var uriNext = $url.formatUri(
                             paths.site.ngRoutes.listen,
                             {
                                 recordingId: recordingId,
-                                start: ($routeParams.start + stepBy),
-                                end: (($routeParams.end + stepBy < maxEnd) ? $routeParams.end + stepBy : maxEnd)
+                                start: start,
+                                end: end
                             });
 
                         $scope.nextEnabled = $routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds;

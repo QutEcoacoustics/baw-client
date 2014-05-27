@@ -22,26 +22,41 @@
             </span>
 
 </h1>
+
+<div id="navigator" class="row">
+
+            <div class="col-md-12">
+                <span >
+                    Start<span class="time">{{model.audioRecording.recordedDate | moment:"format":"YYYY-MMM-DD, HH:mm:ss ZZ"}}</span>
+                    &nbsp;
+                </span>
+
+                <div class="navigator-wrapper text-center">
+                    <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}"
+                           ng-slider="jumpToMinute" step="1">
+                    Navigate to
+                    <span class="time">{{jumpToMinuteAbsolute()}}</span>
+                    <button class="btn btn-default btn-xs" ng-click="jumpTo()">Go</button>
+                </div>
+
+                <span >
+                    &nbsp;
+                    End: <span class="time">{{endRecordingAbsolute() | moment:"format":"YYYY-MMM-DD, HH:mm:ss ZZ"}}</span>
+                </span>
+
+            </div>
+</div>
 <div id="recordingDetails" class="row">
-    <p class="col-md-12">
-        <span  class="time">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>.
-        <span >
-            Recording start: <span class="time">{{model.audioRecording.recordedDate | moment:"format":"YYYY-MMM-DD, HH:mm:ss ZZ"}}</span>,
-        </span>
-        <span>
+    <!--<p class="col-md-12">-->
+        <!--Navigate:-->
+        <!--<span  class="time">{{absoluteDateChunkStart() | moment:"format":"dddd, MMMM Do YYYY, HH:mm:ss ZZ"}}</span>.-->
+
+        <!--<span>
             duration: <span class="time">{{model.audioRecording.durationSeconds | formatTimeSpan}} </span>.
 
-        </span>
-    </p>
-</div>
-<div id="navigator" class="row">
-            <p class="col-md-12">
-                Jump to minute:
-                <input ng-class="{'hide-thumb' : jumpToHide}" type="range" min="0" max="{{jumpToMax}}"
-                       ng-slider="jumpToMinute" step="1">
-                <span class="time">{{jumpToMinuteAbsolute()}}</span>
-                <button class="btn btn-default btn-xs" ng-click="jumpTo()">Go</button>
-            </p>
+        </span>-->
+
+    <!--</p>-->
 </div>
 <br/>
 <baw-annotation-viewer class="clearfix" model="model"></baw-annotation-viewer>
@@ -123,7 +138,7 @@
 					<div class="row">
 		
 							<label class="col-xs-2" for="start-time">
-								<span>Start</span>
+								<span>Start (s)</span>
 							</label>
 								<input class="col-xs-3" id="start-time" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
 									   ng-disabled="singleEditDisabled()"
@@ -132,7 +147,7 @@
 					   
 
 							<label class="col-xs-2 col-md-offset-1" for="high-frequency" >
-								<span>High Frequency</span>
+								<span>High Frequency (Hz)</span>
 							</label>
 
 								<input class="col-xs-3" id="high-frequency" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
@@ -146,7 +161,7 @@
 
 
 							<label class="col-xs-2" for="end-time">
-								<span>End</span>
+								<span>End (s)</span>
 							</label>
 								<input class="col-xs-3" id="end-time" type="number" min="{{limits.timeMin}}" max="{{limits.timeMax}}" step="0.5" required
 									   ng-disabled="singleEditDisabled()"
@@ -155,7 +170,7 @@
 
 
 							<label class="col-xs-2 col-md-offset-1" for="low-frequyency">
-								<span>Low Frequency</span>
+								<span>Low Frequency (Hz)</span>
 							</label>
 								<input class="col-xs-3" id="low-frequyency" type="number" min="{{limits.freqMin}}" max="{{limits.freqMax}}" step="100" required
 									   ng-disabled="singleEditDisabled()"
@@ -166,13 +181,13 @@
 					</div>
                     <div class="row">
                         <small class="col-xs-2 text-right">
-                            Duration
+                            Duration (s)
                         </small>
                         <small class="col-xs-3">
                             {{model.selectedAudioEvent.endTimeSeconds -  model.selectedAudioEvent.startTimeSeconds | number:3}}
                         </small>
                         <small class="col-xs-2 col-md-offset-1 text-right">
-                            Difference
+                            Difference (Hz)
                         </small>
                         <small class="col-xs-3">
                             {{model.selectedAudioEvent.highFrequencyHertz -  model.selectedAudioEvent.lowFrequencyHertz | number:0}}

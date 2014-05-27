@@ -10,6 +10,12 @@ $scale-background:  #f5f5f5; //#7eff5f
   color: $gray;
 }
 
+@mixin scale-title-base() {
+  font-size : $font-size-small;
+  font-weight: bold;
+  position: absolute;
+}
+
 & .gridLines {
   width: 100%;
   height: 100%;
@@ -93,5 +99,31 @@ $scale-background:  #f5f5f5; //#7eff5f
       @include vendor-prefix(transform, translateX(-50%));
       background-color: $scale-background;
     }
+  }
+
+  & .yTitle {
+    @include scale-title-base;
+
+    @include vendor-prefix(transform, translateX(-100%) rotate3d(0,0,1,-90deg) translateX(50%));
+    @include vendor-prefix(transform-origin, 100% 0%);
+
+
+    left: 0px;
+    top: 50%;
+    margin-left: 0.5em;
+
+    width: auto;
+  }
+
+  & .xTitle {
+    @include scale-title-base;
+
+    @include vendor-prefix(transform, translateX(-50%));
+
+    bottom: 0;
+    left: 50%;
+    height: auto;
+
+
   }
 }

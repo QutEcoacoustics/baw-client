@@ -32,9 +32,16 @@
 
 #navigator  {
 
+  $navigator-width: 300px;
+  & .navigator-wrapper {
+    display: inline-block;
+    width: $navigator-width;
+    vertical-align: text-top;
+  }
 
   & input[type="range"] {
-    width: 300px;
+    width: $navigator-width;
+    display: inline-block;
     height: 1em;
   }
 
@@ -114,29 +121,31 @@
   width: 1292px;
   text-align: center;
   position: relative;
-  margin: -10px auto 0 auto;
+  margin: -5px auto 0 auto;
 
   & .position {
     display: inline-block;
     float: left;
   }
 
+  $push-up-the-labels: -15px;
   & .left {
     position: absolute;
     left: 0px;
-    top: 0px;
+    top: $push-up-the-labels;
     @include vendor-prefix(transform, translateX(-50%));
   }
 
   & .right {
     position: absolute;
     right: 0px;
-    top: 0px;
+    top: $push-up-the-labels;
     @include vendor-prefix(transform, translateX(50%));
   }
 
   & .btn-toolbar {
-    margin-left: 38%;
+    margin-left: 36%;
+
   }
 }
 

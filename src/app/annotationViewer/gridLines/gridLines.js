@@ -7,6 +7,7 @@ bawGLs.directive('gridLines',
             var defaultAxis = {
                     showGrid: false,
                     showScale: false,
+                    showTitle: false,
                     max: null,
                     min: null,
                     step: null,
@@ -96,11 +97,14 @@ bawGLs.directive('gridLines',
                 var start = skipEnds ? 1 : 0,
                     end = skipEnds ? steps.length - 1 : steps.length;
 
+                var biggest = -Infinity;
                 for (var j = start; j < end; j++) {
                     var element = container.children[j - start];
 
                     if (innerText) {
-                        element.innerText = formatter(steps[j].value, j, steps.min, steps.max);
+                        var label = formatter(steps[j].value, j, steps.min, steps.max);
+                        element.innerText = label;
+                        biggest = label.length > biggest ? label.length : biggest;
                     }
 
                     var position = steps[j].position;
@@ -112,6 +116,8 @@ bawGLs.directive('gridLines',
                         element.style.left = position + 'px';
                     }
                 }
+
+                return biggest;
             }
 
             function drawLines(lineContainer, elementSize, xOrY, steps, formatter) {
@@ -121,20 +127,34 @@ bawGLs.directive('gridLines',
                 }
 
                 diffElementsChildren(lineContainer, steps.length - 2, "div");
-                render(lineContainer, xOrY, elementSize, steps, false, true, formatter);
+                var biggest = render(lineContainer, xOrY, elementSize, steps, false, true, formatter);
 
                 // ensure grid lines are visible
                 lineContainer.style.display = '';
             }
 
-            function drawScales(scaleContainer, elementSize, xOrY, steps, formatter) {
+            function drawScales(scaleContainer, elementSize, xOrY, steps, formatter, titleElement, showTitle) {
                 if (!steps) {
                     scaleContainer.style.display = 'none';
+                    titleElement.style.display = 'none';
                     return;
                 }
 
                 diffElementsChildren(scaleContainer, steps.length, "span");
-                render(scaleContainer, xOrY, elementSize, steps, true, false, formatter);
+                var biggest = render(scaleContainer, xOrY, elementSize, steps, true, false, formatter);
+
+                if (showTitle) {
+                    titleElement.style.display = '';
+                    if (xOrY == "x") {
+                        titleElement.style.bottom = "-" + biggest + "em";
+                    }
+                    else {
+                        titleElement.style.left = "-" + biggest + "em";
+                    }
+                }
+                else {
+                    titleElement.style.display = 'none';
+                }
 
                 // ensure scales are visible
                 scaleContainer.style.display = '';
@@ -153,10 +173,13 @@ bawGLs.directive('gridLines',
                         console.debug("grisLines:observe: do something", interpolatedValue);
                     });
 
-                    var xLineContainer = element.querySelector(".xLines");
-                    var xScaleContainer = element.querySelector(".xScale");
-                    var yLineContainer = element.querySelector(".yLines");
-                    var yScaleContainer = element.querySelector(".yScale");
+                    var xLineContainer = element.querySelector(".xLines"),
+                        xScaleContainer = element.querySelector(".xScale"),
+                        xTitle = element.querySelector(".xTitle"),
+                        yLineContainer = element.querySelector(".yLines"),
+                        yScaleContainer = element.querySelector(".yScale"),
+                        yTitle = element.querySelector(".yTitle");
+
 
                     scope.configuration = angular.extend(defaultConfig, scope.configuration);
 
@@ -174,7 +197,7 @@ bawGLs.directive('gridLines',
                         }
 
                         drawLines(xLineContainer, newValue.width, 'x', newValue.showGrid ? steps : undefined);
-                        drawScales(xScaleContainer, newValue.width, 'x', newValue.showScale ? steps : undefined, newValue.labelFormatter);
+                        drawScales(xScaleContainer, newValue.width, 'x', newValue.showScale ? steps : undefined, newValue.labelFormatter, xTitle, newValue.showTitle);
                     }, true);
 
                     scope.$watch(function () {
@@ -191,7 +214,7 @@ bawGLs.directive('gridLines',
                         }
 
                         drawLines(yLineContainer, newValue.height, 'y', newValue.showGrid ? steps : undefined);
-                        drawScales(yScaleContainer, newValue.height, 'y', newValue.showScale ? steps : undefined, newValue.labelFormatter);
+                        drawScales(yScaleContainer, newValue.height, 'y', newValue.showScale ? steps : undefined, newValue.labelFormatter, yTitle, newValue.showTitle);
                     }, true);
                 }
             };

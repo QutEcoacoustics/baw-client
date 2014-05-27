@@ -14,10 +14,11 @@
 
                     <p class="help-block text-muted col-sm-3">Use comma (,) to separate tags.</p>
 
-                    <label for="refLibraryAudioRecordingId" class="col-sm-1 control-label">Recording Id</label>
+                    <!-- Blocks disabled for simplicity in testing -->
+                    <label style="display: none" for="refLibraryAudioRecordingId" class="col-sm-1 control-label">Recording Id</label>
 
-                    <div class="col-sm-2">
-                        <input type="number" class="form-control" id="refLibraryAudioRecordingId"
+                    <div style="display: none"  class="col-sm-2">
+                        <input type="text" class="form-control" id="refLibraryAudioRecordingId"
                                placeholder="Audio Recording Id" step="1" min="1"
                                data-ng-model="filterSettings.audioRecordingId">
                     </div>
@@ -46,7 +47,8 @@
                                placeholder="Maximum Frequency" data-ng-model="filterSettings.freqMax">
                     </div>
                 </div>
-                <div class="form-group">
+                <!-- Block disabled for simplicity in testing -->
+                <div style="display: none" class="form-group">
                     <label for="refLibraryReference1" class="col-sm-1 control-label">Annotations</label>
 
                     <div class="col-sm-4">
@@ -89,7 +91,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-1 col-sm-2">
-                        <button type="submit" class="btn btn-primary" data-ng-click="setFilter()">Filter</button>
+                        <button type="submit" class="btn btn-primary" data-ng-click="searchFilter()">Filter</button>
                         <button type="submit" class="btn btn-warning" data-ng-click="clearFilter()">Clear</button>
                     </div>
                     <div class="col-sm-2">
