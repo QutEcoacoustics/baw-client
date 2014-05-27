@@ -3,7 +3,8 @@ var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.co
 
 ngAudio.constant("ngAudioEvents", {
     volumeChanged: "ngAudio:volumeChanged",
-    muteChanged: "ngAudio:muted"
+    muteChanged: "ngAudio:muted",
+    ended: "ended"
 });
 
 /**
@@ -62,6 +63,13 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                 return target ? target.muted : null;
             }, function updateMuted(newValue, oldValue) {
                 element.muted = newValue === null ? null : !!newValue;
+            });
+
+            // autoPlay
+            scope.$watch(function () {
+                return target ? target.autoPlay : false;
+            }, function(newValue, oldValue) {
+                element.autoplay = newValue;
             });
 
             // currentTime - this watcher is registered once there"s enough data loaded to seek
@@ -162,7 +170,12 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                 "canplaythrough": updateState,
                 "durationchange": updateState,
                 "emptied": updateState,
-                "ended": updateState,
+                "ended": function(event){
+                    updateState(event);
+
+                    console.debug("ngAudio:audioEvent:ended");
+                    scope.$emit(ngAudioEvents.ended, null);
+                },
                 "error": function (event) {
                     console.error("ngAudio:audioElement:errorEvent", event);
                     updateState(event);
