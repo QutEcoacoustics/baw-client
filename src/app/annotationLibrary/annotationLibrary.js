@@ -1,7 +1,7 @@
 var baw = window.baw = window.baw || {};
 
 baw.annotationLibrary = {};
-baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties(audioEvent, $url) {
+baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties(audioEvent, $url, paths) {
 
     audioEvent.annotationDuration = audioEvent.endTimeSeconds - audioEvent.startTimeSeconds;
     audioEvent.annotationDurationRounded = Math.round10(audioEvent.endTimeSeconds - audioEvent.startTimeSeconds, -3);
@@ -9,28 +9,33 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
     audioEvent.calcOffsetStart = Math.floor(audioEvent.startTimeSeconds / 30) * 30;
     audioEvent.calcOffsetEnd = (Math.floor(audioEvent.startTimeSeconds / 30) * 30) + 30;
 
-    //console.log(audioEvent);
-
-    // TODO: remove hard coded paths and query strings, yuck!
     audioEvent.urls = {
-        site: '/projects/' + audioEvent.projects[0].id +
-            '/sites/' + audioEvent.siteId,
-        user: '/user_accounts/' + audioEvent.ownerId,
-        tagSearch: '/library?' + $url.toKeyValue({tagsPartial: audioEvent.priorityTag.text}, true),
-        similar: '/library?' + $url.toKeyValue(
+        site: $url.formatUri(paths.api.links.siteAbsolute, {projectId: audioEvent.projects[0].id, siteId: audioEvent.siteId}),
+        user: $url.formatUri(paths.api.links.userAccountsAbsolute, {userId: audioEvent.ownerId}),
+        tagSearch: $url.formatUri(paths.site.ngRoutes.libraryAbsolute, {tagsPartial: audioEvent.priorityTag.text}),
+        similar: $url.formatUri(paths.site.ngRoutes.libraryAbsolute,
             {
                 annotationDuration: Math.round10(audioEvent.annotationDuration, -3),
                 freqMin: Math.round(audioEvent.lowFrequencyHertz),
                 freqMax: Math.round(audioEvent.highFrequencyHertz)
-            },true),
-        singleItem: '/library/' + audioEvent.audioRecordingId +
-            '/audio_events/' + audioEvent.audioEventId,
-        listen: '/listen/' + audioEvent.audioRecordingId +
-            '?start=' + audioEvent.calcOffsetStart +
-            '&end=' + audioEvent.calcOffsetEnd,
-        listenWithoutPadding: '/listen/' + audioEvent.audioRecordingId +
-            '?start=' + audioEvent.startTimeSeconds +
-            '&end=' + audioEvent.endTimeSeconds
+            }),
+        singleItem: $url.formatUri(paths.site.ngRoutes.libraryItemAbsolute,
+            {
+                recordingId: audioEvent.audioRecordingId,
+                audioEventId:  audioEvent.audioEventId
+            }),
+        listen: $url.formatUri(paths.site.ngRoutes.listenAbsolute,
+            {
+                recordingId: audioEvent.audioRecordingId,
+                start: audioEvent.calcOffsetStart,
+                end: audioEvent.calcOffsetEnd
+            }),
+        listenWithoutPadding: $url.formatUri(paths.site.ngRoutes.listenAbsolute,
+            {
+                recordingId: audioEvent.audioRecordingId,
+                start: audioEvent.startTimeSeconds,
+                end: audioEvent.endTimeSeconds
+            })
     };
 
     return audioEvent;
@@ -100,7 +105,7 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
 
                         return (offset).toFixed(0);
                     },
-                    title: "Time offset (seconds)"
+                    title: "Time (seconds)"
                 }
             };
 
@@ -148,7 +153,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return '/library/?' + $url.toKeyValue(paramObj, true);
+                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute,paramObj);
             };
 
             function getEmptyFilterSettings() {
@@ -269,7 +274,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     angular.forEach(value.entries, function (audioEventValue, key) {
                         var annotation = angular.extend({}, audioEventValue);
                         annotation.priorityTag = Tag.selectSinglePriorityTag(annotation.tags);
-                        baw.annotationLibrary.addCalculatedProperties(annotation, $url);
+                        baw.annotationLibrary.addCalculatedProperties(annotation, $url, paths);
                         baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, Media);
                         this.push(annotation);
                     }, $scope.annotations);
@@ -296,33 +301,43 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
                     var annotation = angular.extend({}, audioEventValue);
                     annotation.priorityTag = Tag.selectSinglePriorityTag(annotation.tags);
-                    baw.annotationLibrary.addCalculatedProperties(annotation, $url);
+                    baw.annotationLibrary.addCalculatedProperties(annotation, $url, paths);
                     baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, Media);
 
                     $scope.annotation = annotation;
 
                     // paging
                     if ($scope.annotation.paging.nextEvent.hasOwnProperty('audioEventId')) {
-                        $scope.annotation.paging.nextEvent.link = '/library/' +
-                            $scope.annotation.paging.nextEvent.audioRecordingId +
-                            '/audio_events/' + $scope.annotation.paging.nextEvent.audioEventId;
+                        $scope.annotation.paging.nextEvent.link =
+                            $url.formatUri(
+                                paths.site.ngRoutes.libraryItemAbsolute,
+                                {
+                                    recordingId: $scope.annotation.paging.nextEvent.audioRecordingId,
+                                    audioEventId: $scope.annotation.paging.nextEvent.audioEventId
+                                }
+                            );
                     }
 
                     if ($scope.annotation.paging.prevEvent.hasOwnProperty('audioEventId')) {
-                        $scope.annotation.paging.prevEvent.link = '/library/' +
-                            $scope.annotation.paging.prevEvent.audioRecordingId +
-                            '/audio_events/' + $scope.annotation.paging.prevEvent.audioEventId;
+                        $scope.annotation.paging.prevEvent.link =
+                            $url.formatUri(
+                                paths.site.ngRoutes.libraryItemAbsolute,
+                                {
+                                    recordingId: $scope.annotation.paging.prevEvent.audioRecordingId,
+                                    audioEventId: $scope.annotation.paging.prevEvent.audioEventId
+                                }
+                            );
                     }
                 }, function annotationShowError(httpResponse) {
                     console.error('Failed to load library single item response.', parameters, httpResponse);
                 });
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return '/library/?' + $url.toKeyValue(paramObj, true);
+                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute,paramObj);
             };
 
             $scope.createProjectUrl = function createProjectUrl(projectId){
-                return '/projects/' + projectId;
+                return $url.formatUri(paths.api.links.projectAbsolute, {projectId: projectId});
             };
 
         }]);
