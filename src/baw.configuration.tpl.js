@@ -96,7 +96,10 @@ angular.module('bawApp.configuration', ['url'])
                 },
                 links: {
                     projects: '/projects',
-                    home: '/'
+                    home: '/',
+                    project: '/projects/{projectId}',
+                    site: '/projects/{projectId}/sites/{siteId}',
+                    userAccounts: '/user_accounts/{userId}'
                 }
             },
             site: {
