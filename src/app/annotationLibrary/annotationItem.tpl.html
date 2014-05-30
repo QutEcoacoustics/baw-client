@@ -69,15 +69,15 @@
                             {{annotation.annotationDurationRounded}} seconds duration
                         </a>
                         <a data-ng-repeat="project in annotation.projects"
-                           data-ng-href="{{$parent.createProjectUrl(project.id)}}" class="list-group-item" title="Project name.">
+                           data-ng-href="{{$parent.createProjectUrl(project.id)}}" target="_self" class="list-group-item" title="Project name.">
                             <span class="glyphicon glyphicon-home"></span>&nbsp;
                             Project: {{project.name}}
                         </a>
-                        <a data-ng-href="{{annotation.urls.site}}" class="list-group-item" title="Site name.">
+                        <a data-ng-href="{{annotation.urls.site}}" target="_self" class="list-group-item" title="Site name.">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
                             Site: {{annotation.siteName}}
                         </a>
-                        <a data-ng-href="{{annotation.urls.user}}" class="list-group-item" title="User.">
+                        <a data-ng-href="{{annotation.urls.user}}" target="_self" class="list-group-item" title="User.">
                             <span class="glyphicon glyphicon-user"></span>&nbsp;
                             {{annotation.ownerName }}
                         </a>

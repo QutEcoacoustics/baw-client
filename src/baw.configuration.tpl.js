@@ -158,7 +158,7 @@ angular.module('bawApp.configuration', ['url'])
         recursivePath(paths.api.routes, paths.api.root);
         recursivePath(paths.api.links, paths.api.root);
         recursivePath(paths.site.files, paths.site.root);
-        recursivePath(paths.site.ngRoutes, paths.site.root);
+        recursivePath(paths.site.ngRoutes, paths.api.root);
 
         paths.joinFragments = joinPathFragments;
 
