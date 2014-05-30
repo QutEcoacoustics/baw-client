@@ -32,7 +32,7 @@ module.exports = function (config) {
             require('../node_modules/karma-chrome-launcher'),
             'karma-phantomjs-launcher',
             /*require('../node_modules/karma-phantomjs-launcher'),*/
-            'karma-coffee-preprocessor' ],
+            ],
         preprocessors: {
             '**/*.coffee': 'coffee'
         },
