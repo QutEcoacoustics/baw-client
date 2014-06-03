@@ -9,7 +9,10 @@ $marqueeBorderColorSelected: #FFFF00;
 $marqueeBorderColorSelectedGlow: #f7ffef;
 $marqueeBorderColorHover: #00ffe9;
 $marqueeBorderColorInactive: #00FF00;
-$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
+//loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
+$loadGifPath:  image-url('load.gif');
+$crosshairGif: image-url('../cursor/crosshair.gif');
+$crosshairCur: image-url('../cursor/crosshair.cur');
 
 // see _touch.scss and annotate.tpl.html
 $grab-handle-radius: 12px;
@@ -23,7 +26,7 @@ baw-annotation-viewer {
   display: block;
 
   & .annotation-viewer-ctrl {
-    background: url(#{$loadGifPath}) center center no-repeat;
+    background: $loadGifPath center center no-repeat;
   }
 
   & #scroller {
@@ -127,7 +130,7 @@ baw-annotation-viewer {
 
       // required for IE10
       background-color: rgba(255, 255, 255, 0);
-      cursor:url(#{$IMAGE_ASSET_PATH + 'assets/cursor/crosshair.gif'}) 8 9, url(#{$IMAGE_ASSET_PATH + 'assets/cursor/crosshair.cur'}) 8 9, crosshair;
+      cursor: $crosshairGif 8 9, $crosshairCur 8 9, crosshair;
     }
 
     & .positionLine {

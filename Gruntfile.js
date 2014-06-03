@@ -359,6 +359,7 @@ module.exports = function (grunt) {
             },
             build: {
                 options: {
+                    imagePath: '<%= build_configs.current.siteDir %>assets/img',
                     outputStyle: 'expanded',
                     sourceComments: 'normal' /*'map',
                     sourceMap: '<%= sassDestName %>.map'*/
@@ -368,6 +369,7 @@ module.exports = function (grunt) {
             },
             compile: {
                 options: {
+                    imagePath: '<%= build_configs.current.siteDir %>assets/img',
                     outputStyle: 'compressed',
                     sourceComments: 'none'
                 },
