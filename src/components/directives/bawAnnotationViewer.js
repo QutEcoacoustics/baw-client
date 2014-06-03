@@ -409,6 +409,13 @@ bawds.directive('bawAnnotationViewer',
                     changedAnnotation.$intermediateEvent = null;
                     modelUpdatesServer(scope, changedAnnotation);
                 }
+
+                // reset $intermediateEvent - warning unknown effects. Modified so that single-edit changes will persist
+                if (changedAnnotation.$intermediateEvent) {
+                    changedAnnotation.$intermediateEvent = false;
+                }
+
+
             }
 
             function modelCollectionUpdated(newCollection, oldCollection, scope) {
