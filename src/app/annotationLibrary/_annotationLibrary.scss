@@ -1,4 +1,5 @@
-$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
+//$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
+$loadGifPath: image-url('load.gif');
 
 /* Library list */
 .annotation-paging {
@@ -68,7 +69,7 @@ $loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
   padding: 0 !important;
   margin: 0;
   border: 1px dotted #8c8c8c;
-  background: url(#{$loadGifPath}) center center no-repeat;
+  background: $loadGifPath center center no-repeat;
 
   & img {
 

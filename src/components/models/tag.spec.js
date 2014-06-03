@@ -33,7 +33,7 @@ describe("The Tag object", function () {
             baw.Tag(true);
         };
 
-        expect(func).toThrow("Constructor called as a function");
+        expect(func).toThrowError("Constructor called as a function");
     });
 
     it("should throw if not given a bool or object", function () {
