@@ -19,7 +19,8 @@ describe("The unitConverter service", function () {
             spectrogramWindowSize: null,
             endOffset: null,
             startOffset: null,
-            imageElement: null
+            imageElement: null,
+            audioRecordingAbsoluteStartDate: null
         };
     }]));
 
@@ -57,6 +58,7 @@ describe("The unitConverter service", function () {
 
     describe("has the getConversions method:", function () {
         var converters;
+        var now = new Date();
 
         beforeEach(function () {
             inputArgs.sampleRate = 22050;
@@ -64,12 +66,22 @@ describe("The unitConverter service", function () {
             inputArgs.endOffset = 65;
             inputArgs.startOffset = 35;
             inputArgs.imageElement = null;
+            inputArgs.audioRecordingAbsoluteStartDate = now;
 
             converters = unitConverter.getConversions(inputArgs);
         });
 
         it("the input object to be embedded in the output", function () {
             expect(converters.input).toBe(inputArgs);
+        });
+
+        it("ensure the absolute start date of the input object is output and is a date", function(){
+            var isDate = converters.input.audioRecordingAbsoluteStartDate instanceof Date;
+
+            expect(isDate).toBeTrue();
+
+            expect(converters.input.audioRecordingAbsoluteStartDate).toBe(now);
+
         });
 
         it("returns an object that implements the required API", function () {

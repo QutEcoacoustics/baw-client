@@ -55,15 +55,22 @@ bawds.directive('bawAnnotationViewer',
             }
 
             function watchForSpectrogramChanges(scope, imageElement) {
-                function updateUnitConverters() {
-                    console.debug("AnnotationEditor:watchForSpectrogramChanges:updateUnitConverters");
+                function updateUnitConverters(newValue, oldValue) {
+                    if (newValue) {
+                        console.debug("AnnotationEditor:watchForSpectrogramChanges:updateUnitConverters");
+                    }
+                    else {
+                        console.debug("AnnotationEditor:watchForSpectrogramChanges:updateUnitConverters: update cancelled, newValue is falsey");
+                        return;
+                    }
 
                     scope.model.converters = unitConverter.getConversions({
                         sampleRate: scope.model.media.sampleRate,
                         spectrogramWindowSize: scope.model.media.spectrogram ? scope.model.media.spectrogram.window : null,
                         endOffset: scope.model.media.endOffset,
                         startOffset: scope.model.media.startOffset,
-                        imageElement: scope.$image[0]
+                        imageElement: scope.$image[0],
+                        audioRecordingAbsoluteStartDate: scope.model.media.datetime
                     });
 
                     // redraw all boxes already drawn (hacky way to force angular to consider these objects changed!)

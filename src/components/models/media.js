@@ -14,6 +14,9 @@ baw.Media = (function () {
 
         angular.extend(this, resource);
 
+        // convert the datetime
+        this.datetime = new Date(this.datetime);
+
         // additionally do a check on the sample rate
         // the sample rate is used in the unit calculations.
         // it must be exposed and must be consistent for all sub-resources.
@@ -33,7 +36,7 @@ baw.Media = (function () {
         angular.forEach(resource.availableImageFormats, sampleRateChecker);
 
         if (angular.isNumber(sampleRate)) {
-            resource.sampleRate = sampleRate;
+            this.sampleRate = sampleRate;
         }
         else {
             throw "The provided sample rate for the Media json must be a number!";

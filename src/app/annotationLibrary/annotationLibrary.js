@@ -68,7 +68,8 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
                 spectrogramWindowSize: audioEvent.media.availableImageFormats.png.window,
                 endOffset: audioEvent.media.endOffset,
                 startOffset: audioEvent.media.startOffset,
-                imageElement: null
+                imageElement: null,
+                audioRecordingAbsoluteStartDate: audioEvent.media.datetime
             });
 
             audioEvent.bounds = {

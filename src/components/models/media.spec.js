@@ -84,4 +84,12 @@ describe("The Media object", function () {
         var type = typeof baw.Media;
         expect(type).toEqual("function");
     });
+
+
+    it("will encode the datetime as a date", function() {
+        var datetime = existingMedia.datetime;
+
+        var instanceOfDate = datetime instanceof Date;
+        expect(instanceOfDate).toBeTrue();
+    });
 });
