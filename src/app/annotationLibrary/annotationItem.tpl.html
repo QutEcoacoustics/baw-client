@@ -77,8 +77,11 @@
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
                             Site: {{annotation.siteName}}
                         </a>
+                        <a data-ng-href="{{annotation.urls.audioRecording}}" class="list-group-item" title="Site name.">
+                            <span class="glyphicon glyphicon-music"></span>&nbsp;
+                            Audio recording: {{annotation.audioRecordingId}}
+                        </a>
                         <a data-ng-href="{{annotation.urls.user}}" target="_self" class="list-group-item" title="User.">
-
                             <span class="glyphicon glyphicon-user"></span>&nbsp;
                             {{annotation.ownerName }}
                         </a>

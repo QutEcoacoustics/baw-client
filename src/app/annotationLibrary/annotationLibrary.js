@@ -18,6 +18,7 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
                 annotationDuration: Math.round10(audioEvent.annotationDuration, -3),
                 freqMin: Math.round(audioEvent.lowFrequencyHertz),
                 freqMax: Math.round(audioEvent.highFrequencyHertz)
+<<<<<<< HEAD
             }),
         singleItem: $url.formatUri(paths.site.ngRoutes.libraryItemAbsolute,
             {
@@ -36,6 +37,18 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
                 start: audioEvent.startTimeSeconds,
                 end: audioEvent.endTimeSeconds
             })
+=======
+            }, true),
+        singleItem: '/library/' + audioEvent.audioRecordingId +
+            '/audio_events/' + audioEvent.audioEventId,
+        listen: '/listen/' + audioEvent.audioRecordingId +
+            '?start=' + audioEvent.calcOffsetStart +
+            '&end=' + audioEvent.calcOffsetEnd,
+        listenWithoutPadding: '/listen/' + audioEvent.audioRecordingId +
+            '?start=' + audioEvent.startTimeSeconds +
+            '&end=' + audioEvent.endTimeSeconds,
+        audioRecording: '/library?' + $url.toKeyValue({audioRecordingId: audioEvent.audioRecordingId}, true)
+>>>>>>> db959993d22e1447b68a2dbab09da28a1f535c88
     };
 
     return audioEvent;
