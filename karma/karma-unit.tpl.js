@@ -32,15 +32,22 @@ module.exports = function (config) {
             require('../node_modules/karma-chrome-launcher'),
             'karma-phantomjs-launcher',
             /*require('../node_modules/karma-phantomjs-launcher'),*/
+            'karma-coverage',
             ],
         preprocessors: {
-            '**/*.coffee': 'coffee'
+            'src/**/!(*.spec)+(.js)': 'coverage'
+            //'**/src/**[!spec].*.js': 'coverage'
         },
 
         /**
          * How to report, by default. 'dots', 'progress'
          */
-        reporters: ['dots'],
+        reporters: ['dots', 'coverage'],
+
+        coverageReporter: {
+            type : 'lcov',
+            dir : 'coverage/'
+        },
 
         /**
          * On which port should the browser connect, on which port is the test runner
