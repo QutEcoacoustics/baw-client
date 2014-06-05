@@ -14,8 +14,7 @@ before_script:
 
 script:
   - grunt
-  - ls -la
-  - coverage=ls -d coverage/*/
+  - coverage=$(ls -d coverage/*/)
   - echo "$coverage"
   - codeclimate < "$coveragelcov.info"
 
