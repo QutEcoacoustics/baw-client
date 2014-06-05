@@ -11,10 +11,12 @@ before_script:
   - sh -e /etc/init.d/xvfb start
   - npm install --quiet -g grunt-cli bower
   - bower install
-  # Code climate token encypted with travis gem (travis encrypt CODECLIMATE_REPO_TOKEN=fdf...)
-  - secure: "B6crMr+aI2PceikzXp2XfXmttPSyLWCMXBIBwKWlfTKP8zlagwQ5AHTLe2t2Kv5mdlxe8pOhMDAO7QTClGWmqxf5H1hVqjqw0kc5SDwkAWZUSSOQKaaD3qeNFlmKv3ELmOWHrycDTWq5Exvnlj7q6MG2bYf4JP7Z3dE4UeZClpo="
 
 script:
   - grunt
   - codeclimate < coverage/lcov.info
 
+env:
+  global:
+    # Code climate token encypted with travis gem (travis encrypt CODECLIMATE_REPO_TOKEN=fdf...)
+    secure: SAZjrjbYfihqvEsZLbyTuZzquiwgk3oIgJHwxqVwx+UWhQ8bZTRWKnsEhJXgCqNryK1C+HQMVgI1lWdnsjY/qTIPbJ0Ep8zRg+SGIijsUWS0iA22EFA877/xAzqVY0Elplc0hCwd51EFnohlB4A9RjdBV4hl+7FAnEdoN9s+YmE=
