@@ -15,8 +15,9 @@ before_script:
 script:
   - grunt
   - ls -la
-  - ls -la coverage/
-  - codeclimate < coverage/lcov.info
+  - coverage=ls coverage/*/
+  - echo "$coverage"
+  - codeclimate < "coverage/$coverage/lcov.info"
 
 env:
   global:
