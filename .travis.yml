@@ -14,6 +14,8 @@ before_script:
 
 script:
   - grunt
+  - ls -la
+  - ls -la coverage/
   - codeclimate < coverage/lcov.info
 
 env:
