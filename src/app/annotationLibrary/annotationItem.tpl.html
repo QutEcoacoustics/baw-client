@@ -46,7 +46,7 @@
                 <div class="panel-body">
                     <div class="list-group">
                         <a data-ng-repeat="tag in annotation.tags"
-                           data-ng-href="{{$parent.createFilterUrl({'tagsPartial': tag.text})}}"
+                           data-ng-href="{{tag.similarPartial}}"
                            class="list-group-item" title="Tag.">
                             <span class="glyphicon glyphicon-tags"></span>&nbsp;
                             <span class="badge">{{tag.typeOfTag.replace('_',' ')}}</span>
@@ -55,7 +55,7 @@
                             {{tag.text}} (ID {{tag.id}})
                         </a>
                         <a data-ng-show="annotation.isReference"
-                           data-ng-href="{{$parent.createFilterUrl({'reference': annotation.isReference})}}"
+                           data-ng-href="{{annotation.urls.isReference}}"
                            class="list-group-item" title="Reference tag.">
                             <span class="glyphicon glyphicon-book"></span>&nbsp;
                             Reference Tag
