@@ -15,9 +15,7 @@ before_script:
 script:
   - grunt
   - coverage=$(ls -d coverage/*/)
-  - echo "$coverage"
   - codeclimate < "${coverage}lcov.info"
-
 env:
   global:
     # Code climate token encypted with travis gem (travis encrypt CODECLIMATE_REPO_TOKEN=fdf...)
