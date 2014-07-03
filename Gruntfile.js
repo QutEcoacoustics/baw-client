@@ -526,11 +526,13 @@ module.exports = function (grunt) {
                 options: {
                     hostname: '*',
                     port: 8080,
-                    base: '<%= build_dir %>',
+                    base: './<%= build_dir %>',
                     debug: true,
                     livereload: true,
-                    //keepalive: true,
                     middleware: function (connect, options) {
+
+                        grunt.log.writeln(options.base);
+
                         return [
                             modRewrite([
 
@@ -557,10 +559,10 @@ module.exports = function (grunt) {
                             ]),
                             // this specifies that the build_dir, ('build') is a static directory where content
                             // will be served from.
-                            connect.static(options.base),
+                            connect.static(options.base[0]),
 
                             // for source maps
-                            connect.static(__dirname)
+                            //connect.static(__dirname)
                         ];
                     }
                 }

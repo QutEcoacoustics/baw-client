@@ -13,8 +13,7 @@
     "url": "https://github.com/QutBioacoustics/baw-client.git"
   },
   "//": [
-    "THE karma-chrome-launcher IS NEEDED TO LAUNCH CHROME PROPERLY ON WINDOWS. REMOVE WHEN PULL REQUEST COMPLETED https://github.com/karma-runner/karma-chrome-launcher",
-    "to install specific version of karma: npm i -g karma@0.10.10"
+    "THE karma-chrome-launcher IS NEEDED TO LAUNCH CHROME PROPERLY ON WINDOWS. REMOVE WHEN PULL REQUEST COMPLETED https://github.com/karma-runner/karma-chrome-launcher"
   ],
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -23,7 +22,7 @@
     "grunt-contrib-jshint": "0.10.x",
     "grunt-contrib-concat": "~0.4.0",
     "grunt-contrib-watch": "~0.6.x",
-    "grunt-contrib-uglify": "0.4.x",
+    "grunt-contrib-uglify": "0.5.x",
     "grunt-karma": "~0.8.x",
     "karma-chrome-launcher": "~0.1.1",
     "grunt-ngmin": "0.0.3",
@@ -31,9 +30,9 @@
     "grunt-conventional-changelog": "~1.1",
     "grunt-changelog": "~0.2.x",
     "grunt-bump": "0.0.14",
-    "grunt-contrib-connect": "0.7.x",
-    "connect-modrewrite": "~0.5.7",
-    "grunt-sass": "0.12.x",
+    "grunt-contrib-connect": "0.8.x",
+    "connect-modrewrite": "0.7.x",
+    "grunt-sass": "0.14.x",
     "lodash": "~2.4.1",
     "karma-phantomjs-launcher": "~0.1.1",
     "karma-jasmine": "~0.2.x",
