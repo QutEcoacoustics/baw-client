@@ -119,7 +119,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 $scope.$on('event:auth-loginRequired', function(){ Media.formatPaths($scope.model.media); });
                 $scope.$on('event:auth-loginConfirmed', function(){ Media.formatPaths($scope.model.media); });
 
-                $scope.model.media = Media.get(
+                Media.get(
                     {
                         recordingId: $routeParams.recordingId,
                         start_offset: $routeParams.start,
@@ -127,10 +127,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         format: "json"
                     },
                     function mediaGetSuccess(value, responseHeaders) {
+                        $scope.model.media = new baw.Media(value);
+
                         // reformat urls
                         Media.formatPaths($scope.model.media);
 
-                        value = new baw.Media(value);
+
 
                         //                        fixMediaApi();
 

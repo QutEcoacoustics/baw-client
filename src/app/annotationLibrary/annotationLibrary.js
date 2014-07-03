@@ -55,12 +55,12 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
         format: "json"
     };
 
-    audioEvent.media = Media.get(
+    Media.get(
         mediaItemParameters,
         function mediaGetSuccess(mediaValue, responseHeaders) {
 
             Media.formatPaths(mediaValue);
-            mediaValue = new baw.Media(mediaValue);
+            audioEvent.media = mediaValue = new baw.Media(mediaValue);
 
             // create properties that depend on Media
             audioEvent.converters = unitConverter.getConversions({
@@ -68,7 +68,8 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
                 spectrogramWindowSize: audioEvent.media.availableImageFormats.png.window,
                 endOffset: audioEvent.media.endOffset,
                 startOffset: audioEvent.media.startOffset,
-                imageElement: null
+                imageElement: null,
+                audioRecordingAbsoluteStartDate: audioEvent.media.datetime
             });
 
             audioEvent.bounds = {
@@ -79,6 +80,7 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
             };
 
             // set common/sensible defaults, but hide the elements
+            var offsetOfDay = audioEvent.converters.input.audioRecordingAbsoluteStartDate.getSeconds();
             audioEvent.gridConfig = {
                 y: {
                     showGrid: true,
@@ -95,8 +97,8 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
                 x: {
                     showGrid: true,
                     showScale: true,
-                    max: audioEvent.media.endOffset,
-                    min: audioEvent.media.startOffset,
+                    max: offsetOfDay + audioEvent.media.endOffset,
+                    min: offsetOfDay + audioEvent.media.startOffset,
                     step: 1,
                     width: audioEvent.converters.conversions.enforcedImageWidth,
                     labelFormatter: function (value, index, min, max) {

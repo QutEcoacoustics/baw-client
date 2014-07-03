@@ -92,7 +92,8 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
         spectrogramWindowSize: null,
         endOffset: null,
         startOffset: null,
-        imageElement: null
+        imageElement: null,
+        audioRecordingAbsoluteStartDate: null
     };
 
     function calculateUnitConverters(inputData) {
