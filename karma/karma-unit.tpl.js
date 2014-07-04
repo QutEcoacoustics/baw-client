@@ -57,8 +57,8 @@ module.exports = function (config) {
             dir: 'coverage/'
         };
 
-        configObject.reporters.push = 'coverage';
-        configObject.plugins.push = 'karma-coverage';
+        configObject.reporters.push('coverage');
+        configObject.plugins.push('karma-coverage');
     }
 
     /**
