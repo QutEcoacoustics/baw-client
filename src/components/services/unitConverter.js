@@ -7,6 +7,8 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
         return Math.abs(fraction - 1);
     }
 
+    var keysToCheck = ["sampleRate", "spectrogramWindowSize", "startOffset", "endOffset"];
+
     function calculateUnitConversions(data) {
         var result = {
             pixelsPerSecond: NaN,
@@ -15,14 +17,17 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
             enforcedImageWidth: NaN,
             enforcedImageHeight: NaN
         };
-        
-        if (data.sampleRate === undefined ||
-            data.spectrogramWindowSize === undefined ||
-            data.startOffset === undefined ||
-            data.endOffset === undefined) {
+
+        if (keysToCheck.some(function (key) { return data[key] === undefined; })) {
             console.warn("unitConverter:calculateUnitConversions: not enough information available to calculate unit conversions");
             return result;
         }
+
+        keysToCheck.forEach(function(key) {
+            if (!angular.isNumber(data[key])) {
+                throw "Input data field `" + key + "` should be a number!";
+            }
+        });
 
         // based on meta data only
         var duration = data.endOffset - data.startOffset,
