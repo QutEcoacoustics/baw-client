@@ -23,7 +23,7 @@
         return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
-    var bawss = angular.module("bawApp.services", ['ngResource', 'bawApp.configuration']);
+    var bawss = bawss || angular.module("bawApp.services", ['ngResource', 'bawApp.configuration']);
 
     bawss.factory('Project', [ '$resource', 'conf.paths', function ($resource, paths) {
         return resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
