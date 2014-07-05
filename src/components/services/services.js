@@ -231,7 +231,9 @@
              * Change relative image and audio urls into absolute urls
              * @param {Object} mediaItem
              */
-            mediaResource.formatPaths = function formatPaths(mediaItem) {
+            mediaResource.formatPaths = function formatPaths(mediaItem, audioEventId) {
+                // HACK: add audioEventId onto every path until Media API correctly returns resource paths!
+                var hackString = audioEventId != undefined ? "&audioEventId=" + audioEventId.toString() : "";
 
                 var imgKeys = Object.keys(mediaItem.availableImageFormats);
                 if (imgKeys.length > 1) {
@@ -240,12 +242,12 @@
 
                 var imageKey = imgKeys[0];
                 var imageFormat = mediaItem.availableImageFormats[imageKey];
-                mediaItem.availableImageFormats[imageKey].url = paths.joinFragments(paths.api.root, imageFormat.url);
+                mediaItem.availableImageFormats[imageKey].url = paths.joinFragments(paths.api.root, (imageFormat.url + hackString));
                 mediaItem.spectrogram = imageFormat;
 
                 angular.forEach(mediaItem.availableAudioFormats, function (value, key) {
                     // just update the url so it is an absolute uri
-                    this[key].url = paths.joinFragments(paths.api.root, value.url);
+                    this[key].url = paths.joinFragments(paths.api.root, (value.url + hackString));
 
                 }, mediaItem.availableAudioFormats);
             };

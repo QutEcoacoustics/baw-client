@@ -50,6 +50,7 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
 
     var mediaItemParameters = {
         recordingId: audioEvent.audioRecordingId,
+        audioEventId: audioEvent.id,
         start_offset: Math.max(Math.floor(audioEvent.startTimeSeconds - constants.annotationLibrary.paddingSeconds), minDuration),
         end_offset: Math.min(Math.ceil(audioEvent.endTimeSeconds + constants.annotationLibrary.paddingSeconds), audioDurationSeconds),
         format: "json"
@@ -59,7 +60,7 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
         mediaItemParameters,
         function mediaGetSuccess(mediaValue, responseHeaders) {
 
-            Media.formatPaths(mediaValue);
+            Media.formatPaths(mediaValue, audioEvent.id);
             audioEvent.media = mediaValue = new baw.Media(mediaValue);
 
             // create properties that depend on Media
