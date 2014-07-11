@@ -1,0 +1,16 @@
+<div class="toggle-switch-wrapper " ng-disabled="disabled" mode="{{modeNormalized}}" ng-click="toggle()" ng-class="{'on': model, 'off': !model}">
+    <div ng-class="{'on': model, 'off': !model}">
+        <div class="toggle-switch-on" ng-class="{'active': model}" >
+
+        </div>
+        <div class="toggle-switch-knob" ng-class="{'on': model, 'off': !model}" >
+
+        </div>
+        <div class="toggle-switch-off" ng-class="{'active': !model}">
+
+        </div>
+    </div>
+    <div class="toggle-switch-status" ng-class="{'on': model, 'off': !model}" >
+        <div class="toggle-switch-status-led"></div>
+    </div>
+</div>
