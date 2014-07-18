@@ -69,6 +69,7 @@ var app = angular.module('baw',
 
                              'bawApp.directives', /* our directives.js  */
                              'bawApp.directives.ngAudio', /* our directives.js  */
+                             'bawApp.directives.toggleSwitch',
                              'bawApp.filters', /* our filters.js     */
                              'bawApp.services', /* our services.js    */
                              'bawApp.services.unitConverter',

@@ -51,7 +51,7 @@ module.exports = {
         jsunit: [ 'src/**/*.spec.js' ],
 
         atpl: [ 'src/app/**/*.tpl.html' ],
-        ctpl: [ 'src/common/**/*.tpl.html' ],
+        ctpl: [ 'src/common/**/*.tpl.html',  'src/components/**/*.tpl.html' ],
 
         html: [ 'src/index.html'],
         sass: [ 'src/sass/application.tpl.scss' ]

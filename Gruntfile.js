@@ -434,11 +434,11 @@ module.exports = function (grunt) {
             },
 
             /**
-             * These are the templates from `src/common`.
+             * These are the templates from `src/common` or `src/components`.
              */
             common: {
                 options: {
-                    base: 'src/common'
+                    base: 'src'
                 },
                 src: [ '<%= app_files.ctpl %>' ],
                 dest: '<%= build_dir %>/templates-common.js'
@@ -648,10 +648,6 @@ module.exports = function (grunt) {
             /**
              * When the CSS files change, we need to compile and minify them.
              */
-            //      less: {
-            //        files: [ 'src/**/*.less' ],
-            //        tasks: [ 'recess:build' ]
-            //      },
             sass: {
                 files: [ 'src/**/*.scss' ],
                 tasks: ['sass:build', 'concat:build_css']
@@ -768,7 +764,7 @@ module.exports = function (grunt) {
     grunt.renameTask('sass', 'sassReal');
     grunt.registerTask('sassTemplate', 'Transforming sass file', function () {
         var mainScss = grunt.config('app_files.sass');
-        var processedScss = path.join(path.dirname(mainScss), path.basename(mainScss, ".tpl.scss")) + ".processed.scss";
+        var processedScss = path.join(path.dirname(mainScss), path.basename(mainScss, ".tpl.scss")) + ".scss.processed";
         grunt.config.set('app_files.processedSass', processedScss);
 
         grunt.log.write("Temp file: " + processedScss);
