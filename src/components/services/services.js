@@ -233,7 +233,7 @@
              */
             mediaResource.formatPaths = function formatPaths(mediaItem, audioEventId) {
                 // HACK: add audioEventId onto every path until Media API correctly returns resource paths!
-                var hackString = audioEventId != undefined ? "&audioEventId=" + audioEventId.toString() : "";
+                var hackString = audioEventId !== undefined ? "&audioEventId=" + audioEventId.toString() : "";
 
                 var imgKeys = Object.keys(mediaItem.availableImageFormats);
                 if (imgKeys.length > 1) {
