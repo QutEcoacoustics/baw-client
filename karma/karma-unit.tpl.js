@@ -59,7 +59,7 @@ module.exports = function (config) {
 
         configObject.reporters.push('coverage');
         configObject.plugins.push('karma-coverage');
-        configObject['src/**/!(*.spec)+(.js)'] = 'coverage';
+        configObject.preprocessors['src/**/!(*.spec)+(.js)'] = 'coverage';
     }
 
     /**
