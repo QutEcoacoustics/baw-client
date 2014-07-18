@@ -11,7 +11,7 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
             }
         };
     })
-    .directive("toggleSwitch", function () {
+    .directive("toggleSwitch", ["$timeout", function (timer) {
 
         return {
             restrict: "E",
@@ -73,6 +73,11 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
                 if (knobDiv.innerText === "") {
                     knobDiv.innerText = " ";
                 }
+
+                // after load enable animations
+                timer(function() {
+                    element.classList.add("toggle-switch-animate");
+                }, 0);
             },
             controller: function($scope, $element, $attrs) {
 
@@ -88,4 +93,4 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
                 };
             }
         };
-    });
+    }]);

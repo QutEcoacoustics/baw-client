@@ -53,11 +53,11 @@ toggle-switch {
     margin: 0;
     height: $toggle-switch-height;
     overflow: hidden;
-    @include toggle-transition(border-color);
+
 
     &.on {
       border-color: $btn-success-border;
-      @include toggle-transition(border-color);
+
     }
 
     .toggle-switch-knob, .toggle-switch-on, .toggle-switch-off, .toggle-switch-status {
@@ -107,12 +107,10 @@ toggle-switch {
       &.on .toggle-switch-status-led {
         background-color: $on-color-indicator;
         @include vendor-prefix(box-shadow, 0 0 5px $brand-success);
-        @include toggle-transition(box-shadow, background-color);
       }
 
       &.off .toggle-switch-status-led {
         background-color: $off-color-indicator;
-        @include toggle-transition(box-shadow, background-color);
       }
 
     }
@@ -140,11 +138,9 @@ toggle-switch {
 
       & > div.off {
         @include vendor-prefix(transform, translateX(calc(-50% - 1px)));
-        @include toggle-transition(transform);
       }
 
       & > div.on {
-        @include toggle-transition(transform);
       }
 
       .toggle-switch-knob {
@@ -174,4 +170,32 @@ toggle-switch {
   & .active {
   }
 
+  // only animate when necessary
+  &.toggle-switch-animate {
+    .toggle-switch-wrapper {
+      @include toggle-transition(border-color);
+
+      &.on {
+        @include toggle-transition(border-color);
+      }
+
+      & .toggle-switch-status {
+        &.on .toggle-switch-status-led {
+          @include toggle-transition(box-shadow, background-color);
+        }
+        &.off .toggle-switch-status-led {
+          @include toggle-transition(box-shadow, background-color);
+        }
+      }
+
+      &[mode='slide-toggle'] {
+        & > div.off {
+          @include toggle-transition(transform);
+        }
+        & > div.on {
+          @include toggle-transition(transform);
+        }
+      }
+    }
+  }
 }
