@@ -498,8 +498,8 @@
         }]);
 
     bawss.factory('AuthenticationProviders',
-        ['$rootScope', 'authService', '$http', 'Authenticator', 'railsFieldRenamingInterceptor', '$q','$url',
-            function ($rootScope, authService, $http, Authenticator, railsFieldRenamingInterceptor, $q, $url) {
+        ['$rootScope', 'authService', '$http', 'Authenticator', '$q','$url',
+            function ($rootScope, authService, $http, Authenticator, $q, $url) {
                 var signOutPath = '/security/sign_out';
 
                 function signOut() {
@@ -539,7 +539,8 @@
                     baw.popUpWindow(popPath, 700, 500, function (data) {
                         data = data || {};
 
-                        railsFieldRenamingInterceptor().core(data);
+                        throw "add object camel casing here";
+                        //railsFieldRenamingInterceptor().core(data);
 
                         if (data.response === "ok") {
                             Authenticator.loginSuccess(data);
@@ -555,7 +556,8 @@
                     baw.popUpWindow(popPath, 700, 500, function (data) {
                         data = data || {};
 
-                        railsFieldRenamingInterceptor().core(data);
+                        throw "add object camel casing here";
+                        //railsFieldRenamingInterceptor().core(data);
 
                         if (data.response === "ok") {
                             Authenticator.loginSuccess(data);

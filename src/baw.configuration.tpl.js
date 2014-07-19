@@ -180,7 +180,8 @@ angular.module('bawApp.configuration', ['url'])
             id: null,
             preferences: {
                 volume: 1.0,
-                muted: false
+                muted: false,
+                autoPlay: false
             },
             userName: "Unknown user"
         },

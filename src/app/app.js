@@ -61,8 +61,11 @@ var app = angular.module('baw',
 
                              'url', /* a custom uri formatter */
                              'bawApp.configuration', /* a mapping of all static path configurations
-                          and a module that contains all app configuration */
+                                                        and a module that contains all app configuration */
 
+                             'http-auth-interceptor', /* the auth module    */
+                             'angular-auth', /* the auth module    */
+                             'rails', /* a module designed to rewrite object keys on JSON objects */
 
                              'templates-app', /* these are the precompiled templates */
                              'templates-common',
@@ -75,10 +78,6 @@ var app = angular.module('baw',
                              'bawApp.services.unitConverter',
                              'audio-control',
                              'draggabilly',
-
-                             'http-auth-interceptor', /* the auth module    */
-                             'angular-auth', /* the auth module    */
-                             'rails', /* a module designed to rewrite object keys on JSON objects */
 
                              'bawApp.accounts',
                              'bawApp.annotationViewer',
@@ -186,15 +185,21 @@ var app = angular.module('baw',
 
               // user profile - update user preferences when they change
               var eventCallbacks = {};
-              eventCallbacks[ngAudioEvents.volumeChanged] = function (event, api, value) {
+              eventCallbacks[ngAudioEvents.volumeChanged] = function(event, api, value) {
                   if (api.profile.preferences.volume !== value) {
                       api.profile.preferences.volume = value;
                       api.updatePreferences();
                   }
               };
-              eventCallbacks[ngAudioEvents.muteChanged] = function (event, api, value) {
+              eventCallbacks[ngAudioEvents.muteChanged] = function(event, api, value) {
                   if (api.profile.preferences.muted !== value) {
                       api.profile.preferences.muted = value;
+                      api.updatePreferences();
+                  }
+              };
+              eventCallbacks["autoPlay"] = function(event, api, value) {
+                  if(api.profile.preferences.autoPlay !== value) {
+                      api.profile.preferences.autoPlay = value;
                       api.updatePreferences();
                   }
               };

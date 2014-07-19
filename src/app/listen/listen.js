@@ -95,6 +95,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 var profileLoaded = function updateProfileSettings(event, UserProfile) {
                     $scope.model.audioElement.volume = UserProfile.profile.preferences.volume;
                     $scope.model.audioElement.muted = UserProfile.profile.preferences.muted;
+
+                    $scope.model.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay || $routeParams.autoPlay;
                 };
                 $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
                 if (UserProfile.profile && UserProfile.profile.preferences) {
@@ -104,7 +106,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 // auto play feature
                 $scope.$on(ngAudioEvents.ended, function navigate(event) {
 
-                    if ($scope.nextEnabled) {
+                    if ($scope.nextEnabled && $scope.model.audioElement.autoPlay) {
                         console.info("Changing page to next segment...");
                         $scope.$apply(function() {
                             $location.search({autoPlay: true, start: nextStart, end: nextEnd});
@@ -112,6 +114,13 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     }
                     else {
                         console.warn("Continuous playback cannot continue");
+                    }
+                });
+                $scope.$watch(function() {
+                    return $scope.model.audioElement.autoPlay;
+                }, function(newValue, oldValue) {
+                    if (UserProfile.profile && (UserProfile.profile.preferences.autoPlay !== newValue)) {
+                        $scope.$emit("autoPlay", newValue);
                     }
                 });
 

@@ -64,13 +64,13 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
                 });
 
 
-                if (onDiv.innerText === "") {
+                if (onDiv.innerHTML === "") {
                     onDiv.innerText = "On";
                 }
-                if (offDiv.innerText === "") {
+                if (offDiv.innerHTML === "") {
                     offDiv.innerText = "Off";
                 }
-                if (knobDiv.innerText === "") {
+                if (knobDiv.innerHTML === "") {
                     knobDiv.innerText = " ";
                 }
 

@@ -8,7 +8,12 @@
 (function (undefined) {
 
 
-    function transformObject(data, transform) {
+    /**
+     * Old function worked via reference - deprecated
+     * @param data
+     * @param transform
+     */
+    /*function transformObject(data, transform) {
         var newKey;
 
         if (data && angular.isObject(data)) {
@@ -22,6 +27,24 @@
 
                 transformObject(value, transform);
             });
+        }
+    }*/
+
+    function transformObject(data, transform) {
+        if (data && angular.isObject(data)) {
+            var newData = angular.isArray(data) ? [] : {};
+            angular.forEach(data, function (value, key) {
+                var newKey = transform(key);
+
+                if (angular.isObject(value)) {
+                    newData[newKey] = transformObject(value, transform);
+                }
+                else {
+                    newData[newKey] = value;
+                }
+            });
+
+            return newData;
         }
     }
 
@@ -75,14 +98,12 @@
     }
 
     angular.module('rails', [])
-        .factory('railsFieldRenamingTransformer', function () {
-
-            return function railsFieldRenamingTransformer(data, headers) {
+        .factory('railsFieldRenamingTransformerRequest', function () {
+            return function railsFieldRenamingTransformerRequest(data, headers) {
                 // TODO: add conditions
                 // probs only want to do this if headers contains app/json
                 // and only if object has a __railsJsonRenamer__
                 // or if request is going to our server?
-
                 if ((headers()["Accept"] || "").indexOf("application/json") >= 0) {
 
                     if (data === undefined || data === null) {
@@ -93,21 +114,43 @@
                         return data;
                     }
 
-                    transformObject(data, underscore);
-
-                    stampObject(data, "camelCased->underscore");
-
+                    var result = transformObject(data, underscore);
+                    stampObject(result, "camelCased->underscored");
+                    return result;
                 }
 
                 return data;
             };
         })
+        .factory('railsFieldRenamingTransformerResponse', function() {
+            return function railsFieldRenamingTransformerResponse(data, headers) {
 
-        .factory('railsFieldRenamingInterceptor', function () {
+                if (data === undefined || data === null) {
+                    return;
+                }
+
+                if (!angular.isObject(data)) {
+                    return data;
+                }
+
+                if ((headers()["content-type"] || "").indexOf("application/json") >= 0) {
+                    var result = transformObject(data, camelize);
+                    stampObject(result, "underscored->camelCased");
+                    return result;
+                }
+                else {
+                    return data;
+                }
+            };
+        })
+
+        /*.factory('railsFieldRenamingInterceptor', function () {
             function core(data) {
-                transformObject(data, camelize);
+                var result = transformObject(data, camelize);
 
-                stampObject(data, "underscored->camelCased");
+                stampObject(result, "underscored->camelCased");
+
+                return result;
             }
 
             return function () {
@@ -116,7 +159,7 @@
                         return function (p) {
                             p.then(function (response) {
                                     if ((response.headers()["content-type"] || "").indexOf("application/json") >= 0) {
-                                        core(response.data);
+                                        response.data = core(response.data);
                                     }
 
                                     return response;
@@ -133,8 +176,8 @@
                     core: core
                 };
             };
-        })
-
+        })*/
+/*
         .factory('railsRootWrappingTransformer', function () {
             return function railsRootWrappingTransformer(data, resource) {
                 var result = {};
@@ -166,7 +209,7 @@
                         return response;//p.reject(response);
                     });
             };
-        })
+        })*/
         // GIANT HACK!
         .factory('railsCsrfToken', ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
             return {
@@ -194,14 +237,20 @@
      */
         .config([
             '$httpProvider',
-            'railsFieldRenamingTransformerProvider',
-            'railsFieldRenamingInterceptorProvider',
+            /* We are in the config phase - traditional services are not available yet
+             * Thus we must make a reference to the factory's provider.
+             * This is also why the $gets are necessary below!
+             */
+            'railsFieldRenamingTransformerRequestProvider',
+            'railsFieldRenamingTransformerResponseProvider',
             'railsCsrfTokenProvider',
-            function ($httpProvider, railsFieldRenamingTransformer, railsFieldRenamingInterceptor, railsCsrfToken) {
+            function ($httpProvider, railsFieldRenamingTransformerRequest, railsFieldRenamingTransformerResponse, railsCsrfToken) {
 
-            $httpProvider.responseInterceptors.push(railsFieldRenamingInterceptor.$get()().promise);
+            ////$httpProvider.responseInterceptors.push(railsFieldRenamingInterceptor.$get()().promise);
+
+            $httpProvider.defaults.transformResponse.push(railsFieldRenamingTransformerResponse.$get());
             $httpProvider.interceptors.push('railsCsrfToken');
-            $httpProvider.defaults.transformRequest.unshift(railsFieldRenamingTransformer.$get());
+            $httpProvider.defaults.transformRequest.unshift(railsFieldRenamingTransformerRequest.$get());
         }]);
 
 })();
