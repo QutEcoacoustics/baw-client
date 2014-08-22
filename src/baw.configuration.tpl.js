@@ -187,5 +187,19 @@ angular.module('bawApp.configuration', ['url'])
         },
         annotationLibrary: {
             paddingSeconds: 1.0
+        },
+        browserSupport: {
+            optimum: {
+                chrome: 36
+            },
+            supported: {
+                msie: 10,
+                firefox: 30,
+                chrome: 30,
+                safari: 5.1,
+                opera: 23,
+                ios:  5.1,
+                android: 4.0
+            }
         }
     });
