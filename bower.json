@@ -14,7 +14,7 @@
     "modernizr": "~2.8.x",
     "jquery-ui": "~1.10.3",
     "momentjs": "~2.7.x",
-    "jasmine-matchers": "https://github.com/JamieMason/Jasmine-Matchers.git#develop",
+    "jasmine-expect": "1.x",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "lodash": "~2.4.x",
     "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
