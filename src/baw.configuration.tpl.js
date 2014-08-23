@@ -128,6 +128,9 @@ angular.module('bawApp.configuration', ['url'])
                     },
                     recordings: {
                         recentRecordings: 'recordings/recentRecordings/recentRecordings.tpl.html'
+                    },
+                    d3: {
+                        testPage: 'd3Bindings/d3TestPage.tpl.html'
                     }
                 },
                 // routes used by angular

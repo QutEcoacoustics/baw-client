@@ -123,8 +123,8 @@ module.exports = {
             'vendor/bowser/bowser.js',
             'vendor/angular-growl-v2/build/angular-growl.js',
             'vendor/angular-local-storage/angular-local-storage.js',
-            'vendor/humanize-duration/humanize-duration.js'
-
+            'vendor/humanize-duration/humanize-duration.js',
+            'vendor/d3/d3.js'
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss
