@@ -78,6 +78,7 @@ var app = angular.module('baw',
                              'bawApp.directives', /* our directives.js  */
                              'bawApp.directives.ngAudio', /* our directives.js  */
                              'bawApp.directives.toggleSwitch',
+
                              'bawApp.filters', /* our filters.js     */
 
 
@@ -89,6 +90,9 @@ var app = angular.module('baw',
 
                              'audio-control',
                              'draggabilly',
+
+                             'bawApp.d3',                /* our d3 integration */
+                             'bawApp.d3.calendarView',
 
                              'bawApp.accounts',
                              'bawApp.annotationViewer',
@@ -166,6 +170,8 @@ var app = angular.module('baw',
                          redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
                          title: 'Audio Events' }).
                      when('/library/:recordingId/audio_events/:audioEventId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationItemCtrl', title: 'Annotation :audioEventId'}).
+
+                     when('/d3Test', {templateUrl: paths.site.files.d3.testPage, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).

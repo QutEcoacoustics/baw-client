@@ -116,6 +116,9 @@ module.exports = {
             'vendor/get-size/get-size.js',
             'vendor/draggabilly/draggabilly.js',
 
+            'vendor/d3/d3.js',
+
+
             'vendor/bowser/bowser.js',
             'vendor/angular-growl-v2/build/angular-growl.js',
             'vendor/angular-local-storage/dist/angular-local-storage.js',
