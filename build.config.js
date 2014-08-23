@@ -119,7 +119,8 @@ module.exports = {
             'vendor/get-style-property/get-style-property.js',
             // get-size depends on get-style-property... it has to come after it
             'vendor/get-size/get-size.js',
-            'vendor/draggabilly/draggabilly.js'
+            'vendor/draggabilly/draggabilly.js',
+            'vendor/d3/d3.js'
 
 
         ],

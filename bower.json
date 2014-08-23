@@ -19,7 +19,8 @@
     "lodash": "~2.4.x",
     "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
     "angular-sanitize": "~1.2.x",
-    "draggabilly": "~1.1.x"
+    "draggabilly": "~1.1.x",
+    "d3": "~3.4.11"
   },
   "dependencies": {},
   "resolutions": {

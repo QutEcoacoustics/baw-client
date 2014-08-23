@@ -123,6 +123,9 @@ angular.module('bawApp.configuration', ['url'])
                         spec: 'assets/bird_walk/bird_walk_spec.json',
                         stats: 'assets/bird_walk/bird_walk_stats.json',
                         images: 'assets/bird_walk/images/'
+                    },
+                    d3: {
+                        testPage: 'd3Bindings/d3TestPage.tpl.html'
                     }
                 },
                 // routes used by angular
