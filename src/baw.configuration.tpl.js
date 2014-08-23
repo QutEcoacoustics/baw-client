@@ -166,6 +166,7 @@ angular.module('bawApp.configuration', ['url'])
     })()
     )
     .constant("conf.constants", {
+        namespace: "baw-client",
         listen: {
             chunkDurationSeconds: 30.0,
             minAudioDurationSeconds: 2.0
@@ -200,6 +201,8 @@ angular.module('bawApp.configuration', ['url'])
                 opera: 23,
                 ios:  5.1,
                 android: 4.0
-            }
+            },
+            baseMessage: "Your current internet browser ({name}, version {version}) is {reason}. <br/> Consider updating or try using <a target='_blank' href='https://www.google.com.au/intl/en_au/chrome/browser/' >Google Chrome</a>.",
+            localStorageKey: "browserSupport.checked"
         }
     });

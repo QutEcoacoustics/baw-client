@@ -58,6 +58,8 @@ var app = angular.module('baw',
                              'ui.bootstrap.typeahead',
                              'ui.bootstrap.tpls',
                              'decipher.tags',
+                             'angular-growl',
+                             'LocalStorageModule',
 
                              'url', /* a custom uri formatter */
                              'bawApp.configuration', /* a mapping of all static path configurations
@@ -99,8 +101,8 @@ var app = angular.module('baw',
                              'bawApp.birdWalks'
                          ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', '$sceDelegateProvider',
-             function ($routeProvider, $locationProvider, $httpProvider, paths, $sceDelegateProvider) {
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider',
+             function ($routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
                  currentWhitelist.push(paths.api.root+'/**');
@@ -174,6 +176,12 @@ var app = angular.module('baw',
                  // for angular. This causes rails to do stupid shit for things like 403s... with old header it gives a 302
                  // and redirects to HTML page. WTF.
                  $httpProvider.defaults.headers['common']['Accept'] = 'application/json';
+
+                 // configure angular-growl
+                 growlProvider.globalPosition('top-center');
+
+                 // configure local storage provider with our own namepspace
+                 localStorageServiceProvider.setPrefix(constants.namespace);
              }])
 
 
@@ -313,20 +321,72 @@ var app = angular.module('baw',
           }])
 
     .controller('AppCtrl',
-                ['$scope', '$location',
-                 function AppCtrl($scope, $location) {
+                ['$scope', '$location', 'conf.constants', 'growl', '$timeout', 'localStorageService',
+                 function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService) {
 
-                     $scope.showDebugUi = function() {
+                     $scope.showDebugUi = function () {
                          var r = window.cssRules.getCssRule(".debug-UI");
                          r.style.display = "";
                      };
-                     $scope.hideDebugUi = function() {
+                     $scope.hideDebugUi = function () {
                          var r = window.cssRules.getCssRule(".debug-UI");
                          r.style.display = "none";
                      };
 
                      $scope.activePath = function activePath(pathFragment) {
                          return $location.path().indexOf(pathFragment) != -1;
+                     };
+
+                     // do browser check
+                     // assume bowser is on global scope
+                     // only do it once - we best not be too annoying
+                     var supported = constants.browserSupport;
+                     var isSupportedBrowser = false;
+                     var version = parseFloat(bowser.version);
+                     angular.forEach(supported.optimum, function (value, key) {
+                         if (isSupportedBrowser || (bowser[key] && version >= value)) {
+                             isSupportedBrowser = true;
+                         }
+                     });
+                     if (!isSupportedBrowser) {
+                         if (!localStorageService.isSupported || !localStorageService.get(supported.localStorageKey)) {
+                             $timeout(function () {
+
+
+                                 var supportedBrowser = false;
+                                 angular.forEach(supported.supported, function (value, key) {
+                                     if (bowser[key]) {
+                                         if (version >= value) {
+                                             growl.info(supported.baseMessage.format({
+                                                 name: bowser.name,
+                                                 version: bowser.version,
+                                                 reason: "not well tested"
+                                             }));
+                                             supportedBrowser = true;
+                                         }
+                                         else {
+                                             supportedBrowser = false;
+                                         }
+
+                                     }
+                                 });
+
+                                 if (!supportedBrowser) {
+                                     growl.warning(supported.baseMessage.format({
+                                         name: bowser.name,
+                                         version: bowser.version,
+                                         reason: "not supported"
+                                     }));
+                                 }
+
+                             });
+                             localStorageService.set(supported.localStorageKey, true);
+                         }
+                     }
+
+
+                     $scope.testGrowl = function () {
+                         growl.success("I'm a success message!");
                      };
 
                  }]);
