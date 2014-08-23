@@ -118,12 +118,10 @@ module.exports = {
 
             'vendor/d3/d3.js',
 
-
             'vendor/bowser/bowser.js',
             'vendor/angular-growl-v2/build/angular-growl.js',
             'vendor/angular-local-storage/dist/angular-local-storage.js',
             'vendor/humanize-duration/humanize-duration.js'
-
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss

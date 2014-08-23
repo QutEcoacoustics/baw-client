@@ -1,4 +1,5 @@
 var bawD3 = bawD3 || angular.module("bawApp.d3", []);
+
 bawD3.controller('D3TestPageCtrl', ['$scope', 'conf.paths', '$http', function ($scope, paths, $http) {
 
     // use the REST API in here
@@ -34,3 +35,4 @@ bawD3.controller('D3TestPageCtrl', ['$scope', 'conf.paths', '$http', function ($
 
 
 }]);
+
