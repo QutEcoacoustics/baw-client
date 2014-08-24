@@ -540,14 +540,14 @@
                         data = data || {};
 
                         throw "add object camel casing here";
-                        //railsFieldRenamingInterceptor().core(data);
+                        /*railsFieldRenamingInterceptor().core(data);
 
                         if (data.response === "ok") {
                             Authenticator.loginSuccess(data);
                         }
                         else {
                             Authenticator.loginFailure(data);
-                        }
+                        }*/
                     });
                 }
 
