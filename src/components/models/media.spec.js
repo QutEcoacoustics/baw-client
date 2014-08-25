@@ -2,78 +2,70 @@ describe("The Media object", function () {
 
     var existingMedia;
     var resource = {
-        "datetime": "2007-10-21T14:46:07+10:00",
-        "originalFormat": ".asf",
-        "originalSampleRate": 22050,
-        "startOffset": 47.0,
-        "endOffset": 51.0,
-        "uuid": "5151512c-332b-470a-8a29-b7d46b0a9791",
-        "id": 3952,
-        "mediaType": "application/json",
-        "availableAudioFormats": {
-            "mp3": {
-                "extension": "mp3",
-                "channel": 0,
-                "sampleRate": 22050,
-                "maxDurationSeconds": 300.0,
-                "minDurationSeconds": 0.5,
-                "mimeType": "audio/mp3",
-                "url": "/audio_recordings/3952/media.mp3?end_offset=51&start_offset=47"},
-            "webm": {
-                "extension": "webm",
-                "channel": 0,
-                "sampleRate": 22050,
-                "maxDurationSeconds": 300.0,
-                "minDurationSeconds": 0.5,
-                "mimeType": "audio/webm",
-                "url": "/audio_recordings/3952/media.webm?end_offset=51&start_offset=47"},
-            "ogg": {
-                "extension": "ogg",
-                "channel": 0,
-                "sampleRate": 22050,
-                "maxDurationSeconds": 300.0,
-                "minDurationSeconds": 0.5,
-                "mimeType": "audio/ogg",
-                "url": "/audio_recordings/3952/media.ogg?end_offset=51&start_offset=47"},
-            "flac": {
-                "extension": "flac",
-                "channel": 0,
-                "sampleRate": 22050,
-                "maxDurationSeconds": 300.0,
-                "minDurationSeconds": 0.5,
-                "mimeType": "audio/x-flac",
-                "url": "/audio_recordings/3952/media.flac?end_offset=51&start_offset=47"},
-            "wav": {
-                "extension": "wav",
-                "channel": 0,
-                "sampleRate": 22050,
-                "maxDurationSeconds": 300.0,
-                "minDurationSeconds": 0.5,
-                "mimeType": "audio/wav",
-                "url": "/audio_recordings/3952/media.wav?end_offset=51&start_offset=47"}
+        "recording": {
+            "id": 234234,
+            "uuid": "7de42123-c14e-4c10-afdf-8badd894864f",
+            "recorded_date": "2012-10-20T06:00:00+10:00",
+            "duration_seconds": 7199.004,
+            "sample_rate_hertz": 22050,
+            "channel_count": 2,
+            "media_type": "audio/wav"
         },
-        "availableImageFormats": {
-            "png": {
-                "extension": "png",
-                "channel": 0,
-                "sampleRate": 22050,
-                "window": 512,
-                "windowFunction": "Hamming",
-                "colour": "g",
-                "ppms": 0.045,
-                "maxDurationSeconds": 120.0,
-                "minDurationSeconds": 0.5,
-                "mimeType": "image/png",
-                "url": "/audio_recordings/3952/media.png?end_offset=51&start_offset=47"}
+        "common_parameters": {
+            "start_offset": 0.0,
+            "end_offset": 30.0,
+            "audio_event_id": null,
+            "channel": 0,
+            "sample_rate": 22050
         },
-        "availableTextFormats": {
-            "json": {
-                "extension": "json",
-                "mimeType": "application/json",
-                "url": "/audio_recordings/3952/media.json?end_offset=51&start_offset=47"
+        "available": {
+            "audio": {
+                "mp3": {
+                    "media_type": "audio/mp3",
+                    "extension": "mp3",
+                    "url": "/audio_recordings/234234/media.mp3?end_offset=30\u0026start_offset=0"
+                },
+                "webm": {
+                    "media_type": "audio/webm",
+                    "extension": "webm",
+                    "url": "/audio_recordings/234234/media.webm?end_offset=30\u0026start_offset=0"
+                },
+                "ogg": {
+                    "media_type": "audio/ogg",
+                    "extension": "ogg",
+                    "url": "/audio_recordings/234234/media.ogg?end_offset=30\u0026start_offset=0"
+                },
+                "flac": {
+                    "media_type": "audio/x-flac",
+                    "extension": "flac",
+                    "url": "/audio_recordings/234234/media.flac?end_offset=30\u0026start_offset=0"
+                },
+                "wav": {
+                    "media_type": "audio/wav",
+                    "extension": "wav",
+                    "url": "/audio_recordings/234234/media.wav?end_offset=30\u0026start_offset=0"
+                }
+            },
+            "image": {
+                "png": {
+                    "window_size": 512,
+                    "window_function": "Hamming",
+                    "colour": "g",
+                    "ppms": 0.04306640625,
+                    "media_type": "image/png",
+                    "extension": "png",
+                    "url": "/audio_recordings/234234/media.png?end_offset=30\u0026start_offset=0"
+                }
+            },
+            "text": {
+                "json": {
+                    "media_type": "application/json",
+                    "extension": "json",
+                    "url": "/audio_recordings/234234/media.json?end_offset=30\u0026start_offset=0"
+                }
             }
-        },
-        "format": "json"};
+        }
+    };
 
 
     beforeEach(function () {
