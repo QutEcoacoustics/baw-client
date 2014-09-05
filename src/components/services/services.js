@@ -28,7 +28,6 @@
 
     bawss.factory('Project', [ '$resource', "$http", 'conf.paths', "QueryBuilder", function ($resource, $http, paths, QueryBuilder) {
         var resource = resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
-
         return resource;
     }]);
 
