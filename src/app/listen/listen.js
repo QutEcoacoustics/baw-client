@@ -240,7 +240,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         // get project
                         Project.get({projectId: id}, {}, function getProjectSuccess(value) {
 
-                            value.link = paths.api.routes.projectAbsolute.format({"projectId": value.id});
+                            value.link = paths.api.routes.project.showAbsolute.format({"projectId": value.id});
 
                             $scope.model.projects[index] = value;
                             result.projects[index] = value;
@@ -254,7 +254,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                                     permissions: "access denied"
                                 };
 
-                                denied.link = paths.api.routes.projectAbsolute.format({"projectId": denied.id});
+                                denied.link = paths.api.routes.project.showAbsolute.format({"projectId": denied.id});
 
                                 $scope.model.projects[index] = denied;
                                 result.projects[index] = denied;
