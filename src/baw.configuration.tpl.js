@@ -70,7 +70,8 @@ angular.module('bawApp.configuration', ['url'])
                     audioRecording: {
                         listShort: "/audio_recordings/{recordingId}",
                         show: "/audio_recordings/{recordingId}",
-                        list: "/audio_recordings/"
+                        list: "/audio_recordings/",
+                        filter: "/audio_recordings/filter"
                     },
                     audioEvent: {
                         list: "/audio_recordings/{recordingId}/audio_events",
