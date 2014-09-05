@@ -26,7 +26,7 @@
     var bawss = angular.module("bawApp.services", ['ngResource', 'bawApp.configuration']);
 
     bawss.factory('Project', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
+        return resourcePut($resource, uriConvert(paths.api.routes.project.showAbsolute), {projectId: "@projectId"});
     }]);
 
     bawss.factory('Site', [ '$resource', 'conf.paths', function ($resource, paths) {

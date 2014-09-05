@@ -58,8 +58,12 @@ angular.module('bawApp.configuration', ['url'])
             api: {
                 root: "<%= current.apiRoot %>",
                 routes: {
-                    project: "/projects/{projectId}",
+                    project: {
+                        list: "/projects/",
+                        show: "/projects/{projectId}"
+                    },
                     site: {
+                        list: "projects/{projectId}/sites/",
                         flattened: "/sites/{siteId}",
                         nested: "/projects/{projectId}/sites/{siteId}"
                     },
