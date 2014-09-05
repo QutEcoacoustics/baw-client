@@ -35,4 +35,3 @@ bawD3.controller('D3TestPageCtrl', ['$scope', 'conf.paths', '$http', function ($
 
 
 }]);
-
