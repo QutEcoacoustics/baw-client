@@ -204,5 +204,10 @@ angular.module('bawApp.configuration', ['url'])
             },
             baseMessage: "Your current internet browser ({name}, version {version}) is {reason}. <br/> Consider updating or try using <a target='_blank' href='https://www.google.com.au/intl/en_au/chrome/browser/' >Google Chrome</a>.",
             localStorageKey: "browserSupport.checked"
+        },
+        queryBuilder: {
+            defaultPage: 0,
+            defaultPageItems: 10,
+            defaultSortDirection: "asc"
         }
     });
