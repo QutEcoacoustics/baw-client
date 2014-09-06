@@ -262,12 +262,32 @@ qb.factory("QueryBuilder", ["conf.constants", function(constants) {
 
     RootQuery.prototype = Object.create(Query.prototype);
 
+    /**
+     * @callback createCallback
+     * @param {RootQuery} query
+     * @returns {RootQuery}
+     */
+
+    /**
+     * Create a new query.
+     * Optional callback function automatically composes/ends the query.
+     * @param {createCallback=} queryComposer
+     * @returns {RootQuery}
+     */
+    function create(queryComposer) {
+        var q = new RootQuery();
+
+        if (queryComposer) {
+            var result = queryComposer.call(q, q);
+            q.compose(result);
+        }
+
+        return q;
+    }
 
     return {
         Query: Query,
         RootQuery: RootQuery,
-        create: function () {
-            return new RootQuery();
-        }
+        create: create
     };
 }]);

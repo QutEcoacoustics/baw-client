@@ -23,23 +23,52 @@
         return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
-    var bawss = angular.module("bawApp.services", ['ngResource', 'bawApp.configuration']);
+    var bawss = bawss || angular.module("bawApp.services", ["ngResource", "bawApp.configuration", "bawApp.services.core", "bawApp.services.queryBuilder"]);
 
-    bawss.factory('Project', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
+    bawss.factory('Project', [ '$resource', "$http", 'conf.paths', "QueryBuilder", function ($resource, $http, paths, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
+
+        return resource;
     }]);
 
-    bawss.factory('Site', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
+    bawss.factory('Site', [ '$resource', "$http", 'conf.paths', "_", "QueryBuilder", function ($resource, $http, paths, _, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
+
+
+        resource.getSitesByIds = function(siteIds) {
+            var url = paths.api.routes.site.filterAbsolute;
+            siteIds = _.uniq(siteIds);
+            var query = QueryBuilder.create(function(q) {
+                return q.in("id", siteIds);
+            });
+            return $http.post(url, query.toJSON());
+        };
+
+
+        return resource;
     }]);
 
     // NOTE: deleted photo resource, API for photos no longer exposed
 
     // NOTE: deleted user resource, API for users no longer exposed
 
-    bawss.factory('AudioRecording', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
+    bawss.factory('AudioRecording', [ '$resource', '$http', 'conf.paths', 'QueryBuilder', function ($resource, $http, paths, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
+
+        var query = QueryBuilder.create(function(q) {
+           return q
+               .sort({orderBy: "createdDate", direction: "desc"})
+               .page({page:1, items: 10})
+               .project({include: ["id", "siteId", "durationSeconds", "recordedDate", "createdAt"]});
+        });
+        resource.getRecentRecordings = function() {
+            var url =  paths.api.routes.audioRecording.filterAbsolute;
+
+            return $http.post(url, query.toJSON());
+        };
+
+        return resource;
     }]);
 
     bawss.factory('AudioEvent', [ '$resource', '$url', 'conf.paths',
