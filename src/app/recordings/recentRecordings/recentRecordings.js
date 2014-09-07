@@ -29,6 +29,8 @@ angular.module("bawApp.recordings.recentRecordings", [])
                 }
             ];
 
+            Site.getSitesByIds([1,2,3,4]);
+
             function audioRecordingsFormat(wrapper) {
                 $scope.recentRecordings = wrapper.data;
                 // format return objects for display

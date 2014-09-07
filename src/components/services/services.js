@@ -39,7 +39,8 @@
             var url = paths.api.routes.site.filterAbsolute;
             siteIds = _.uniq(siteIds);
             var query = QueryBuilder.create(function(q) {
-                return q.in("id", siteIds);
+                return q.in("id", siteIds)
+                    .project({include: ["id", "name"]});
             });
             return $http.post(url, query.toJSON());
         };
