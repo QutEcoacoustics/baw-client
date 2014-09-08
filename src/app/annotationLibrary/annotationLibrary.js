@@ -41,7 +41,7 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
     return audioEvent;
 };
 
-baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, constants, unitConverter, Media) {
+baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, constants, unitConverter, MediaService, Media) {
 
     var minDuration = 0;
     var audioDurationSeconds =
@@ -56,21 +56,20 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
         format: "json"
     };
 
-    Media.get(
+    MediaService.get(
         mediaItemParameters,
         function mediaGetSuccess(mediaValue, responseHeaders) {
 
-            Media.formatPaths(mediaValue, audioEvent.id);
-            audioEvent.media = mediaValue = new baw.Media(mediaValue);
+            audioEvent.media = mediaValue = new Media(mediaValue.data);
 
             // create properties that depend on Media
             audioEvent.converters = unitConverter.getConversions({
                 sampleRate: audioEvent.media.sampleRate,
-                spectrogramWindowSize: audioEvent.media.availableImageFormats.png.window,
+                spectrogramWindowSize: audioEvent.media.available.image.png.windowSize,
                 endOffset: audioEvent.media.endOffset,
                 startOffset: audioEvent.media.startOffset,
                 imageElement: null,
-                audioRecordingAbsoluteStartDate: audioEvent.media.datetime
+                audioRecordingAbsoluteStartDate: audioEvent.media.recordedDate
             });
 
             audioEvent.bounds = {
@@ -124,8 +123,8 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
 angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
     .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', '$url',
         'conf.paths', 'conf.constants', 'bawApp.unitConverter',
-        'AudioEvent', 'Tag', 'Media',
-        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag, Media) {
+        'AudioEvent', 'Tag', 'Media', 'baw.models.Media',
+        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag, MediaService, Media) {
 
             $scope.status = 'idle';
 
@@ -278,7 +277,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         var annotation = angular.extend({}, audioEventValue);
                         annotation.priorityTag = Tag.selectSinglePriorityTag(annotation.tags);
                         baw.annotationLibrary.addCalculatedProperties(annotation, $url, paths);
-                        baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, Media);
+                        baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, MediaService, Media);
                         this.push(annotation);
                     }, $scope.annotations);
 
