@@ -223,6 +223,5 @@ angular.module('bawApp.configuration', ['url'])
         bookmark: {
             lastPlaybackPositionName: "Last playback position",
             appCategory: "<<application>>"
-
         }
     });
