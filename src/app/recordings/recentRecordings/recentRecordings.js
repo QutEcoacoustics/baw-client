@@ -8,7 +8,7 @@ angular.module("bawApp.recordings.recentRecordings", [])
         "moment",
         "conf.paths",
         function RecentRecordingsCtrl($scope, $location, AudioRecording, Site, moment, paths) {
-            $scope.recentRecordings = [];
+            $scope.recentRecordings = [null];
 
             function audioRecordingsFormat(response) {
                 $scope.recentRecordings = response.data.data;
@@ -44,6 +44,7 @@ angular.module("bawApp.recordings.recentRecordings", [])
                 .then(audioRecordingsFormat)
                 .then(sitesFormat)
                 .catch(function error(reason) {
+                    $scope.recentRecordings = [];
                     console.error(reason);
                 });
 
