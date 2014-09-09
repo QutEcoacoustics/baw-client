@@ -22,7 +22,8 @@
     "draggabilly": "~1.1.x",
     "bowser": "0.7.x",
     "angular-growl-v2": "~0.7.0",
-    "angular-local-storage": "~0.0.7"
+    "angular-local-storage": "~0.0.7",
+    "humanize-duration": "~2.0.0"
   },
   "dependencies": {},
   "private": true

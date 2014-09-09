@@ -76,8 +76,12 @@ var app = angular.module('baw',
                              'bawApp.directives.ngAudio', /* our directives.js  */
                              'bawApp.directives.toggleSwitch',
                              'bawApp.filters', /* our filters.js     */
+
+                             "bawApp.services.core",
+                             'bawApp.services.queryBuilder',
                              'bawApp.services', /* our services.js    */
                              'bawApp.services.unitConverter',
+
                              'audio-control',
                              'draggabilly',
 
@@ -95,6 +99,7 @@ var app = angular.module('baw',
                              'bawApp.projects',
                              'bawApp.recordInformation',
                              'bawApp.recordings',
+                             'bawApp.recordings.recentRecordings',
                              'bawApp.search',
                              'bawApp.tags',
                              'bawApp.users',
@@ -129,7 +134,8 @@ var app = angular.module('baw',
                      when('/recordings/:recordingId',
                           {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
 
-                     when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: 'Listen'}).
+
+                     when('/listen', {templateUrl: paths.site.files.recordings.recentRecordings, controller: 'RecentRecordingsCtrl', title: 'Listen'}).
                      when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: ':recordingId'}).
                      //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 

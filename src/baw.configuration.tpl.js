@@ -61,12 +61,14 @@ angular.module('bawApp.configuration', ['url'])
                     project: "/projects/{projectId}",
                     site: {
                         flattened: "/sites/{siteId}",
-                        nested: "/projects/{projectId}/sites/{siteId}"
+                        nested: "/projects/{projectId}/sites/{siteId}",
+                        filter: "/sites/filter"
                     },
                     audioRecording: {
                         listShort: "/audio_recordings/{recordingId}",
                         show: "/audio_recordings/{recordingId}",
-                        list: "/audio_recordings/"
+                        list: "/audio_recordings/",
+                        filter: "/audio_recordings/filter"
                     },
                     audioEvent: {
                         list: "/audio_recordings/{recordingId}/audio_events",
@@ -123,10 +125,14 @@ angular.module('bawApp.configuration', ['url'])
                         spec: 'assets/bird_walk/bird_walk_spec.json',
                         stats: 'assets/bird_walk/bird_walk_stats.json',
                         images: 'assets/bird_walk/images/'
+                    },
+                    recordings: {
+                        recentRecordings: 'recordings/recentRecordings/recentRecordings.tpl.html'
                     }
                 },
                 // routes used by angular
                 ngRoutes: {
+                    recentRecordings: "/listen",
                     listen: "/listen/{recordingId}",
                     library: "/library",
                     libraryItem: "/library/{recordingId}/audio_events/{audioEventId}"

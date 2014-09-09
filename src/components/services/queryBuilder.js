@@ -262,12 +262,42 @@ qb.factory("QueryBuilder", ["conf.constants", function(constants) {
 
     RootQuery.prototype = Object.create(Query.prototype);
 
+    /**
+     * @callback createCallback
+     * @param {RootQuery} query
+     * @returns {RootQuery}
+     */
+
+    /**
+     * Create a new query.
+     * Optional callback function automatically composes/ends the query.
+     * @param {createCallback=} queryComposer
+     * @returns {RootQuery}
+     */
+    function create(queryComposer) {
+        var q = new RootQuery();
+
+        if (queryComposer) {
+            if (angular.isFunction(queryComposer)) {
+                var result = queryComposer.call(q, q);
+
+                if (!(result instanceof Query) || result.root !== q) {
+                    throw new Error("The create callback must return a child instance of Query passed to the callback");
+                }
+
+                q.compose(result);
+            }
+            else {
+                throw new Error("The create callback must be a function");
+            }
+        }
+
+        return q;
+    }
 
     return {
         Query: Query,
         RootQuery: RootQuery,
-        create: function () {
-            return new RootQuery();
-        }
+        create: create
     };
 }]);

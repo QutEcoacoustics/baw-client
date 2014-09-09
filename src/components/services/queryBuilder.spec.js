@@ -33,6 +33,25 @@ describe("The QueryBuilder", function () {
         expect(q instanceof queryBuilder.RootQuery).toBeTrue();
     });
 
+    it("should validate create's callback", function() {
+        // should work without exception
+        var q = queryBuilder.create();
+
+        expect(Object.keys(q.filter).length).toBe(0);
+
+        expect(function(){
+            queryBuilder.create(1234);
+        }).toThrowError(Error, "The create callback must be a function");
+
+        expect(function() {
+            queryBuilder.create(function() {});
+        }).toThrowError(Error, "The create callback must return a child instance of Query passed to the callback");
+
+        expect(function() {
+            queryBuilder.create(function() {return queryBuilder.create();});
+        }).toThrowError(Error, "The create callback must return a child instance of Query passed to the callback");
+    });
+
     it("should implement the expected interface", function () {
         var queryInterface = validCombinators.concat(validOperators);
         var rootInterface = queryInterface.concat(rootOperators);
@@ -122,7 +141,7 @@ describe("The QueryBuilder", function () {
         expect(actual.toJSON(spaces)).toBe(j(expected));
     });
 
-    it("should ensure .end and .compose are the same", function() {
+    it("should ensure .end and .compose and .create are the same", function() {
         var expected = {
             filter: {
                 fieldA: {
@@ -143,6 +162,11 @@ describe("The QueryBuilder", function () {
         q = queryBuilder.create();
         var actualEnd = q.eq("fieldA", 3.0).or(q.field("fieldB").lt(6.0).gt(3.0)).end();
         expect(actualEnd.toJSON(spaces)).toBe(j(expected));
+
+        var actualCreate = queryBuilder.create(function(q) {
+            return q.eq("fieldA", 3.0).or(q.field("fieldB").lt(6.0).gt(3.0));
+        });
+        expect(actualCreate.toJSON(spaces)).toBe(j(expected));
     });
 
     it("should ensure not is arity:1 only", function () {
