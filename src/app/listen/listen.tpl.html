@@ -114,8 +114,8 @@
 
 
 <audio id="mainAudioElement" ng-audio="model.audioElement" controls class="debug-ui">
-    <source ng-repeat="resource in model.media.available.audio" ng-src="{{resource.url}}" src=""
-            type="{{resource.mimeType}}">
+    <source ng-repeat="key in model.media.available.audioOrder" ng-src="{{model.media.available.audio[key].url}}" src=""
+            type="{{model.media.available.audio[key].mimeType}}">
     Your browser does not support the audio element.
 </audio>
 <div id="listenEditContainer" ng-class="{disabled : singleEditDisabled()}">

@@ -150,8 +150,8 @@
                  ng-style="{'min-width':150, width:item.converters.conversions.enforcedImageWidth}">
                 <audio id="annotationLibraryItemInfoAudio{{$index}}" controls
                        ng-style="{width:item.converters.conversions.enforcedImageWidth}">
-                    <source ng-repeat="resource in item.media.available.audio" ng-src="{{resource.url}}" src=""
-                            type="{{resource.mimeType}}">
+                    <source ng-repeat="key in item.media.available.audioOrder" ng-src="{{item.media.available.audio[key].url}}" src=""
+                            type="{{item.media.available.audio[key].mimeType}}">
                     Your browser does not support the audio element.
                 </audio>
             <span ng-show="item.tags.length > 0">
