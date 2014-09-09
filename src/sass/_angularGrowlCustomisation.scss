@@ -1,0 +1,11 @@
+/**
+ * Custom overrides of the style in
+ * /vendor/angular-growl-v2/build/angular-growl.css
+ */
+$custom-width: 576px;
+.growl-container.growl-fixed.top-center {
+  @extend .growl-container.growl-fixed.top-center;
+
+  max-width: $custom-width;
+  margin-left: -(($custom-width / 2));
+}

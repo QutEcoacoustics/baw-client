@@ -61,12 +61,14 @@ angular.module('bawApp.configuration', ['url'])
                     project: "/projects/{projectId}",
                     site: {
                         flattened: "/sites/{siteId}",
-                        nested: "/projects/{projectId}/sites/{siteId}"
+                        nested: "/projects/{projectId}/sites/{siteId}",
+                        filter: "/sites/filter"
                     },
                     audioRecording: {
                         listShort: "/audio_recordings/{recordingId}",
                         show: "/audio_recordings/{recordingId}",
-                        list: "/audio_recordings/"
+                        list: "/audio_recordings/",
+                        filter: "/audio_recordings/filter"
                     },
                     audioEvent: {
                         list: "/audio_recordings/{recordingId}/audio_events",
@@ -123,10 +125,14 @@ angular.module('bawApp.configuration', ['url'])
                         spec: 'assets/bird_walk/bird_walk_spec.json',
                         stats: 'assets/bird_walk/bird_walk_stats.json',
                         images: 'assets/bird_walk/images/'
+                    },
+                    recordings: {
+                        recentRecordings: 'recordings/recentRecordings/recentRecordings.tpl.html'
                     }
                 },
                 // routes used by angular
                 ngRoutes: {
+                    recentRecordings: "/listen",
                     listen: "/listen/{recordingId}",
                     library: "/library",
                     libraryItem: "/library/{recordingId}/audio_events/{audioEventId}"
@@ -166,6 +172,7 @@ angular.module('bawApp.configuration', ['url'])
     })()
     )
     .constant("conf.constants", {
+        namespace: "baw-client",
         listen: {
             chunkDurationSeconds: 30.0,
             minAudioDurationSeconds: 2.0
@@ -187,5 +194,26 @@ angular.module('bawApp.configuration', ['url'])
         },
         annotationLibrary: {
             paddingSeconds: 1.0
+        },
+        browserSupport: {
+            optimum: {
+                chrome: 36
+            },
+            supported: {
+                msie: 10,
+                firefox: 30,
+                chrome: 30,
+                safari: 5.1,
+                opera: 23,
+                ios:  5.1,
+                android: 4.0
+            },
+            baseMessage: "Your current internet browser ({name}, version {version}) is {reason}. <br/> Consider updating or try using <a target='_blank' href='https://www.google.com.au/intl/en_au/chrome/browser/' >Google Chrome</a>.",
+            localStorageKey: "browserSupport.checked"
+        },
+        queryBuilder: {
+            defaultPage: 0,
+            defaultPageItems: 10,
+            defaultSortDirection: "asc"
         }
     });

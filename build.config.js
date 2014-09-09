@@ -119,8 +119,11 @@ module.exports = {
             'vendor/get-style-property/get-style-property.js',
             // get-size depends on get-style-property... it has to come after it
             'vendor/get-size/get-size.js',
-            'vendor/draggabilly/draggabilly.js'
-
+            'vendor/draggabilly/draggabilly.js',
+            'vendor/bowser/bowser.js',
+            'vendor/angular-growl-v2/build/angular-growl.js',
+            'vendor/angular-local-storage/angular-local-storage.js',
+            'vendor/humanize-duration/humanize-duration.js'
 
         ],
         css: [
@@ -132,7 +135,8 @@ module.exports = {
             //'vendor/select2/select2-bootstrap.css',
             //'vendor/select2/select2.css'
 
-            'vendor/angular-tags/dist/angular-tags-0.3.1.css'
+            'vendor/angular-tags/dist/angular-tags-0.3.1.css',
+            'vendor/angular-growl-v2/build/angular-growl.css'
         ],
         assets: [
             // jquery-ui is stoopid, special case

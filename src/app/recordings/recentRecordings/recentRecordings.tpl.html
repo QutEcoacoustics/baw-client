@@ -1,0 +1,35 @@
+<div id="content">
+    <h1>Recent Audio Recordings</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <span ng-if="recentRecordings.length === 0">
+                No recent audio recordings.
+            </span>
+            <table id="recentRecordingsTable" class="table table-striped table-hover"  ng-if="recentRecordings.length !== 0">
+                <thead>
+                    <tr>
+                        <th>Site</th>
+                        <th>Duration</th>
+                        <th>Uploaded</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="r in recentRecordings" ng-click="navigate($event, r.listenLink)">
+                        <td>{{r.site.name || r.siteId}}</td>
+                        <td>{{r.durationHumanized}}</td>
+                        <td>{{r.uploadedHumanized}}</td>
+                        <td ng-class="{hide:!r}">
+                            <a ng-href="{{r.listenLink}}" class="btn btn-primary btn-small">
+                                <span class="glyphicon glyphicon-play"></span> Play
+                            </a>
+                            <a ng-href="{{r.site.siteLink}}" class="btn btn-default btn-small" target="_self">
+                                <span class="glyphicon glyphicon-map-marker"></span> Site
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

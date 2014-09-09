@@ -19,7 +19,11 @@
     "lodash": "~2.4.x",
     "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
     "angular-sanitize": "~1.2.x",
-    "draggabilly": "~1.1.x"
+    "draggabilly": "~1.1.x",
+    "bowser": "0.7.x",
+    "angular-growl-v2": "~0.7.0",
+    "angular-local-storage": "~0.0.7",
+    "humanize-duration": "~2.0.0"
   },
   "dependencies": {},
   "private": true

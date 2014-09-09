@@ -24,6 +24,8 @@ $DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
 
 @import "touch/touch";
 
+@import "angularGrowlCustomisation";
+
 // TODO: create someway to automatically import files
 //@import "partials/*";
 
@@ -41,6 +43,7 @@ $DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
 @import "../app/projects/projects";
 @import "../app/recordInformation/record_information";
 @import "../app/recordings/audio_recordings";
+@import "../app/recordings/recentRecordings/recentRecordings";
 @import "../app/search/saved_searches";
 @import "../app/sites/sites";
 @import "../app/tags/tags";
