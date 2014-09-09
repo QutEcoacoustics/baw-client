@@ -11,7 +11,15 @@ bawssc.provider("moment", function() {
         moment.humanizeDuration = humanizeDuration;
 
         moment.duration.fn.humanizeDuration = function(parameters) {
-            return humanizeDuration(this.asMilliseconds(), parameters);
+            var ms = this.asMilliseconds();
+            if (parameters && parameters.round) {
+                var rounding = Math.pow(10, Number(parameters.round));
+                if (angular.isNumber(rounding)) {
+                    ms = Math.round(ms / rounding) * rounding;
+                }
+            }
+
+            return humanizeDuration(ms, parameters);
         };
 
         return moment;

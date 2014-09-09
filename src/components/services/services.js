@@ -39,7 +39,8 @@
             var url = paths.api.routes.site.filterAbsolute;
             siteIds = _.uniq(siteIds);
             var query = QueryBuilder.create(function(q) {
-                return q.in("id", siteIds);
+                return q.in("id", siteIds)
+                    .project({include: ["id", "name", "projectIds"]});
             });
             return $http.post(url, query.toJSON());
         };
@@ -58,7 +59,7 @@
 
         var query = QueryBuilder.create(function(q) {
            return q
-               .sort({orderBy: "createdDate", direction: "desc"})
+               .sort({orderBy: "createdAt", direction: "desc"})
                .page({page:1, items: 10})
                .project({include: ["id", "siteId", "durationSeconds", "recordedDate", "createdAt"]});
         });

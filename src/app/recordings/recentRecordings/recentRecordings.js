@@ -8,65 +8,44 @@ angular.module("bawApp.recordings.recentRecordings", [])
         "moment",
         "conf.paths",
         function RecentRecordingsCtrl($scope, $location, AudioRecording, Site, moment, paths) {
-            $scope.recentRecordings = [
-                {
-                    siteId: 1000,
-                    durationSeconds: 123456,
-                    uploaded: new Date(),
-                    id: 1234
-                },
-                {
-                    siteId: 1000,
-                    durationSeconds: 123456,
-                    uploaded: new Date(),
-                    id: 1234
-                },
-                {
-                    siteId: 1000,
-                    durationSeconds: 123456,
-                    uploaded: new Date(),
-                    id: 1234
-                }
-            ];
+            $scope.recentRecordings = [];
 
-            audioRecordingsFormat({data:$scope.recentRecordings});
+            function audioRecordingsFormat(response) {
+                $scope.recentRecordings = response.data.data;
 
-            function audioRecordingsFormat(wrapper) {
-                $scope.recentRecordings = wrapper.data;
                 // format return objects for display
+                var siteIds = [];
                 $scope.recentRecordings.forEach(function(value, index) {
-                    value.durationHumanized = moment.duration(value.durationSeconds, "seconds").humanizeDuration();
+                    value.durationHumanized = moment
+                        .duration(Number(value.durationSeconds), "seconds")
+                        .humanizeDuration({round: 3});
                     value.uploadedHumanized = moment(value.createdAt).fromNow();
                     value.listenLink = paths.site.ngRoutes.listen.format({recordingId: value.id});
+                    siteIds.push(value.siteId);
                 });
 
-                return Site.getSitesByIds();
+                return Site.getSitesByIds(siteIds);
             }
 
-            function sitesFormat(wrapper) {
-                var sites = wrapper.reduce(function(state, current) {
+            function sitesFormat(response) {
+                var sites = response.data.data.reduce(function(state, current) {
                     state[current.id] = current;
                     return state;
                 }, {});
 
-                $scope.audioRecordings.forEach(function (value) {
-                   value.site = sites[value.siteId];
+                $scope.recentRecordings.forEach(function (value) {
+                    value.site = sites[value.siteId];
+                    value.site.siteLink = paths.api.links.siteAbsolute.format({projectId: value.site.projectIds[0], siteId: value.site.id});
                 });
             }
 
             AudioRecording
                 .getRecentRecordings()
                 .then(audioRecordingsFormat)
-                .then(function gsbiSucccess(data) {
-
-                })
+                .then(sitesFormat)
                 .catch(function error(reason) {
                     console.error(reason);
                 });
-
-
-
-            //Site.getNames();
 
             $scope.navigate = function navigate(link) {
                 $location.url(link);

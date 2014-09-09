@@ -278,8 +278,18 @@ qb.factory("QueryBuilder", ["conf.constants", function(constants) {
         var q = new RootQuery();
 
         if (queryComposer) {
-            var result = queryComposer.call(q, q);
-            q.compose(result);
+            if (angular.isFunction(queryComposer)) {
+                var result = queryComposer.call(q, q);
+
+                if (!(result instanceof Query) || result.root !== q) {
+                    throw new Error("The create callback must return a child instance of Query passed to the callback");
+                }
+
+                q.compose(result);
+            }
+            else {
+                throw new Error("The create callback must be a function");
+            }
         }
 
         return q;
