@@ -44,9 +44,13 @@ angular.module("baw.models.media", []).factory("baw.models.Media", ["conf.paths"
             mediaItem.available.image[imageKey].url = paths.joinFragments(paths.api.root, imageFormat.url);
             mediaItem.spectrogram = imageFormat;
 
+            // make the order explicit (ng-repeat alphabetizes the order >:-|
+            mediaItem.available.audioOrder = [];
             angular.forEach(mediaItem.available.audio, function (value, key) {
                 // just update the url so it is an absolute uri
                 this[key].url = paths.joinFragments(paths.api.root, value.url);
+
+                mediaItem.available.audioOrder.push(key);
 
             }, mediaItem.available.audio);
         };
