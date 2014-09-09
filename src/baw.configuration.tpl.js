@@ -4,55 +4,10 @@ angular.module('bawApp.configuration', ['url'])
  * This module contains static paths that are stored centrally for easy configuration.
  * App dependent.
  *
- * The root properties changed when the app is built with grunt.
+ * The root properties are changed when the app is built with grunt.
  */
 
     .constant("conf.paths", (function () {
-        /**
-         * Joins path fragments together.
-         * @param {...[string]} fragments
-         * @returns {*}
-         */
-        function joinPathFragments(fragments) {
-            fragments = Array.prototype.slice.call(arguments, 0);
-
-            if (fragments.length === 0) {
-                return undefined;
-            }
-            else if (fragments.length === 1) {
-                return fragments[0];
-            }
-            else {
-                var path = fragments[0];
-
-                if (path.slice(-1) === "/") {
-                    path = path.slice(0, -1);
-                }
-
-                for (var i = 1; i < fragments.length; i++) {
-                    var f = fragments[i];
-
-                    if ((typeof f) !== "string") {
-                        throw "joinPathFragments: Path fragment " + f + " is not a string";
-                    }
-
-                    var hasFirst = f[0] === "/";
-                    var hasLast = (f.slice(-1))[0] === "/";
-
-                    if (!hasFirst) {
-                        f = "/" + f;
-                    }
-
-                    if (hasLast && i !== (fragments.length - 1)) {
-                        f = f.slice(0, -1);
-                    }
-
-                    path += f;
-                }
-
-                return path;
-            }
-        }
 
         var paths = {
             api: {
@@ -94,6 +49,9 @@ angular.module('bawApp.configuration', ['url'])
                     user: {
                         profile: "/my_account",
                         settings: "/my_account/prefs"
+                    },
+                    bookmark: {
+                        show: "user_accounts/{userId}/bookmarks/{bookmarkId}"
                     }
                 },
                 links: {
@@ -145,6 +103,52 @@ angular.module('bawApp.configuration', ['url'])
         };
 
 
+        /**
+         * Joins path fragments together.
+         * @param {...[string]} fragments
+         * @returns {*}
+         */
+        function joinPathFragments(fragments) {
+            fragments = Array.prototype.slice.call(arguments, 0);
+
+            if (fragments.length === 0) {
+                return undefined;
+            }
+            else if (fragments.length === 1) {
+                return fragments[0];
+            }
+            else {
+                var path = fragments[0];
+
+                if (path.slice(-1) === "/") {
+                    path = path.slice(0, -1);
+                }
+
+                for (var i = 1; i < fragments.length; i++) {
+                    var f = fragments[i];
+
+                    if ((typeof f) !== "string") {
+                        throw "joinPathFragments: Path fragment " + f + " is not a string";
+                    }
+
+                    var hasFirst = f[0] === "/";
+                    var hasLast = (f.slice(-1))[0] === "/";
+
+                    if (!hasFirst) {
+                        f = "/" + f;
+                    }
+
+                    if (hasLast && i !== (fragments.length - 1)) {
+                        f = f.slice(0, -1);
+                    }
+
+                    path += f;
+                }
+
+                return path;
+            }
+        }
+
         // add helper paths
         function recursivePath(source, root) {
             for (var key in source) {
@@ -170,7 +174,7 @@ angular.module('bawApp.configuration', ['url'])
 
         return paths;
     })()
-    )
+)
     .constant("conf.constants", {
         namespace: "baw-client",
         listen: {
@@ -215,5 +219,10 @@ angular.module('bawApp.configuration', ['url'])
             defaultPage: 0,
             defaultPageItems: 10,
             defaultSortDirection: "asc"
+        },
+        bookmark: {
+            lastPlaybackPositionName: "Last playback position",
+            appCategory: "<<application>>"
+
         }
     });

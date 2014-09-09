@@ -72,6 +72,7 @@ var app = angular.module('baw',
                              'templates-app', /* these are the precompiled templates */
                              'templates-common',
 
+                             'bawApp.services.resource', // a custom wrapped around ngResource
                              'bawApp.directives', /* our directives.js  */
                              'bawApp.directives.ngAudio', /* our directives.js  */
                              'bawApp.directives.toggleSwitch',

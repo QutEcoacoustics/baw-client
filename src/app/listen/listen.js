@@ -19,11 +19,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'Site',
         'Project',
         'UserProfile',
+        'UserProfileEvents',
+        'Bookmark',
         /**
          * The listen controller.
          * @param $scope
          * @param $resource
          * @param $routeParams
+         * @param Media
          * @param AudioEvent
          * @constructor
          * @param Tag
@@ -40,10 +43,13 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param $location
          * @param ngAudioEvents
          * @param UserProfile
+         * @param Bookmark
+         * @param UserProfileEvents
          */
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,
-            AudioRecording, MediaService, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile) {
+            AudioRecording, MediaService, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile, UserProfileEvents, Bookmark) {
+
 
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
@@ -99,7 +105,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     $scope.model.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay || $routeParams.autoPlay;
                 };
-                $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
+                $scope.$on(UserProfileEvents.loaded, profileLoaded);
                 if (UserProfile.profile && UserProfile.profile.preferences) {
                     profileLoaded(null, UserProfile);
                 }
