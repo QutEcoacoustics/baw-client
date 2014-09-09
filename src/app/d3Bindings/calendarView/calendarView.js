@@ -169,6 +169,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
             },
             templateUrl: "d3Bindings/calendarView/calenderViewTemplate.tpl.html",
             link: function ($scope, $element, attributes, controller, transcludeFunction) {
+
                 // use this function to bind DOM events to angular scope
                 // or d3 events to angular scope.
                 // you can use the jQuery / d3 objects here (use the injected d3 instance)
@@ -176,16 +177,15 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
                 // where possible avoid jQuery
                 var element = $element[0];
 
-                // d3.doSomething
-
-
-
                 // watch for changes on scope data
-                $scope.$watch(function() { return $scope.data; }, function (newValue, oldValue) {
+                $scope.$watch(function () {
+                    return $scope.data;
+                }, function (newValue, oldValue) {
                     if (newValue) {
                         updateCatalogueData(newValue.data);
                     }
                 });
+
             },
             controller: "bawCalendarViewController"
         }
@@ -201,4 +201,5 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
             // IT SHOULD NOT contain any reference to the d3 or jQuery objects
 
             $scope.example = "Hello world!";
+
         }]);
