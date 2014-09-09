@@ -3,14 +3,14 @@
  * Created by Anthony on 23/08/2014.
  */
 angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
-    .directive("bawCalendarView", ["d3", function (d3) {
+    .directive("bawCalendarView", ["d3", "moment", function (d3, moment) {
 
         // d3 functions
         // private properties - globals, formatters, magic numbers
-        var day = null,
-            week = null,
-            format = null,
-            month_format = null,
+        var day = d3.time.format("%w"),
+            week = d3.time.format("%U"),
+            format = d3.time.format("%Y-%m-%d"),
+            month_format = d3.time.format("%b"),
             width = 960,
             height = 136,
             cellSize = 17, // cell size
@@ -26,27 +26,33 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
             ];
 
         var updateCatalogueData = function updateCatalogueData(json) {
-            var data = d3.nest()
-                .key(function (d) {
-                    return d.extracted_year + "-" + d.extracted_month + "-" + d.extracted_day;
-                })
-                .rollup(function (d) {
-                    var itemYear = parseInt(d[0].extracted_year);
-                    if (firstYear == null || itemYear > firstYear) {
-                        firstYear = itemYear;
-                    }
-                    if (lastYear == null || itemYear < lastYear) {
-                        lastYear = itemYear;
-                    }
 
-                    var itemCount = parseInt(d[0].count);
-                    if (colourRangeStop == null || itemCount > colourRangeStop) {
-                        colourRangeStop = itemCount;
-                    }
+            var data = {};
+            for(var i = 0;i<json.length; i++){
+                var item = json[i];
+                var recordedDate = moment(item.recordedDate);
+                var key = recordedDate.year() + "-" + baw.stringPad(recordedDate.month(), 2, '0') + "-" + baw.stringPad(recordedDate.date(), 2, '0');
 
-                    return itemCount;
-                })
-                .map(json);
+                var itemYear = parseInt(recordedDate.year());
+                if (firstYear == null || itemYear > firstYear) {
+                    firstYear = itemYear;
+                }
+                if (lastYear == null || itemYear < lastYear) {
+                    lastYear = itemYear;
+                }
+
+                // add one or set property
+                if(data[key]){
+                    data[key] += 1;
+                } else {
+                    data[key] = 1;
+                }
+
+                // get the max number of recordings in a day
+                if (colourRangeStop == null || data[key] > colourRangeStop) {
+                    colourRangeStop = data[key];
+                }
+            }
 
             // ensure year doesn't go beyond 2007
             if (lastYear < minYear) {
@@ -54,7 +60,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
             }
 
             var elements = createSvgCalendarView(firstYear, lastYear);
-            addDataToCalendar(elements.rect, data)
+            addDataToCalendar(elements.rect, data);
 
         };
 
@@ -141,11 +147,11 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
             var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
                 d0 = +day(t0), w0 = +week(t0),
                 d1 = +day(t1), w1 = +week(t1);
-            return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
-                + "H" + w0 * cellSize + "V" + 7 * cellSize
-                + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
-                + "H" + (w1 + 1) * cellSize + "V" + 0
-                + "H" + (w0 + 1) * cellSize + "Z";
+            return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize +
+                "H" + w0 * cellSize + "V" + 7 * cellSize +
+                "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize +
+                "H" + (w1 + 1) * cellSize + "V" + 0 +
+                "H" + (w0 + 1) * cellSize + "Z";
         };
 
         var addDataToCalendar = function addDataToCalendar(rect, data) {
