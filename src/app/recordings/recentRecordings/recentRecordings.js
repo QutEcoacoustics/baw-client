@@ -48,7 +48,11 @@ angular.module("bawApp.recordings.recentRecordings", [])
                     console.error(reason);
                 });
 
-            $scope.navigate = function navigate(link) {
+            $scope.navigate = function navigate($event, link) {
+                if ($event.target.nodeName.toLowerCase() == "a") {
+                    return;
+                }
+
                 $location.url(link);
             };
         }
