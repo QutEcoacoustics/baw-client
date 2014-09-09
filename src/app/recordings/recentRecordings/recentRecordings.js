@@ -11,23 +11,25 @@ angular.module("bawApp.recordings.recentRecordings", [])
             $scope.recentRecordings = [
                 {
                     siteId: 1000,
-                    duration: 123456,
+                    durationSeconds: 123456,
                     uploaded: new Date(),
                     id: 1234
                 },
                 {
                     siteId: 1000,
-                    duration: 123456,
+                    durationSeconds: 123456,
                     uploaded: new Date(),
                     id: 1234
                 },
                 {
                     siteId: 1000,
-                    duration: 123456,
+                    durationSeconds: 123456,
                     uploaded: new Date(),
                     id: 1234
                 }
             ];
+
+            audioRecordingsFormat({data:$scope.recentRecordings});
 
             function audioRecordingsFormat(wrapper) {
                 $scope.recentRecordings = wrapper.data;
