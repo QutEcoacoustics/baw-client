@@ -6,99 +6,107 @@
 // https://github.com/tpodom/angularjs-rails-resource
 
 (function (undefined) {
+    angular.module('rails', [])
+        .constant('casingTransformers', (function() {
+            /**
+             * Old function worked via reference - deprecated
+             * @param data
+             * @param transform
+             */
+            /*function transformObject(data, transform) {
+             var newKey;
 
+             if (data && angular.isObject(data)) {
+             angular.forEach(data, function (value, key) {
+             newKey = transform(key);
 
-    /**
-     * Old function worked via reference - deprecated
-     * @param data
-     * @param transform
-     */
-    /*function transformObject(data, transform) {
-        var newKey;
+             if (newKey !== key) {
+             data[newKey] = value;
+             delete data[key];
+             }
 
-        if (data && angular.isObject(data)) {
-            angular.forEach(data, function (value, key) {
-                newKey = transform(key);
+             transformObject(value, transform);
+             });
+             }
+             }*/
 
-                if (newKey !== key) {
-                    data[newKey] = value;
-                    delete data[key];
+            function transformObject(data, transform) {
+                if (data && angular.isObject(data)) {
+                    var newData = angular.isArray(data) ? [] : {};
+                    angular.forEach(data, function (value, key) {
+                        var newKey = transform(key);
+
+                        if (angular.isObject(value)) {
+                            newData[newKey] = transformObject(value, transform);
+                        }
+                        else {
+                            newData[newKey] = value;
+                        }
+                    });
+
+                    return newData;
                 }
+            }
 
-                transformObject(value, transform);
-            });
-        }
-    }*/
+            var STAMPER_LABEL = "__railsJsonRenamer__";
 
-    function transformObject(data, transform) {
-        if (data && angular.isObject(data)) {
-            var newData = angular.isArray(data) ? [] : {};
-            angular.forEach(data, function (value, key) {
-                var newKey = transform(key);
+            function stampObject(object, value) {
+                if (angular.isObject(object)) {
+                    try {
+                        // mark this object as having been transformed
 
-                if (angular.isObject(value)) {
-                    newData[newKey] = transformObject(value, transform);
+                        Object.defineProperty(object, STAMPER_LABEL, {configurable: true, value: value});
+                    }
+                    catch (e) {
+                        console.warn("Object.defineProperty failed in stampObject");
+                    }
+                    return object;
                 }
                 else {
-                    newData[newKey] = value;
+                    return object;
                 }
-            });
-
-            return newData;
-        }
-    }
-
-    var STAMPER_LABEL = "__railsJsonRenamer__";
-
-    function stampObject(object, value) {
-        if (angular.isObject(object)) {
-            try {
-                // mark this object as having been transformed
-
-                Object.defineProperty(object, STAMPER_LABEL, {configurable: true, value: value});
             }
-            catch (e) {
-                console.warn("Object.defineProperty failed in stampObject");
+
+            function isStamped(object) {
+                if (object) {
+                    return object.hasOwnProperty(STAMPER_LABEL);
+                }
+                else {
+                    return false;
+                }
             }
-            return object;
-        }
-        else {
-            return object;
-        }
-    }
 
-    function isStamped(object) {
-        if (object) {
-            return object.hasOwnProperty(STAMPER_LABEL);
-        }
-        else {
-            return false;
-        }
-    }
+            function camelize(key) {
+                if (!angular.isString(key)) {
+                    return key;
+                }
 
-    function camelize(key) {
-        if (!angular.isString(key)) {
-            return key;
-        }
+                // should this match more than word and digit characters?
+                return key.replace(/_[\w\d]/g, function (match, index, string) {
+                    return index === 0 ? match : string.charAt(index + 1).toUpperCase();
+                });
+            }
 
-        // should this match more than word and digit characters?
-        return key.replace(/_[\w\d]/g, function (match, index, string) {
-            return index === 0 ? match : string.charAt(index + 1).toUpperCase();
-        });
-    }
+            function underscore(key) {
+                if (!angular.isString(key)) {
+                    return key;
+                }
 
-    function underscore(key) {
-        if (!angular.isString(key)) {
-            return key;
-        }
+                return key.replace(/[A-Z]/g, function (match, index) {
+                    return index === 0 ? match : '_' + match.toLowerCase();
+                });
+            }
 
-        return key.replace(/[A-Z]/g, function (match, index) {
-            return index === 0 ? match : '_' + match.toLowerCase();
-        });
-    }
-
-    angular.module('rails', [])
-        .factory('railsFieldRenamingTransformerRequest', function () {
+            return {
+                camelize: camelize,
+                underscore: underscore,
+                isStamped: isStamped,
+                stampObject: stampObject,
+                STAMP_LABEL: STAMPER_LABEL,
+                transformObject: transformObject
+            };
+        }()))
+        .factory('railsFieldRenamingTransformerRequest', ['casingTransformers', function (casingTransformers) {
             return function railsFieldRenamingTransformerRequest(data, headers) {
                 // TODO: add conditions
                 // probs only want to do this if headers contains app/json
@@ -114,15 +122,15 @@
                         return data;
                     }
 
-                    var result = transformObject(data, underscore);
-                    stampObject(result, "camelCased->underscored");
+                    var result = casingTransformers.transformObject(data, casingTransformers.underscore);
+                    casingTransformers.stampObject(result, "camelCased->underscored");
                     return result;
                 }
 
                 return data;
             };
-        })
-        .factory('railsFieldRenamingTransformerResponse', function() {
+        }])
+        .factory('railsFieldRenamingTransformerResponse', ['casingTransformers', function(casingTransformers) {
             return function railsFieldRenamingTransformerResponse(data, headers) {
 
                 if (data === undefined || data === null) {
@@ -134,82 +142,15 @@
                 }
 
                 if ((headers()["content-type"] || "").indexOf("application/json") >= 0) {
-                    var result = transformObject(data, camelize);
-                    stampObject(result, "underscored->camelCased");
+                    var result = casingTransformers.transformObject(data, casingTransformers.camelize);
+                    casingTransformers.stampObject(result, "underscored->camelCased");
                     return result;
                 }
                 else {
                     return data;
                 }
             };
-        })
-
-        /*.factory('railsFieldRenamingInterceptor', function () {
-            function core(data) {
-                var result = transformObject(data, camelize);
-
-                stampObject(result, "underscored->camelCased");
-
-                return result;
-            }
-
-            return function () {
-                return {
-                    promise: function railsFieldRenamingInterceptor() {
-                        return function (p) {
-                            p.then(function (response) {
-                                    if ((response.headers()["content-type"] || "").indexOf("application/json") >= 0) {
-                                        response.data = core(response.data);
-                                    }
-
-                                    return response;
-                                },
-                                function (response) {
-                                    //console.log("rails field naming interceptor, promise failed function", response);
-
-                                    //return p.reject(response);
-                                    return response;
-                                });
-                            return p;
-                        };
-                    },
-                    core: core
-                };
-            };
-        })*/
-/*
-        .factory('railsRootWrappingTransformer', function () {
-            return function railsRootWrappingTransformer(data, resource) {
-                var result = {};
-                result[angular.isArray(data) ? resource.rootPluralName : resource.rootName] = data;
-                return result;
-            };
-        })
-
-        .factory('railsRootWrappingInterceptor', function () {
-            return function railsRootWrappingInterceptor(promise) {
-                var resource = promise.resource;
-
-                if (!resource) {
-                    return promise;
-                }
-
-                return promise.then(function (response) {
-                        if (response.data && response.data.hasOwnProperty(resource.rootName)) {
-                            response.data = response.data[resource.rootName];
-                        } else if (response.data && response.data.hasOwnProperty(resource.rootPluralName)) {
-                            response.data = response.data[resource.rootPluralName];
-                        }
-
-                        return response;
-                    },
-                    function (response) {
-                        console.log("rails field naming interceptor, promise failed function", response);
-
-                        return response;//p.reject(response);
-                    });
-            };
-        })*/
+        }])
         // GIANT HACK!
         .factory('railsCsrfToken', ['$q', '$rootScope', '$location', function ($q, $rootScope, $location) {
             return {
@@ -241,16 +182,23 @@
              * Thus we must make a reference to the factory's provider.
              * This is also why the $gets are necessary below!
              */
+            'casingTransformers',
             'railsFieldRenamingTransformerRequestProvider',
             'railsFieldRenamingTransformerResponseProvider',
             'railsCsrfTokenProvider',
-            function ($httpProvider, railsFieldRenamingTransformerRequest, railsFieldRenamingTransformerResponse, railsCsrfToken) {
+            function (
+                $httpProvider,
+                casingTransformers,
+                railsFieldRenamingTransformerRequest,
+                railsFieldRenamingTransformerResponse,
+                railsCsrfToken) {
 
             ////$httpProvider.responseInterceptors.push(railsFieldRenamingInterceptor.$get()().promise);
 
-            $httpProvider.defaults.transformResponse.push(railsFieldRenamingTransformerResponse.$get());
+            //HACK:!
+            $httpProvider.defaults.transformResponse.push(railsFieldRenamingTransformerResponse.$get[1](casingTransformers));
             $httpProvider.interceptors.push('railsCsrfToken');
-            $httpProvider.defaults.transformRequest.unshift(railsFieldRenamingTransformerRequest.$get());
+            $httpProvider.defaults.transformRequest.unshift(railsFieldRenamingTransformerRequest.$get[1](casingTransformers));
         }]);
 
 })();

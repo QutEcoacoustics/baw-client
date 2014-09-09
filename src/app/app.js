@@ -82,6 +82,8 @@ var app = angular.module('baw',
                              'bawApp.services', /* our services.js    */
                              'bawApp.services.unitConverter',
 
+                             "baw.models",
+
                              'audio-control',
                              'draggabilly',
 
