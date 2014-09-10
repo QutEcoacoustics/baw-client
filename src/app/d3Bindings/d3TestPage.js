@@ -15,7 +15,7 @@ bawD3.controller('D3TestPageCtrl', ['$scope', 'conf.paths', '$http', function ($
             }
         },
         "projection": {
-            "include": ["id", "recorded_date", "duration_seconds"]
+            "include": ["id", "recorded_date", "duration_seconds", "site_id"]
         }//,
         //"paging":{
         //    "page":2,
