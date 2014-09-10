@@ -26,5 +26,8 @@
     "humanize-duration": "~2.0.0"
   },
   "dependencies": {},
-  "private": true
+  "private": true,
+  "resolutions": {
+    "angular": "1.2.24"
+  }
 }
