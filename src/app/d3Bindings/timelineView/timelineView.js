@@ -324,7 +324,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.d3"])
                     },
                     function (newValue, oldValue) {
                         if (newValue) {
-                            $scope.details = new Details('audioRecordingTimelineContainer', newValue);
+                            $scope.details = new Details('audioRecordingTimeline', newValue);
                         }
                     });
 

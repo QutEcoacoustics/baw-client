@@ -32,7 +32,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
             for(var i = 0;i<json.length; i++){
                 var item = json[i];
                 var recordedDate = moment(item.recordedDate);
-                var key = recordedDate.year() + "-" + baw.stringPad(recordedDate.month(), 2, '0') + "-" + baw.stringPad(recordedDate.date(), 2, '0');
+                var key = recordedDate.format('YYYY-MM-DD');
 
                 var itemYear = parseInt(recordedDate.year());
                 if (firstYear == null || itemYear > firstYear) {

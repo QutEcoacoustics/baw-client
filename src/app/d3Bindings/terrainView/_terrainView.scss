@@ -1,0 +1,37 @@
+#audioRecordingTerrain svg {
+  font-size: 10px;
+}
+
+#audioRecordingTerrain .axis {
+  shape-rendering: crispEdges;
+}
+
+#audioRecordingTerrain .axis path, #audioRecordingTerrain  .axis line {
+  fill: none;
+  stroke-width: .5px;
+}
+
+#audioRecordingTerrain .x.axis path {
+  stroke: #000;
+}
+
+#audioRecordingTerrain .x.axis line {
+  stroke: #fff;
+  stroke-opacity: .5;
+}
+
+#audioRecordingTerrain .y.axis line {
+  stroke: #ddd;
+}
+
+#audioRecordingTerrain path.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+#audioRecordingTerrain rect.pane {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
