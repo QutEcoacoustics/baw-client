@@ -135,7 +135,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 $scope.$on('event:auth-loginRequired', function(){ $scope.model.media.formatPaths(); });
                 $scope.$on('event:auth-loginConfirmed', function(){ $scope.model.media.formatPaths(); });
 
-                MediaService.get(
+                MediaService
+                    .get(
                     {
                         recordingId: $routeParams.recordingId,
                         start_offset: $routeParams.start,
@@ -161,7 +162,17 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     },
                     function mediaGetFailure() {
                         console.error("retrieval of media json failed");
-                    });
+                    })
+                    .$promise
+                    .then(
+                    function() {
+                          Bookmark.savePlaybackPosition(
+                              $scope.model.media.recording.id,
+                              $scope.model.media.commonParameters.startOffset);
+                      },
+                      function() {
+                          console.error("Bookmark saving error", arguments);
+                      });
 
 
                 var getAudioRecording = function getAudioRecording(recordingId) {
@@ -252,7 +263,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     return $q.all(projectPromises);
                 };
-                getAudioRecording(recordingId).then(getSite).then(getProjects).then(function success(result) {
+                getAudioRecording(recordingId)
+                    .then(getSite)
+                    .then(getProjects)
+                    .then(function success(result) {
                     console.info("Metadata Promise chain success", result);
                 }, function error(err) {
                     console.error("An error occurred downloading metadata for this chunk:" + err, err);
@@ -376,7 +390,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     if (!$scope.model.media) {
                         return undefined;
                     }
-                    
+
                     return moment($scope.model.media.recordedDate).add('m', $scope.jumpToMinute).format("YYYY-MMM-DD, HH:mm:ss");
                 };
 

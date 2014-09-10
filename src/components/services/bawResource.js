@@ -21,13 +21,13 @@ angular.module("bawApp.services.resource", ["ngResource"])
          * @return {*}
          */
         var bawResource = function resourcePut(path, paramDefaults, actions) {
-            path = uriConvert(path);
+            var convertedPath = uriConvert(path);
 
             var a = actions || {};
             a.update = a.update || { method: 'PUT' };
-            var resource = $resource(path, paramDefaults, a);
+            var resource = $resource(convertedPath, paramDefaults, a);
 
-            resource.modifiedPath = path;
+            resource.modifiedPath = convertedPath;
 
             return  resource;
         };

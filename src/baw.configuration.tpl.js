@@ -51,7 +51,7 @@ angular.module('bawApp.configuration', ['url'])
                         settings: "/my_account/prefs"
                     },
                     bookmark: {
-                        show: "user_accounts/{userId}/bookmarks/{bookmarkId}"
+                        show: "/bookmarks/{bookmarkId}"
                     }
                 },
                 links: {
