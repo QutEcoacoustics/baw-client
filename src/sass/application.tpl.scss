@@ -38,6 +38,7 @@ $DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
 @import "../app/bookmarks/bookmarks";
 @import "../app/d3Bindings/calendarView/calendarView";
 @import "../app/d3Bindings/timelineView/timelineView";
+@import "../app/d3Bindings/dotView/dotView";
 @import "../app/home/home";
 @import "../app/listen/listen";
 @import "../app/login/login_control";
