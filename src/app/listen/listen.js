@@ -110,6 +110,9 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     profileLoaded(null, UserProfile);
                 }
 
+
+
+
                 // auto play feature
                 $scope.$on(ngAudioEvents.ended, function navigate(event) {
 
@@ -135,7 +138,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 $scope.$on('event:auth-loginRequired', function(){ $scope.model.media.formatPaths(); });
                 $scope.$on('event:auth-loginConfirmed', function(){ $scope.model.media.formatPaths(); });
 
-                MediaService
+                var media = MediaService
                     .get(
                     {
                         recordingId: $routeParams.recordingId,
@@ -162,17 +165,22 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     },
                     function mediaGetFailure() {
                         console.error("retrieval of media json failed");
-                    })
-                    .$promise
+                    });
+
+
+
+                // bookmarks
+                $q
+                    .all([Bookmark.applicationBookmarksPromise, media.$promise])
                     .then(
                     function() {
-                          Bookmark.savePlaybackPosition(
-                              $scope.model.media.recording.id,
-                              $scope.model.media.commonParameters.startOffset);
-                      },
-                      function() {
-                          console.error("Bookmark saving error", arguments);
-                      });
+                        Bookmark.savePlaybackPosition(
+                            $scope.model.media.recording.id,
+                            $scope.model.media.commonParameters.startOffset);
+                    },
+                    function() {
+                        console.error("Bookmark saving error", arguments);
+                    });
 
 
                 var getAudioRecording = function getAudioRecording(recordingId) {
