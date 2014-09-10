@@ -1,6 +1,7 @@
 /**
  * A d3 Calendar View directive
- * Created by Anthony on 23/08/2014.
+ * Created by Anthony on 23/08/2014, modified by Mark.
+ * based on http://bl.ocks.org/mbostock/4063318
  */
 angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
     .directive("bawCalendarView", ["d3", "moment", function (d3, moment) {

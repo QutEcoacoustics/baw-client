@@ -94,6 +94,7 @@ var app = angular.module('baw',
                              'bawApp.d3',                /* our d3 integration */
                              'bawApp.d3.calendarView',
                              'bawApp.d3.timelineView',
+                             'bawApp.d3.dotView',
 
                              'bawApp.accounts',
                              'bawApp.annotationViewer',

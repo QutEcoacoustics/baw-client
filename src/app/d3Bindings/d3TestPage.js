@@ -6,7 +6,7 @@ bawD3.controller('D3TestPageCtrl', ['$scope', 'conf.paths', '$http', function ($
     // assign the resulting data to scope (not great but it will do for now)
     $scope.basicData = [0, 1, 2, 3, 4, 5];
 
-    $scope.siteId = 895;
+    $scope.siteId = 643;
 
     var request_filter = {
         "filter": {
