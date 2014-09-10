@@ -194,7 +194,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
                 });
             },
             controller: "bawCalendarViewController"
-        }
+        };
     }])
     .controller("bawCalendarViewController", ["$scope", "$element", "$attrs",
         function ($scope, $element, $attrs) {
