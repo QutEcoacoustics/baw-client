@@ -128,7 +128,7 @@ var app = angular.module('baw',
                           {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
 
                      when('/listen', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: 'Listen'}).
-                     when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: ':recordingId'}).
+                     when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: ':recordingId', fullWidth: true}).
                      //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 
                      when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
@@ -266,6 +266,11 @@ var app = angular.module('baw',
                   $location.path('/404?path=');
               });
 
+              //https://docs.angularjs.org/api/ngRoute/service/$route
+              $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
+                  $rootScope.fullWidth = $route.current.$$route.fullWidth;
+              });
+
               // reload a view and controller (shortcut for full page refresh)
               $rootScope.$reloadView = function () {
                   $route.reload();
@@ -328,5 +333,8 @@ var app = angular.module('baw',
                      $scope.activePath = function activePath(pathFragment) {
                          return $location.path().indexOf(pathFragment) != -1;
                      };
+                     $scope.getWidth = function () {
+                         return ($scope.$parent.fullWidth ? 'container-liquid' : 'container');
+                     }
 
                  }]);
