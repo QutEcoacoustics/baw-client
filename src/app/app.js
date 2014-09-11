@@ -144,11 +144,11 @@ var app = angular.module('baw',
                      when('/experiments/:experiment',
                           {templateUrl: '/assets/experiment_base.html', controller: 'ExperimentsCtrl'}).
 
-                     when('/library', {templateUrl: paths.site.files.library.list, controller: 'AnnotationLibraryCtrl', title: 'Annotation Library' }).
+                     when('/library', {templateUrl: paths.site.files.library.list, controller: 'AnnotationLibraryCtrl', title: 'Annotation Library' , fullWidth: true}).
                      when('/library/:recordingId', {
                          redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
                          templateUrl: paths.site.files.library.list,
-                         title: ":recordingId" }).
+                         title: ":recordingId" , fullWidth: true}).
                      when('/library/:recordingId/audio_events', {
                          redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
                          title: 'Audio Events' }).
