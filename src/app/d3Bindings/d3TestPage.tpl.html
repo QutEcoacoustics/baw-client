@@ -1,5 +1,16 @@
 <div id="content">
-    <h1>D3 Play area</h1>
+    <h1>Site recordings visualisation options
+        <small>
+            current site is <a data-ng-href="{{currentSiteInfo.links[0]}}">{{currentSiteInfo.name}}</a>
+        </small>
+    </h1>
+
+    <form class="form-inline" role="form">
+        <div class="form-group">
+            <label for="siteSelector">Sites</label>
+            <select id="siteSelector" class="form-control" ng-model="currentSiteInfo" ng-options="site.name for site in sites track by site.id"></select>
+        </div>
+    </form>
 
     <h2>Calendar view</h2>
     <div>
@@ -15,6 +26,6 @@
     </div>
     <h2>Terrain view <small>Zoomable with mouse wheel and pannable by dragging</small></h2>
     <div>
-        <baw-terrain-view data="filteredAudioRecordings"></baw-terrain-view>
+        <baw-terrain-view  class="reset-box-sizing" data="filteredAudioRecordings"></baw-terrain-view>
     </div>
 </div>

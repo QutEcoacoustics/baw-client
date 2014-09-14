@@ -1,18 +1,119 @@
 /**
  * A d3 Terrain View directive
  * Created by Mark on 10/09/2014.
- * Based on http://neuralengr.com/asifr/journals/journals_dbs.html
+ * Based on http://mbostock.github.io/d3/talk/20111018/area-gradient.html
  */
 angular.module("bawApp.d3.terrainView", ["bawApp.d3"])
     .directive("bawTerrainView", ["d3", "moment", function (d3, moment) {
 
-        function TerrainViewDetails(elementId, jsonResponse) {
-            var that = this;
-            that.elementId = elementId;
+        var m = [79, 80, 160, 79],
+            w = 1280 - m[1] - m[3],
+            h = 800 - m[0] - m[2],
+            parse = d3.time.format("%Y-%m-%dT%H:%M:%S%Z").parse,
+            format = d3.time.format("%Y");
 
-            that.items = {};
+// Scales. Note the inverted domain for the y-scale: bigger is up!
+        var x = d3.time.scale().range([0, w]),
+            y = d3.scale.linear().range([h, 0]),
+            xAxis = d3.svg.axis().scale(x).orient("bottom").tickSize(-h, 0).tickPadding(6),
+            yAxis = d3.svg.axis().scale(y).orient("right").tickSize(-w).tickPadding(6);
+
+// An area generator.
+        var area = d3.svg.area()
+            .interpolate("step-after")
+            .x(function (d) {
+                return x(d.date);
+            })
+            .y0(y(0))
+            .y1(function (d) {
+                return y(d.value);
+            });
+
+// A line generator.
+        var line = d3.svg.line()
+            .interpolate("step-after")
+            .x(function (d) {
+                return x(d.date);
+            })
+            .y(function (d) {
+                return y(d.value);
+            });
+
+        var svg, gradient, rect = null;
+
+        function create(){
+            svg = d3.select("#audioRecordingTerrain").append("svg:svg")
+                .attr("width", w + m[1] + m[3])
+                .attr("height", h + m[0] + m[2])
+                .append("svg:g")
+                .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+            gradient = svg.append("svg:defs").append("svg:linearGradient")
+                .attr("id", "gradient")
+                .attr("x2", "0%")
+                .attr("y2", "100%");
+
+            gradient.append("svg:stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#fff")
+                .attr("stop-opacity", .5);
+
+            gradient.append("svg:stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#999")
+                .attr("stop-opacity", 1);
+
+            svg.append("svg:clipPath")
+                .attr("id", "clip")
+                .append("svg:rect")
+                .attr("x", x(0))
+                .attr("y", y(1))
+                .attr("width", x(1) - x(0))
+                .attr("height", y(0) - y(1));
+
+            svg.append("svg:g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + w + ",0)");
+
+            svg.append("svg:path")
+                .attr("class", "area")
+                .attr("clip-path", "url(#clip)")
+                .style("fill", "url(#gradient)");
+
+            svg.append("svg:g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + h + ")");
+
+            svg.append("svg:path")
+                .attr("class", "line")
+                .attr("clip-path", "url(#clip)");
+
+            // see https://groups.google.com/forum/#!topic/d3-js/6p7Lbnz-jRQ
+            rect = svg.append("svg:rect")
+                .attr("class", "pane")
+                .attr("width", w)
+                .attr("height", h);
+                //.call(d3.behavior.zoom().on("zoom", zoom));
+        }
+
+        function draw() {
+            svg.select("g.x.axis").call(xAxis);
+            svg.select("g.y.axis").call(yAxis);
+            svg.select("path.area").attr("d", area);
+            svg.select("path.line").attr("d", line);
+            d3.select("#footer span").text("Audio Recordings, " + x.domain().map(format).join("-"));
+        }
+
+        function zoom() {
+            //d3.event.transform(x); // TODO d3.behavior.zoom should support extents
+            draw();
+        }
+
+        //populate data
+        function getData(jsonResponse) {
 
             // build data structure
+            var dataStructure = {};
             angular.forEach(jsonResponse.data, function (value, key) {
                 // minute resolution
                 // {"datetime": "2014-09-10 15:00:00", "value": 5}
@@ -21,157 +122,74 @@ angular.module("bawApp.d3.terrainView", ["bawApp.d3"])
                 var start = moment(value.recordedDate).zone('+10:00');
                 var end = moment(value.recordedDate).add('seconds', value.durationSeconds).zone('+10:00');
 
-                var momentFormatString = 'YYYY-MM-DD HH:00:00';
+                var momentFormatString = 'YYYY-MM-DDTHH:00:00ZZ';
 
                 // loop from start to end of recording, adding a minute each time.
                 var diff = end.diff(start.clone().startOf('hour'), 'hours');
-                for(var step = 0;step<=diff;step++){
+                for (var step = 0; step <= diff; step++) {
 
                     var current = start.clone().startOf('hour').add('hour', step);
                     var currentFormatted = current.format(momentFormatString);
-                    if(!that.items[currentFormatted]){
-                        that.items[currentFormatted] = 1;
+                    if (!dataStructure[currentFormatted]) {
+                        dataStructure[currentFormatted] = 1;
                     } else {
-                        that.items[currentFormatted] += 1;
+                        dataStructure[currentFormatted] += 1;
                     }
                 }
             });
 
-            var m = [79, 80, 160, 79],
-                w = 1280 - m[1] - m[3],
-                h = 800 - m[0] - m[2],
-                parse = d3.time.format("%Y-%m-%d %H:%M:%S").parse,
-                format = d3.time.format("%Y");
+            // convert data to expected format
+            var data = [];
+            angular.forEach(dataStructure, function (value, key) {
+                data.push({date: key, value: value});
+            });
 
-            // Scales. Note the inverted domain for the y-scale: bigger is up!
-            that.x = d3.time.scale().range([0, w]);
-            var y = d3.scale.linear().range([h, 0]),
-                xAxis = d3.svg.axis().scale(that.x).orient("bottom").tickSize(-h, 0).tickPadding(6),
-                yAxis = d3.svg.axis().scale(y).orient("right").tickSize(-w).tickPadding(6);
+            // Parse dates and numbers.
+            data.forEach(function (d) {
+                d.date = parse(d.date);
+                d.value = +d.value;
+            });
 
-            that.createView = function createView(dataObject) {
+            // Compute the maximum price.
 
-                // Parse dates and numbers.
-                var data = [];
-                angular.forEach(dataObject, function (value, key) {
-                    // d.datetime is already a Moment
-                    data.push({
-                        datetime:  parse(key),
-                        value: +value
-                    });
-                });
-
-                // An area generator.
-                var area = d3.svg.area()
-                    .interpolate("step-after")
-                    .x(function (d) {
-                        return that.x(d.datetime);
-                    })
-                    .y0(y(0))
-                    .y1(function (d) {
-                        return y(d.value);
-                    });
-
-                // A line generator.
-                var line = d3.svg.line()
-                    .interpolate("step-after")
-                    .x(function (d) {
-                        return that.x(d.datetime);
-                    })
-                    .y(function (d) {
-                        return y(d.value);
-                    });
-
-                var svg = d3.select("#audioRecordingTerrain").append("svg:svg")
-                    .attr("width", w + m[1] + m[3])
-                    .attr("height", h + m[0] + m[2])
-                    .append("svg:g")
-                    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
-
-                var gradient = svg.append("svg:defs").append("svg:linearGradient")
-                    .attr("id", "gradient")
-                    .attr("x2", "0%")
-                    .attr("y2", "100%");
-
-                gradient.append("svg:stop")
-                    .attr("offset", "0%")
-                    .attr("stop-color", "#fff")
-                    .attr("stop-opacity", .5);
-
-                gradient.append("svg:stop")
-                    .attr("offset", "100%")
-                    .attr("stop-color", "#999")
-                    .attr("stop-opacity", 1);
-
-                svg.append("svg:clipPath")
-                    .attr("id", "clip")
-                    .append("svg:rect")
-                    .attr("x", that.x(0))
-                    .attr("y", y(1))
-                    .attr("width", that.x(1) - that.x(0))
-                    .attr("height", y(0) - y(1));
-
-                svg.append("svg:g")
-                    .attr("class", "y axis")
-                    .attr("transform", "translate(" + w + ",0)");
-
-                svg.append("svg:path")
-                    .attr("class", "area")
-                    .attr("clip-path", "url(#clip)")
-                    .style("fill", "url(#gradient)");
-
-                svg.append("svg:g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + h + ")");
-
-                svg.append("svg:path")
-                    .attr("class", "line")
-                    .attr("clip-path", "url(#clip)");
-
-                svg.append("svg:rect")
-                    .attr("class", "pane")
-                    .attr("width", w)
-                    .attr("height", h)
-                    .call(d3.behavior.zoom().on("zoom", zoom));
-
-                function update(data) {
-
-                    // Compute the maximum price.
-                    that.x.domain([d3.max(data, function (d) {
-                        return d.datetime;
-                    }), d3.max(data, function (d) {
-                        return d.datetime;
-                    })]);
-                    y.domain([0, d3.max(data, function (d) {
-                        return d.value;
-                    })]);
-
-                    // Bind the data to our path elements.
-                    svg.select("path.area").data([data]);
-                    svg.select("path.line").data([data]);
-
-                    draw();
+            var xDomainMin = null;
+            var xDomainMax = null;
+            var yDomainMin = 0;
+            var yDomainMax = null;
+            angular.forEach(data, function (value, index) {
+                if(value.date && xDomainMax){
+                    xDomainMin = moment.min(moment(xDomainMin), moment(value.date)).clone().toDate();
+                } else if(value.value && !xDomainMax){
+                    xDomainMax = value.date;
                 }
 
-                function draw() {
-                    svg.select("g.x.axis").call(xAxis);
-                    svg.select("g.y.axis").call(yAxis);
-                    svg.select("path.area").attr("d", area);
-                    svg.select("path.line").attr("d", line);
-                    d3.select("#footer span").text("U.S. Commercial Flights, " + that.x.domain().map(format).join("-"));
+                if(value.date && xDomainMin){
+                    xDomainMin = moment.min(moment(xDomainMin), moment(value.date)).clone().toDate();
+                } else if(value.value && !xDomainMin){
+                    xDomainMin = value.date;
                 }
 
-                function zoom() {
-                    d3.event.transform(x); // TODO d3.behavior.zoom should support extents
-                    draw();
+                if(value.value && yDomainMax){
+                    yDomainMax = Math.max(yDomainMax, value.value);
+                } else if(value.value && !yDomainMax){
+                    yDomainMax = value.value;
                 }
+            });
+            x.domain([xDomainMin, xDomainMax]);
+            y.domain([yDomainMin, yDomainMax]);
 
-                update(data);
-            };
 
-            that.createView(that.items);
+            // create svg and gradient
+            create();
+
+            // Bind the data to our path elements.
+            svg.select("path.area").data([data]);
+            svg.select("path.line").data([data]);
+
+            rect.call(d3.behavior.zoom().x(x).on("zoom", zoom));
+
+            draw();
         }
-
 
         return {
             restrict: "EA",
@@ -192,9 +210,8 @@ angular.module("bawApp.d3.terrainView", ["bawApp.d3"])
                 $scope.$watch(function () {
                     return $scope.data;
                 }, function (newValue, oldValue) {
-                    if (newValue) {
-                        //createView();
-                        $scope.details = new TerrainViewDetails('audioRecordingTerrain', newValue);
+                    if (newValue && newValue != oldValue) {
+                        getData(newValue);
                     }
                 });
 
