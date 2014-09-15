@@ -155,22 +155,24 @@
         </div>
     </div>
 
-    <footer ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
+    <footer class="clearfix" ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
         <ul class="nav nav-pills">
-            <li class="disabled">
-                <a data-original-title="" title="">
+            <li >
+                <p class="nav-text">
                     © QUT
                     2014
-                </a>
+                </p>
             </li>
-            <li class="disabled">
-                <a data-original-title="" title="">staging ver 0.10.0</a>
+            <li >
+                <p class="nav-text">
+                    v<%= version %>
+                </p>
             </li>
-            <li><a href="/website_status" data-original-title="" title="">Statistics</a></li>
-            <li><a href="/contact_us" data-original-title="" title="">Contact Us</a></li>
-            <li><a href="/disclaimers" data-original-title="" title="">Disclaimers</a></li>
-            <li><a href="/credits" data-original-title="" title="">Credits</a></li>
-            <li><a href="/ethics_statement" data-original-title="" title="">Ethics Statement</a></li>
+            <li><a  ng-href="{{paths.api.links.websiteStatusAbsolute}}" target="_self">Statistics</a></li>
+            <li><a  ng-href="{{paths.api.links.contactUsAbsolute}}" target="_self">Contact Us</a></li>
+            <li><a  ng-href="{{paths.api.links.disclaimersAbsolute}}" target="_self">Disclaimers</a></li>
+            <li><a  ng-href="{{paths.api.links.creditsAbsolute}}" target="_self">Credits</a></li>
+            <li><a  ng-href="{{paths.api.links.ethicsStatementAbsolute}}" target="_self">Ethics Statement</a></li>
         </ul>
     </footer>
 
