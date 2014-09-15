@@ -59,7 +59,12 @@ angular.module('bawApp.configuration', ['url'])
                     home: '/',
                     project: '/projects/{projectId}',
                     site: '/projects/{projectId}/sites/{siteId}',
-                    userAccounts: '/user_accounts/{userId}'
+                    userAccounts: '/user_accounts/{userId}',
+                    websiteStatus: '/website_status',
+                    contactUs: '/contact_us',
+                    disclaimers: '/disclaimers',
+                    credits: '/credits',
+                    ethicsStatement: '/ethics_statement'
                 }
             },
             site: {
