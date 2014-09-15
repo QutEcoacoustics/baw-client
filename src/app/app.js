@@ -350,9 +350,9 @@ var app = angular.module('baw',
                      $scope.activePath = function activePath(pathFragment) {
                          return $location.path().indexOf(pathFragment) != -1;
                      };
-                     $scope.getWidth = function () {
+                     /*$scope.getWidth = function () {
                          return ($scope.$parent.fullWidth ? 'container-liquid' : 'container');
-                     }
+                     };*/
 
                      // do browser check
                      // assume bowser is on global scope
