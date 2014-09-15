@@ -45,7 +45,7 @@ describe("The unitConverter service", function () {
                 unitConverter.getConversions(obj);
             };
 
-            expect(f).toThrowError("Missing property: " + key);
+            expect(f).toThrowError(Error, "Missing property: " + key);
         });
 
     });

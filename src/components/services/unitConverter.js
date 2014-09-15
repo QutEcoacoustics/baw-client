@@ -25,7 +25,7 @@ uc.factory("bawApp.unitConverter", ['conf.constants', function (constants) {
 
         keysToCheck.forEach(function(key) {
             if (!angular.isNumber(data[key])) {
-                throw "Input data field `" + key + "` should be a number!";
+                throw new Error("Input data field `" + key + "` should be a number!");
             }
         });
 

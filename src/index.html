@@ -38,7 +38,7 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li ng-class="{ active: activePath('/projects') }"><a ng-href="{{paths.api.links.projectsAbsolute}}" target="_self">Projects</a></li>
-                <li ng-class="{ active: activePath('/listen') }"><a href="#">Listen</a></li>
+                <li ng-class="{ active: activePath('/listen') }"><a ng-href="{{paths.site.ngRoutes.recentRecordings}}">Listen</a></li>
                 <li ng-class="{ active: activePath('/library') }"><a ng-href="{{paths.site.ngRoutes.library}}">Library</a></li>
                 <!--<li ng-class="{ active: activePath('/bird') }"><a href="/birdWalks">Bird Walks</a></li>-->
 
@@ -77,6 +77,9 @@
 
     </nav>
 
+    <div growl>
+
+    </div>
     <!--<div id="login-holder">-->
         <!--<div id="loginbox">-->
             <!--<div id="login-inner" ng-controller="LoginCtrl">-->

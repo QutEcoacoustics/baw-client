@@ -12,21 +12,25 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'ngAudioEvents',
         'AudioRecording',
         'Media',
+        "baw.models.Media",
         'AudioEvent',
         'Tag',
         'Taggings',
         'Site',
         'Project',
         'UserProfile',
+        'UserProfileEvents',
+        'Bookmark',
         /**
          * The listen controller.
          * @param $scope
          * @param $resource
          * @param $routeParams
+         * @param Media
          * @param AudioEvent
          * @constructor
          * @param Tag
-         * @param Media
+         * @param MediaService
          * @param $route
          * @param paths
          * @param constants
@@ -39,10 +43,13 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param $location
          * @param ngAudioEvents
          * @param UserProfile
+         * @param Bookmark
+         * @param UserProfileEvents
          */
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,
-            AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile) {
+            AudioRecording, MediaService, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile, UserProfileEvents, Bookmark) {
+
 
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
@@ -98,10 +105,13 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     $scope.model.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay || $routeParams.autoPlay;
                 };
-                $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
+                $scope.$on(UserProfileEvents.loaded, profileLoaded);
                 if (UserProfile.profile && UserProfile.profile.preferences) {
                     profileLoaded(null, UserProfile);
                 }
+
+
+
 
                 // auto play feature
                 $scope.$on(ngAudioEvents.ended, function navigate(event) {
@@ -125,10 +135,11 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 });
 
                 /* // NOT NECESSARY - we aren't using auth keys atm    */
-                $scope.$on('event:auth-loginRequired', function(){ Media.formatPaths($scope.model.media); });
-                $scope.$on('event:auth-loginConfirmed', function(){ Media.formatPaths($scope.model.media); });
+                $scope.$on('event:auth-loginRequired', function(){ $scope.model.media.formatPaths(); });
+                $scope.$on('event:auth-loginConfirmed', function(){ $scope.model.media.formatPaths(); });
 
-                Media.get(
+                var media = MediaService
+                    .get(
                     {
                         recordingId: $routeParams.recordingId,
                         start_offset: $routeParams.start,
@@ -136,18 +147,11 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         format: "json"
                     },
                     function mediaGetSuccess(value, responseHeaders) {
-                        $scope.model.media = new baw.Media(value);
-
-                        // reformat urls
-                        Media.formatPaths($scope.model.media);
-
-
-
-                        //                        fixMediaApi();
+                        $scope.model.media = new Media(value.data);
 
                         var // moment works by reference - need to parse the date twice - sigh
-                            absoluteStartChunk = moment($scope.model.media.datetime).add('s', parseFloat($scope.model.media.startOffset)),
-                            absoluteEndChunk = moment($scope.model.media.datetime).add('s', parseFloat($scope.model.media.endOffset));
+                            absoluteStartChunk = moment($scope.model.media.recordedDate).add('s', parseFloat($scope.model.media.startOffset)),
+                            absoluteEndChunk = moment($scope.model.media.recordedDate).add('s', parseFloat($scope.model.media.endOffset));
 
                         $scope.startOffsetAbsolute = absoluteStartChunk.format("HH:mm:ss");
                         $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
@@ -161,6 +165,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     },
                     function mediaGetFailure() {
                         console.error("retrieval of media json failed");
+                    });
+
+
+
+                // bookmarks
+                $q
+                    .all([Bookmark.applicationBookmarksPromise, media.$promise])
+                    .then(
+                    function() {
+                        Bookmark.savePlaybackPosition(
+                            $scope.model.media.recording.id,
+                            $scope.model.media.commonParameters.startOffset);
+                    },
+                    function() {
+                        console.error("Bookmark saving error", arguments);
                     });
 
 
@@ -252,7 +271,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     return $q.all(projectPromises);
                 };
-                getAudioRecording(recordingId).then(getSite).then(getProjects).then(function success(result) {
+                getAudioRecording(recordingId)
+                    .then(getSite)
+                    .then(getProjects)
+                    .then(function success(result) {
                     console.info("Metadata Promise chain success", result);
                 }, function error(err) {
                     console.error("An error occurred downloading metadata for this chunk:" + err, err);
@@ -355,7 +377,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return undefined;
                     }
 
-                    var baseDate = moment($scope.model.media.datetime),
+                    var baseDate = moment($scope.model.media.recordedDate),
                         recordingOffset = parseFloat($scope.model.media.startOffset),
                         absolute = baseDate.add('s', recordingOffset + chunkOffset);
 
@@ -376,8 +398,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     if (!$scope.model.media) {
                         return undefined;
                     }
-                    
-                    return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("YYYY-MMM-DD, HH:mm:ss");
+
+                    return moment($scope.model.media.recordedDate).add('m', $scope.jumpToMinute).format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 

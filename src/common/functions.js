@@ -30,6 +30,12 @@ Math.randomInt = function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
+Math.isInt = function isInt(value) {
+    return !isNaN(value) &&
+    parseInt(Number(value)) == value &&
+    !isNaN(parseInt(value, 10));
+};
+
 // from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#Example:_Decimal_rounding
 // Closure
 (function(){

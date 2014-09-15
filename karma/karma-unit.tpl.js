@@ -19,7 +19,7 @@ module.exports = function (config) {
      */
     configObject.files = [
         "vendor/objectdiff/objectDiff.js",
-        "vendor/jasmine-matchers/dist/jasmine-matchers.js"
+        "vendor/jasmine-expect/dist/jasmine-matchers.js"
     ].concat(JSON.parse(fileJson).concat([
             'src/**/*.js',
             'src/**/*.spec.js'

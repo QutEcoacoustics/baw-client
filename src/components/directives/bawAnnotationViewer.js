@@ -66,11 +66,11 @@ bawds.directive('bawAnnotationViewer',
 
                     scope.model.converters = unitConverter.getConversions({
                         sampleRate: scope.model.media.sampleRate,
-                        spectrogramWindowSize: scope.model.media.spectrogram ? scope.model.media.spectrogram.window : null,
+                        spectrogramWindowSize: scope.model.media.spectrogram ? scope.model.media.spectrogram.windowSize : null,
                         endOffset: scope.model.media.endOffset,
                         startOffset: scope.model.media.startOffset,
                         imageElement: scope.$image[0],
-                        audioRecordingAbsoluteStartDate: scope.model.media.datetime
+                        audioRecordingAbsoluteStartDate: scope.model.media.recordedDate
                     });
 
                     // redraw all boxes already drawn (hacky way to force angular to consider these objects changed!)

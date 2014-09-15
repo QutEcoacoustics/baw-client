@@ -23,23 +23,53 @@
         return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
-    var bawss = angular.module("bawApp.services", ['ngResource', 'bawApp.configuration']);
+    var bawss = bawss || angular.module("bawApp.services", ["ngResource", "bawApp.configuration", "bawApp.services.core", "bawApp.services.queryBuilder"]);
 
-    bawss.factory('Project', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
+    bawss.factory('Project', [ '$resource', "$http", 'conf.paths', "QueryBuilder", function ($resource, $http, paths, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
+
+        return resource;
     }]);
 
-    bawss.factory('Site', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
+    bawss.factory('Site', [ '$resource', "$http", 'conf.paths', "_", "QueryBuilder", function ($resource, $http, paths, _, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
+
+
+        resource.getSitesByIds = function(siteIds) {
+            var url = paths.api.routes.site.filterAbsolute;
+            siteIds = _.uniq(siteIds);
+            var query = QueryBuilder.create(function(q) {
+                return q.in("id", siteIds)
+                    .project({include: ["id", "name"]});
+            });
+            return $http.post(url, query.toJSON());
+        };
+
+
+        return resource;
     }]);
 
     // NOTE: deleted photo resource, API for photos no longer exposed
 
     // NOTE: deleted user resource, API for users no longer exposed
 
-    bawss.factory('AudioRecording', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
+    bawss.factory('AudioRecording', [ '$resource', '$http', 'conf.paths', 'QueryBuilder', function ($resource, $http, paths, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
+
+        var query = QueryBuilder.create(function(q) {
+           return q
+               .sort({orderBy: "createdAt", direction: "desc"})
+               .page({page:1, items: 10})
+               .project({include: ["id", "siteId", "durationSeconds", "recordedDate", "createdAt"]});
+        });
+        resource.getRecentRecordings = function() {
+            var url =  paths.api.routes.audioRecording.filterAbsolute;
+
+            return $http.post(url, query.toJSON());
+        };
+
+        return resource;
     }]);
 
     bawss.factory('AudioEvent', [ '$resource', '$url', 'conf.paths',
@@ -227,30 +257,7 @@
             delete  mediaResource["remove"];
             delete  mediaResource["delete"];
 
-            /**
-             * Change relative image and audio urls into absolute urls
-             * @param {Object} mediaItem
-             */
-            mediaResource.formatPaths = function formatPaths(mediaItem, audioEventId) {
-                // HACK: add audioEventId onto every path until Media API correctly returns resource paths!
-                var hackString = audioEventId !== undefined ? "&audioEventId=" + audioEventId.toString() : "";
 
-                var imgKeys = Object.keys(mediaItem.availableImageFormats);
-                if (imgKeys.length > 1) {
-                    throw "don't know how to handle more than one image format!";
-                }
-
-                var imageKey = imgKeys[0];
-                var imageFormat = mediaItem.availableImageFormats[imageKey];
-                mediaItem.availableImageFormats[imageKey].url = paths.joinFragments(paths.api.root, (imageFormat.url + hackString));
-                mediaItem.spectrogram = imageFormat;
-
-                angular.forEach(mediaItem.availableAudioFormats, function (value, key) {
-                    // just update the url so it is an absolute uri
-                    this[key].url = paths.joinFragments(paths.api.root, (value.url + hackString));
-
-                }, mediaItem.availableAudioFormats);
-            };
 
         return mediaResource;
     }]);
@@ -540,14 +547,14 @@
                         data = data || {};
 
                         throw "add object camel casing here";
-                        //railsFieldRenamingInterceptor().core(data);
+                        /*railsFieldRenamingInterceptor().core(data);
 
                         if (data.response === "ok") {
                             Authenticator.loginSuccess(data);
                         }
                         else {
                             Authenticator.loginFailure(data);
-                        }
+                        }*/
                     });
                 }
 
@@ -557,14 +564,14 @@
                         data = data || {};
 
                         throw "add object camel casing here";
-                        //railsFieldRenamingInterceptor().core(data);
+                        /*railsFieldRenamingInterceptor().core(data);
 
                         if (data.response === "ok") {
                             Authenticator.loginSuccess(data);
                         }
                         else {
                             Authenticator.loginFailure(data);
-                        }
+                        }*/
                     });
                 }
 
