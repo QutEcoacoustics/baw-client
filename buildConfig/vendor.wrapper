@@ -1,0 +1,18 @@
+/*
+ defines module.exports so that external libraries
+ do not attach themselves to window.
+
+ Also provides a callback so something can do something
+ with the module.
+ */
+(function (module, callback) {
+
+/*
+ Vendor template: begin original file.
+ */
+<%= content %>
+/*
+ Vendor template: End original file.
+ */
+    callback(undefined, module);
+})({exports: {}, moduleName: "<%= filename %>"}, <%= callbackName %>);
