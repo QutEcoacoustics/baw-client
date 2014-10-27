@@ -1,15 +1,9 @@
-var modRewrite = require('connect-modrewrite'),
-    path = require('path'),
-    _ = require('lodash');
-
-
 module.exports = function (grunt) {
 
-    // bit of bullshit to ensure the build fails for missing files in the concat task
-    // note this overrides normal logging! not cool.
-    // These problems (failing on missing files) are expected to be resolved in grunt 0.5
-    //grunt.log.oldWarn = grunt.log.warn;
-    //grunt.log.warn = grunt.warn;
+    var modRewrite = require('connect-modrewrite'),
+        path = require('path'),
+        _ = require('lodash');
+
 
     /**
      * Load required Grunt tasks. These are installed based on the versions listed
@@ -34,7 +28,14 @@ module.exports = function (grunt) {
     /**
      * Load in our build configuration file.
      */
-    var userConfig = require('./build.config.js');
+    var userConfig = require('./buildConfig/build.config.js');
+
+    /**
+     * Load  in the special vendor template.
+     */
+    var processVendorJs =
+        require("./buildConfig/vendorTemplateProcessing.js")
+        (grunt, "./buildConfig/vendor.wrapper", "window.bawApp.externalsCallback", userConfig.vendor_files.jsDoNotWrap);
 
 
     /**
@@ -122,7 +123,7 @@ module.exports = function (grunt) {
                 //after: "2013-09-05T10:18:39.4492679+10:00",
                 //before: "now",
                 dest: 'CHANGELOG.md',
-                template: 'changelog.tpl'
+                template: 'buildConfig/changelog.tpl'
             }
         },
 
@@ -224,7 +225,7 @@ module.exports = function (grunt) {
             },
             build_appjs: {
                 options: {
-                    processContent: function (content, srcPath) {
+                    process: function (content, srcPath) {
                         // if srcPath contain .tpl.js
                         // for now since the angular templates use tpl as well,
                         // we'll cheat and just use a direct file reference
@@ -249,6 +250,9 @@ module.exports = function (grunt) {
                 ]
             },
             build_vendorjs: {
+                options: {
+                    process: processVendorJs
+                },
                 files: [
                     {
                         src: [ '<%= vendor_files.js %>' ],
@@ -302,12 +306,12 @@ module.exports = function (grunt) {
                 },
                 nonull: true,
                 src: [
-                    '<%= vendor_files.js %>',
-                    'module.prefix',
+                    '<%= build_dir %>/vendor/**/*.js',
+                    'buildConfig/module.prefix',
                     '<%= build_dir %>/src/**/*.js',
                     '<%= html2js.app.dest %>',
                     '<%= html2js.common.dest %>',
-                    'module.suffix'
+                    'buildConfig/module.suffix'
                 ],
                 dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
             }
