@@ -85,13 +85,18 @@ module.exports = {
      * recommended that you use wildcards.
      */
     vendor_files: {
-        jsDoNotWrap: [
-            'vendor/jquery/dist/jquery.js',
-            'vendor/angular/angular.js'
+        jsWrapWithModule: [
+            'vendor/momentjs/moment.js',
+            'vendor/lodash/dist/lodash.js',
+
+            'vendor/bowser/bowser.js',
+            'vendor/humanize-duration/humanize-duration.js'
         ],
         js: [
             'vendor/jquery/dist/jquery.js',
             'vendor/angular/angular.js',
+
+            'buildConfig/externalModule.js',
 
 
             // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
@@ -127,6 +132,7 @@ module.exports = {
             // get-size depends on get-style-property... it has to come after it
             'vendor/get-size/get-size.js',
             'vendor/draggabilly/draggabilly.js',
+
             'vendor/bowser/bowser.js',
             'vendor/angular-growl-v2/build/angular-growl.js',
             'vendor/angular-local-storage/angular-local-storage.js',

@@ -60,6 +60,8 @@ var app = angular.module('baw',
                              'decipher.tags',
                              'angular-growl',
                              'LocalStorageModule',
+                             "bawApp.vendorServices",
+
 
                              'url', /* a custom uri formatter */
                              'bawApp.configuration', /* a mapping of all static path configurations
@@ -78,7 +80,7 @@ var app = angular.module('baw',
                              'bawApp.directives.toggleSwitch',
                              'bawApp.filters', /* our filters.js     */
 
-                             "bawApp.services.core",
+
                              'bawApp.services.queryBuilder',
                              'bawApp.services', /* our services.js    */
                              'bawApp.services.unitConverter',
@@ -330,8 +332,8 @@ var app = angular.module('baw',
           }])
 
     .controller('AppCtrl',
-                ['$scope', '$location', 'conf.constants', 'growl', '$timeout', 'localStorageService',
-                 function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService) {
+                ['$scope', '$location', 'conf.constants', 'growl', '$timeout', 'localStorageService', "bowser",
+                 function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService, bowser) {
 
                      $scope.showDebugUi = function () {
                          var r = window.cssRules.getCssRule(".debug-UI");
@@ -347,13 +349,12 @@ var app = angular.module('baw',
                      };
 
                      // do browser check
-                     // assume bowser is on global scope
                      // only do it once - we best not be too annoying
                      var supported = constants.browserSupport;
                      var isSupportedBrowser = false;
-                     var version = parseFloat(bowser.version);
+                     var version = parseFloat(bowser.browser.version);
                      angular.forEach(supported.optimum, function (value, key) {
-                         if (isSupportedBrowser || (bowser[key] && version >= value)) {
+                         if (isSupportedBrowser || (bowser.browser[key] && version >= value)) {
                              isSupportedBrowser = true;
                          }
                      });
@@ -364,11 +365,11 @@ var app = angular.module('baw',
 
                                  var supportedBrowser = false;
                                  angular.forEach(supported.supported, function (value, key) {
-                                     if (bowser[key]) {
+                                     if (bowser.browser[key]) {
                                          if (version >= value) {
                                              growl.info(supported.baseMessage.format({
-                                                 name: bowser.name,
-                                                 version: bowser.version,
+                                                 name: bowser.browser.name,
+                                                 version: bowser.browser.version,
                                                  reason: "not well tested"
                                              }));
                                              supportedBrowser = true;
@@ -382,8 +383,8 @@ var app = angular.module('baw',
 
                                  if (!supportedBrowser) {
                                      growl.warning(supported.baseMessage.format({
-                                         name: bowser.name,
-                                         version: bowser.version,
+                                         name: bowser.browser.name,
+                                         version: bowser.browser.version,
                                          reason: "not supported"
                                      }));
                                  }

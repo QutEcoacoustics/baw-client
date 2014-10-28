@@ -451,7 +451,7 @@
     methods.setBox = function setBox(id, top, left, height, width, selected) {
         return this.each(function () {
 
-            var matchingBoxElement = _.filter(this.children, function(element) {
+            var matchingBoxElement = [].slice.call(this.children).filter(function(element) {
                return element.getAttribute("data-id") === id.toString();
             })[0];
 

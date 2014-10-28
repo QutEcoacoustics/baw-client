@@ -21,6 +21,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'UserProfile',
         'UserProfileEvents',
         'Bookmark',
+        "moment",
         /**
          * The listen controller.
          * @param $scope
@@ -48,7 +49,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          */
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,
-            AudioRecording, MediaService, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile, UserProfileEvents, Bookmark) {
+            AudioRecording, MediaService, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile,
+            UserProfileEvents, Bookmark, moment) {
 
 
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;

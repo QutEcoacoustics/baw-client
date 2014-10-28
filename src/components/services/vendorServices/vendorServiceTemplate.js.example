@@ -1,0 +1,17 @@
+/**
+ * Use this pattern to "fake" a non-leaky vendor library.
+ * Typically this is used if the library in question does not utilise module.exports
+ * (anything that does utilise module.exports will have an automatic service made for it).
+ */
+
+angular
+    .module("bawApp.services.core.mySillyLibrary", [])
+    .provider("mySillyLibrary", function () {
+
+                  // HACK: it would be ideal to load mySillyLibrary without requiring it be attached to window
+                  var mySillyLibrary = window.mySillyLibrary;
+
+                  this.$get = [function mySillyLibraryFactory() {
+                      return mySillyLibrary;
+                  }];
+              });

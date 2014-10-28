@@ -7,27 +7,39 @@
  */
 
 // global variable
-window.bawApp = window.bawApp || {};
-window.bawApp.externals = {};
-window.bawApp.externalsCallback = function (error, module) {
-    window.bawApp.externals[module.name] = module;
+var angularApplicationNamespace = "bawApp";
+window[angularApplicationNamespace] = window[angularApplicationNamespace] || {};
+window[angularApplicationNamespace].externals = {};
+window[angularApplicationNamespace].externalsCallback = function (error, capturedModule) {
+    var that = window[angularApplicationNamespace];
+
+    that.externals[capturedModule.moduleName] = capturedModule;
+
+    that.externalsCallback.count = (that.externalsCallback.count || 0) + 1;
+
+    if (that.externalsCallback.count >= capturedModule.externalModulesCount) {
+        that.externalsComplete();
+    }
 };
 
-
-
 // later when vendor assets are done loading
-(function(window) {
-    var moduleNames = [];
-    angular.forEach(window.bawApp.externals, function (value, key) {
-        var moduleName = "bawApp.vendorServices." + key;
+window[angularApplicationNamespace].externalsComplete = function() {
+    // define core module
+    var moduleName = angularApplicationNamespace + ".vendorServices.auto";
+    console.debug("Creating module ", moduleName);
+    var vendorModule = angular.module(moduleName, []);
 
-        angular
-            .module(moduleName, [])
-            .provider(key,
+    angular.forEach(window[angularApplicationNamespace].externals, function (value, key) {
+        var capturedModule = value,
+            providerName = key,
+            vendorExport = capturedModule.exports;
+
+        console.debug("Creating provider ", providerName);
+        vendorModule.provider(providerName,
                       function () {
-                          var vendorInstance = value;
+                          var vendorInstance = vendorExport;
 
-                          this.configureVendorInstance = function (instance) {
+                          this.configureVendorInstance = function () {
                               return vendorInstance;
                           };
 
@@ -36,10 +48,13 @@ window.bawApp.externalsCallback = function (error, module) {
                               return vendorInstance;
                           }];
                       });
-
-        moduleNames.push(moduleName);
     });
 
-    // define core module
-    angular.module("bawApp.vendorServices", moduleNames);
-})(window);
+    // cleanup
+    console.debug("cleaning up vendor externals hack");
+    delete window[angularApplicationNamespace].externals;
+    delete window[angularApplicationNamespace].externalsComplete;
+    window[angularApplicationNamespace].externalsCallback = function() {
+        console.error("The vendor externals callback is no longer valid!", arguments);
+    }
+};

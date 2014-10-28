@@ -35,7 +35,7 @@ module.exports = function (grunt) {
      */
     var processVendorJs =
         require("./buildConfig/vendorTemplateProcessing.js")
-        (grunt, "./buildConfig/vendor.wrapper", "window.bawApp.externalsCallback", userConfig.vendor_files.jsDoNotWrap);
+        (grunt, "./buildConfig/vendor.wrapper", "window.bawApp.externalsCallback", userConfig.vendor_files.jsWrapWithModule);
 
 
     /**
@@ -741,6 +741,7 @@ module.exports = function (grunt) {
         var jsFiles = filterForJS(this.filesSrc).map(function (file) {
             return file.replace(dirRE, '');
         });
+
         var cssFiles = filterForCSS(this.filesSrc).map(function (file) {
             return file.replace(dirRE, '');
         });

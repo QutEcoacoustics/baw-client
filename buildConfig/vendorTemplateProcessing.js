@@ -1,18 +1,18 @@
 
 
-module.exports = function(grunt, template, callbackName, ignoreFiles) {
+module.exports = function(grunt, template, callbackName, includeFiles) {
     var fs = require('fs'),
         path = require("path"),
         _ = require('lodash');
 
     var vendorTemplate = fs.readFileSync(template, "utf-8"),
-        ignoreFiles = ignoreFiles || [];
+        includeFiles = includeFiles || [];
 
 
     return function process(content, sourcePath) {
 
 
-        if (ignoreFiles.indexOf(sourcePath) >= 0) {
+        if (includeFiles.indexOf(sourcePath) === -1) {
             return content;
         }
 
@@ -21,7 +21,8 @@ module.exports = function(grunt, template, callbackName, ignoreFiles) {
         var data = {
             content: content,
             filename: path.basename(sourcePath, path.extname(sourcePath)),
-            callbackName: callbackName
+            callbackName: callbackName,
+            externalModulesCount: includeFiles.length
         };
 
         return _.template(vendorTemplate, data);

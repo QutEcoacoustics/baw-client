@@ -11,7 +11,8 @@ bawss
         "conf.paths",
         "conf.constants",
         "UserProfileEvents",
-        function ($rootScope, $http, paths, constants, UserProfileEvents) {
+        "lodash",
+        function ($rootScope, $http, paths, constants, UserProfileEvents, _) {
             var profileUrl = paths.api.routes.user.profileAbsolute,
                 preferencesUrl = paths.api.routes.user.settingsAbsolute;
 

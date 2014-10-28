@@ -7,6 +7,7 @@
  */
 (function (module, callback) {
 
+ var exports = module.exports;
 /*
  Vendor template: begin original file.
  */
@@ -15,4 +16,4 @@
  Vendor template: End original file.
  */
     callback(undefined, module);
-})({exports: {}, moduleName: "<%= filename %>"}, <%= callbackName %>);
+})({exports: {}, moduleName: "<%= filename %>", externalModulesCount: <%= externalModulesCount %>}, <%= callbackName %>);
