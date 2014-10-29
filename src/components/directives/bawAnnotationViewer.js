@@ -5,7 +5,8 @@ bawds.directive('bawAnnotationViewer',
         'bawApp.unitConverter',
         'AudioEvent',
         'Tag',
-        function (paths, unitConverter, AudioEvent, Tag) {
+        "lodash",
+        function (paths, unitConverter, AudioEvent, Tag, _) {
 
             /**
              * Create an watcher for an audio event model.

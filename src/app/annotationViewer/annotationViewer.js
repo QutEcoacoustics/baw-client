@@ -1,6 +1,6 @@
 var avModule = angular.module('bawApp.annotationViewer', ['bawApp.annotationViewer.gridLines']);
 
-avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag',
+avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag', "lodash",
 
     // TODO: possible optimisation evaluate these functions once per frame
 
@@ -13,7 +13,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      * @constructor
      * @param Tag
      */
-        function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
+        function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag, _) {
 
         $scope.$watch(function () {
             // updated in directive

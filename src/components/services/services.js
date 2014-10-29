@@ -31,7 +31,7 @@
         return resource;
     }]);
 
-    bawss.factory('Site', [ '$resource', "$http", 'conf.paths', "_", "QueryBuilder", function ($resource, $http, paths, _, QueryBuilder) {
+    bawss.factory('Site', [ '$resource', "$http", 'conf.paths', "lodash", "QueryBuilder", function ($resource, $http, paths, _, QueryBuilder) {
         var resource = resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
 
 
@@ -142,8 +142,8 @@
      *
      * This service memoises requests for tags
      */
-    bawss.factory('Tag', [ '$resource', 'conf.paths',
-        function ($resource, paths) {
+    bawss.factory('Tag', [ '$resource', 'conf.paths', "lodash",
+        function ($resource, paths, _) {
         var resource = $resource(uriConvert(paths.api.routes.tag.showAbsolute), {tagId: '@tagId'}, {});
 
         var tags = {};
