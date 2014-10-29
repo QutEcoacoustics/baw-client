@@ -1,4 +1,4 @@
-var bawss = bawss || angular.module("bawApp.services", ['bawApp.services.resource', 'bawApp.configuration']);
+var bawss = bawss || angular.module("bawApp.services", ['bawApp.services.resource', "bawApp.vendorServices", 'bawApp.configuration']);
 
 
 bawss.factory('Bookmark', [

@@ -12,7 +12,7 @@ module.exports = function (config) {
     /**
      * From where to look for files, starting with the location of this file.
      */
-    configObject.basePath = '../';
+    configObject.basePath = '../build';
 
     /**
      * This is the list of file patterns to load into the browser during testing.
@@ -22,7 +22,7 @@ module.exports = function (config) {
         "vendor/jasmine-expect/dist/jasmine-matchers.js"
     ].concat(JSON.parse(fileJson).concat([
             'src/**/*.js',
-            'src/**/*.spec.js'
+            '../src/**/*.spec.js'
         ]));
 
     configObject.exclude = [
