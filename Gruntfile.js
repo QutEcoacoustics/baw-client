@@ -788,19 +788,21 @@ module.exports = function (grunt) {
 
     /**
      * In order to avoid having to specify manually the files needed for karma to
-     * run, we use grunt to manage the list for us. The `karma/*` files are
+     * run, we use grunt to manage the list for us. The `buildConfig/karma-unit.tpl.js` files are
      * compiled as grunt templates for use by Karma. Yay!
      */
     grunt.registerMultiTask('karmaconfig', 'Process karma config templates', function () {
         var jsFiles = filterForJS(this.filesSrc);
         var usePhantomJs = grunt.config('usePhantomJs');
+        var vendorFiles = grunt.config("vendor_files.js");
 
-        grunt.file.copy('karma/karma-unit.tpl.js', grunt.config('build_dir') + '/karma-unit.js', {
+        grunt.file.copy('buildConfig/karma-unit.tpl.js', grunt.config('build_dir') + '/karma-unit.js', {
             process: function (contents, path) {
                 return grunt.template.process(contents, {
                     data: {
                         usePhantomJs: usePhantomJs,
-                        scripts: jsFiles
+                        scripts: jsFiles,
+                        vendorFiles: vendorFiles,
                     }
                 });
             }

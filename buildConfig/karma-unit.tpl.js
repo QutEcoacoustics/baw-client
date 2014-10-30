@@ -1,6 +1,7 @@
 module.exports = function (config) {
 
     var fileJson = '[<% scripts.forEach( function ( file, index, array ) { %>"<%= file %>"<%= index == array.length - 1 ? "": ","%> <% }); %>]',
+        vendorJson = '[<% vendorFiles.forEach( function ( file, index, array ) { %>"<%= file %>"<%= index == array.length - 1 ? "": ","%> <% }); %>]',
         browserToUse = "<%= usePhantomJs ? 'PhantomJS' : 'Chrome' %>",
         useLineCov = "<%= usePhantomJs %>" === "true";
 
@@ -12,7 +13,7 @@ module.exports = function (config) {
     /**
      * From where to look for files, starting with the location of this file.
      */
-    configObject.basePath = '../build';
+    configObject.basePath = '../';
 
     /**
      * This is the list of file patterns to load into the browser during testing.
@@ -22,8 +23,14 @@ module.exports = function (config) {
         "vendor/jasmine-expect/dist/jasmine-matchers.js"
     ].concat(JSON.parse(fileJson).concat([
             'src/**/*.js',
-            '../src/**/*.spec.js'
+            'src/**/*.spec.js'
         ]));
+
+    // HACK!: use vendor files out of the build directory since they undergo a transform on build
+    var transformedVendorFiles = JSON.parse(vendorJson);
+    configObject.files = configObject.files.map(function (value) {
+        return transformedVendorFiles.indexOf(value) >= 0 ? "build/" + value : value;
+    });
 
     configObject.exclude = [
         'src/assets/**/*.js'
