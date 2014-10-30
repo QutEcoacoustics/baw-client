@@ -100,7 +100,7 @@ module.exports = {
 
 
             // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
-            'vendor/jquery-ui/ui/jquery-ui.js',
+            'vendor/jquery-ui/jquery-ui.js',
 
             // NOTE: bootstrap css imported in application.tpl.scss
             'vendor/sass-bootstrap/dist/js/bootstrap.js',
@@ -135,7 +135,7 @@ module.exports = {
 
             'vendor/bowser/bowser.js',
             'vendor/angular-growl-v2/build/angular-growl.js',
-            'vendor/angular-local-storage/angular-local-storage.js',
+            'vendor/angular-local-storage/dist/angular-local-storage.js',
             'vendor/humanize-duration/humanize-duration.js'
 
         ],
