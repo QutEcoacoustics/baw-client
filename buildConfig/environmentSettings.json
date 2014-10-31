@@ -1,0 +1,30 @@
+{
+  "keys": {
+    "googleMaps": ""
+  },
+  "configFile": "src/baw.configuration.tpl.js",
+  "development": {
+    "apiRoot": "http://staging.ecosounds.org",
+    "siteRoot": "http://localhost:8080",
+    "siteDir": "/",
+    "ga": {
+      "trackingId": ""
+    }
+  },
+  "staging": {
+    "apiRoot": "http://staging.EXAMPLE.org",
+    "siteRoot": "http://staging.EXAMPLE.org/public/angular_files",
+    "siteDir": "/public/angular_files/",
+    "ga": {
+      "trackingId": "<<PLACEHOLDER>>"
+    }
+  },
+  "production": {
+    "apiRoot": "http://production.EXAMPLE.org",
+    "siteRoot": "http://production.EXAMPLE.org/public/angular_files",
+    "siteDir": "/public/angular_files/",
+    "ga": {
+      "trackingId": "<<PLACEHOLDER>>"
+    }
+  }
+}

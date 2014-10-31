@@ -1,4 +1,3 @@
-var appConfigFile = 'src/baw.configuration.tpl.js';
 
 /**
  * This file/module contains all configuration for the build process.
@@ -12,30 +11,14 @@ module.exports = {
     build_dir: 'build',
     compile_dir: 'bin',
 
-    build_configs: {
-        keys:{
-            googleMaps: ""
-        },
-        configFile: appConfigFile,
-        development: {
-            apiRoot: "http://staging.ecosounds.org",
-            siteRoot: "http://localhost:8080",
-            siteDir: "/"
-        },
-        staging: {
-            apiRoot: "http://staging.ecosounds.org",
-            siteRoot: "http://staging.ecosounds.org/system/listen_to",
-            siteDir: "/system/listen_to/"
-        },
-        production: {
-            apiRoot: "http://baw.ecosounds.org",
-            siteRoot: "http://baw.ecosounds.org/system/listen_to",
-            siteDir: "/system/listen_to/"
-        },
-
-        // this is dynamically overwritten with one of the above profiles
-        current: {}
-    },
+    /**
+     * The environment settings are loaded here.
+     * These settings should be kept in a private repository and the
+     * environmentSettings.json file should be overwritten on private builds.
+     *
+     * The current environment is loaded into the current field.
+     */
+    build_configs: require("./environmentSettings.json"),
 
     /**
      * This is a collection of file patterns that refer to our app code (the
@@ -47,14 +30,14 @@ module.exports = {
      * app's unit tests.
      */
     app_files: {
-        js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
-        jsunit: [ 'src/**/*.spec.js' ],
+        js: ['src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js'],
+        jsunit: ['src/**/*.spec.js'],
 
-        atpl: [ 'src/app/**/*.tpl.html' ],
-        ctpl: [ 'src/common/**/*.tpl.html',  'src/components/**/*.tpl.html' ],
+        atpl: ['src/app/**/*.tpl.html'],
+        ctpl: ['src/common/**/*.tpl.html', 'src/components/**/*.tpl.html'],
 
-        html: [ 'src/index.html'],
-        sass: [ 'src/sass/application.tpl.scss' ]
+        html: ['src/index.html'],
+        sass: ['src/sass/application.tpl.scss']
     },
 
     /**
@@ -153,7 +136,7 @@ module.exports = {
         ],
         assets: [
             // jquery-ui is stoopid, special case
-            function(template) {
+            function (template) {
                 template.src = 'vendor/jquery-ui/themes/redmond/images/**';
                 template.dest += "styles/images/";
 
