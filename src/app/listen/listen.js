@@ -152,8 +152,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         $scope.model.media = new Media(value.data);
 
                         var // moment works by reference - need to parse the date twice - sigh
-                            absoluteStartChunk = moment($scope.model.media.recordedDate).add('s', parseFloat($scope.model.media.startOffset)),
-                            absoluteEndChunk = moment($scope.model.media.recordedDate).add('s', parseFloat($scope.model.media.endOffset));
+                            absoluteStartChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.startOffset), 's'),
+                            absoluteEndChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.endOffset), 's');
 
                         $scope.startOffsetAbsolute = absoluteStartChunk.format("HH:mm:ss");
                         $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
@@ -342,7 +342,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     if (!$scope.model.audioRecording) {
                         return undefined;
                     }
-                    return moment($scope.model.audioRecording.recordedDate).add('s', $scope.model.audioRecording.durationSeconds).format("YYYY-MMM-DD, HH:mm:ss");
+                    return moment($scope.model.audioRecording.recordedDate).add($scope.model.audioRecording.durationSeconds, 's').format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 
@@ -401,7 +401,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return undefined;
                     }
 
-                    return moment($scope.model.media.recordedDate).add('m', $scope.jumpToMinute).format("YYYY-MMM-DD, HH:mm:ss");
+                    return moment($scope.model.media.recordedDate).add($scope.jumpToMinute, 'm').format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 

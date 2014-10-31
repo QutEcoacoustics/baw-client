@@ -1,4 +1,4 @@
-var bawss = bawss || angular.module("bawApp.services", ["ngResource", "bawApp.configuration"]);
+var bawss = bawss || angular.module("bawApp.services", ["ngResource", "bawApp.vendorServices", "bawApp.configuration"]);
 
 bawss
     .constant("UserProfileEvents", {
