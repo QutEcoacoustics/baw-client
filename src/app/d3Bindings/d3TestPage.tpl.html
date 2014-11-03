@@ -1,20 +1,33 @@
 <div id="content">
-    <h1>Site recordings visualisation options
-        <small>
-            current site is <a data-ng-href="{{currentSiteInfo.links[0]}}">{{currentSiteInfo.name}}</a>
-        </small>
-    </h1>
+    <h1>Recordings visualisation options</h1>
+    <small>
+        The current site is <a ng-href="{{currentSiteInfo.links[0]}}">{{currentSiteInfo.name}}</a>
+    </small>
 
     <form class="form-inline" role="form">
-        <div class="form-group">
-            <label for="siteSelector">Sites</label>
-            <select id="siteSelector" class="form-control" ng-model="currentSiteInfo" ng-options="site.name for site in sites track by site.id"></select>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="siteSelector">Sites</label>
+                <select id="siteSelector" class="form-control"
+                    ng-model="currentSiteInfo"
+                    ng-change="selectedSiteChange()"
+                    ng-options="site.name for site in sites track by site.id"></select>
+            </div>
+            <div class="col-md-4 text-center"><br/> | OR | </div>
+            <div class="col-md-4">
+                <label for="projectSelector">Sites</label>
+                <select id="projectSelector" class="form-control"
+                    ng-model="currentProjectInfo"
+                    ng-change="selectedProjectChange()"
+                    ng-options="project.name for project in projects track by project.id"></select>
+            </div>
         </div>
     </form>
 
     <h2>Calendar view</h2>
     <div>
-        <baw-calendar-view data="filteredAudioRecordings"></baw-calendar-view>
+         <label><input ng-model="calendarViewOptions.singleColor" type="checkbox">Single color?</label>
+        <baw-calendar-view data="filteredAudioRecordings" options="calendarViewOptions"></baw-calendar-view>
     </div>
     <h2>Timeline view</h2>
     <div>

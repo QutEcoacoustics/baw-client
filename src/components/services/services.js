@@ -27,20 +27,36 @@
 
 
     bawss.factory('Project', [ '$resource', "$http", 'conf.paths', "QueryBuilder", function ($resource, $http, paths, QueryBuilder) {
-        var resource = resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.project.showAbsolute), {projectId: "@projectId"});
+
+        var gapUrl = paths.api.routes.project.filterAbsolute;
+        var gapQuery = QueryBuilder.create(function(q) {
+            return q.project({"include": ["id", "name"]});
+        });
+        resource.getAllProjects = function() {
+            return $http.post(gapUrl, gapQuery.toJSON());
+        };
+
         return resource;
     }]);
 
     bawss.factory('Site', [ '$resource', "$http", 'conf.paths', "lodash", "QueryBuilder", function ($resource, $http, paths, _, QueryBuilder) {
         var resource = resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
 
-
+        var url = paths.api.routes.site.filterAbsolute;
         resource.getSitesByIds = function(siteIds) {
-            var url = paths.api.routes.site.filterAbsolute;
-            siteIds = _.uniq(siteIds);
+            var siteIdsUnique = _.uniq(siteIds);
             var query = QueryBuilder.create(function(q) {
-                return q.in("id", siteIds)
+                return q.in("id", siteIdsUnique)
                     .project({include: ["id", "name"]});
+            });
+            return $http.post(url, query.toJSON());
+        };
+
+        resource.getSitesByProjectIds = function(projectIds) {
+            var projectIdsUnique = _.uniq(projectIds);
+            var query = QueryBuilder.create(function(q) {
+                return q.in("projectIds", projectIdsUnique);
             });
             return $http.post(url, query.toJSON());
         };
@@ -65,6 +81,7 @@
         var resource = resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
 
+        var filterUrl =  paths.api.routes.audioRecording.filterAbsolute;
         var query = QueryBuilder.create(function(q) {
            return q
                .sort({orderBy: "createdAt", direction: "desc"})
@@ -72,10 +89,21 @@
                .project({include: ["id", "siteId", "durationSeconds", "recordedDate", "createdAt"]});
         });
         resource.getRecentRecordings = function() {
-            var url =  paths.api.routes.audioRecording.filterAbsolute;
 
-            return $http.post(url, query.toJSON());
+
+            return $http.post(filterUrl, query.toJSON());
         };
+
+        resource.getRecordingsForVisulisation = function(siteIds) {
+            var query = QueryBuilder.create(function (q) {
+                return q
+                    .in("siteId", siteIds)
+                    .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]});
+            });
+
+            return $http.post(filterUrl, query.toJSON());
+        };
+
 
         return resource;
     }]);

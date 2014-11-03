@@ -7,7 +7,7 @@
 }
 
 #audioRecordingTimeline .main text {
-  font: 12px sans-serif;
+  font: 8px sans-serif;
 }
 
 #audioRecordingTimeline .miniItem0 {
@@ -23,6 +23,25 @@
 
 #audioRecordingTimeline .miniItem2 {
   fill: slategray;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+
+#audioRecordingTimeline .miniItem3 {
+  fill: #8f7f6f;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .miniItem4 {
+  fill: #7a6f8f;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .miniItem5 {
+  fill: #8f6f8f;
   fill-opacity: .7;
   stroke-width: 6;
 }

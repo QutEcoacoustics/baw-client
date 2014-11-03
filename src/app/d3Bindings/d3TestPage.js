@@ -1,76 +1,91 @@
 var bawD3 = bawD3 || angular.module("bawApp.d3", []);
 
-bawD3.controller('D3TestPageCtrl', ['$scope', 'conf.paths', '$http', '$routeParams', 'Site', '$location',
-    function ($scope, paths, $http, $routeParams, Site, $location) {
+bawD3.controller(
+    "D3TestPageCtrl",
+    ["$scope", "conf.paths", "$http", "$routeParams", "$location", "$q",
+     "Site", "Project", "AudioRecording",
+     function ($scope, paths, $http, $routeParams, $location, $q,
+               Site, Project, AudioRecording) {
 
-        // use the REST API in here
-        // assign the resulting data to scope (not great but it will do for now)
+         // use the REST API in here
+         // assign the resulting data to scope (not great but it will do for now)
 
-        // get the site id (from route params or a default)
-        $scope.siteId = $routeParams.siteId ? $routeParams.siteId : 398;
+         // get the site id (from route params or a default)
+         $scope.siteId = $routeParams.siteId;
+         $scope.projectId = $routeParams.projectId;
+         if (!$scope.siteId && !$scope.projectId) {
+             $scope.siteId = 398;
+         }
+         if ($scope.siteId && $scope.projectId) {
+             throw new Error("A filtering project and site should not be both set");
+         }
 
-        // set up the $scope.siteId watcher after getting query string, so the location isn't changed.
-        // subsequent changes will change the url
-        $scope.$watch(function () {
-            return $scope.currentSiteInfo;
-        }, function (newValue, oldValue) {
-            if(newValue && oldValue && newValue.id != oldValue.id){
-                //console.log(newValue, oldValue);
-                window.location = '/d3Test?siteId='+newValue.id;
-            }
-        });
-
-        // populate select with options
-        Site.getAllSites().then(function(result){
-            $scope.sites = result.data.data;
-            console.log('success', arguments);
-        }, function(error){
-            console.log('error', arguments);
-        }, function(){
-            console.log('notify', arguments);
-        });
-
-        //  get the selected site details
-        Site.get({siteId: $scope.siteId}, {}, function getSiteSuccess(value) {
-
-            value.links = value.projectIds.map(function (id) {
-                return paths.api.routes.site.nestedAbsolute.format({"siteId": value.id, "projectId": id});
-            });
-
-            $scope.currentSiteInfo = value;
-        }, function getSiteError() {
-            console.log("retrieval of site json failed");
-        });
-
-        // get audio recording info for the current site
-        var request_filter = {
-            "filter": {
-                "site_id": {
-                    "eq": $scope.siteId
-                }
-            },
-            "projection": {
-                "include": ["id", "recorded_date", "duration_seconds", "site_id"]
-            }//,
-            //"paging":{
-            //    "page":2,
-            //    "items":30
-            //}
-        };
+         // when the combo box changes, refresh the view
+         $scope.selectedSiteChange = function () {
+             if ($scope.currentSiteInfo) {
+                 $location.search({siteId: $scope.currentSiteInfo.id, projectId: undefined});
+             }
+         };
+         $scope.selectedProjectChange = function () {
+             if ($scope.currentProjectInfo) {
+                 $location.search({siteId: undefined, projectId: $scope.currentProjectInfo.id});
+             }
+         };
 
 
-        $http.post(paths.api.routes.audioRecording.filterAbsolute, request_filter)
-            .success(function (data, status, headers, config) {
+         // populate selects with options
+         $q
+             .all([Site.getAllSites(), Project.getAllProjects()])
+             .then(
+             function (results) {
+                 $scope.sites = results[0].data.data;
+                 $scope.projects = results[1].data.data;
+                 console.log("Select population success", arguments);
+             },
+             function (error) {
+                 console.log("error", arguments);
+             }
+         );
 
-                $scope.filteredAudioRecordings = data;
-            })
-            .error(function (data, status, headers, config) {
-                $scope.filteredAudioRecordings = data;
-                console.warn('Filtered audio recordings failed.', data, status, headers, config);
-            });
+         // directive options
+         $scope.calendarViewOptions = {
+             singleColor: false
+         };
 
-<<<<<<< HEAD
-}]);
-=======
-    }]);
->>>>>>> got terrainView working
+         //  get the selected site details
+         (function () {
+             if ($scope.projectId) {
+                 return Site.getSitesByProjectIds([$scope.projectId]);
+             }
+             else {
+                 return Site.getSitesByIds([$scope.siteId]);
+             }
+         })().then(
+             function getSiteSuccess(response) {
+                 var sites = response.data.data;
+
+                 sites.forEach(function (value) {
+                     value.links = value.projectIds.map(function (id) {
+                         return paths.api.routes.site.nestedAbsolute.format({"siteId": value.id, "projectId": id});
+                     });
+                 });
+
+                 $scope.downloadedSites = sites;
+                 return sites.map(function(value) { return value.id; });
+             }, function getSiteError() {
+                 console.error("Retrieval of sites json failed");
+             }
+         ).then(AudioRecording.getRecordingsForVisulisation)
+             // get audio recording info for the current site
+             .then(
+             function (response) {
+                 var data = response.data.data;
+                 $scope.filteredAudioRecordings = data;
+             },
+             function (response) {
+                 $scope.filteredAudioRecordings = [];
+                 console.error("Filtered audio recordings failed.", response);
+             });
+     }]);
+
+

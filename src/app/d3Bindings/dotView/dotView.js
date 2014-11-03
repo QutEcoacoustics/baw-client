@@ -13,12 +13,12 @@ angular.module("bawApp.d3.dotView", ["bawApp.d3"])
             that.items = [];
 
             // build data structure
-            angular.forEach(jsonResponse.data, function (value, key) {
+            angular.forEach(jsonResponse, function (value, key) {
                 // {"hoursOfDay": [[0,3],[1, 2], [2,6], [5, 1], ... [23, 1]], "year": 2012}
 
                 // get start and end in +10 timezone
                 var start = moment(value.recordedDate).zone('+10:00');
-                var end = moment(value.recordedDate).add('seconds', value.durationSeconds).zone('+10:00');
+                var end = moment(value.recordedDate).add(value.durationSeconds, 'seconds').zone('+10:00');
 
                 var startYear = start.year();
                 var startHour = start.hour();

@@ -15,7 +15,8 @@ angular.module('bawApp.configuration', ['url'])
                 routes: {
                     project: {
                         list: "/projects/",
-                        show: "/projects/{projectId}"
+                        show: "/projects/{projectId}",
+                        filter: "/projects/filter"
                     },
                     site: {
                         list: "projects/{projectId}/sites/",

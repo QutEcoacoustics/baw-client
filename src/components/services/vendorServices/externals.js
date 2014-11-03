@@ -6,7 +6,8 @@ angular
 
             ])
     .config(["humanize-durationProvider", "momentProvider",
-             function (humanizeDurationProvider, momentProvider) {
+             "$windowProvider",
+             function (humanizeDurationProvider, momentProvider, $windowProvider) {
 
                  // HACK: add real duration formatting onto moment object!
                  var moment = momentProvider.configureVendorInstance();
@@ -23,4 +24,7 @@ angular
 
                      return hd(ms, parameters);
                  };
+
+                 // HACK: d3 is stubborn, forcibly remove it from window
+                 delete $windowProvider.$get().d3;
              }]);

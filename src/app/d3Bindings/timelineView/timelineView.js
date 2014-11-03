@@ -20,7 +20,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.d3"])
             that.brush = null;
 
             // build data structure
-            angular.forEach(jsonResponse.data, function (value, key) {
+            angular.forEach(jsonResponse, function (value, key) {
                 // ensure siteId is in lanes
                 if (that.lanes.indexOf(value.siteId) == -1) {
                     that.lanes.push(value.siteId);
@@ -31,7 +31,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.d3"])
                     "lane": that.lanes.indexOf(value.siteId),
                     "id": value.id,
                     "start": moment(value.recordedDate).unix(),
-                    "end": moment(value.recordedDate).add('seconds', value.durationSeconds).unix()
+                    "end": moment(value.recordedDate).add(value.durationSeconds, 'seconds').unix()
                 });
             });
 
@@ -95,7 +95,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.d3"])
             };
 
             that.createMain = function createMain(chart) {
-                that
+                
                 var main = chart.append("g")
                     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
                     .attr("width", w)

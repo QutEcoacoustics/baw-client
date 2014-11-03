@@ -10,8 +10,7 @@ angular.module("bawApp.d3.audioView", ["bawApp.d3"])
 
         var parseFormat = d3.time.format("%Y-%m-%dT%H:%M:%S%Z"),
             keyYearFormat = d3.time.format("%Y"),
-            keyMonthFormat = d3.time.format("%m")
-            ;
+            keyMonthFormat = d3.time.format("%m");
 
         var updateData = function updateData(json) {
             // change data so it is nested properly
@@ -38,7 +37,7 @@ angular.module("bawApp.d3.audioView", ["bawApp.d3"])
             // add month divs
             var monthData = yearsData
                 .selectAll("div")
-                .data(function(year){ return year.values });
+                .data(function(year){ return year.values; });
 
             monthData
                 .enter()
@@ -86,7 +85,7 @@ angular.module("bawApp.d3.audioView", ["bawApp.d3"])
                     return $scope.data;
                 }, function (newValue, oldValue) {
                     if (newValue) {
-                        updateData(newValue.data);
+                        updateData(newValue);
                     }
                 });
 

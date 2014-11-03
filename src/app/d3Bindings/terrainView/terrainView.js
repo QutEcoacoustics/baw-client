@@ -56,7 +56,7 @@ angular.module("bawApp.d3.terrainView", ["bawApp.d3"])
             gradient.append("svg:stop")
                 .attr("offset", "0%")
                 .attr("stop-color", "#fff")
-                .attr("stop-opacity", .5);
+                .attr("stop-opacity", 0.5);
 
             gradient.append("svg:stop")
                 .attr("offset", "100%")
@@ -114,13 +114,13 @@ angular.module("bawApp.d3.terrainView", ["bawApp.d3"])
 
             // build data structure
             var dataStructure = {};
-            angular.forEach(jsonResponse.data, function (value, key) {
+            angular.forEach(jsonResponse, function (value, key) {
                 // minute resolution
                 // {"datetime": "2014-09-10 15:00:00", "value": 5}
 
                 // get start and end in +10 timezone
                 var start = moment(value.recordedDate).zone('+10:00');
-                var end = moment(value.recordedDate).add('seconds', value.durationSeconds).zone('+10:00');
+                var end = moment(value.recordedDate).add(value.durationSeconds, 'seconds').zone('+10:00');
 
                 var momentFormatString = 'YYYY-MM-DDTHH:00:00ZZ';
 
@@ -128,7 +128,7 @@ angular.module("bawApp.d3.terrainView", ["bawApp.d3"])
                 var diff = end.diff(start.clone().startOf('hour'), 'hours');
                 for (var step = 0; step <= diff; step++) {
 
-                    var current = start.clone().startOf('hour').add('hour', step);
+                    var current = start.clone().startOf('hour').add(step, 'hour');
                     var currentFormatted = current.format(momentFormatString);
                     if (!dataStructure[currentFormatted]) {
                         dataStructure[currentFormatted] = 1;

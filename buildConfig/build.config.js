@@ -69,9 +69,9 @@ module.exports = {
      */
     vendor_files: {
         jsWrapWithModule: [
+            'vendor/d3/d3.js',
             'vendor/momentjs/moment.js',
             'vendor/lodash/dist/lodash.js',
-
             'vendor/bowser/bowser.js',
             'vendor/humanize-duration/humanize-duration.js'
         ],
