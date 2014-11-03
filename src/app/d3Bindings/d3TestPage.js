@@ -87,5 +87,3 @@ bawD3.controller(
                  console.error("Filtered audio recordings failed.", response);
              });
      }]);
-
-

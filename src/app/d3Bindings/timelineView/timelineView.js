@@ -95,7 +95,6 @@ angular.module("bawApp.d3.timelineView", ["bawApp.d3"])
             };
 
             that.createMain = function createMain(chart) {
-                
                 var main = chart.append("g")
                     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
                     .attr("width", w)

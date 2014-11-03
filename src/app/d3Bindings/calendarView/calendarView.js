@@ -241,3 +241,4 @@ angular.module("bawApp.d3.calendarView", ["bawApp.d3"])
 
          $scope.example = "Hello world!";
      }]);
+

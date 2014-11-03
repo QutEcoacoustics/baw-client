@@ -24,7 +24,6 @@
     "momentjs": "~2.8.x",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "sass-bootstrap": "3.0.2"
-
   },
   "dependencies": {},
   "private": true,
