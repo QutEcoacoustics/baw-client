@@ -1,7 +1,7 @@
 <div id="content">
     <h1>Recordings visualisation options</h1>
     <small>
-        The current site is <a ng-href="{{currentSiteInfo.links[0]}}">{{currentSiteInfo.name}}</a>
+        The current selection is {{current()}}
     </small>
 
     <form class="form-inline" role="form">
@@ -15,7 +15,7 @@
             </div>
             <div class="col-md-4 text-center"><br/> | OR | </div>
             <div class="col-md-4">
-                <label for="projectSelector">Sites</label>
+                <label for="projectSelector">Project</label>
                 <select id="projectSelector" class="form-control"
                     ng-model="currentProjectInfo"
                     ng-change="selectedProjectChange()"
