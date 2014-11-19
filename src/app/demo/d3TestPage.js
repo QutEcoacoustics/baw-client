@@ -1,6 +1,5 @@
-var bawD3 = bawD3 || angular.module("bawApp.d3", []);
-
-bawD3.controller(
+angular.module("bawApp.demo.d3", [])
+.controller(
     "D3TestPageCtrl",
     ["$scope", "conf.paths", "$http", "$routeParams", "$location", "$q",
         "Site", "Project", "AudioRecording",

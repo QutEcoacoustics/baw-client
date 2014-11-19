@@ -3,7 +3,7 @@
  * Created by Mark on 10/09/2014.
  * Based on http://mbostock.github.io/d3/talk/20111018/area-gradient.html
  */
-angular.module("bawApp.d3.terrainView", ["bawApp.d3"])
+angular.module("bawApp.d3.terrainView", ["bawApp.vendorServices.auto"])
     .directive("bawTerrainView", ["d3", "moment", function (d3, moment) {
 
         var m = [79, 80, 160, 79],

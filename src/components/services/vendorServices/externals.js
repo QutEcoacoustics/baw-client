@@ -26,5 +26,12 @@ angular
                  };
 
                  // HACK: d3 is stubborn, forcibly remove it from window
-                 delete $windowProvider.$get().d3;
+                 var window = $windowProvider.$get();
+                 if (window.d3) {
+                     delete window.d3;
+                 }
+                 else {
+                     console.warn("D3 not on window, hack not required");
+                 }
+
              }]);

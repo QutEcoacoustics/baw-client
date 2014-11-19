@@ -49,6 +49,7 @@ $DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
 @import "../app/recordInformation/record_information";
 @import "../app/recordings/audio_recordings";
 @import "../app/recordings/recentRecordings/recentRecordings";
+@import "../app/demo/rendering";
 @import "../app/search/saved_searches";
 @import "../app/sites/sites";
 @import "../app/tags/tags";

@@ -60,7 +60,7 @@ var app = angular.module('baw',
                              'decipher.tags',
                              'angular-growl',
                              'LocalStorageModule',
-                             "bawApp.vendorServices",
+                             "bawApp.vendorServices", /* Loads all vendor libraries that are automatically wrapped in a module */
 
 
                              'url', /* a custom uri formatter */
@@ -91,18 +91,14 @@ var app = angular.module('baw',
                              'audio-control',
                              'draggabilly',
 
-                             'bawApp.d3',                /* our d3 integration */
-                             'bawApp.d3.calendarView',
-                             'bawApp.d3.timelineView',
-                             'bawApp.d3.dotView',
-                             'bawApp.d3.terrainView',
-                             'bawApp.d3.audioView',
+                             'bawApp.d3',                /* our d3 controls */
 
                              'bawApp.accounts',
                              'bawApp.annotationViewer',
                              'bawApp.audioEvents',
                              'bawApp.annotationLibrary',
                              'bawApp.bookmarks',
+                             "bawApp.demo",
                              'bawApp.error',
                              'bawApp.home',
                              'bawApp.listen',
@@ -175,7 +171,8 @@ var app = angular.module('baw',
                          title: 'Audio Events' }).
                      when('/library/:recordingId/audio_events/:audioEventId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationItemCtrl', title: 'Annotation :audioEventId'}).
 
-                     when('/d3Test', {templateUrl: paths.site.files.d3.testPage, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
+                     when('/demo/d3', {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
+                     when('/demo/rendering', {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' }).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).

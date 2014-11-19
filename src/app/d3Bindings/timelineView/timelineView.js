@@ -3,7 +3,7 @@
  * Created by Mark on 09/09/2014.
  * based on http://bl.ocks.org/bunkat/2338034
  */
-angular.module("bawApp.d3.timelineView", ["bawApp.d3"])
+angular.module("bawApp.d3.timelineView", ["bawApp.vendorServices.auto"])
     .directive("bawTimelineView", ["d3", "moment", function (d3, moment) {
 
         function Details(elementId, jsonResponse) {

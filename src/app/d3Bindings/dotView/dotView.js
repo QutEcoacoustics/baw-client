@@ -3,7 +3,7 @@
  * Created by Mark on 10/09/2014.
  * Based on http://neuralengr.com/asifr/journals/journals_dbs.html
  */
-angular.module("bawApp.d3.dotView", ["bawApp.d3"])
+angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
     .directive("bawDotView", ["d3", "moment", function (d3, moment) {
 
         function DotViewDetails(elementId, jsonResponse) {

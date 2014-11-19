@@ -2,7 +2,7 @@
  * d3 Audio View directive
  * Created by Mark on 30/09/2014
  */
-angular.module("bawApp.d3.audioView", ["bawApp.d3"])
+angular.module("bawApp.d3.audioView", ["bawApp.vendorServices.auto"])
     .directive("bawAudioView", ["d3", "moment", function (d3, moment) {
 
         // d3 functions

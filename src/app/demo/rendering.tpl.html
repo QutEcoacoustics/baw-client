@@ -1,0 +1,46 @@
+<div id="content">
+    <h1>
+        False Colour Rendering Experiment
+    </h1>
+    <section>
+        <h2>
+            Static image
+        </h2>
+        <div>
+            <button ng-click="loadStatic()">Load</button>
+        </div>
+        <div>
+            <div class="renderedImage" >
+                <img class="blank" ng-src="{{staticSrc}}" src="" />
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>
+            Bitmap image
+        </h2>
+        <div>
+            <button>Render</button>
+        </div>
+        <div>
+            <div class="renderedImage" >
+                <canvas class="blank"></canvas>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>
+            Stacked images
+        </h2>
+        <div>
+            <button ng-click="loadTiles()">Load</button>
+        </div>
+        <div>
+            <div class="renderedImage">
+                <div class="blank">
+                    <img ng-repeat="t in tiles" ng-src="{{t}}" />
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
