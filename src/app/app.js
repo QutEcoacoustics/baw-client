@@ -172,7 +172,7 @@ var app = angular.module('baw',
                      when('/library/:recordingId/audio_events/:audioEventId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationItemCtrl', title: 'Annotation :audioEventId'}).
 
                      when('/demo/d3', {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
-                     when('/demo/rendering', {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' }).
+                     when('/demo/rendering', {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' , fullWidth: true }).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).

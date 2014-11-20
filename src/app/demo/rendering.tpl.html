@@ -17,20 +17,20 @@
     </section>
     <section>
         <h2>
-            Bitmap image
+            Canvas/Bitmap image
         </h2>
         <div>
-            <button>Render</button>
+            <button ng-click="render()">Render</button>
         </div>
         <div>
             <div class="renderedImage" >
-                <canvas class="blank"></canvas>
+                <canvas id="demoCanvas" class="blank"></canvas>
             </div>
         </div>
     </section>
     <section>
         <h2>
-            Stacked images
+            Stacked images (1px)
         </h2>
         <div>
             <button ng-click="loadTiles()">Load</button>
@@ -39,6 +39,21 @@
             <div class="renderedImage">
                 <div class="blank">
                     <img ng-repeat="t in tiles" ng-src="{{t}}" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>
+            Stacked images (60px)
+        </h2>
+        <div>
+            <button ng-click="loadTiles60()">Load</button>
+        </div>
+        <div>
+            <div class="renderedImage">
+                <div class="blank">
+                    <img ng-repeat="t in tiles60" ng-src="{{t}}" />
                 </div>
             </div>
         </div>
