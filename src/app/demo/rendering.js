@@ -13,7 +13,7 @@ angular.module("bawApp.demo.rendering", [])
         function ($scope, $http, $q, d3, $document) {
 
             $scope.loadStatic = function () {
-                $scope.staticSrc = "assets/temp/eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png"
+                $scope.staticSrc = "assets/temp/eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png";
             };
 
             var csvFiles = [
@@ -23,6 +23,7 @@ angular.module("bawApp.demo.rendering", [])
             ];
             $scope.render = function () {
                 console.log("loading csv");
+                renderStart = performance.now();
                 var requests = csvFiles.map(function (path) {
                     return $http.get(path);
                 });
@@ -34,10 +35,13 @@ angular.module("bawApp.demo.rendering", [])
                     }
                 );
             };
+            var renderStart, parseStart, paintStart, contentLength;
             function parseCsv(responses) {
-                console.log("parsing csv", performance.now());
-
+                console.log("parsing csv", renderStart);
+                parseStart = performance.now();
+                contentLength = 0;
                 var data = responses.map(function (response) {
+                    contentLength += (+response.headers("content-length"));
                     return d3.csv.parseRows(response.data);
                 });
 
@@ -46,6 +50,7 @@ angular.module("bawApp.demo.rendering", [])
 
             function renderCsv(data) {
                 console.log("rendering csv");
+                paintStart = performance.now();
 
                 // ALL OF THIS DIRECT CANVAS MANIPULATION
                 // SHOULD BE REFACTORED INTO A DIRECTIVE!
@@ -96,15 +101,21 @@ angular.module("bawApp.demo.rendering", [])
                             b = (+(channel2[x][height - y - 1]) - bMin) / bDelta;
 
                         //console.debug(r,g,b);
-                        imgData[index] = Math.min(Math.max(r * 256, 0), 0xff); // red
-                        imgData[++index] = Math.min(Math.max(g * 256, 0), 0xff); // green
-                        imgData[++index] = Math.min(Math.max(b * 256, 0), 0xff); // blue
+                        imgData[index] = Math.min(Math.max(r * 255, 0), 0xff); // red
+                        imgData[++index] = Math.min(Math.max(g * 255, 0), 0xff); // green
+                        imgData[++index] = Math.min(Math.max(b * 255, 0), 0xff); // blue
                         imgData[++index] = 255; // alpha
                     }
                 }
 
                 context.putImageData(imageData, 0, 0);
-                console.debug("Done", performance.now())
+                console.debug("Done", performance.now());
+                var end = performance.now();
+                $scope.transferTime = Math.round(parseStart - renderStart);
+                $scope.parseTime = Math.round(paintStart - parseStart);
+                $scope.paintTime = Math.round(end - paintStart);
+                $scope.renderTime = Math.round(end - renderStart);
+                $scope.contentLength = contentLength;
             }
 
             var min = 0,
@@ -121,10 +132,13 @@ angular.module("bawApp.demo.rendering", [])
             //. "C:\Program Files\ImageMagick-6.9.0-Q16\convert.exe" -crop 60x256 .\eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN-trimmed72.png -background red -extent 60x256 tiles2/tile_%d.png
             var min60 = 0,
                 max60 = 1440,
-                basePath60 = "assets/temp/tiles2/tile_{0}.png";
+                basePath60 = "assets/temp/tiles2/tile_{0}.png",
+                tileStart = 0,
+                tileCount = 0;
             //. "C:\Program Files\ImageMagick-6.9.0-Q16\convert.exe" -crop 1435x1@ .\eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN-trimmed72.png  tiles/tile_%d.png
             $scope.loadTiles60 = function () {
                 $scope.tiles60 = [];
+                tileStart = performance.now()
                 for (var i = min60; i < max60; i++) {
                     // i == minute of day
                     if (i % 60) {
@@ -133,6 +147,23 @@ angular.module("bawApp.demo.rendering", [])
                     }
                 }
             };
+            $scope.increment = function() {
+                tileCount++;
+                if (tileCount >= 24) {
+                    $scope.tileLoadTime = Math.round(performance.now() - tileStart);
+                }
+            }
+
         }
     ]
-);
+).directive('onLoad', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                element.bind('load', function() {
+                    //call the function that was passed
+                    scope.$apply(attrs.onLoad);
+                });
+            }
+        };
+    });

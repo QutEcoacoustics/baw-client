@@ -21,6 +21,9 @@
         </h2>
         <div>
             <button ng-click="render()">Render</button>
+            <span ng-if="renderTime">
+                Render time: {{renderTime}}ms, {{transferTime}}, {{contentLength}}, {{parseTime}}, {{paintTime}}
+            </span>
         </div>
         <div>
             <div class="renderedImage" >
@@ -49,11 +52,14 @@
         </h2>
         <div>
             <button ng-click="loadTiles60()">Load</button>
+            <span>
+                Tile load time: {{tileLoadTime}}ms
+            </span>
         </div>
         <div>
             <div class="renderedImage">
                 <div class="blank">
-                    <img ng-repeat="t in tiles60" ng-src="{{t}}" />
+                    <img ng-repeat="t in tiles60" ng-src="{{t}}" on-load="increment()" />
                 </div>
             </div>
         </div>

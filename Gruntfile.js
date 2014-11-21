@@ -1,6 +1,7 @@
 module.exports = function (grunt) {
 
     var modRewrite = require('connect-modrewrite'),
+        gzipStatic = require('connect-gzip-static'),
         path = require('path'),
         _ = require('lodash');
 
@@ -561,9 +562,17 @@ module.exports = function (grunt) {
                                 // from there, angular deals with the route information
                                 '!(\\/[^\\.\\/\\?]+\\.\\w+) / [L]'
                             ]),
+
+                            // disable all caching
+                            function(req, res, next) {
+                                req.headers['if-none-match'] = 'no-match-for-this';
+                                next();
+                            },
+
                             // this specifies that the build_dir, ('build') is a static directory where content
                             // will be served from.
-                            connect.static(options.base[0]),
+                            //connect.static(options.base[0]),
+                            gzipStatic(options.base[0])
 
                             // for source maps
                             //connect.static(__dirname)
@@ -802,7 +811,7 @@ module.exports = function (grunt) {
                     data: {
                         usePhantomJs: usePhantomJs,
                         scripts: jsFiles,
-                        vendorFiles: vendorFiles,
+                        vendorFiles: vendorFiles
                     }
                 });
             }
