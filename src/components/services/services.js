@@ -23,7 +23,13 @@
         return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
-    var bawss = bawss || angular.module("bawApp.services", ["ngResource", "bawApp.configuration", "bawApp.vendorServices", "bawApp.services.queryBuilder"]);
+    var bawss = bawss || angular.module(
+            "bawApp.services",
+            ["ngResource",
+             "http-auth-interceptor",
+             "bawApp.configuration",
+             "bawApp.vendorServices",
+             "bawApp.services.queryBuilder"]);
 
     bawss.factory('Project', [ '$resource', "$http", 'conf.paths', "QueryBuilder", function ($resource, $http, paths, QueryBuilder) {
         var resource = resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
@@ -37,7 +43,7 @@
 
         resource.getSitesByIds = function(siteIds) {
             var url = paths.api.routes.site.filterAbsolute;
-            siteIds = _.uniq(siteIds);
+            var siteIds = _.uniq(siteIds);
             var query = QueryBuilder.create(function(q) {
                 return q.in("id", siteIds)
                     .project({include: ["id", "name"]});
@@ -411,24 +417,22 @@
                 // the response arg, is the response from our server (devise)
                 // extract auth_token and set in rootScope
 
-                if (!data || data.response !== "ok") {
+                if (!data) {
                     throw "Authenticator.loginSuccess: this function should not be called unless a successful response was received";
                 }
 
+                if (data.authorisationToken === undefined) {
+                    throw "The authorisation token can not be undefined at this point";
+                }
+
+                this.authorisationToken = data.authToken;
+                $http.defaults.headers.common["Authorization"] = 'Token token="' +
+                                                                 $rootScope.authorisationToken +
+                                                                 '"';
+
                 $rootScope.$safeApply($rootScope, function () {
-                    $rootScope.authorisationToken = data.authToken;
                     $rootScope.userData = data;
-
-                    if ($rootScope.authorisationToken === undefined) {
-                        throw "The authorisation token can not be undefined at this point";
-                    }
-
-                    $http.defaults.headers.common["Authorization"] = 'Token token="' +
-                        $rootScope.authorisationToken +
-                        '"';
-
                     console.log("Login successful", data);
-
                     authService.loginConfirmed();
                 });
             }
@@ -454,6 +458,43 @@
                 });
             }
 
+
+            /**
+             * Checks whether a user is logged in or not. Note: this is the only method
+             * in our site which relies on cookies!
+             */
+            function checkLogin() {
+                if ($rootScope.loggedIn !== true) {
+                    $http.get(paths.api.routes.security.pingAbsolute,
+                              {params: {antiCache: (new Date()).getTime()}, cache: false })
+                        .success(function checkLoginSuccess(wrappedData, status, headers, config) {
+                                     // the ping request is different - it only requests data
+                                     var data = wrappedData.data;
+
+
+                                     if (wrappedData.meta.error) {
+                                         console.info("Logged in via ping failed (probably something wrong with cookies or not logged in).");
+                                         loginFailure(wrappedData, status, headers, config);
+                                     } else {
+                                         console.info("Logged in via ping (probably used cookies).");
+                                         loginSuccess(data, status, headers, config);
+                                     }
+
+                                 })
+                        .error(function checkLoginFailure(data, status, headers, config) {
+                                   console.error("Ping login service failure - this should not happen",
+                                                 data,
+                                                 status, headers, config);
+                               });
+                }
+
+                return true;
+            }
+
+            // As soon as the module is initiated...
+            // WARNING: Cookies required for this to work
+            checkLogin();
+
             return {
                 loginSuccess: loginSuccess,
                 loginFailure: loginFailure,
@@ -469,38 +510,8 @@
                 logoutFailure: function logoutFailure(data, status, headers, config) {
                     console.error("Logout failure: ", data, status, headers, config);
                 },
-                /**
-                 * Checks whether a user is logged in or not. Note: this is the only method
-                 * in our site which relies on cookies!
-                 * @return {boolean}
-                 */
-                checkLogin: function checkLogin() {
-                    if ($rootScope.loggedIn !== true) {
-                        $http.get(paths.api.routes.security.pingAbsolute,
-                            {params: {antiCache: (new Date()).getTime()}, cache: false })
-                            .success(function checkLoginSuccess(data, status, headers, config) {
-                                // the ping request is different, because it just asks for information, it will always return a 200,
-                                // so split on response field
-                                if (data && data.response == "ok") {
-                                    console.info("Logged in via ping (probably used cookies).");
-                                    loginSuccess(data, status, headers, config);
-                                }
-                                else {
-                                    console.info("Logged in via ping failed (probably something wrong with cookies or not logged in).");
-                                    loginFailure(data, status, headers, config);
-                                }
-
-                            })
-                            .error(function checkLoginFailure(data, status, headers, config) {
-                                console.error("Ping login service failure - this should not happen",
-                                    data,
-                                    status, headers, config);
-                            })
-                        ;
-                    }
-
-                    return true;
-                }
+                checkLogin: checkLogin,
+                authToken: null
             };
         }]);
 

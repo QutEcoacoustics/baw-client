@@ -76,7 +76,18 @@ describe("The Media object", function () {
 
     beforeEach(function(){
         module("rails");
+
+        module("url", function(casingTransformers, $urlProvider) {
+            $urlProvider.renamer(function  (key) { return  casingTransformers.underscore(key);});
+        });
+
+        module("rails");
+        module("http-auth-interceptor");
+        module("bawApp.services");
         module("baw.models");
+        module(function ($provide) {
+            $provide.value("Authenticator", {authToken:"67tgfyb7i6tgyu"});
+        });
     });
 
     beforeEach(inject(["casingTransformers", "baw.models.Media", function (casingTransformers, _media) {
@@ -85,7 +96,7 @@ describe("The Media object", function () {
         existingMedia = new Media(transformed.data);
     }]));
 
-    it("should be found globally", function () {
+    it("should be not be found globally", function () {
         var type = typeof Media;
         expect(type).toEqual("function");
     });
@@ -96,5 +107,21 @@ describe("The Media object", function () {
 
         var instanceOfDate = datetime instanceof Date;
         expect(instanceOfDate).toBeTrue();
+    });
+
+    it("will append the token onto all urls", function() {
+        var token = "user_token=67tgfyb7i6tgyu";
+        var keys = ["audio", "image", "text"];
+
+        function checkUrls(mediaType) {
+            var obj = existingMedia.available[mediaType];
+            angular.forEach(obj, function (value, mimeType) {
+                var tokenIncluded = value.url.indexOf(token) >= 0;
+
+                expect(tokenIncluded).toBeTrue("(url did not contain token - `" + value.url + "` )");
+            });
+        }
+
+        keys.map(checkUrls);
     });
 });
