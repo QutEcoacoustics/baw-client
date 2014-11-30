@@ -43,8 +43,9 @@ angular.module('bawApp.configuration', ['url'])
                         show: "/audio_recordings/{recordingId}/media.{format}"
                     },
                     security: {
-                        ping: "/security/sign_in",
-                        signIn: "/my_account/sign_in"
+                        signOut: "/security/user",
+                        ping: "/security/user",
+                        signIn: "/security/user"
                     },
                     user: {
                         profile: "/my_account",

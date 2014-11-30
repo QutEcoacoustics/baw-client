@@ -1,66 +1,82 @@
-angular.module("baw.models.media", []).factory("baw.models.Media", ["conf.paths", function(paths) {
+angular
+    .module("baw.models.media", ["bawApp.services"])
+    .factory(
+    "baw.models.Media",
+    ["conf.paths",
+     "Authenticator",
+     "$url",
+     function (paths, Authenticator, url) {
 
-    function Media(resource) {
-        if (!(this instanceof Media)) {
-            throw new Error("Constructor called as a function");
-        }
+         function Media(resource) {
+             if (!(this instanceof Media)) {
+                 throw new Error("Constructor called as a function");
+             }
 
-        if (!angular.isObject(resource)) {
-            throw "Media must be constructed with a valid resource.";
-        }
+             if (!angular.isObject(resource)) {
+                 throw "Media must be constructed with a valid resource.";
+             }
 
-        angular.extend(this, resource);
+             angular.extend(this, resource);
 
-        // convert the datetime
-        this.recording.recordedDate = new Date(this.recording.recordedDate);
+             // convert the datetime
+             this.recording.recordedDate = new Date(this.recording.recordedDate);
 
-        // alias common parameters
-        this.startOffset = this.commonParameters.startOffset;
-        this.endOffset = this.commonParameters.endOffset;
-        this.recordedDate = this.recording.recordedDate;
-        this.id = this.recording.id;
-        this.durationSeconds = this.recording.durationSeconds;
-        if (angular.isNumber(resource.commonParameters.sampleRate)) {
-            this.sampleRate = resource.commonParameters.sampleRate;
-        }
-        else {
-            throw "The provided sample rate for the Media json must be a number!";
-        }
+             // alias common parameters
+             this.startOffset = this.commonParameters.startOffset;
+             this.endOffset = this.commonParameters.endOffset;
+             this.recordedDate = this.recording.recordedDate;
+             this.id = this.recording.id;
+             this.durationSeconds = this.recording.durationSeconds;
+             if (angular.isNumber(resource.commonParameters.sampleRate)) {
+                 this.sampleRate = resource.commonParameters.sampleRate;
+             }
+             else {
+                 throw "The provided sample rate for the Media json must be a number!";
+             }
 
 
-        /**
-         * Change relative image and audio urls into absolute urls
-         * @param {Media=} mediaItemToFix
-         */
-        this.formatPaths = function formatPaths(mediaItemToFix) {
-            var mediaItem = mediaItemToFix || this;
-            var imgKeys = Object.keys(mediaItem.available.image);
-            if (imgKeys.length > 1) {
-                throw "don't know how to handle more than one image format!";
-            }
+             /**
+              * Change relative image and audio urls into absolute urls.
+              * Also appends auth tokens onto urls.
+              * @param {Media=} mediaItemToFix
+              */
+             this.formatPaths = function formatPaths(mediaItemToFix) {
+                 var mediaItem = mediaItemToFix || this;
+                 var imgKeys = Object.keys(mediaItem.available.image);
+                 if (imgKeys.length > 1) {
+                     throw "don't know how to handle more than one image format!";
+                 }
 
-            var imageKey = imgKeys[0];
-            var imageFormat = mediaItem.available.image[imageKey];
-            mediaItem.available.image[imageKey].url = paths.joinFragments(paths.api.root, imageFormat.url);
-            mediaItem.spectrogram = imageFormat;
+                 var imageKey = imgKeys[0];
+                 var imageFormat = mediaItem.available.image[imageKey];
+                 var fullUrl = paths.joinFragments(paths.api.root, imageFormat.url);
+                 mediaItem.available.image[imageKey].url = url.formatUri(fullUrl, {userToken: Authenticator.authToken});
 
-            // make the order explicit (ng-repeat alphabetizes the order >:-|
-            mediaItem.available.audioOrder = [];
-            angular.forEach(mediaItem.available.audio, function (value, key) {
-                // just update the url so it is an absolute uri
-                this[key].url = paths.joinFragments(paths.api.root, value.url);
+                 mediaItem.spectrogram = imageFormat;
 
-                mediaItem.available.audioOrder.push(key);
+                 // make the order explicit (ng-repeat alphabetizes the order >:-|
+                 mediaItem.available.audioOrder = [];
+                 angular.forEach(mediaItem.available.audio, function (value, key) {
+                     // just update the url so it is an absolute uri
+                     var fullUrl = paths.joinFragments(paths.api.root, value.url);
 
-            }, mediaItem.available.audio);
-        };
+                     // also add auth token
+                     this[key].url = url.formatUri(fullUrl, {userToken: Authenticator.authToken});
 
-        this.formatPaths();
-    }
+                     mediaItem.available.audioOrder.push(key);
 
-    Media.make = function(arg) {
-        return new Media(arg);
-    };
+                 }, mediaItem.available.audio);
 
-    return Media;
-}]);
+                 var jsonFullUrl = paths.joinFragments(paths.api.root, mediaItem.available.text["json"].url);
+                 mediaItem.available.text["json"].url = url.formatUri(jsonFullUrl, {userToken: Authenticator.authToken});
+             };
+
+             this.formatPaths();
+         }
+
+         Media.make = function (arg) {
+             return new Media(arg);
+         };
+
+         return Media;
+     }]);

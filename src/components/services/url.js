@@ -1,6 +1,9 @@
-angular.module('url', ['ng']).
-
-    service('$url', function () {
+angular
+    .module('url', ['ng'])
+    .provider(
+    '$url',
+    function () {
+        var _renamerFunc = function(key) {return key;};
 
         function fixedEncodeURIComponent(str) {
             str = str || "";
@@ -12,8 +15,6 @@ angular.module('url', ['ng']).
                 .replace(/\*/g, '%2A')
                 .replace(/%20/g, '+');
         }
-
-        this.fixedEncodeURIComponent = fixedEncodeURIComponent;
 
         /**
          * This method is intended for encoding *key* or *value* parts of query component. We need a custom
@@ -38,9 +39,8 @@ angular.module('url', ['ng']).
                 replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
         }
 
-        this.encodeUriQuery = encodeUriQuery;
-
-        function toKeyValue(obj, validateKeys) {
+        function toKeyValue(obj, validateKeys, _tokenRenamer) {
+            var tokenRenamer = _tokenRenamer || _renamerFunc;
             var parts = [];
             angular.forEach(obj, function (value, key) {
                 if (validateKeys) {
@@ -51,7 +51,7 @@ angular.module('url', ['ng']).
                     }
                 }
 
-                var encodedKey = encodeUriQuery(key, /* encode spaces */ true);
+                var encodedKey = encodeUriQuery(tokenRenamer(key), /* encode spaces */ true);
 
                 // Angular does this: if value is true, just include the key without a value
                 var encodedValue = value === true ? '' : '=' + encodeUriQuery(value, /* encode spaces */ true);
@@ -61,9 +61,7 @@ angular.module('url', ['ng']).
             return parts.length ? parts.join('&') : '';
         }
 
-        this.toKeyValue = toKeyValue;
-
-        this.formatUri = function (uri, values) {
+        function formatUri(uri, values, tokenRenamer) {
 
             // first format string
             var result = uri.formatReturnUnused(values),
@@ -80,17 +78,39 @@ angular.module('url', ['ng']).
                 //    formatted = formatted.slice(0, 1);
                 //}
 
-                var query = toKeyValue(unused, true);
+                var query = toKeyValue(unused, true, tokenRenamer);
 
-                if (formatted.indexOf("?") === -1 && query.length > 0) {
-                    formatted += "?";
+                if (query.length > 0) {
+                    var qtnMarkPosition = formatted.indexOf("?");
+                    if (qtnMarkPosition === -1) {
+                        formatted += "?";
+                    }
+                    else {
+                        formatted += "&";
+                    }
+                    formatted += query;
                 }
-
-                formatted += query;
 
                 return formatted;
             }
+        }
 
 
+        this.renamer = function(renamerFunc) {
+            if (renamerFunc) {
+                _renamerFunc = renamerFunc;
+            }
+            else {
+                return _renamerFunc;
+            }
+        };
+
+        this.$get = function() {
+            return {
+                fixedEncodeURIComponent: fixedEncodeURIComponent,
+                encodeUriQuery: encodeUriQuery,
+                toKeyValue: toKeyValue,
+                formatUri: formatUri
+            };
         };
     });

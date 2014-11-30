@@ -111,8 +111,8 @@ var app = angular.module('baw',
                              'bawApp.birdWalks'
                          ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider',
-             function ($routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider) {
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider', "$urlProvider", "casingTransformers",
+             function ($routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, $urlProvider, casingTransformers) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
                  currentWhitelist.push(paths.api.root+'/**');
@@ -193,11 +193,15 @@ var app = angular.module('baw',
 
                  // configure local storage provider with our own namepspace
                  localStorageServiceProvider.setPrefix(constants.namespace);
+
+                 $urlProvider.renamer(function(key) {
+                     return casingTransformers.underscore(key);
+                 });
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url',
-          function ($rootScope, $location, $route, $http, AudioEvent, paths, UserProfile, ngAudioEvents, $url) {
+    .run(['$rootScope', '$location', '$route', '$http', 'Authenticator', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url',
+          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url) {
 
               // embed configuration for easy site-wide binding
               $rootScope.paths = paths;
@@ -308,9 +312,8 @@ var app = angular.module('baw',
               // cross-site scripting token storage
               $rootScope.csrfToken = null;
 
-              // storage of auth_token
-              $rootScope.authorisationToken = null;
-
+              // storage of auth_token - now done in authenticator
+              /* deprecated */
               $rootScope.authTokenParams = function () {
                   if ($rootScope.authorisationToken) {
                       return {
@@ -323,6 +326,7 @@ var app = angular.module('baw',
                   return $url.toKeyValue($rootScope.authTokenParams());
               };
 
+
               $rootScope.loggedIn = false;
 
               $rootScope.$watch('userData', function () {
@@ -330,7 +334,7 @@ var app = angular.module('baw',
                       userData = $rootScope.userData;
                   $rootScope.loggedIn = (token && userData) ? true : false;
 
-              });
+              });    /* /deprecated */
 
               $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
 
