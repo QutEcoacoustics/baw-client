@@ -214,13 +214,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     var siteDeferred = $q.defer();
                     // get site
                     Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
+                        var data = value.data;
+                        data.links = data.projectIds.map(function(id) {
+                            if (angular.isObject(id)) {
+                                // BUG https://github.com/QutBioacoustics/baw-server/issues/135
+                                id = id.id;
+                            }
+                            else {
+                                console.warn("It would seem https://github.com/QutBioacoustics/baw-server/issues/135 has been fixed, remove me");
+                            }
 
-                        value.links = value.projectIds.map(function(id) {
-                            return paths.api.routes.site.nestedAbsolute.format({"siteId": value.id, "projectId": id});
+                            return paths.api.routes.site.nestedAbsolute.format({"siteId": data.id, "projectId": id});
                         });
 
-                        $scope.model.site = value;
-                        result.site = value;
+                        $scope.model.site = data;
+                        result.site = data;
                         siteDeferred.resolve(result);
                     }, function getSiteError() {
                         siteDeferred.reject("retrieval of site json failed");
