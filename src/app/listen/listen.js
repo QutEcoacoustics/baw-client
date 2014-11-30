@@ -136,9 +136,9 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     }
                 });
 
-                /* // NOT NECESSARY - we aren't using auth keys atm    */
-                $scope.$on('event:auth-loginRequired', function(){ $scope.model.media.formatPaths(); });
-                $scope.$on('event:auth-loginConfirmed', function(){ $scope.model.media.formatPaths(); });
+                // update urls on login events
+                $scope.$on('event:auth-loginRequired', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
+                $scope.$on('event:auth-loginConfirmed', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
 
                 var media = MediaService
                     .get(

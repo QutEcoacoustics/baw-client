@@ -412,6 +412,33 @@
     // authentication...
     bawss.factory('Authenticator', ['$rootScope', 'authService', '$http', 'conf.paths',
         function ($rootScope, authService, $http, paths) {
+            // As soon as the module is initiated...
+            // WARNING: Cookies required for this to work
+            checkLogin();
+
+            var that = {
+                loginSuccess: loginSuccess,
+                loginFailure: loginFailure,
+                logoutSuccess: function logoutSuccess(data, status, headers, config) {
+                    $rootScope.$safeApply($rootScope, function () {
+                        that.authToken = null;
+                        $rootScope.userData = null;
+                        $http.defaults.headers.common["Authorization"] = null;
+
+                        console.log("Logout successful", data);
+                    });
+                },
+                logoutFailure: function logoutFailure(data, status, headers, config) {
+                    console.error("Logout failure: ", data, status, headers, config);
+                },
+                checkLogin: checkLogin,
+                authToken: null
+            };
+
+            return that;
+
+            // functions
+
             function loginSuccess(data, status, headers, config) {
                 // a provider has just logged in
                 // the response arg, is the response from our server (devise)
@@ -421,13 +448,13 @@
                     throw "Authenticator.loginSuccess: this function should not be called unless a successful response was received";
                 }
 
-                if (data.authorisationToken === undefined) {
+                if (data.authToken === undefined) {
                     throw "The authorisation token can not be undefined at this point";
                 }
 
-                this.authorisationToken = data.authToken;
+                that.authToken = data.authToken;
                 $http.defaults.headers.common["Authorization"] = 'Token token="' +
-                                                                 $rootScope.authorisationToken +
+                                                                 that.authToken +
                                                                  '"';
 
                 $rootScope.$safeApply($rootScope, function () {
@@ -439,7 +466,7 @@
 
             function loginFailure(data, status, headers, config) {
                 $rootScope.$safeApply($rootScope, function () {
-                    $rootScope.authorisationToken = null;
+                    that.authToken = null;
                     $rootScope.userData = null;
                     $http.defaults.headers.common["Authorization"] = null;
 
@@ -490,29 +517,6 @@
 
                 return true;
             }
-
-            // As soon as the module is initiated...
-            // WARNING: Cookies required for this to work
-            checkLogin();
-
-            return {
-                loginSuccess: loginSuccess,
-                loginFailure: loginFailure,
-                logoutSuccess: function logoutSuccess(data, status, headers, config) {
-                    $rootScope.$safeApply($rootScope, function () {
-                        $rootScope.authorisationToken = null;
-                        $rootScope.userData = null;
-                        $http.defaults.headers.common["Authorization"] = null;
-
-                        console.log("Logout successful", data);
-                    });
-                },
-                logoutFailure: function logoutFailure(data, status, headers, config) {
-                    console.error("Logout failure: ", data, status, headers, config);
-                },
-                checkLogin: checkLogin,
-                authToken: null
-            };
         }]);
 
     bawss.factory('AuthenticationProviders',

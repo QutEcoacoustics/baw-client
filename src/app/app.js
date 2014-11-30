@@ -312,9 +312,8 @@ var app = angular.module('baw',
               // cross-site scripting token storage
               $rootScope.csrfToken = null;
 
-              // storage of auth_token
-              $rootScope.authorisationToken = null;
-
+              // storage of auth_token - now done in authenticator
+              /* deprecated */
               $rootScope.authTokenParams = function () {
                   if ($rootScope.authorisationToken) {
                       return {
@@ -327,6 +326,7 @@ var app = angular.module('baw',
                   return $url.toKeyValue($rootScope.authTokenParams());
               };
 
+
               $rootScope.loggedIn = false;
 
               $rootScope.$watch('userData', function () {
@@ -334,7 +334,7 @@ var app = angular.module('baw',
                       userData = $rootScope.userData;
                   $rootScope.loggedIn = (token && userData) ? true : false;
 
-              });
+              });    /* /deprecated */
 
               $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
 
