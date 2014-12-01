@@ -11,9 +11,8 @@ angular.module("bawApp.demo.bdCloud2014", [])
 
 
             function d(id, file, date, title) {
-                var url =  paths.api.root + "/audio_recordings/"+id+"/analysis.png?analysis_id=towsey.acoustic&file_name="+file;
-
-                $scope.demoData.push({
+                var url =  paths.api.root + "/audio_recordings/"+id+"/analysis.png?analysis_id=Towsey.Acoustic&file_name="+file;
+                    $scope.demoData.push({
                     date: date,
                     url: url,
                     title: title
@@ -21,7 +20,7 @@ angular.module("bawApp.demo.bdCloud2014", [])
             }
 
             $scope.showBackups = function showBackups() {
-                var find = "evn.png", replace = "evn.BACKUP.png";
+                var find = "EVN.png", replace = "EVN.BACKUP.png";
                 if (!$scope.backups) {
                     var t = find;
                     find = replace;
@@ -34,37 +33,37 @@ angular.module("bawApp.demo.bdCloud2014", [])
             };
 
 
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
-            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.aci-ent-evn.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
+            d(234234, "eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN.png", new Date(), "Test message");
         }
     ]
 );
