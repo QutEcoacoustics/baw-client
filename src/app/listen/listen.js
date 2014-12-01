@@ -136,9 +136,9 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     }
                 });
 
-                /* // NOT NECESSARY - we aren't using auth keys atm    */
-                $scope.$on('event:auth-loginRequired', function(){ $scope.model.media.formatPaths(); });
-                $scope.$on('event:auth-loginConfirmed', function(){ $scope.model.media.formatPaths(); });
+                // update urls on login events
+                $scope.$on('event:auth-loginRequired', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
+                $scope.$on('event:auth-loginConfirmed', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
 
                 var media = MediaService
                     .get(
@@ -214,13 +214,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     var siteDeferred = $q.defer();
                     // get site
                     Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
+                        var data = value.data;
+                        data.links = data.projectIds.map(function(id, index) {
+                            if (angular.isObject(id)) {
+                                // BUG: https://github.com/QutBioacoustics/baw-server/issues/135
+                                data.projectIds[index] = id = id.id;
+                            }
+                            else {
+                                console.warn("It would seem https://github.com/QutBioacoustics/baw-server/issues/135 has been fixed, remove me");
+                            }
 
-                        value.links = value.projectIds.map(function(id) {
-                            return paths.api.routes.site.nestedAbsolute.format({"siteId": value.id, "projectId": id});
+                            return paths.api.routes.site.nestedAbsolute.format({"siteId": data.id, "projectId": id});
                         });
 
-                        $scope.model.site = value;
-                        result.site = value;
+                        $scope.model.site = data;
+                        result.site = data;
                         siteDeferred.resolve(result);
                     }, function getSiteError() {
                         siteDeferred.reject("retrieval of site json failed");
@@ -239,11 +247,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         var projectDeferred = $q.defer();
                         // get project
                         Project.get({projectId: id}, {}, function getProjectSuccess(value) {
+                            var data = value.data;
+                            data.link = paths.api.routes.project.showAbsolute.format({"projectId": data.id});
 
-                            value.link = paths.api.routes.project.showAbsolute.format({"projectId": value.id});
+                            $scope.model.projects[index] = data;
+                            result.projects[index] = data;
 
-                            $scope.model.projects[index] = value;
-                            result.projects[index] = value;
                             projectDeferred.resolve(result);
                         }, function getProjectError(error) {
                             if (error.status === 403) {
