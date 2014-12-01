@@ -100,7 +100,8 @@ angular.module('bawApp.configuration', ['url'])
                     },
                     demo: {
                         d3: 'demo/d3TestPage.tpl.html',
-                        rendering: 'demo/rendering.tpl.html'
+                        rendering: 'demo/rendering.tpl.html',
+                        bdCloud2014: 'demo/BDCloud2014Demo.tpl.html'
                     }
                 },
                 // routes used by angular
