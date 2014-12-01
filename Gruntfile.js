@@ -307,7 +307,11 @@ module.exports = function (grunt) {
                 },
                 nonull: true,
                 src: [
-                    '<%= build_dir %>/vendor/**/*.js',
+                    (function() {
+                        return userConfig.vendor_files.js.map(function(file) {
+                            return userConfig.build_dir + "/" + file;
+                        });
+                    }()),
                     'buildConfig/module.prefix',
                     '<%= build_dir %>/src/**/*.js',
                     '<%= html2js.app.dest %>',
@@ -344,7 +348,7 @@ module.exports = function (grunt) {
                     banner: '<%= meta.banner %>'
                 },
                 files: {
-                    '<%= concat.compile_js.dest %>': '<%= concat.compile_js.dest %>'
+                    "<%= concat.compile_js.dest %>": '<%= concat.compile_js.dest %>'
                 }
             }
         },
