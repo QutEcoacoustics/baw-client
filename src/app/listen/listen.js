@@ -248,10 +248,11 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         // get project
                         Project.get({projectId: id}, {}, function getProjectSuccess(value) {
                             var data = value.data;
-                            data.link = paths.api.routes.projectAbsolute.format({"projectId": data.id});
+                            data.link = paths.api.routes.project.showAbsolute.format({"projectId": data.id});
 
                             $scope.model.projects[index] = data;
                             result.projects[index] = data;
+
                             projectDeferred.resolve(result);
                         }, function getProjectError(error) {
                             if (error.status === 403) {
@@ -262,7 +263,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                                     permissions: "access denied"
                                 };
 
-                                denied.link = paths.api.routes.projectAbsolute.format({"projectId": denied.id});
+                                denied.link = paths.api.routes.project.showAbsolute.format({"projectId": denied.id});
 
                                 $scope.model.projects[index] = denied;
                                 result.projects[index] = denied;

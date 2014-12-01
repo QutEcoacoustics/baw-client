@@ -13,8 +13,13 @@ angular.module('bawApp.configuration', ['url'])
             api: {
                 root: "<%= current.apiRoot %>",
                 routes: {
-                    project: "/projects/{projectId}",
+                    project: {
+                        list: "/projects/",
+                        show: "/projects/{projectId}",
+                        filter: "/projects/filter"
+                    },
                     site: {
+                        list: "projects/{projectId}/sites/",
                         flattened: "/sites/{siteId}",
                         nested: "/projects/{projectId}/sites/{siteId}",
                         filter: "/sites/filter"
@@ -92,6 +97,10 @@ angular.module('bawApp.configuration', ['url'])
                     },
                     recordings: {
                         recentRecordings: 'recordings/recentRecordings/recentRecordings.tpl.html'
+                    },
+                    demo: {
+                        d3: 'demo/d3TestPage.tpl.html',
+                        rendering: 'demo/rendering.tpl.html'
                     }
                 },
                 // routes used by angular

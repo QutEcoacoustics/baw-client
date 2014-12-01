@@ -47,4 +47,13 @@ describe("The vendor services", function () {
        inject(["humanize-duration", function (humanizeDuration) {
            expect(humanizeDuration).toBeDefined();
        }]));
+
+    it("checks d3 is not on the global scope", function () {
+        expect(window.d3).not.toBeDefined();
+    });
+
+    it("checks the d3 auto service was created",
+       inject(["d3", function (d3) {
+           expect(d3).toBeDefined();
+       }]));
 });

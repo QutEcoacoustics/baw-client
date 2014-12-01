@@ -1,0 +1,50 @@
+{
+  "ACI": {
+    "Minimum": 0.12895964450172454,
+    "Maximum": 1.3004906440388311,
+    "Mode": 0.42184239438600118,
+    "StandardDeviation": 0.042956136649693909
+  },
+  "AVG": {
+    "Minimum": 0.0,
+    "Maximum": 223.05888720658035,
+    "Mode": 0.0,
+    "StandardDeviation": 2.9741184960877378
+  },
+  "BGN": {
+    "Minimum": -117.88387608633424,
+    "Maximum": -53.581576719906757,
+    "Mode": -94.520707316532253,
+    "StandardDeviation": 5.5728659450903821
+  },
+  "CLS": {
+    "Minimum": 0.0,
+    "Maximum": 9.0,
+    "Mode": 0.0,
+    "StandardDeviation": 0.99
+  },
+  "CVR": {
+    "Minimum": 0.0,
+    "Maximum": 63.372093023255815,
+    "Mode": 0.0,
+    "StandardDeviation": 5.2810077519379846
+  },
+  "EVN": {
+    "Minimum": 0.0,
+    "Maximum": 2.5539418560182527,
+    "Mode": 0.0,
+    "StandardDeviation": 0.21282848800152107
+  },
+  "SPT": {
+    "Minimum": 0.0,
+    "Maximum": 1.0,
+    "Mode": 0.0,
+    "StandardDeviation": 0.016666666666666666
+  },
+  "ENT": {
+    "Minimum": 0.016850943533203266,
+    "Maximum": 0.943879656687789,
+    "Mode": 0.0323014220857797,
+    "StandardDeviation": 0.055621722789275144
+  }
+}
