@@ -215,10 +215,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     // get site
                     Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
                         var data = value.data;
-                        data.links = data.projectIds.map(function(id) {
+                        data.links = data.projectIds.map(function(id, index) {
                             if (angular.isObject(id)) {
-                                // BUG https://github.com/QutBioacoustics/baw-server/issues/135
-                                id = id.id;
+                                // BUG: https://github.com/QutBioacoustics/baw-server/issues/135
+                                data.projectIds[index] = id = id.id;
                             }
                             else {
                                 console.warn("It would seem https://github.com/QutBioacoustics/baw-server/issues/135 has been fixed, remove me");
@@ -247,11 +247,11 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         var projectDeferred = $q.defer();
                         // get project
                         Project.get({projectId: id}, {}, function getProjectSuccess(value) {
+                            var data = value.data;
+                            data.link = paths.api.routes.projectAbsolute.format({"projectId": data.id});
 
-                            value.link = paths.api.routes.projectAbsolute.format({"projectId": value.id});
-
-                            $scope.model.projects[index] = value;
-                            result.projects[index] = value;
+                            $scope.model.projects[index] = data;
+                            result.projects[index] = data;
                             projectDeferred.resolve(result);
                         }, function getProjectError(error) {
                             if (error.status === 403) {
