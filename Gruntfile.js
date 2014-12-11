@@ -1,15 +1,10 @@
-var modRewrite = require('connect-modrewrite'),
-    path = require('path'),
-    _ = require('lodash');
-
-
 module.exports = function (grunt) {
 
-    // bit of bullshit to ensure the build fails for missing files in the concat task
-    // note this overrides normal logging! not cool.
-    // These problems (failing on missing files) are expected to be resolved in grunt 0.5
-    //grunt.log.oldWarn = grunt.log.warn;
-    //grunt.log.warn = grunt.warn;
+    var modRewrite = require('connect-modrewrite'),
+        gzipStatic = require('connect-gzip-static'),
+        path = require('path'),
+        _ = require('lodash');
+
 
     /**
      * Load required Grunt tasks. These are installed based on the versions listed
@@ -34,7 +29,14 @@ module.exports = function (grunt) {
     /**
      * Load in our build configuration file.
      */
-    var userConfig = require('./build.config.js');
+    var userConfig = require('./buildConfig/build.config.js');
+
+    /**
+     * Load  in the special vendor template.
+     */
+    var processVendorJs =
+        require("./buildConfig/vendorTemplateProcessing.js")
+        (grunt, "./buildConfig/vendor.wrapper", "window.bawApp.externalsCallback", userConfig.vendor_files.jsWrapWithModule);
 
 
     /**
@@ -122,7 +124,7 @@ module.exports = function (grunt) {
                 //after: "2013-09-05T10:18:39.4492679+10:00",
                 //before: "now",
                 dest: 'CHANGELOG.md',
-                template: 'changelog.tpl'
+                template: 'buildConfig/changelog.tpl'
             }
         },
 
@@ -224,7 +226,7 @@ module.exports = function (grunt) {
             },
             build_appjs: {
                 options: {
-                    processContent: function (content, srcPath) {
+                    process: function (content, srcPath) {
                         // if srcPath contain .tpl.js
                         // for now since the angular templates use tpl as well,
                         // we'll cheat and just use a direct file reference
@@ -249,6 +251,9 @@ module.exports = function (grunt) {
                 ]
             },
             build_vendorjs: {
+                options: {
+                    process: processVendorJs
+                },
                 files: [
                     {
                         src: [ '<%= vendor_files.js %>' ],
@@ -302,12 +307,16 @@ module.exports = function (grunt) {
                 },
                 nonull: true,
                 src: [
-                    '<%= vendor_files.js %>',
-                    'module.prefix',
+                    (function() {
+                        return userConfig.vendor_files.js.map(function(file) {
+                            return userConfig.build_dir + "/" + file;
+                        });
+                    }()),
+                    'buildConfig/module.prefix',
                     '<%= build_dir %>/src/**/*.js',
                     '<%= html2js.app.dest %>',
                     '<%= html2js.common.dest %>',
-                    'module.suffix'
+                    'buildConfig/module.suffix'
                 ],
                 dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
             }
@@ -339,7 +348,7 @@ module.exports = function (grunt) {
                     banner: '<%= meta.banner %>'
                 },
                 files: {
-                    '<%= concat.compile_js.dest %>': '<%= concat.compile_js.dest %>'
+                    "<%= concat.compile_js.dest %>": '<%= concat.compile_js.dest %>'
                 }
             }
         },
@@ -434,11 +443,11 @@ module.exports = function (grunt) {
             },
 
             /**
-             * These are the templates from `src/common`.
+             * These are the templates from `src/common` or `src/components`.
              */
             common: {
                 options: {
-                    base: 'src/common'
+                    base: 'src'
                 },
                 src: [ '<%= app_files.ctpl %>' ],
                 dest: '<%= build_dir %>/templates-common.js'
@@ -526,11 +535,13 @@ module.exports = function (grunt) {
                 options: {
                     hostname: '*',
                     port: 8080,
-                    base: '<%= build_dir %>',
+                    base: './<%= build_dir %>',
                     debug: true,
                     livereload: true,
-                    //keepalive: true,
                     middleware: function (connect, options) {
+
+                        grunt.log.writeln(options.base);
+
                         return [
                             modRewrite([
 
@@ -555,12 +566,20 @@ module.exports = function (grunt) {
                                 // from there, angular deals with the route information
                                 '!(\\/[^\\.\\/\\?]+\\.\\w+) / [L]'
                             ]),
+
+                            // disable all caching
+                            function(req, res, next) {
+                                req.headers['if-none-match'] = 'no-match-for-this';
+                                next();
+                            },
+
                             // this specifies that the build_dir, ('build') is a static directory where content
                             // will be served from.
-                            connect.static(options.base),
+                            //connect.static(options.base[0]),
+                            gzipStatic(options.base[0])
 
                             // for source maps
-                            connect.static(__dirname)
+                            //connect.static(__dirname)
                         ];
                     }
                 }
@@ -646,10 +665,6 @@ module.exports = function (grunt) {
             /**
              * When the CSS files change, we need to compile and minify them.
              */
-            //      less: {
-            //        files: [ 'src/**/*.less' ],
-            //        tasks: [ 'recess:build' ]
-            //      },
             sass: {
                 files: [ 'src/**/*.scss' ],
                 tasks: ['sass:build', 'concat:build_css']
@@ -739,6 +754,7 @@ module.exports = function (grunt) {
         var jsFiles = filterForJS(this.filesSrc).map(function (file) {
             return file.replace(dirRE, '');
         });
+
         var cssFiles = filterForCSS(this.filesSrc).map(function (file) {
             return file.replace(dirRE, '');
         });
@@ -766,7 +782,7 @@ module.exports = function (grunt) {
     grunt.renameTask('sass', 'sassReal');
     grunt.registerTask('sassTemplate', 'Transforming sass file', function () {
         var mainScss = grunt.config('app_files.sass');
-        var processedScss = path.join(path.dirname(mainScss), path.basename(mainScss, ".tpl.scss")) + ".processed.scss";
+        var processedScss = path.join(path.dirname(mainScss), path.basename(mainScss, ".tpl.scss")) + ".scss.processed";
         grunt.config.set('app_files.processedSass', processedScss);
 
         grunt.log.write("Temp file: " + processedScss);
@@ -785,19 +801,21 @@ module.exports = function (grunt) {
 
     /**
      * In order to avoid having to specify manually the files needed for karma to
-     * run, we use grunt to manage the list for us. The `karma/*` files are
+     * run, we use grunt to manage the list for us. The `buildConfig/karma-unit.tpl.js` files are
      * compiled as grunt templates for use by Karma. Yay!
      */
     grunt.registerMultiTask('karmaconfig', 'Process karma config templates', function () {
         var jsFiles = filterForJS(this.filesSrc);
         var usePhantomJs = grunt.config('usePhantomJs');
+        var vendorFiles = grunt.config("vendor_files.js");
 
-        grunt.file.copy('karma/karma-unit.tpl.js', grunt.config('build_dir') + '/karma-unit.js', {
+        grunt.file.copy('buildConfig/karma-unit.tpl.js', grunt.config('build_dir') + '/karma-unit.js', {
             process: function (contents, path) {
                 return grunt.template.process(contents, {
                     data: {
                         usePhantomJs: usePhantomJs,
-                        scripts: jsFiles
+                        scripts: jsFiles,
+                        vendorFiles: vendorFiles
                     }
                 });
             }

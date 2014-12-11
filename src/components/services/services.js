@@ -23,28 +23,110 @@
         return uri.replace(/(\{([^{}]*)\})/g, ":$2");
     }
 
-    var bawss = angular.module("bawApp.services", ['ngResource', 'bawApp.configuration']);
+    var bawss = bawss || angular.module(
+            "bawApp.services",
+            ["ngResource",
+             "http-auth-interceptor",
+             "bawApp.configuration",
+             "bawApp.vendorServices",
+             "bawApp.services.queryBuilder"]);
 
-    bawss.factory('Project', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.projectAbsolute), {projectId: "@projectId"});
+
+    bawss.factory('Project', [ '$resource', "$http", 'conf.paths', "QueryBuilder", function ($resource, $http, paths, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.project.showAbsolute), {projectId: "@projectId"});
+
+        var gapUrl = paths.api.routes.project.filterAbsolute;
+        var gapQuery = QueryBuilder.create(function(q) {
+            return q.project({"include": ["id", "name"]});
+        });
+        resource.getAllProjects = function() {
+            return $http.post(gapUrl, gapQuery.toJSON());
+        };
+
+        return resource;
     }]);
 
-    bawss.factory('Site', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
+    bawss.factory('Site', [ '$resource', "$http", 'conf.paths', "lodash", "QueryBuilder", function ($resource, $http, paths, _, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.site.flattenedAbsolute), { siteId: "@siteId"});
+
+        var url = paths.api.routes.site.filterAbsolute;
+        resource.getSitesByIds = function(siteIds) {
+
+            var siteIdsUnique = _.uniq(siteIds);
+            var query = QueryBuilder.create(function(q) {
+                return q.in("id", siteIdsUnique)
+                    .project({include: ["id", "name"]});
+            });
+            return $http.post(url, query.toJSON());
+        };
+
+        resource.getSitesByProjectIds = function(projectIds) {
+            var projectIdsUnique = _.uniq(projectIds);
+            var query = QueryBuilder.create(function(q) {
+                return q.in("projectIds", projectIdsUnique);
+            });
+            return $http.post(url, query.toJSON());
+        };
+
+        resource.getAllSites = function(){
+            var url = paths.api.routes.site.filterAbsolute;
+            var query = QueryBuilder.create(function(q) {
+                return q.project({"include": ["id","name"]});
+            });
+            return $http.post(url, query.toJSON());
+        };
+
+        resource.getAllSites = function(){
+            var url = paths.api.routes.site.filterAbsolute;
+            var query = QueryBuilder.create(function(q) {
+                return q.project({"include": ["id","name"]});
+            });
+            return $http.post(url, query.toJSON());
+        };
+
+
+        return resource;
     }]);
 
     // NOTE: deleted photo resource, API for photos no longer exposed
 
     // NOTE: deleted user resource, API for users no longer exposed
 
+
     bawss.factory('AudioEventComment', [ '$resource', 'conf.paths', function ($resource, paths) {
         return resourcePut($resource, uriConvert(paths.api.routes.audioEventComment.showAbsolute),
             {audioEventId: "@audioEventId", audioEventCommentId: '@audioEventCommentId'});
     }]);
 
-    bawss.factory('AudioRecording', [ '$resource', 'conf.paths', function ($resource, paths) {
-        return resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
+    bawss.factory('AudioRecording', [ '$resource', '$http', 'conf.paths', 'QueryBuilder', function ($resource, $http, paths, QueryBuilder) {
+        var resource = resourcePut($resource, uriConvert(paths.api.routes.audioRecording.showAbsolute),
             {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
+
+        var filterUrl =  paths.api.routes.audioRecording.filterAbsolute;
+        var query = QueryBuilder.create(function(q) {
+           return q
+               .sort({orderBy: "createdAt", direction: "desc"})
+               .page({page:1, items: 10})
+               .project({include: ["id", "siteId", "durationSeconds", "recordedDate", "createdAt"]});
+        });
+        resource.getRecentRecordings = function() {
+
+
+            return $http.post(filterUrl, query.toJSON());
+        };
+
+        resource.getRecordingsForVisulisation = function(siteIds) {
+            var query = QueryBuilder.create(function (q) {
+                return q
+                    .in("siteId", siteIds)
+                    .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]});
+            });
+
+            return $http.post(filterUrl, query.toJSON());
+        };
+
+
+        return resource;
     }]);
 
     bawss.factory('AudioEvent', [ '$resource', '$url', 'conf.paths',
@@ -117,8 +199,8 @@
      *
      * This service memoises requests for tags
      */
-    bawss.factory('Tag', [ '$resource', 'conf.paths',
-        function ($resource, paths) {
+    bawss.factory('Tag', [ '$resource', 'conf.paths', "lodash",
+        function ($resource, paths, _) {
         var resource = $resource(uriConvert(paths.api.routes.tag.showAbsolute), {tagId: '@tagId'}, {});
 
         var tags = {};
@@ -232,28 +314,7 @@
             delete  mediaResource["remove"];
             delete  mediaResource["delete"];
 
-            /**
-             * Change relative image and audio urls into absolute urls
-             * @param {Object} mediaItem
-             */
-            mediaResource.formatPaths = function formatPaths(mediaItem) {
 
-                var imgKeys = Object.keys(mediaItem.availableImageFormats);
-                if (imgKeys.length > 1) {
-                    throw "don't know how to handle more than one image format!";
-                }
-
-                var imageKey = imgKeys[0];
-                var imageFormat = mediaItem.availableImageFormats[imageKey];
-                mediaItem.availableImageFormats[imageKey].url = paths.joinFragments(paths.api.root, imageFormat.url);
-                mediaItem.spectrogram = imageFormat;
-
-                angular.forEach(mediaItem.availableAudioFormats, function (value, key) {
-                    // just update the url so it is an absolute uri
-                    this[key].url = paths.joinFragments(paths.api.root, value.url);
-
-                }, mediaItem.availableAudioFormats);
-            };
 
         return mediaResource;
     }]);
@@ -402,36 +463,61 @@
     // authentication...
     bawss.factory('Authenticator', ['$rootScope', 'authService', '$http', 'conf.paths',
         function ($rootScope, authService, $http, paths) {
+            // As soon as the module is initiated...
+            // WARNING: Cookies required for this to work
+            checkLogin();
+
+            var that = {
+                loginSuccess: loginSuccess,
+                loginFailure: loginFailure,
+                logoutSuccess: function logoutSuccess(data, status, headers, config) {
+                    $rootScope.$safeApply($rootScope, function () {
+                        that.authToken = null;
+                        $rootScope.userData = null;
+                        $http.defaults.headers.common["Authorization"] = null;
+
+                        console.log("Logout successful", data);
+                    });
+                },
+                logoutFailure: function logoutFailure(data, status, headers, config) {
+                    console.error("Logout failure: ", data, status, headers, config);
+                },
+                checkLogin: checkLogin,
+                authToken: null
+            };
+
+            return that;
+
+            // functions
+
             function loginSuccess(data, status, headers, config) {
                 // a provider has just logged in
                 // the response arg, is the response from our server (devise)
                 // extract auth_token and set in rootScope
 
-                if (!data || data.response !== "ok") {
+                if (!data) {
                     throw "Authenticator.loginSuccess: this function should not be called unless a successful response was received";
                 }
 
+                if (data.authToken === undefined) {
+                    throw "The authorisation token can not be undefined at this point";
+                }
+
+                that.authToken = data.authToken;
+                $http.defaults.headers.common["Authorization"] = 'Token token="' +
+                                                                 that.authToken +
+                                                                 '"';
+
                 $rootScope.$safeApply($rootScope, function () {
-                    $rootScope.authorisationToken = data.authToken;
                     $rootScope.userData = data;
-
-                    if ($rootScope.authorisationToken === undefined) {
-                        throw "The authorisation token can not be undefined at this point";
-                    }
-
-                    $http.defaults.headers.common["Authorization"] = 'Token token="' +
-                        $rootScope.authorisationToken +
-                        '"';
-
                     console.log("Login successful", data);
-
                     authService.loginConfirmed();
                 });
             }
 
             function loginFailure(data, status, headers, config) {
                 $rootScope.$safeApply($rootScope, function () {
-                    $rootScope.authorisationToken = null;
+                    that.authToken = null;
                     $rootScope.userData = null;
                     $http.defaults.headers.common["Authorization"] = null;
 
@@ -450,59 +536,43 @@
                 });
             }
 
-            return {
-                loginSuccess: loginSuccess,
-                loginFailure: loginFailure,
-                logoutSuccess: function logoutSuccess(data, status, headers, config) {
-                    $rootScope.$safeApply($rootScope, function () {
-                        $rootScope.authorisationToken = null;
-                        $rootScope.userData = null;
-                        $http.defaults.headers.common["Authorization"] = null;
 
-                        console.log("Logout successful", data);
-                    });
-                },
-                logoutFailure: function logoutFailure(data, status, headers, config) {
-                    console.error("Logout failure: ", data, status, headers, config);
-                },
-                /**
-                 * Checks whether a user is logged in or not. Note: this is the only method
-                 * in our site which relies on cookies!
-                 * @return {boolean}
-                 */
-                checkLogin: function checkLogin() {
-                    if ($rootScope.loggedIn !== true) {
-                        $http.get(paths.api.routes.security.pingAbsolute,
-                            {params: {antiCache: (new Date()).getTime()}, cache: false })
-                            .success(function checkLoginSuccess(data, status, headers, config) {
-                                // the ping request is different, because it just asks for information, it will always return a 200,
-                                // so split on response field
-                                if (data && data.response == "ok") {
-                                    console.info("Logged in via ping (probably used cookies).");
-                                    loginSuccess(data, status, headers, config);
-                                }
-                                else {
-                                    console.info("Logged in via ping failed (probably something wrong with cookies or not logged in).");
-                                    loginFailure(data, status, headers, config);
-                                }
+            /**
+             * Checks whether a user is logged in or not. Note: this is the only method
+             * in our site which relies on cookies!
+             */
+            function checkLogin() {
+                if ($rootScope.loggedIn !== true) {
+                    $http.get(paths.api.routes.security.pingAbsolute,
+                              {params: {antiCache: (new Date()).getTime()}, cache: false })
+                        .success(function checkLoginSuccess(wrappedData, status, headers, config) {
+                                     // the ping request is different - it only requests data
+                                     var data = wrappedData.data;
 
-                            })
-                            .error(function checkLoginFailure(data, status, headers, config) {
-                                console.error("Ping login service failure - this should not happen",
-                                    data,
-                                    status, headers, config);
-                            })
-                        ;
-                    }
 
-                    return true;
+                                     if (wrappedData.meta.error) {
+                                         console.info("Logged in via ping failed (probably something wrong with cookies or not logged in).");
+                                         loginFailure(wrappedData, status, headers, config);
+                                     } else {
+                                         console.info("Logged in via ping (probably used cookies).");
+                                         loginSuccess(data, status, headers, config);
+                                     }
+
+                                 })
+                        .error(function checkLoginFailure(data, status, headers, config) {
+                                   console.error("Ping login service failure - this should not happen",
+                                                 data,
+                                                 status, headers, config);
+                               });
                 }
-            };
+
+                return true;
+            }
         }]);
 
     bawss.factory('AuthenticationProviders',
-        ['$rootScope', 'authService', '$http', 'Authenticator', 'railsFieldRenamingInterceptor', '$q','$url',
-            function ($rootScope, authService, $http, Authenticator, railsFieldRenamingInterceptor, $q, $url) {
+        ['$rootScope', 'authService', '$http', 'Authenticator', '$q','$url',
+            function ($rootScope, authService, $http, Authenticator, $q, $url) {
                 var signOutPath = '/security/sign_out';
 
                 function signOut() {
@@ -542,14 +612,15 @@
                     baw.popUpWindow(popPath, 700, 500, function (data) {
                         data = data || {};
 
-                        railsFieldRenamingInterceptor().core(data);
+                        throw "add object camel casing here";
+                        /*railsFieldRenamingInterceptor().core(data);
 
                         if (data.response === "ok") {
                             Authenticator.loginSuccess(data);
                         }
                         else {
                             Authenticator.loginFailure(data);
-                        }
+                        }*/
                     });
                 }
 
@@ -558,14 +629,15 @@
                     baw.popUpWindow(popPath, 700, 500, function (data) {
                         data = data || {};
 
-                        railsFieldRenamingInterceptor().core(data);
+                        throw "add object camel casing here";
+                        /*railsFieldRenamingInterceptor().core(data);
 
                         if (data.response === "ok") {
                             Authenticator.loginSuccess(data);
                         }
                         else {
                             Authenticator.loginFailure(data);
-                        }
+                        }*/
                     });
                 }
 

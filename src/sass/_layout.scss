@@ -13,6 +13,13 @@ body {
   margin-right: auto;
 }
 
+.nav-text {
+  @extend .text-muted;
+  @extend .navbar-text;
+  padding: $nav-link-padding;
+  margin: 0;
+}
+
 @if $DEBUG {
   .debug-ui {
     width: auto;

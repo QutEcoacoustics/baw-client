@@ -36,7 +36,7 @@
      *
      * requires momentjs
      */
-    bawfs.filter('moment', function() {
+    bawfs.filter('moment', ["moment", function(moment) {
        return function(input, method) {
 
            if (input) {
@@ -49,7 +49,7 @@
 
            return "";
        };
-    });
+    }]);
 
 
     /**

@@ -97,6 +97,14 @@
 
         <volume-control model="model.audioElement" class="input-group btn-group"></volume-control>
 
+        <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle" title="Enable/disable autoplay" >
+            <toggle-switch-state switch-state="on">
+                <span class="glyphicon glyphicon-play-circle"></span>
+            </toggle-switch-state>
+            <toggle-switch-state switch-state="off">
+                <span class="glyphicon glyphicon-play-circle"></span>
+            </toggle-switch-state>
+        </toggle-switch>
 
     </div>
 
@@ -106,8 +114,8 @@
 
 
 <audio id="mainAudioElement" ng-audio="model.audioElement" controls class="debug-ui">
-    <source ng-repeat="resource in model.media.availableAudioFormats" ng-src="{{resource.url}}" src=""
-            type="{{resource.mimeType}}">
+    <source ng-repeat="key in model.media.available.audioOrder" ng-src="{{model.media.available.audio[key].url}}" src=""
+            type="{{model.media.available.audio[key].mediaType}}">
     Your browser does not support the audio element.
 </audio>
 <div id="listenEditContainer" ng-class="{disabled : singleEditDisabled()}">
@@ -208,14 +216,14 @@
                    ng-href="{{model.media.spectrogram.url}}"
                    title="Download the spectrogram">Spectrogram</a>&nbsp;|&nbsp;
                 <a target="_blank"
-                   ng-class="{disabled: !model.media.availableAudioFormats['wav'].url}"
-                   ng-href="{{model.media.availableAudioFormats['wav'].url}}"
-                   title="{{ model.media.availableAudioFormats['wav'].url && 'Download the .wav file' || 'This file format is not available'  }}"
+                   ng-class="{disabled: !model.media.available.audio['wav'].url}"
+                   ng-href="{{model.media.available.audio['wav'].url}}"
+                   title="{{ model.media.available.audio['wav'].url && 'Download the .wav file' || 'This file format is not available'  }}"
                         >Audio (WAV)</a>&nbsp;|&nbsp;
                 <a target="_blank"
-                   ng-class="{disabled: !model.media.availableAudioFormats['mp3'].url}"
-                   ng-href="{{model.media.availableAudioFormats['mp3'].url}}"
-                   title="{{ model.media.availableAudioFormats['mp3'].url && 'Download the .mp3 file' || 'This file format is not available'  }}"
+                   ng-class="{disabled: !model.media.available.audio['mp3'].url}"
+                   ng-href="{{model.media.available.audio['mp3'].url}}"
+                   title="{{ model.media.available.audio['mp3'].url && 'Download the .mp3 file' || 'This file format is not available'  }}"
                         >Audio (MP3)</a>&nbsp;|&nbsp;
                 <a target="_blank"
                    ng-class="{disabled: !downloadAnnotationsLink}"

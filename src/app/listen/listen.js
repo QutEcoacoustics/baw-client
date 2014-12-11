@@ -12,21 +12,26 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'ngAudioEvents',
         'AudioRecording',
         'Media',
+        "baw.models.Media",
         'AudioEvent',
         'Tag',
         'Taggings',
         'Site',
         'Project',
         'UserProfile',
+        'UserProfileEvents',
+        'Bookmark',
+        "moment",
         /**
          * The listen controller.
          * @param $scope
          * @param $resource
          * @param $routeParams
+         * @param Media
          * @param AudioEvent
          * @constructor
          * @param Tag
-         * @param Media
+         * @param MediaService
          * @param $route
          * @param paths
          * @param constants
@@ -39,10 +44,14 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param $location
          * @param ngAudioEvents
          * @param UserProfile
+         * @param Bookmark
+         * @param UserProfileEvents
          */
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,
-            AudioRecording, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile) {
+            AudioRecording, MediaService, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile,
+            UserProfileEvents, Bookmark, moment) {
+
 
             var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
 
@@ -95,16 +104,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 var profileLoaded = function updateProfileSettings(event, UserProfile) {
                     $scope.model.audioElement.volume = UserProfile.profile.preferences.volume;
                     $scope.model.audioElement.muted = UserProfile.profile.preferences.muted;
+
+                    $scope.model.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay || $routeParams.autoPlay;
                 };
-                $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
+                $scope.$on(UserProfileEvents.loaded, profileLoaded);
                 if (UserProfile.profile && UserProfile.profile.preferences) {
                     profileLoaded(null, UserProfile);
                 }
 
+
+
+
                 // auto play feature
                 $scope.$on(ngAudioEvents.ended, function navigate(event) {
 
-                    if ($scope.nextEnabled) {
+                    if ($scope.nextEnabled && $scope.model.audioElement.autoPlay) {
                         console.info("Changing page to next segment...");
                         $scope.$apply(function() {
                             $location.search({autoPlay: true, start: nextStart, end: nextEnd});
@@ -114,12 +128,20 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         console.warn("Continuous playback cannot continue");
                     }
                 });
+                $scope.$watch(function() {
+                    return $scope.model.audioElement.autoPlay;
+                }, function(newValue, oldValue) {
+                    if (UserProfile.profile && (UserProfile.profile.preferences.autoPlay !== newValue)) {
+                        $scope.$emit("autoPlay", newValue);
+                    }
+                });
 
-                /* // NOT NECESSARY - we aren't using auth keys atm    */
-                $scope.$on('event:auth-loginRequired', function(){ Media.formatPaths($scope.model.media); });
-                $scope.$on('event:auth-loginConfirmed', function(){ Media.formatPaths($scope.model.media); });
+                // update urls on login events
+                $scope.$on('event:auth-loginRequired', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
+                $scope.$on('event:auth-loginConfirmed', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
 
-                $scope.model.media = Media.get(
+                var media = MediaService
+                    .get(
                     {
                         recordingId: $routeParams.recordingId,
                         start_offset: $routeParams.start,
@@ -127,16 +149,11 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         format: "json"
                     },
                     function mediaGetSuccess(value, responseHeaders) {
-                        // reformat urls
-                        Media.formatPaths($scope.model.media);
-
-                        value = new baw.Media(value);
-
-                        //                        fixMediaApi();
+                        $scope.model.media = new Media(value.data);
 
                         var // moment works by reference - need to parse the date twice - sigh
-                            absoluteStartChunk = moment($scope.model.media.datetime).add('s', parseFloat($scope.model.media.startOffset)),
-                            absoluteEndChunk = moment($scope.model.media.datetime).add('s', parseFloat($scope.model.media.endOffset));
+                            absoluteStartChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.startOffset), 's'),
+                            absoluteEndChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.endOffset), 's');
 
                         $scope.startOffsetAbsolute = absoluteStartChunk.format("HH:mm:ss");
                         $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
@@ -150,6 +167,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     },
                     function mediaGetFailure() {
                         console.error("retrieval of media json failed");
+                    });
+
+
+
+                // bookmarks
+                $q
+                    .all([Bookmark.applicationBookmarksPromise, media.$promise])
+                    .then(
+                    function() {
+                        Bookmark.savePlaybackPosition(
+                            $scope.model.media.recording.id,
+                            $scope.model.media.commonParameters.startOffset);
+                    },
+                    function() {
+                        console.error("Bookmark saving error", arguments);
                     });
 
 
@@ -182,13 +214,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     var siteDeferred = $q.defer();
                     // get site
                     Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
+                        var data = value.data;
+                        data.links = data.projectIds.map(function(id, index) {
+                            if (angular.isObject(id)) {
+                                // BUG: https://github.com/QutBioacoustics/baw-server/issues/135
+                                data.projectIds[index] = id = id.id;
+                            }
+                            else {
+                                console.warn("It would seem https://github.com/QutBioacoustics/baw-server/issues/135 has been fixed, remove me");
+                            }
 
-                        value.links = value.projectIds.map(function(id) {
-                            return paths.api.routes.site.nestedAbsolute.format({"siteId": value.id, "projectId": id});
+                            return paths.api.routes.site.nestedAbsolute.format({"siteId": data.id, "projectId": id});
                         });
 
-                        $scope.model.site = value;
-                        result.site = value;
+                        $scope.model.site = data;
+                        result.site = data;
                         siteDeferred.resolve(result);
                     }, function getSiteError() {
                         siteDeferred.reject("retrieval of site json failed");
@@ -207,11 +247,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         var projectDeferred = $q.defer();
                         // get project
                         Project.get({projectId: id}, {}, function getProjectSuccess(value) {
+                            var data = value.data;
+                            data.link = paths.api.routes.project.showAbsolute.format({"projectId": data.id});
 
-                            value.link = paths.api.routes.projectAbsolute.format({"projectId": value.id});
+                            $scope.model.projects[index] = data;
+                            result.projects[index] = data;
 
-                            $scope.model.projects[index] = value;
-                            result.projects[index] = value;
                             projectDeferred.resolve(result);
                         }, function getProjectError(error) {
                             if (error.status === 403) {
@@ -222,7 +263,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                                     permissions: "access denied"
                                 };
 
-                                denied.link = paths.api.routes.projectAbsolute.format({"projectId": denied.id});
+                                denied.link = paths.api.routes.project.showAbsolute.format({"projectId": denied.id});
 
                                 $scope.model.projects[index] = denied;
                                 result.projects[index] = denied;
@@ -241,7 +282,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     return $q.all(projectPromises);
                 };
-                getAudioRecording(recordingId).then(getSite).then(getProjects).then(function success(result) {
+                getAudioRecording(recordingId)
+                    .then(getSite)
+                    .then(getProjects)
+                    .then(function success(result) {
                     console.info("Metadata Promise chain success", result);
                 }, function error(err) {
                     console.error("An error occurred downloading metadata for this chunk:" + err, err);
@@ -307,7 +351,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     if (!$scope.model.audioRecording) {
                         return undefined;
                     }
-                    return moment($scope.model.audioRecording.recordedDate).add('s', $scope.model.audioRecording.durationSeconds).format("YYYY-MMM-DD, HH:mm:ss");
+                    return moment($scope.model.audioRecording.recordedDate).add($scope.model.audioRecording.durationSeconds, 's').format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 
@@ -344,7 +388,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return undefined;
                     }
 
-                    var baseDate = moment($scope.model.media.datetime),
+                    var baseDate = moment($scope.model.media.recordedDate),
                         recordingOffset = parseFloat($scope.model.media.startOffset),
                         absolute = baseDate.add('s', recordingOffset + chunkOffset);
 
@@ -365,8 +409,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     if (!$scope.model.media) {
                         return undefined;
                     }
-                    
-                    return moment($scope.model.media.datetime).add('m', $scope.jumpToMinute).format("YYYY-MMM-DD, HH:mm:ss");
+
+                    return moment($scope.model.media.recordedDate).add($scope.jumpToMinute, 'm').format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 

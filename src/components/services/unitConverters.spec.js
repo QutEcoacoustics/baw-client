@@ -1,13 +1,7 @@
 describe("The unitConverter service", function () {
 
     var unitConverter;
-    var inputArgs = {
-        sampleRate: null,
-        spectrogramWindowSize: null,
-        endOffset: null,
-        startOffset: null,
-        imageElement: null
-    };
+    var inputArgs = {};
 
     beforeEach(module('bawApp.services.unitConverter'));
 
@@ -15,11 +9,12 @@ describe("The unitConverter service", function () {
         unitConverter = providedUnitConverted;
 
         inputArgs = {
-            sampleRate: null,
-            spectrogramWindowSize: null,
-            endOffset: null,
-            startOffset: null,
-            imageElement: null
+            sampleRate: undefined,
+            spectrogramWindowSize: undefined,
+            endOffset: undefined,
+            startOffset: undefined,
+            imageElement: undefined,
+            audioRecordingAbsoluteStartDate: undefined
         };
     }]));
 
@@ -50,13 +45,14 @@ describe("The unitConverter service", function () {
                 unitConverter.getConversions(obj);
             };
 
-            expect(f).toThrowError("Missing property: " + key);
+            expect(f).toThrowError(Error, "Missing property: " + key);
         });
 
     });
 
     describe("has the getConversions method:", function () {
         var converters;
+        var now = new Date();
 
         beforeEach(function () {
             inputArgs.sampleRate = 22050;
@@ -64,12 +60,35 @@ describe("The unitConverter service", function () {
             inputArgs.endOffset = 65;
             inputArgs.startOffset = 35;
             inputArgs.imageElement = null;
+            inputArgs.audioRecordingAbsoluteStartDate = now;
 
             converters = unitConverter.getConversions(inputArgs);
         });
 
         it("the input object to be embedded in the output", function () {
             expect(converters.input).toBe(inputArgs);
+        });
+
+        ["sampleRate", "spectrogramWindowSize", "startOffset", "endOffset"].forEach(function (key) {
+            it("requires " + key + " be provided as a number", function () {
+
+                var f = function () {
+                    var local = angular.extend({}, inputArgs);
+                    local[key] = inputArgs[key].toString();
+                    unitConverter.getConversions(local);
+                };
+
+                expect(f).toThrowError("Input data field `" + key + "` should be a number!");
+            });
+        });
+
+        it("ensure the absolute start date of the input object is output and is a date", function(){
+            var isDate = converters.input.audioRecordingAbsoluteStartDate instanceof Date;
+
+            expect(isDate).toBeTrue();
+
+            expect(converters.input.audioRecordingAbsoluteStartDate).toBe(now);
+
         });
 
         it("returns an object that implements the required API", function () {

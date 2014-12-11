@@ -24,18 +24,18 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
                 freqMin: roundedFreqLow,
                 freqMax: roundedFreqHigh
             }),
-        singleItem: $url.formatUri(paths.site.ngRoutes.libraryItemAbsolute,
+        singleItem: $url.formatUri(paths.site.ngRoutes.libraryItem,
             {
                 recordingId: audioEvent.audioRecordingId,
                 audioEventId: audioEvent.audioEventId
             }),
-        listen: $url.formatUri(paths.site.ngRoutes.listenAbsolute,
+        listen: $url.formatUri(paths.site.ngRoutes.listen,
             {
                 recordingId: audioEvent.audioRecordingId,
                 start: audioEvent.calcOffsetStart,
                 end: audioEvent.calcOffsetEnd
             }),
-        listenWithoutPadding: $url.formatUri(paths.site.ngRoutes.listenAbsolute,
+        listenWithoutPadding: $url.formatUri(paths.site.ngRoutes.listen,
             {
                 recordingId: audioEvent.audioRecordingId,
                 start: audioEvent.startTimeSeconds,
@@ -65,7 +65,7 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
     return audioEvent;
 };
 
-baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, constants, unitConverter, Media) {
+baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, constants, unitConverter, MediaService, Media) {
 
     var minDuration = 0;
     var audioDurationSeconds =
@@ -74,25 +74,26 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
 
     var mediaItemParameters = {
         recordingId: audioEvent.audioRecordingId,
+        audioEventId: audioEvent.id,
         start_offset: Math.max(Math.floor(audioEvent.startTimeSeconds - constants.annotationLibrary.paddingSeconds), minDuration),
         end_offset: Math.min(Math.ceil(audioEvent.endTimeSeconds + constants.annotationLibrary.paddingSeconds), audioDurationSeconds),
         format: "json"
     };
 
-    audioEvent.media = Media.get(
+    MediaService.get(
         mediaItemParameters,
         function mediaGetSuccess(mediaValue, responseHeaders) {
 
-            Media.formatPaths(mediaValue);
-            mediaValue = new baw.Media(mediaValue);
+            audioEvent.media = mediaValue = new Media(mediaValue.data);
 
             // create properties that depend on Media
             audioEvent.converters = unitConverter.getConversions({
                 sampleRate: audioEvent.media.sampleRate,
-                spectrogramWindowSize: audioEvent.media.availableImageFormats.png.window,
+                spectrogramWindowSize: audioEvent.media.available.image.png.windowSize,
                 endOffset: audioEvent.media.endOffset,
                 startOffset: audioEvent.media.startOffset,
-                imageElement: null
+                imageElement: null,
+                audioRecordingAbsoluteStartDate: audioEvent.media.recordedDate
             });
 
             audioEvent.bounds = {
@@ -103,6 +104,7 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
             };
 
             // set common/sensible defaults, but hide the elements
+            var offsetOfDay = audioEvent.converters.input.audioRecordingAbsoluteStartDate.getSeconds();
             audioEvent.gridConfig = {
                 y: {
                     showGrid: true,
@@ -119,8 +121,8 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
                 x: {
                     showGrid: true,
                     showScale: true,
-                    max: audioEvent.media.endOffset,
-                    min: audioEvent.media.startOffset,
+                    max: offsetOfDay + audioEvent.media.endOffset,
+                    min: offsetOfDay + audioEvent.media.startOffset,
                     step: 1,
                     width: audioEvent.converters.conversions.enforcedImageWidth,
                     labelFormatter: function (value, index, min, max) {
@@ -145,8 +147,8 @@ baw.annotationLibrary.getBoundSettings = function getBoundSettings(audioEvent, c
 angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
     .controller('AnnotationLibraryCtrl', ['$scope', '$location', '$resource', '$routeParams', '$url',
         'conf.paths', 'conf.constants', 'bawApp.unitConverter',
-        'AudioEvent', 'Tag', 'Media',
-        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag, Media) {
+        'AudioEvent', 'Tag', 'Media', 'baw.models.Media',
+        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag, MediaService, Media) {
 
             $scope.status = 'idle';
 
@@ -299,7 +301,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         var annotation = angular.extend({}, audioEventValue);
                         annotation.priorityTag = Tag.selectSinglePriorityTag(annotation.tags);
                         baw.annotationLibrary.addCalculatedProperties(annotation, $url, paths);
-                        baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, Media);
+                        baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, MediaService, Media);
                         this.push(annotation);
                     }, $scope.annotations);
 
@@ -313,13 +315,17 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
     ['$scope', '$location', '$resource', '$routeParams', '$url',
         'conf.paths', 'conf.constants', 'bawApp.unitConverter',
         'AudioEvent', 'Tag',
-        'Media', 'UserProfile', 'AudioEventComment',
-        function ($scope, $location, $resource, $routeParams, $url, paths, constants, unitConverter, AudioEvent, Tag, Media, UserProfile, AudioEventComment) {
+        'Media', 'baw.models.Media', 'UserProfile', 'AudioEventComment',
+        function ($scope, $location, $resource, $routeParams, $url,
+                  paths, constants, unitConverter,
+                  AudioEvent, Tag,
+                  MediaService, Media, UserProfile, AudioEventComment) {
 
             $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
             if (UserProfile.profile && UserProfile.profile.preferences) {
                 profileLoaded(null, UserProfile);
             }
+
 
             var parameters = {
                 audioEventId: $routeParams.audioEventId,
@@ -345,9 +351,11 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     var annotation = angular.extend({}, audioEventValue);
                     annotation.priorityTag = Tag.selectSinglePriorityTag(annotation.tags);
                     baw.annotationLibrary.addCalculatedProperties(annotation, $url, paths);
-                    baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, Media);
+                    baw.annotationLibrary.getBoundSettings(annotation, constants, unitConverter, MediaService, Media);
 
                     $scope.annotation = annotation;
+                    $scope.annotation.gridConfig = {};
+
 
                     // comments
                     reloadComments();

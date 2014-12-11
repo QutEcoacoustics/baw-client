@@ -1,0 +1,7 @@
+#audioRecordingDots{font-family: Arial, sans-serif;font-size:10px;}
+#audioRecordingDots .axis path,#audioRecordingDots .axis line {fill: none;stroke:#b6b6b6;shape-rendering: crispEdges;}
+/*.tick line{fill:none;stroke:none;}*/
+#audioRecordingDots .tick text{fill:#999;}
+#audioRecordingDots g.journal.active{cursor:pointer;}
+#audioRecordingDots text.label{font-size:12px;font-weight:bold;cursor:pointer;}
+#audioRecordingDots text.value{font-size:12px;font-weight:bold;}

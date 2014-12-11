@@ -9,7 +9,7 @@
     </p>
 
     <p ng-show="loggedIn">
-        Welcome back to the Bioacoustic Workbench, <span>{{$root.userData.friendlyName}}</span>! We're glad you're
+        Welcome back to the Bioacoustic Workbench, <span>{{$root.userData.userName}}</span>! We're glad you're
         here.
     </p>
 
@@ -43,5 +43,46 @@
 
 
     <h3>Download annotations</h3>
+    <label>
+        <input type="checkbox" ng-model="checked" checked="true" ng-click="testGrowl()" > test binding is {{checked}}
+    </label>
+    <label>
+        <input type="checkbox" ng-model="disabled" > is disabled {{disabled}}
+    </label>
+    <br/>
+    <toggle-switch model="checked" disabled="disabled" >
+        <toggle-switch-state switch-state="on">
+            on
+        </toggle-switch-state>
+        <span class="toggle-switch-state" switch-state="off">
+            off
+        </span>
+        <i toggle-switch-state="knob">
+            knobbbbbb
+        </i >
+    </toggle-switch>
 
+    <br />
+
+    <toggle-switch model="checked" disabled="disabled" mode="push-toggle" >
+        <toggle-switch-state switch-state="on">
+            on
+        </toggle-switch-state>
+        <span class="toggle-switch-state" switch-state="off">
+            offfffff
+        </span>
+        <i toggle-switch-state="knob">
+            knob
+        </i >
+    </toggle-switch>
+
+    <br />
+
+    <br />
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-default">Left</button>
+        <button type="button" class="btn btn-default">Middle</button>
+        <button type="button" class="btn btn-default">Right</button>
+    </div>
 </div>

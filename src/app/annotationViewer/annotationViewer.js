@@ -1,6 +1,6 @@
 var avModule = angular.module('bawApp.annotationViewer', ['bawApp.annotationViewer.gridLines']);
 
-avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag',
+avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag', "lodash",
 
     // TODO: possible optimisation evaluate these functions once per frame
 
@@ -13,7 +13,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
      * @constructor
      * @param Tag
      */
-        function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag) {
+        function AnnotationViewerCtrl($scope, $element, $attrs, $transclude, Tag, _) {
 
         $scope.$watch(function () {
             // updated in directive
@@ -21,8 +21,9 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
         }, function (newValue, oldValue) {
             if (newValue && newValue.conversions.enforcedImageWidth && newValue.conversions.enforcedImageHeight) {
                 $scope.gridConfig.x.width = newValue.conversions.enforcedImageWidth;
-                $scope.gridConfig.x.min = newValue.input.startOffset;
-                $scope.gridConfig.x.max = newValue.input.endOffset;
+                var offsetOfDay = newValue.input.audioRecordingAbsoluteStartDate.getSeconds();
+                $scope.gridConfig.x.min = offsetOfDay +  newValue.input.startOffset;
+                $scope.gridConfig.x.max = offsetOfDay + newValue.input.endOffset;
 
 
                 $scope.gridConfig.y.height = newValue.conversions.enforcedImageHeight;
@@ -90,6 +91,10 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
         };
 
         $scope.positionLine = function () {
+            if (!$scope.model.converters) {
+                return 0;
+            }
+
             return $scope.model.converters.secondsToPixels($scope.model.audioElement.position);
         };
 

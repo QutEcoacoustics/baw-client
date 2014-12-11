@@ -5,7 +5,8 @@ bawds.directive('bawAnnotationViewer',
         'bawApp.unitConverter',
         'AudioEvent',
         'Tag',
-        function (paths, unitConverter, AudioEvent, Tag) {
+        "lodash",
+        function (paths, unitConverter, AudioEvent, Tag, _) {
 
             /**
              * Create an watcher for an audio event model.
@@ -55,15 +56,22 @@ bawds.directive('bawAnnotationViewer',
             }
 
             function watchForSpectrogramChanges(scope, imageElement) {
-                function updateUnitConverters() {
-                    console.debug("AnnotationEditor:watchForSpectrogramChanges:updateUnitConverters");
+                function updateUnitConverters(newValue, oldValue) {
+                    if (newValue) {
+                        console.debug("AnnotationEditor:watchForSpectrogramChanges:updateUnitConverters");
+                    }
+                    else {
+                        console.debug("AnnotationEditor:watchForSpectrogramChanges:updateUnitConverters: update cancelled, newValue is falsey");
+                        return;
+                    }
 
                     scope.model.converters = unitConverter.getConversions({
                         sampleRate: scope.model.media.sampleRate,
-                        spectrogramWindowSize: scope.model.media.spectrogram ? scope.model.media.spectrogram.window : null,
+                        spectrogramWindowSize: scope.model.media.spectrogram ? scope.model.media.spectrogram.windowSize : null,
                         endOffset: scope.model.media.endOffset,
                         startOffset: scope.model.media.startOffset,
-                        imageElement: scope.$image[0]
+                        imageElement: scope.$image[0],
+                        audioRecordingAbsoluteStartDate: scope.model.media.recordedDate
                     });
 
                     // redraw all boxes already drawn (hacky way to force angular to consider these objects changed!)
@@ -409,6 +417,13 @@ bawds.directive('bawAnnotationViewer',
                     changedAnnotation.$intermediateEvent = null;
                     modelUpdatesServer(scope, changedAnnotation);
                 }
+
+                // reset $intermediateEvent - warning unknown effects. Modified so that single-edit changes will persist
+                if (changedAnnotation.$intermediateEvent) {
+                    changedAnnotation.$intermediateEvent = false;
+                }
+
+
             }
 
             function modelCollectionUpdated(newCollection, oldCollection, scope) {

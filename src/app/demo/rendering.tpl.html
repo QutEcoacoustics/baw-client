@@ -1,0 +1,67 @@
+<div id="content">
+    <h1>
+        False Colour Rendering Experiment
+    </h1>
+    <section>
+        <h2>
+            Static image
+        </h2>
+        <div>
+            <button ng-click="loadStatic()">Load</button>
+        </div>
+        <div>
+            <div class="renderedImage" >
+                <img class="blank" ng-src="{{staticSrc}}" src="" />
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>
+            Canvas/Bitmap image
+        </h2>
+        <div>
+            <button ng-click="render()">Render</button>
+            <span ng-if="renderTime">
+                Render time: {{renderTime}}ms, {{transferTime}}, {{contentLength}}, {{parseTime}}, {{paintTime}}
+            </span>
+        </div>
+        <div>
+            <div class="renderedImage" >
+                <canvas id="demoCanvas" class="blank"></canvas>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>
+            Stacked images (1px)
+        </h2>
+        <div>
+            <button ng-click="loadTiles()">Load</button>
+        </div>
+        <div>
+            <div class="renderedImage">
+                <div class="blank">
+                    <img ng-repeat="t in tiles" ng-src="{{t}}" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>
+            Stacked images (60px)
+        </h2>
+        <div>
+            <button ng-click="loadTiles60()">Load</button>
+            <span>
+                Tile load time: {{tileLoadTime}}ms
+            </span>
+        </div>
+        <div>
+            <div class="renderedImage">
+                <div class="blank">
+                    <img ng-repeat="t in tiles60" ng-src="{{t}}" on-load="increment()" />
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

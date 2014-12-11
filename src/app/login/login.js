@@ -4,13 +4,6 @@ angular.module('bawApp.login', [])
         ['$scope', '$http', '$location', 'authService', 'AuthenticationProviders', 'Authenticator',
             function LoginCtrl($scope, $http, $location, authService, AuthenticationProviders, Authenticator) {
 
-                // WARNING: Cookies required for this to work
-                function checkLogin() {
-                    Authenticator.checkLogin();
-                }
-
-                checkLogin();
-
                 $scope.submit = function (provider) {
 
                     var authProvider = AuthenticationProviders[provider];
@@ -50,6 +43,7 @@ angular.module('bawApp.login', [])
 
                     var provider, actualProvider;
                     try {
+                        /**** BROKEN *88888******/
                         provider = $scope.$root.userData.providerId;
                     }
                     catch (e) {
@@ -70,17 +64,9 @@ angular.module('bawApp.login', [])
                     $scope.$emit('event:auth-loginCancelled');
                 };
 
-                $scope.displayName = "";
-                $scope.email = "";
 
-                $scope.$watch('$root.loggedIn', function () {
-                    if ($scope.loggedIn) {
-                        $scope.friendlyName = $scope.userData.friendlyName;
-                    }
-                    else {
-                        $scope.friendlyName = "";
-                    }
-                });
+
+
 
             }
         ]);

@@ -1,4 +1,3 @@
-var appConfigFile = 'src/baw.configuration.tpl.js';
 
 /**
  * This file/module contains all configuration for the build process.
@@ -12,30 +11,14 @@ module.exports = {
     build_dir: 'build',
     compile_dir: 'bin',
 
-    build_configs: {
-        keys:{
-            googleMaps: ""
-        },
-        configFile: appConfigFile,
-        development: {
-            apiRoot: "http://localhost:3000",
-            siteRoot: "http://localhost:8080",
-            siteDir: "/"
-        },
-        staging: {
-            apiRoot: "http://staging.ecosounds.org",
-            siteRoot: "http://staging.ecosounds.org/system/listen_to",
-            siteDir: "/system/listen_to/"
-        },
-        production: {
-            apiRoot: "http://baw.ecosounds.org",
-            siteRoot: "http://baw.ecosounds.org/system/listen_to",
-            siteDir: "/system/listen_to/"
-        },
-
-        // this is dynamically overwritten with one of the above profiles
-        current: {}
-    },
+    /**
+     * The environment settings are loaded here.
+     * These settings should be kept in a private repository and the
+     * environmentSettings.json file should be overwritten on private builds.
+     *
+     * The current environment is loaded into the current field.
+     */
+    build_configs: require("./environmentSettings.json"),
 
     /**
      * This is a collection of file patterns that refer to our app code (the
@@ -47,14 +30,14 @@ module.exports = {
      * app's unit tests.
      */
     app_files: {
-        js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
-        jsunit: [ 'src/**/*.spec.js' ],
+        js: ['src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js'],
+        jsunit: ['src/**/*.spec.js'],
 
-        atpl: [ 'src/app/**/*.tpl.html' ],
-        ctpl: [ 'src/common/**/*.tpl.html' ],
+        atpl: ['src/app/**/*.tpl.html'],
+        ctpl: ['src/common/**/*.tpl.html', 'src/components/**/*.tpl.html'],
 
-        html: [ 'src/index.html'],
-        sass: [ 'src/sass/application.tpl.scss' ]
+        html: ['src/index.html'],
+        sass: ['src/sass/application.tpl.scss']
     },
 
     /**
@@ -85,14 +68,26 @@ module.exports = {
      * recommended that you use wildcards.
      */
     vendor_files: {
+        jsWrapWithModule: [
+            'vendor/d3/d3.js',
+            'vendor/momentjs/moment.js',
+            'vendor/lodash/dist/lodash.js',
+            'vendor/bowser/bowser.js',
+            'vendor/humanize-duration/humanize-duration.js'
+        ],
         js: [
             'vendor/jquery/dist/jquery.js',
+            'vendor/angular/angular.js',
+
+            'buildConfig/externalModule.js',
+
+
             // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
-            'vendor/jquery-ui/ui/jquery-ui.js',
+            'vendor/jquery-ui/jquery-ui.js',
+
             // NOTE: bootstrap css imported in application.tpl.scss
             'vendor/sass-bootstrap/dist/js/bootstrap.js',
             'vendor/momentjs/moment.js',
-            'vendor/angular/angular.js',
             'vendor/angular-route/angular-route.js',
             'vendor/angular-resource/angular-resource.js',
             'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
@@ -119,9 +114,14 @@ module.exports = {
             'vendor/get-style-property/get-style-property.js',
             // get-size depends on get-style-property... it has to come after it
             'vendor/get-size/get-size.js',
-            'vendor/draggabilly/draggabilly.js'
+            'vendor/draggabilly/draggabilly.js',
 
+            'vendor/d3/d3.js',
 
+            'vendor/bowser/bowser.js',
+            'vendor/angular-growl-v2/build/angular-growl.js',
+            'vendor/angular-local-storage/dist/angular-local-storage.js',
+            'vendor/humanize-duration/humanize-duration.js'
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss
@@ -132,11 +132,12 @@ module.exports = {
             //'vendor/select2/select2-bootstrap.css',
             //'vendor/select2/select2.css'
 
-            'vendor/angular-tags/dist/angular-tags-0.3.1.css'
+            'vendor/angular-tags/dist/angular-tags-0.3.1.css',
+            'vendor/angular-growl-v2/build/angular-growl.css'
         ],
         assets: [
             // jquery-ui is stoopid, special case
-            function(template) {
+            function (template) {
                 template.src = 'vendor/jquery-ui/themes/redmond/images/**';
                 template.dest += "styles/images/";
 

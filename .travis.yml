@@ -4,7 +4,7 @@ node_js:
 
 # Karma requires a specific version due to dependency issues.
 before_install:
-  - npm install --quiet -g karma@0.10.10
+  - npm install --quiet -g karma codeclimate-test-reporter
 
 before_script:
   - export DISPLAY=:99.0
@@ -12,5 +12,12 @@ before_script:
   - npm install --quiet -g grunt-cli bower
   - bower install
 
-script: grunt
-
+script:
+  - grunt
+  - coverage=$(ls -d coverage/*/)
+  - echo "$coverage"
+  - codeclimate < "${coverage}lcov.info"
+env:
+  global:
+    # Code climate token encypted with travis gem (travis encrypt CODECLIMATE_REPO_TOKEN=fdf...)
+    secure: SAZjrjbYfihqvEsZLbyTuZzquiwgk3oIgJHwxqVwx+UWhQ8bZTRWKnsEhJXgCqNryK1C+HQMVgI1lWdnsjY/qTIPbJ0Ep8zRg+SGIijsUWS0iA22EFA877/xAzqVY0Elplc0hCwd51EFnohlB4A9RjdBV4hl+7FAnEdoN9s+YmE=

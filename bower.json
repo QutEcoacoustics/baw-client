@@ -1,29 +1,33 @@
 {
-  "name": "ng-boilerplate",
-  "version": "0.0.17",
+  "name": "baw-client",
+  "version": "0.12.0",
   "devDependencies": {
-    "angular": "1.2.x",
-    "angular-mocks": "~1.2.x",
-    "angular-route": "~1.2.x",
-    "angular-resource": "~1.2.x",
-    "angular-bootstrap": "~0.11.0",
-    "angular-ui-router": "~0.2.x",
-    "angular-ui-utils": "latest",
-    "sass-bootstrap": "3.0.2",
-    "hint.css": "https://github.com/chinchang/hint.css.git",
-    "modernizr": "~2.8.x",
-    "jquery-ui": "~1.10.3",
-    "momentjs": "~2.6.x",
-    "jasmine-matchers": "https://github.com/JamieMason/Jasmine-Matchers.git#develop",
-    "objectdiff": "https://github.com/NV/objectDiff.js.git",
-    "lodash": "~2.4.x",
+    "angular": "1.3.x",
+    "angular-bootstrap": "~0.12.0",
+    "angular-growl-v2": "~0.7.0",
+    "angular-local-storage": "~0.1.x",
+    "angular-mocks": "~1.3.x",
+    "angular-resource": "~1.3.x",
+    "angular-route": "~1.3.x",
+    "angular-sanitize": "~1.3.x",
     "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
-    "angular-sanitize": "~1.2.x",
-    "draggabilly": "~1.1.x"
+    "angular-ui-utils": "latest",
+    "bowser": "0.7.x",
+    "d3": "~3.4.x",
+    "draggabilly": "~1.1.x",
+    "hint.css": "https://github.com/chinchang/hint.css.git",
+    "humanize-duration": "~2.1.x",
+    "jasmine-expect": "1.x",
+    "jquery-ui": "~1.11.x",
+    "lodash": "~2.4.x",
+    "modernizr": "~2.8.x",
+    "momentjs": "~2.8.x",
+    "objectdiff": "https://github.com/NV/objectDiff.js.git",
+    "sass-bootstrap": "3.0.2"
   },
   "dependencies": {},
+  "private": true,
   "resolutions": {
-    "angular": ">1.2.6"
-  },
-  "private": true
+    "angular": "1.3.x"
+  }
 }

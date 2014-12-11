@@ -1,0 +1,40 @@
+<div id="content">
+    <h1>BDCloud2014 Demo Page</h1>
+
+    <style scoped="scoped">
+        img {
+            width: 1440px;
+            height: 316px;
+        }
+
+        img.small {
+            width: 100%;
+            height: 100%;
+        }
+
+        .panel {
+            -webkit-column-break-inside: avoid;
+        }
+
+        div.small {
+            -webkit-column-count: 3;
+        }
+    </style>
+
+    <label>
+        <input type="checkbox" ng-checked="false" ng-model="smaller"> Make images smaller
+    </label>
+    <label>
+        <input type="checkbox" ng-checked="false" ng-model="backups"
+               ng-change="showBackups()"  > Show backup images
+    </label>
+
+    <div ng-class="{'small':smaller}">
+        <div class="panel" ng-repeat="dd in demoData">
+            <h2>{{dd.title}}&nbsp;<small>{{dd.date}}</small></h2>
+
+            <br/>
+            <img ng-src="{{dd.url}}" ng-class="{'small':smaller}">
+        </div>
+    </div>
+</div>

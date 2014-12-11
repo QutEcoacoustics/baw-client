@@ -1,0 +1,22 @@
+#audioRecordingDisplay .year {
+  border: 1px solid black;
+  text-align:center;
+  height: 40px;
+  float:left;
+  margin: 3px;
+}
+
+#audioRecordingDisplay .month {
+  border: 1px solid blue;
+  height: 100%;
+  width: 10px;
+  float:left;
+}
+
+#audioRecordingDisplay .day {
+  border: 1px solid red;
+  height: 100%;
+  width: 10px;
+  float:left;
+}
+

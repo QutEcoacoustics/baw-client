@@ -1,0 +1,201 @@
+$on-color-indicator: $brand-success;
+$off-color-indicator: $gray-light;
+$background: $btn-default-bg;
+$border: $btn-default-border;
+$color: $btn-default-color;
+$toggle-switch-height: $line-height-computed + 2px;
+$led-size: 0.5em;
+
+@mixin toggle-transition($props...) {
+  @include vendor-prefix(transition-property, $props);
+  @include vendor-prefix(transition-duration, 0.5s);
+  @include vendor-prefix(transition-timing-function, easeInOutCubic);
+}
+
+@mixin small-size {
+  padding: 2px 5px;
+  line-height: $line-height-small;
+  font-size: $font-size-small;
+}
+
+@mixin height-hide {
+  //display: table-row;
+  height: 0;
+  overflow-y: hidden;
+  line-height: 0;
+  visibility: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+  &.active {
+    height: auto;
+    visibility: visible;
+
+    @include small-size;
+  }
+}
+
+@mixin switch-width {
+  display: inline-block;
+  width: 50%;
+  overflow: hidden;
+}
+
+toggle-switch {
+  @include small-size;
+
+  & .toggle-switch-wrapper {
+    @extend .btn;
+
+    color: $color;
+    background-color: $background;
+    border-color: $border;
+    padding: 0;
+    margin: 0;
+    height: $toggle-switch-height;
+    overflow: hidden;
+
+
+    &.on {
+      border-color: $btn-success-border;
+
+    }
+
+    .toggle-switch-knob, .toggle-switch-on, .toggle-switch-off, .toggle-switch-status {
+      @include small-size;
+    }
+
+    &[disabled] {
+      @include vendor-prefix(user-select, none);
+      cursor: not-allowed;
+      background-color: $background;
+      border-color: $border;
+    }
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      color: $color;
+      background-color: darken($background, 8%);
+      border-color: darken($border, 12%);
+    }
+
+    // switch group
+    & > div {
+      display: inline-block;
+      font-size: 0;
+      margin: 0;
+      padding: 0;
+      vertical-align: middle;
+
+    }
+
+    // led indicator
+    & .toggle-switch-status {
+      display: inline-block;
+      line-height: 1.0;
+
+      //margin-top: -0.1em;
+
+      & .toggle-switch-status-led {
+        border-radius: $led-size / 2.0;
+        width: $led-size;
+        height: $led-size;
+        padding: 0;
+        margin: auto 0;
+      }
+      &.on .toggle-switch-status-led {
+        background-color: $on-color-indicator;
+        @include vendor-prefix(box-shadow, 0 0 5px $brand-success);
+      }
+
+      &.off .toggle-switch-status-led {
+        background-color: $off-color-indicator;
+      }
+
+    }
+
+    // push mode
+    &[mode='push-toggle'] {
+      .toggle-switch-knob {
+        display: none;
+      }
+
+      .toggle-switch-on {
+        @include height-hide;
+      }
+
+      .toggle-switch-off {
+        @include height-hide;
+      }
+    }
+
+    // slide mode
+    &[mode='slide-toggle'] {
+      .toggle-switch-status {
+        display: none;
+      }
+
+      & > div.off {
+        @include vendor-prefix(transform, translateX(calc(-50% - 1px)));
+      }
+
+      & > div.on {
+      }
+
+      .toggle-switch-knob {
+        @include switch-width;
+        border: 1px solid $border;
+        border-radius: $border-radius-small;
+        height: $toggle-switch-height;
+        top: -1px;
+        position: relative;
+        padding-top: 2px;
+        width: calc(50% + 1px)
+      }
+
+      .toggle-switch-on {
+        @include switch-width;
+        background-color: rgba(#dff0d8, 0.6);
+
+      }
+
+      .toggle-switch-off {
+        @include switch-width;
+      }
+    }
+
+  }
+
+  & .active {
+  }
+
+  // only animate when necessary
+  &.toggle-switch-animate {
+    .toggle-switch-wrapper {
+      @include toggle-transition(border-color);
+
+      &.on {
+        @include toggle-transition(border-color);
+      }
+
+      & .toggle-switch-status {
+        &.on .toggle-switch-status-led {
+          @include toggle-transition(box-shadow, background-color);
+        }
+        &.off .toggle-switch-status-led {
+          @include toggle-transition(box-shadow, background-color);
+        }
+      }
+
+      &[mode='slide-toggle'] {
+        & > div.off {
+          @include toggle-transition(transform);
+        }
+        & > div.on {
+          @include toggle-transition(transform);
+        }
+      }
+    }
+  }
+}

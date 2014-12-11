@@ -1,0 +1,52 @@
+#audioRecordingTimeline .chart {
+  shape-rendering: crispEdges;
+}
+
+#audioRecordingTimeline .mini text {
+  font: 9px sans-serif;
+}
+
+#audioRecordingTimeline .main text {
+  font: 8px sans-serif;
+}
+
+#audioRecordingTimeline .miniItem0 {
+  fill: darksalmon;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .miniItem1 {
+  fill: darkolivegreen;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .miniItem2 {
+  fill: slategray;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .miniItem3 {
+  fill: #8f7f6f;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .miniItem4 {
+  fill: #7a6f8f;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .miniItem5 {
+  fill: #8f6f8f;
+  fill-opacity: .7;
+  stroke-width: 6;
+}
+
+#audioRecordingTimeline .brush .extent {
+  stroke: gray;
+  fill: dodgerblue;
+  fill-opacity: .365;
+}

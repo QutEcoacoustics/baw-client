@@ -4,19 +4,18 @@
     <div class="row">
         <div class="col-md-12">
             <div class="library-single"
-                 data-ng-style="{width:annotation.converters.conversions.enforcedImageWidth + 100}">
+                 ng-style="{width:annotation.converters.conversions.enforcedImageWidth + 100}">
                 <div class="library-spectrogram">
-                    <img data-ng-src="{{annotation.media.availableImageFormats.png.url}}"
-                         data-ng-style="{width: annotation.converters.conversions.enforcedImageWidth, height: annotation.converters.conversions.enforcedImageHeight}">
+                    <img ng-src="{{annotation.media.available.image.png.url}}"
+                         ng-style="{width: annotation.converters.conversions.enforcedImageWidth, height: annotation.converters.conversions.enforcedImageHeight}">
                     <grid-lines configuration="annotation.gridConfig" class="library-spectrogram-grid"></grid-lines>
                     <div class="library-spectrogram-bounds"
-                         data-ng-style="{top: annotation.bounds.top, left: annotation.bounds.left, width: annotation.bounds.width, height: annotation.bounds.height}"></div>
+                         ng-style="{top: annotation.bounds.top, left: annotation.bounds.left, width: annotation.bounds.width, height: annotation.bounds.height}"></div>
                 </div>
                 <audio id="annoSingleAudio{{$index}}" controls
-                       data-ng-style="{width:annotation.converters.conversions.enforcedImageWidth}">
-                    <source data-ng-repeat="resource in annotation.media.availableAudioFormats"
-                            data-ng-src="{{resource.url}}" src=""
-                            type="{{resource.mimeType}}">
+                       ng-style="{width:annotation.converters.conversions.enforcedImageWidth}">
+                    <source ng-repeat="key in annotation.media.available.audioOrder" ng-src="{{annotation.media.available.audio[key].url}}" src=""
+                            type="{{annotation.media.available.audio[key].mimeType}}">
                     Your browser does not support the audio element.
                 </audio>
 
@@ -27,11 +26,11 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="pager">
-                <li class="previous" data-ng-show="annotation.paging.prevEvent.link">
-                    <a data-ng-href="{{annotation.paging.prevEvent.link}}">&larr; Previous</a>
+                <li class="previous" ng-show="annotation.paging.prevEvent.link">
+                    <a ng-href="{{annotation.paging.prevEvent.link}}">&larr; Previous</a>
                 </li>
-                <li class="next" data-ng-show="annotation.paging.nextEvent.link">
-                    <a data-ng-href="{{annotation.paging.nextEvent.link}}">Next &rarr;</a>
+                <li class="next" ng-show="annotation.paging.nextEvent.link">
+                    <a ng-href="{{annotation.paging.nextEvent.link}}">Next &rarr;</a>
                 </li>
             </ul>
         </div>
@@ -50,30 +49,31 @@
                            class="list-group-item" title="Tag.">
                             <span class="glyphicon glyphicon-tags"></span>&nbsp;
                             <span class="badge">{{tag.typeOfTag.replace('_',' ')}}</span>
-                            <span class="badge" data-ng-show="tag.retired">retired</span>
-                            <span class="badge" data-ng-show="tag.isTaxanomic">taxonomic</span>
+                            <span class="badge" ng-show="tag.retired">retired</span>
+                            <span class="badge" ng-show="tag.isTaxanomic">taxonomic</span>
                             {{tag.text}} (ID {{tag.id}})
                         </a>
                         <a data-ng-show="annotation.isReference"
                            data-ng-href="{{annotation.urls.isReference}}"
+
                            class="list-group-item" title="Reference tag.">
                             <span class="glyphicon glyphicon-book"></span>&nbsp;
                             Reference Tag
                         </a>
-                        <a data-ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Start date.">
+                        <a ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Start date.">
                             <span class="glyphicon glyphicon-record"></span>&nbsp;
                             Created {{annotation.audioEventStartDate | date: 'medium'}}
                         </a>
-                        <a data-ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Duration.">
+                        <a ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Duration.">
                             <span class="glyphicon glyphicon-time"></span>&nbsp;
                             {{annotation.annotationDurationRounded}} seconds duration
                         </a>
-                        <a data-ng-repeat="project in annotation.projects"
-                           data-ng-href="{{$parent.createProjectUrl(project.id)}}" target="_self" class="list-group-item" title="Project name.">
+                        <a ng-repeat="project in annotation.projects"
+                           ng-href="{{$parent.createProjectUrl(project.id)}}" target="_self" class="list-group-item" title="Project name.">
                             <span class="glyphicon glyphicon-home"></span>&nbsp;
                             Project: {{project.name}}
                         </a>
-                        <a data-ng-href="{{annotation.urls.site}}" target="_self" class="list-group-item" title="Site name.">
+                        <a ng-href="{{annotation.urls.site}}" target="_self" class="list-group-item" title="Site name.">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
                             Site: {{annotation.siteName}}
                         </a>
@@ -82,10 +82,11 @@
                             Audio recording: {{annotation.audioRecordingId}}
                         </a>
                         <a data-ng-href="{{annotation.urls.user}}" target="_self" class="list-group-item" title="User.">
+
                             <span class="glyphicon glyphicon-user"></span>&nbsp;
                             {{annotation.ownerName }}
                         </a>
-                        <a data-ng-href="{{annotation.urls.similar}}" class="list-group-item"
+                        <a ng-href="{{annotation.urls.similar}}" class="list-group-item"
                            title="Find similar annotations.">
                             <span class="glyphicon glyphicon-search"></span>&nbsp;
                             Find Similar
