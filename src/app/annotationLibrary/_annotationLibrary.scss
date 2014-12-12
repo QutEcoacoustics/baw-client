@@ -57,6 +57,15 @@ $loadGifPath: image-url('load.gif');
 
 .library-single-info {
   margin: 0 auto 0 auto;
+
+  & .reported {
+    color: $brand-danger;
+    margin: 0 $padding-base-horizontal;
+  }
+
+  & .reported-comment {
+    color: $gray-lighter;
+  }
 }
 
 /* Shared spectrogram and grid  */

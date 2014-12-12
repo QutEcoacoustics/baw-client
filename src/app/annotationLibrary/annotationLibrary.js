@@ -313,15 +313,15 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
         }])
     .controller('AnnotationItemCtrl',
     ['$scope', '$location', '$resource', '$routeParams', '$url',
-        'conf.paths', 'conf.constants', 'bawApp.unitConverter',
+        'conf.paths', 'conf.constants', 'bawApp.unitConverter', 'moment',
         'AudioEvent', 'Tag',
-        'Media', 'baw.models.Media', 'UserProfile', 'AudioEventComment',
+        'Media', 'baw.models.Media', 'UserProfileEvents', 'UserProfile', 'AudioEventComment',
         function ($scope, $location, $resource, $routeParams, $url,
-                  paths, constants, unitConverter,
+                  paths, constants, unitConverter, moment,
                   AudioEvent, Tag,
-                  MediaService, Media, UserProfile, AudioEventComment) {
+                  MediaService, Media, UserProfileEvents, UserProfile, AudioEventComment) {
 
-            $scope.$on(UserProfile.eventKeys.loaded, profileLoaded);
+            $scope.$on(UserProfileEvents.loaded, profileLoaded);
             if (UserProfile.profile && UserProfile.profile.preferences) {
                 profileLoaded(null, UserProfile);
             }
@@ -399,24 +399,31 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                     $routeParams.audioEventId + '#' + audioEventCommentId
             };
 
-            $scope.formatTimeAgo = function formatTimeAgo(time, formatString) {
-                return moment(time, formatString).fromNow();
+            $scope.formatTimeAgo = function formatTimeAgo(date) {
+                if (date) {
+                    return moment(date).fromNow();
+                }
+                else {
+                    return "unknown";
+                }
             };
 
             $scope.createComment = function createComment() {
-                AudioEventComment.save(
-                    {audioEventId: $routeParams.audioEventId}, // parameters
-                    {comment: $scope.newComment.text}, // post data
-                    function createCommentSuccess(value, responseHeaders) {
-                        console.log('create success', arguments);
-                        $scope.newComment.errors = [];
-                        $scope.newComment.text = '';
-                        reloadComments();
-                    },
-                    function createCommentError(httpResponse) {
-                        console.log('create failure', arguments);
-                        $scope.newComment.errors = httpResponse.data.comment;
-                    });
+                if($scope.createCommentForm.$valid) {
+                    AudioEventComment.save(
+                        {audioEventId: $routeParams.audioEventId}, // parameters
+                        {comment: $scope.newComment.text}, // post data
+                        function createCommentSuccess(value, responseHeaders) {
+                            console.log('create success', arguments);
+                            $scope.newComment.errors = [];
+                            $scope.newComment.text = '';
+                            reloadComments();
+                        },
+                        function createCommentError(httpResponse) {
+                            console.log('create failure', arguments);
+                            $scope.newComment.errors = httpResponse.data.comment;
+                        });
+                }
             };
 
             $scope.deleteComment = function deleteComment(commentText, audioEventCommentId) {
@@ -441,13 +448,15 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 }
             };
 
-            $scope.updateComment = function updateComment(audioEventCommentId) {
+            function updateCommentBase(id, body) {
                 AudioEventComment.update(
+                    // url parameters
                     {
                         audioEventId: $routeParams.audioEventId,
-                        audioEventCommentId: audioEventCommentId
-                    }, // parameters
-                    {comment: $scope.editComment.text}, // post data
+                        audioEventCommentId: id
+                    },
+                    // body
+                    body,
                     function updateCommentSuccess(value, responseHeaders) {
                         console.log('update success', arguments);
                         $scope.editComment.errors = [];
@@ -459,11 +468,27 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                         console.log('update failure', arguments);
                         $scope.editComment.errors = httpResponse.data.comment;
                     });
+            }
+
+            $scope.updateComment = function updateComment(comment, updateForm) {
+                if(updateForm.$valid) {
+                    updateCommentBase(comment.id, {
+                        comment: comment.comment
+                    });
+                    comment.editing = false;
+                }
             };
 
-            $scope.editComment = function editComment(commentText, audioEventCommentId) {
-                $scope.editComment.id = audioEventCommentId;
-                $scope.editComment.text = commentText;
+            $scope.editComment = function editComment(comment) {
+                comment.editing = true;
+            };
+
+            $scope.reportComment = function reportComment(comment) {
+                comment.flag = "report";
+                updateCommentBase(comment.id, {
+                                      flag: comment.flag
+                                  });
+
             };
 
             function profileLoaded(event, userProfile) {
@@ -475,7 +500,11 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 AudioEventComment.query(
                     {audioEventId: $routeParams.audioEventId},
                     function audioEventCommentSuccess(value, responseHeaders) {
-                        $scope.comments = value;
+                        $scope.comments = value.data;
+
+                        $scope.comments.forEach(function(value) {
+
+                        });
                     });
 
             }

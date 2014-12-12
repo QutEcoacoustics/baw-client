@@ -46,6 +46,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param UserProfile
          * @param Bookmark
          * @param UserProfileEvents
+         * @param moment
          */
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,

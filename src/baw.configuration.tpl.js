@@ -57,7 +57,7 @@ angular.module('bawApp.configuration', ['url'])
                         settings: "/my_account/prefs"
                     },
                     audioEventComment: {
-                        show: '/audio_events/{audioEventId}/audio_event_comments/{audioEventCommentId}'
+                        show: '/audio_events/{audioEventId}/comments/{audioEventCommentId}'
                     },
                     bookmark: {
                         show: "/bookmarks/{bookmarkId}"

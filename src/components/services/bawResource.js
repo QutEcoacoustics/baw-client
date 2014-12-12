@@ -25,6 +25,7 @@ angular.module("bawApp.services.resource", ["ngResource"])
 
             var a = actions || {};
             a.update = a.update || { method: 'PUT' };
+            a.query = {method: "GET", isArray: false};
             var resource = $resource(convertedPath, paramDefaults, a);
 
             resource.modifiedPath = convertedPath;

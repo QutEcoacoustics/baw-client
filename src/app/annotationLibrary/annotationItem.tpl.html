@@ -58,7 +58,7 @@
 
                            class="list-group-item" title="Reference tag.">
                             <span class="glyphicon glyphicon-book"></span>&nbsp;
-                            Reference Tag
+                            Reference Annotation
                         </a>
                         <a ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Start date.">
                             <span class="glyphicon glyphicon-record"></span>&nbsp;
@@ -116,17 +116,19 @@
                                     <small title="now">now</small>
                                 </h4>
 
-                                <form role="form">
+                                <form role="form" name="createCommentForm">
                                     <div class="form-group" ng-class="{'has-error': newComment.errors.length > 0}">
-                                        <textarea class="form-control"
+                                        <textarea class="form-control" required
                                                   placeholder="{{comments.length < 1 ? 'Add a comment' : 'Continue the discussion'}}"
                                                   style="width:90%" id="addAnnotationComment"
                                                   ng-model="newComment.text"></textarea>
                                         <span class="help-block" ng-show="newComment.errors.length > 0"
                                               ng-repeat="error in newComment.errors">{{error}}</span>
                                     </div>
-                                    <button type="submit" class="btn btn-default" ng-click="createComment()">Post
-                                    </button>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-default" ng-click="createComment()">Post
+                                        </button>
+                                    </div>
                                 </form>
 
                             </div>
@@ -140,40 +142,48 @@
                             </a>
 
                             <div class="media-body">
-                                <p class="pull-right" ng-show="comment.updaterId == profile.id">
-                                    <a href="{{$parent.createCommentLinkUrl(comment.id)}}">link</a> |
-                                    <a href="" ng-click="editComment(comment.comment, comment.id)">edit</a> |
-                                    <a href="" ng-click="deleteComment(comment.comment, comment.id)">delete</a>
-                                </p>
+                                <div class="pull-right">
+                                    <a href="{{$parent.createCommentLinkUrl(comment.id)}}">link</a>
 
-                                <p class="pull-right" ng-show="comment.updaterId != profile.id">
-                                    <a href="{{$parent.createCommentLinkUrl(comment.id)}}">link</a> |
-                                    <a href="" ng-click="reportComment(comment.id)">report</a>
-                                </p>
+                                    <ng-switch class="btn-group btn-group-xs"
+                                               role="group" on="comment.creatorId == profile.id">
+                                            <button ng-switch-when="true" type="button" class="btn btn-default"
+                                                    ng-click="editComment(comment)">edit</button>
+                                            <button ng-switch-when="true" type="button" class="btn btn-default"
+                                                    ng-click="deleteComment(comment.comment, comment.id)">delete</button>
+                                            <button ng-switch-when="false" type="button" class="btn btn-default"
+                                                    ng-show="!comment.flag"
+                                                    ng-click="reportComment(comment)">report</button>
+                                    </ng-switch>
+                                    <span class="reported glyphicon glyphicon-warning-sign"
+                                           ng-show="comment.flag"
+                                           title="This comment has been reported as inappropriate" ></span>
+                                </div>
+
                                 <h4 class="media-heading">
                                     {{comment.updater.userName}}
                                     <small title="{{comment.updatedAt}}">
-                                        last change {{$parent.formatTimeAgo(comment.updatedAt, 'YYYY-MM-DDTHH:mm:ssZZ')}}
+                                        last change {{formatTimeAgo(comment.updatedAt)}}
                                     </small>
                                 </h4>
-                                <p ng-show="$parent.editComment.id != comment.id">
+                                <p ng-show="!comment.editing" ng-class="{'reported-comment':comment.flag}">
                                     {{comment.comment}}
                                 </p>
 
-                                <form role="form" ng-show="$parent.editComment.id == comment.id">
+                                <form role="form" name="updateForm" ng-show="comment.editing" >
                                     <div class="form-group" ng-class="{'has-error': editComment.errors.length > 0}">
-                                        <textarea class="form-control"
+                                        <textarea class="form-control" required
                                                   placeholder="Add a comment / Continue the discussion"
                                                   style="width:90%" id="{{'editAnnotationComment'+comment.id}}"
-                                                  ng-model="$parent.editComment.text"></textarea>
+                                                  ng-model="comment.comment"></textarea>
                                         <span class="help-block" ng-show="$parent.editComment.errors.length > 0"
                                               ng-repeat="error in $parent.editComment.errors">{{error}}</span>
                                     </div>
-                                    <button type="submit" class="btn btn-primary" ng-click="updateComment(comment.id)">
+                                    <button type="submit" class="btn btn-primary" ng-click="updateComment(comment, updateForm)">
                                         Update
                                     </button>
                                     <button type="submit" class="btn btn-default"
-                                            ng-click="$parent.editComment.id = null">
+                                            ng-click="comment.editing = false">
                                         cancel
                                     </button>
                                 </form>
