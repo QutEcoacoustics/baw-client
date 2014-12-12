@@ -1,17 +1,22 @@
 describe("The bawResource service", function () {
 
-    var Bookmark;
+    var $httpBackend, bawResource, $rootScope;
 
     beforeEach(module('bawApp.services'));
 
-    beforeEach(inject(["Bookmark", function (providedBookmark) {
-        Bookmark = providedBookmark;
+    beforeEach(inject(["$injector", "bawResource", "$rootScope", function ($injector, providedBawResource, _$rootScope) {
+        $httpBackend = $injector.get('$httpBackend');
+
+        $httpBackend.when("GET", "/test").respond({data:[], meta:{}});
+
+        bawResource = providedBawResource;
+        $rootScope = _$rootScope;
     }]));
 
 
     it("should return a resource constructor that includes update/put", function () {
 
-        expect(Bookmark).toImplement({
+        expect(bawResource("/test")).toImplement({
             "get": null,
             "save": null,
             "query": null,
@@ -20,5 +25,25 @@ describe("The bawResource service", function () {
             "update": null,
             "modifiedPath": null
         });
+    });
+
+    it("should override $resource's query", function(done) {
+
+        // make "new" resource
+        var testResource = bawResource("/test");
+
+        var pass;
+        var result = testResource
+            .query().$promise
+            .then(function() {
+                pass = true;
+            }, function() {
+                pass = false;
+            });
+        $httpBackend.flush();
+
+        expect(pass).toBeTrue();
+
+        done();
     });
 });
