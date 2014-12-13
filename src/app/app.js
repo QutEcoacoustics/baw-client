@@ -63,7 +63,7 @@ var app = angular.module('baw',
                              "bawApp.vendorServices", /* Loads all vendor libraries that are automatically wrapped in a module */
 
 
-                             'url', /* a custom uri formatter */
+                             "url", /* a custom uri formatter */
                              'bawApp.configuration', /* a mapping of all static path configurations
                                                         and a module that contains all app configuration */
 
@@ -81,10 +81,7 @@ var app = angular.module('baw',
 
                              'bawApp.filters', /* our filters.js     */
 
-
-                             'bawApp.services.queryBuilder',
                              'bawApp.services', /* our services.js    */
-                             'bawApp.services.unitConverter',
 
                              "baw.models",
 

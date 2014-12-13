@@ -1,11 +1,14 @@
-var bawss = bawss || angular.module("bawApp.services", ["ngResource", "bawApp.vendorServices", "bawApp.configuration"]);
-
-bawss
-    .constant("UserProfileEvents", {
+angular
+    .module("bawApp.services.userProfile", [])
+    .constant(
+    "UserProfileEvents",
+    {
         "loaded": "UserProfile:Loaded"/*,
-         "preferencesChanged": "UserProfile:PreferencesChanged"*/
+     "preferencesChanged": "UserProfile:PreferencesChanged"*/
     })
-    .factory("UserProfile", [
+    .factory(
+    "UserProfile",
+    [
         "$rootScope",
         "$http",
         "conf.paths",
@@ -16,8 +19,7 @@ bawss
             var profileUrl = paths.api.routes.user.profileAbsolute,
                 preferencesUrl = paths.api.routes.user.settingsAbsolute;
 
-            var exports = {
-            };
+            var exports = {};
 
             var throttleCount = 0,
                 throttleAmount = 1000;
@@ -47,22 +49,22 @@ bawss
 
             exports.profile = null;
 
-            exports.get = $http.get(profileUrl).then(
-                    function success(response) {
-                        console.log("User profile loaded");
+            exports.get = $http
+                .get(profileUrl)
+                .then(function success(response) {
+                          console.log("User profile loaded");
 
-                        exports.profile = (new baw.UserProfile(response.data, constants.defaultProfile));
-                        return exports.profile;
-                    },
-                    function error(response) {
-                        console.error("User profile load failed, default profile loaded", response);
+                          exports.profile = (new baw.UserProfile(response.data,
+                                                                 constants.defaultProfile));
+                          return exports.profile;
+                      }, function error(response) {
+                          console.error("User profile load failed, default profile loaded", response);
 
-                        exports.profile = (new baw.UserProfile(null, constants.defaultProfile));
-                    }
-                ).finally(function () {
-                        $rootScope.$broadcast(UserProfileEvents.loaded, exports);
-                    });
-
+                          exports.profile = (new baw.UserProfile(null, constants.defaultProfile));
+                      }
+            ).finally(function () {
+                          $rootScope.$broadcast(UserProfileEvents.loaded, exports);
+                      });
 
             exports.listen = function (events) {
                 angular.forEach(events, function (callback, key) {
@@ -78,6 +80,6 @@ bawss
 
             // return api
             return exports;
-
         }
-    ]);
+    ]
+);
