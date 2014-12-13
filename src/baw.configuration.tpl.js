@@ -243,5 +243,32 @@ angular.module('bawApp.configuration', ['url'])
         bookmark: {
             lastPlaybackPositionName: "Last playback position",
             appCategory: "<<application>>"
+        },
+        predictiveCache: {
+
+            profiles: [
+                {
+                    name: "Media cache ahead",
+                    match: "some url",
+                    request: ["one url", "another url"],
+                    progression: [
+                        function(data, previous) {
+                            return previous + 30.0;
+                        },
+                        function(data, previous) {
+                            var next = previous + 30.0;
+                            if (next >= data.max) {
+                                return;
+                            }
+                            else {
+                                return next;
+                            }
+                        }
+                    ],
+                    count: 10,
+                    method: "HEAD"
+
+                }
+            ]
         }
     });
