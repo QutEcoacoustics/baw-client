@@ -1,7 +1,8 @@
 angular
     .module("bawApp.services.queryBuilder", ["bawApp.configuration"])
     .factory(
-    "QueryBuilder", [
+    "QueryBuilder",
+    [
         "conf.constants",
         function (constants) {
 

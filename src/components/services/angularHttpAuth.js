@@ -4,7 +4,7 @@
  * License: MIT
  * https://github.com/witoldsz/angular-http-auth/tree/gh-pages
  */
-angular.module('http-auth-interceptor', [])
+angular.module("http-auth-interceptor", [])
 
     .provider('authService', function () {
                   /**
