@@ -8,7 +8,7 @@ angular.module(
         "bawApp.services.resource",
         "bawApp.services.unitConverter",
         "bawApp.services.queryBuilder",
-
+        "bawApp.services.predictiveCache",
 
         // endpoint specific
         "bawApp.services.bookmark",
