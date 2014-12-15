@@ -13,16 +13,16 @@
   },
   "staging": {
     "apiRoot": "http://staging.EXAMPLE.org",
-    "siteRoot": "http://staging.EXAMPLE.org/public/angular_files",
-    "siteDir": "/public/angular_files/",
+    "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
+    "siteDir": "/system/listen_to/",
     "ga": {
       "trackingId": "<<PLACEHOLDER>>"
     }
   },
   "production": {
     "apiRoot": "http://production.EXAMPLE.org",
-    "siteRoot": "http://production.EXAMPLE.org/public/angular_files",
-    "siteDir": "/public/angular_files/",
+    "siteRoot": "http://production.EXAMPLE.org/system/listen_to",
+    "siteDir": "/system/listen_to/",
     "ga": {
       "trackingId": "<<PLACEHOLDER>>"
     }
