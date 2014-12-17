@@ -31,7 +31,9 @@ angular
                      delete window.d3;
                  }
                  else {
-                     console.warn("D3 not on window, hack not required");
+                     if (!window.jasmine) {
+                         console.warn("D3 not on window, hack not required");
+                     }
                  }
 
              }]);
