@@ -1,8 +1,31 @@
 angular
     .module("bawApp.services.predictiveCache", [])
     .factory(
+    "predictiveCacheInterceptor",
+    [
+        function () {
+            var _listeners = [];
+            return {
+                listeners: function() {
+                    return _listeners;
+                },
+                request: function pciRequest(httpConfig) {
+
+                    _listeners.forEach(function)
+
+                    return httpConfig;
+                }
+                /*
+                 requestError: ,
+                 response: ,
+                 responseError:
+                 */
+            };
+        }
+    ])
+    .factory(
     "predictiveCache",
-    ["$http", function ($http) {
+    ["$http", "predictiveCacheInterceptor", function ($http, predictiveCacheInterceptor) {
 
         var defaults = {
             name: null,
@@ -15,6 +38,8 @@ angular
         var acceptableVerbs = ["GET", "HEAD", "POST", "PUT", "DELETE"];
         var defaultProgression = 1;
         var unnamedProfiles = 0;
+
+        var profiles = {};
 
         function validateProfile(settings) {
             settings = angular.extend({}, defaults, settings);
@@ -63,7 +88,7 @@ angular
                 throw new Error("progression must be an array of numbers/functions");
             }
 
-            if(!angular.isNumber(settings.count) || settings.count < 0) {
+            if (!angular.isNumber(settings.count) || settings.count < 0) {
                 throw new Error("count must be a positive integer");
             }
 
@@ -74,6 +99,9 @@ angular
             return settings;
         }
 
+        function createInterceptor() {
+        };
+
         return function predictiveCache(profile) {
             if (!angular.isObject(profile)) {
                 throw new Error("A profile is required");
@@ -81,7 +109,11 @@ angular
 
             var settings = validateProfile(profile);
 
+            profiles[settings.name] = settings;
+
             return settings;
         };
-    }]
-);
+    }])
+    .config(['$httpProvider', function($httpProvider) {
+        $httpProvider.interceptors.push("predictiveCacheInterceptor");
+    }]);
