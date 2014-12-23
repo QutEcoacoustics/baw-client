@@ -205,8 +205,8 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'Authenticator', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url',
-          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url) {
+    .run(['$rootScope', '$location', '$route', '$http', 'Authenticator', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url', "predictiveCache", "conf.constants",
+          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constants) {
 
               // embed configuration for easy site-wide binding
               $rootScope.paths = paths;
@@ -342,6 +342,9 @@ var app = angular.module('baw',
               });    /* /deprecated */
 
               $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
+
+              // set up predictive cache service
+              predictiveCache(constants.predictiveCache.profiles["Media cache ahead"]($location, paths));
 
           }])
 
