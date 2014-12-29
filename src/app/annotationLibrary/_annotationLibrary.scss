@@ -1,5 +1,5 @@
 //$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
-$loadGifPath: image-url('load.gif');
+@import "../annotationViewer/annotationViewer";
 
 /* Library list */
 .annotation-paging {

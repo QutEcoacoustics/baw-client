@@ -5,56 +5,25 @@
  */
 
 
-$DEBUG: '<%= build_configs.current.key === "development" %>' == 'true';
+$DEBUG: "<%= build_configs.current.key === 'development' %>" == "true";
 //@debug "Debug build is #{$DEBUG}";
 
-//$IMAGE_ASSET_PATH: '<%= build_configs.current.siteDir %>';
+//$IMAGE_ASSET_PATH: '<//%= build_configs.current.siteDir %>';
 
 /**
 * First, we include jlong's Twitter Bootstrap SCSS files. Only the ones used in the
 * project should be imported as the rest are just wasting space.
 */
-@import '../../vendor/sass-bootstrap/lib/bootstrap.scss';
+@import "../../vendor/sass-bootstrap/lib/bootstrap.scss";
 
-@import "base.scss";
+/**
+ * Now import all partials.
+ * Partials in src/sass/** will be added first
+ */
+<% partials.forEach(function(path){ %>
+@import "<%= path %>";
+<% }); %>
 
-@import "layout";
-
-@import "time_formats";
-
-@import "touch/touch";
-
-@import "angularGrowlCustomisation";
-
-// TODO: create someway to automatically import files
-//@import "partials/*";
-
-
-@import "../app/audioControl/_volumeControl.scss";
-@import "../app/annotationViewer/annotation_viewer";
-@import "../app/annotationViewer/gridLines/gridLines";
-@import "../app/audioEvents/audio_events";
-@import "../app/annotationLibrary/annotationLibrary";
-@import "../app/bookmarks/bookmarks";
-@import "../app/d3Bindings/calendarView/calendarView";
-@import "../app/d3Bindings/timelineView/timelineView";
-@import "../app/d3Bindings/dotView/dotView";
-@import "../app/d3Bindings/terrainView/terrainView";
-@import "../app/d3Bindings/audioView/audioView";
-@import "../app/home/home";
-@import "../app/listen/listen";
-@import "../app/login/login_control";
-@import "../app/photos/photos";
-@import "../app/projects/projects";
-@import "../app/recordInformation/record_information";
-@import "../app/recordings/audio_recordings";
-@import "../app/recordings/recentRecordings/recentRecordings";
-@import "../app/demo/rendering";
-@import "../app/search/saved_searches";
-@import "../app/sites/sites";
-@import "../app/tags/tags";
-@import "../app/birdWalks/birdWalks";
-@import "../components/directives/baw-toggle/_bawToggle.scss";
 
 
 
