@@ -123,8 +123,8 @@ module.exports = function (grunt) {
         changelog: {
             main: {
                 options: {
-                    //after: "2013-09-05T10:18:39.4492679+10:00",
-                    //before: "now",
+                    from: "6dec81ca099cf2cc7840b02d2f27ff8bffbce954",
+                    //to: "HEAD"
                     dest: 'CHANGELOG.md',
                     template: 'buildConfig/changelog.tpl'
                 }
