@@ -1,0 +1,23 @@
+.visualize-content {
+  max-width: 1500px;
+  @include center-block;
+}
+
+.day-visualization {
+  text-align: center;
+
+  .meta-track {
+  }
+
+  .image-track {
+
+    .day-image-container {
+      position: relative;
+      display:  inline-block;
+
+      margin:   1em 1em 2em 1em;
+
+    }
+  }
+}
+

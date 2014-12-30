@@ -1,0 +1,41 @@
+$mini-backgrounds: darksalmon darkolivegreen slategray #8f7f6f #7a6f8f #8f6f8f;
+
+event-distribution-overview {
+
+
+    background-color: purple;
+    width: 100%;
+
+    & .chart {
+      shape-rendering: crispEdges;
+      background-color: greenyellow;
+    }
+
+    & .mini {
+      fill: blue;
+
+      & text {
+        font: 9px sans-serif;
+      }
+    }
+
+    .brush .extent {
+      stroke: gray;
+      fill: dodgerblue;
+      fill-opacity: .365;
+    }
+
+    @for $i from 1 through length($mini-backgrounds) {
+      $item: nth($mini-backgrounds, $i);
+
+      & .miniItem#{$i - 1} {
+        fill: $item;
+        stroke-width: 6;
+        fill-opacity: 0.7;
+      }
+    }
+
+}
+
+
+

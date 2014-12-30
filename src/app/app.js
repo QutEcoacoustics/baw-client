@@ -109,7 +109,8 @@ var app = angular.module('baw',
                              'bawApp.search',
                              'bawApp.tags',
                              'bawApp.users',
-                             'bawApp.birdWalks'
+                             'bawApp.birdWalks',
+                             "bawApp.visualize"
                          ])
 
     .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider', "$urlProvider", "casingTransformers",
@@ -168,9 +169,16 @@ var app = angular.module('baw',
                          title: 'Audio Events' }).
                      when('/library/:recordingId/audio_events/:audioEventId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationItemCtrl', title: 'Annotation :audioEventId'}).
 
-                     when('/demo/d3', {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
-                     when('/demo/rendering', {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' , fullWidth: true }).
-                     when('/demo/BDCloud2014', {templateUrl: paths.site.files.demo.bdCloud2014, controller: 'BdCloud2014Ctrl', title: 'BDCloud2014 demo' , fullWidth: true }).
+                     when(paths.site.ngRoutes.demo.d3, {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
+                     when(paths.site.ngRoutes.demo.rendering, {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' , fullWidth: true }).
+                     when(paths.site.ngRoutes.demo.bdCloud, {templateUrl: paths.site.files.demo.bdCloud2014, controller: 'BdCloud2014Ctrl', title: 'BDCloud2014 demo' , fullWidth: true }).
+
+                     when(paths.site.ngRoutes.visualize, {
+                         templateUrl: paths.site.files.visualize,
+                         controller: "VisualizeController",
+                         title: "Visualize audio distribution",
+                         fullWidth: true
+                     }).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
