@@ -5,7 +5,8 @@
 // MIT License
 // https://github.com/tpodom/angularjs-rails-resource
 
-angular.module('rails', [])
+angular
+    .module('rails', [])
     .constant('casingTransformers', (function () {
                   /**
                    * Old function worked via reference - deprecated

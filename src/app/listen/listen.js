@@ -411,7 +411,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return undefined;
                     }
 
-                    return moment($scope.model.media.recordedDate).add($scope.jumpToMinute, 'm').format("YYYY-MMM-DD, HH:mm:ss");
+                    return moment($scope.model.media.recordedDatep).add($scope.jumpToMinute, 'm').format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 
