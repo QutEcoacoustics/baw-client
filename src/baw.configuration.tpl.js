@@ -106,14 +106,16 @@ angular.module('bawApp.configuration', ['url'])
                         d3: 'demo/d3TestPage.tpl.html',
                         rendering: 'demo/rendering.tpl.html',
                         bdCloud2014: 'demo/BDCloud2014Demo.tpl.html'
-                    }
+                    },
+                    visualize: "visualize/visualize.tpl.html"
                 },
                 // routes used by angular
                 ngRoutes: {
                     recentRecordings: "/listen",
                     listen: "/listen/{recordingId}",
                     library: "/library",
-                    libraryItem: "/library/{recordingId}/audio_events/{audioEventId}"
+                    libraryItem: "/library/{recordingId}/audio_events/{audioEventId}",
+                    visualize: "/visualize"
                 },
                 // general links for use in <a />'s
                 links: {

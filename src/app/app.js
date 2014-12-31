@@ -109,7 +109,8 @@ var app = angular.module('baw',
                              'bawApp.search',
                              'bawApp.tags',
                              'bawApp.users',
-                             'bawApp.birdWalks'
+                             'bawApp.birdWalks',
+                             "bawApp.visualize"
                          ])
 
     .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider', "$urlProvider", "casingTransformers",
@@ -171,6 +172,13 @@ var app = angular.module('baw',
                      when('/demo/d3', {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
                      when('/demo/rendering', {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' , fullWidth: true }).
                      when('/demo/BDCloud2014', {templateUrl: paths.site.files.demo.bdCloud2014, controller: 'BdCloud2014Ctrl', title: 'BDCloud2014 demo' , fullWidth: true }).
+
+                     when(paths.site.ngRoutes.visualize, {
+                         templateUrl: paths.site.files.visualize,
+                         controller: "VisualizeController",
+                         title: "Visualize audio distribution",
+                         fullWidth: true
+                     }).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
