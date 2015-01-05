@@ -67,4 +67,5 @@ node_modules/
 build/
 bin/
 vendor/
+src/assets/temp
 .sass-cache

@@ -1,0 +1,5 @@
+The temp directory has been correctly moved out of source control.
+
+You can map it by making a junction to its location: ~\ownCloud\Shared\Ecoacoustics\Anthony\temp-website
+
+Example:  new-junction -TargetPath ~\ownCloud\Shared\Ecoacoustics\Anthony\temp-website -LiteralPath C:\Work\GitHub\baw-client\src\assets\temp

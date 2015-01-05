@@ -115,7 +115,12 @@ angular.module('bawApp.configuration', ['url'])
                     listen: "/listen/{recordingId}",
                     library: "/library",
                     libraryItem: "/library/{recordingId}/audio_events/{audioEventId}",
-                    visualize: "/visualize"
+                    visualize: "/visualize",
+                    demo: {
+                        d3: "/demo/d3",
+                        rendering: "/demo/rendering",
+                        bdCloud: "/demo/BDCloud2014"
+                    }
                 },
                 // general links for use in <a />'s
                 links: {
