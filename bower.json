@@ -13,7 +13,7 @@
     "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
     "angular-ui-utils": "latest",
     "bowser": "0.7.x",
-    "d3": "~3.4.x",
+    "d3": "~3.5.x",
     "draggabilly": "~1.1.x",
     "hint.css": "https://github.com/chinchang/hint.css.git",
     "humanize-duration": "~2.1.x",
