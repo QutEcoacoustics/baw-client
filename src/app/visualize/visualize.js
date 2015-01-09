@@ -7,13 +7,14 @@ angular
         "$http",
         function($scope, $http) {
 
-            // testing
+            // testing data
             $scope.recordingData = {};
             $http.get("assets/temp/dummyData.json").then(function(response) {
                 $scope.recordingData = response.data;
             }, function() {
                console.error("loading dummy data failed", arguments);
             });
+
 
 
 

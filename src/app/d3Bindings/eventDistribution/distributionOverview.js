@@ -11,7 +11,30 @@ angular
     "eventDistributionOverview",
     [
         function () {
+            // main functions
 
+            function setUp(element, data) {
+
+            }
+
+
+
+            // directive definition object
+            return {
+                restrict: "EA",
+                scope: {
+                    data: "="
+                },
+                link: function($scope, $element, attributes, controller, transcludeFunction) {
+
+                    var element = $element[0];
+
+
+
+                },
+                controller:"distributionController"
+
+            }
         }
     ]
 );
