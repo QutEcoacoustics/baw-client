@@ -8,7 +8,7 @@ angular
         function($scope, $http) {
 
             // testing data
-            $scope.recordingData = {};
+            $scope.recordingData = [];
             $http.get("assets/temp/dummyData.json").then(function(response) {
                 $scope.recordingData = response.data;
             }, function() {
