@@ -4,7 +4,21 @@ angular
     "distributionController",
     [
         "$scope",
-        function($scope, $element, $attrs) {
+        function distributionController($scope, $element, $attrs) {
+            console.debug("event distribution controller:init");
 
+            $scope.test = "hello world";
+
+            this.test = function() {
+                alert("hello world2");
+            }
         }
-    ]);
+    ])
+    .directive(
+    "eventDistribution",
+    function() {
+        return {
+            controller: "distributionController"
+        }
+    }
+);

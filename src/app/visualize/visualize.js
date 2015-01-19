@@ -15,6 +15,8 @@ angular
                console.error("loading dummy data failed", arguments);
             });
 
+            $scope.overviewOptions = {};
+
 
 
 

@@ -6,6 +6,6 @@ angular.module("bawApp.d3", [
     "bawApp.d3.timelineView",
     "bawApp.d3.eventDistribution.distributionOverview",
     "bawApp.d3.eventDistribution.distributionDetail",
-    "bawApp.d3.eventDistribution.distributionController"
-
+    "bawApp.d3.eventDistribution.distributionController",
+    "bawApp.d3.widgets"
 ]);
