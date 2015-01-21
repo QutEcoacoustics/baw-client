@@ -1,6 +1,6 @@
 $mini-backgrounds: darksalmon darkolivegreen slategray #8f7f6f #7a6f8f #8f6f8f;
 
-event-distribution-overview {
+event-distribution-overview, event-distribution-detail {
 
   // purple only for debugging
   background-color: purple;
@@ -9,6 +9,7 @@ event-distribution-overview {
 
   & svg {
     width: 100%;
+    fill: black;
   }
 
   & .chart {
@@ -16,12 +17,12 @@ event-distribution-overview {
     background-color: #ffffff;
   }
 
-  & .mini {
-    fill: black;
+  .laneLines {
+    stroke: lightgray;
+  }
 
-    & text {
-      font: 12px sans-serif;
-    }
+  .laneLinesGroup {
+
   }
 
   .brush .extent {
@@ -42,4 +43,23 @@ event-distribution-overview {
 
 }
 
+event-distribution-overview {
+  & .mini {
+
+  }
+
+  & text {
+    font: 12px sans-serif;
+  }
+}
+
+event-distribution-detail {
+  & .main {
+
+  }
+
+  & text {
+    font: 14px sans-serif;
+  }
+}
 

@@ -29,7 +29,7 @@ angular
                         // d3 should automatically work out the tick interval
                         //.ticks(d3.time.month, 1)
                         // TODO: provide a dynamic/multiscale set of time formats
-                        .tickFormat(d3.time.format("%y-%m"))
+                        //.tickFormat(d3.time.format("%y-%m"))
                         .tickSize(options.tickSize || defaultTickSize)
                         .tickPadding(options.tickPadding || defaultTickPadding);
 

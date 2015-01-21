@@ -18,20 +18,20 @@ angular
                     chart,
                     mini,
                     xAxis,
-                    miniX,
-                    miniY,
+                    xScale,
+                    yScale,
                     // this default value will be overwritten almost immediately
                     miniWidth = 1000,
                     // this default value will be overwritten almost immediately
                     miniHeight = 200,
-                    xAxisHeight = 60,
+                    xAxisHeight = 30,
                     margin = {
                         top: 5,
                         right: 20,
                         bottom: 5 + xAxisHeight,
                         left: 120
                     },
-                    laneHeight = 80,
+                    laneHeight = 60,
                     lanePaddingDomain = 0.125,
                     labelRectPadding = 5,
                     container = d3.select(target),
@@ -68,7 +68,6 @@ angular
                 that.minimum = null;
 
                 // init
-                console.debug("DistributionOverview:created", data);
                 create();
 
                 // public functions
@@ -81,7 +80,7 @@ angular
                     updateDimensions();
 
                     mini = createMini(chart);
-                    xAxis = new TimeAxis(mini, miniX, {y: miniHeight});
+                    xAxis = new TimeAxis(mini, xScale, {y: miniHeight});
                 }
 
                 function updateData(data) {
@@ -96,7 +95,7 @@ angular
                     if (data && data.items.length > 0) {
                         display();
 
-                        xAxis.update(miniX, [0, miniHeight]);
+                        xAxis.update(xScale, [0, miniHeight]);
                     }
                 }
 
@@ -161,7 +160,7 @@ angular
                      .attr({
                      x: 0, // TODO: -m[1] === -15
                      y: function (d) {
-                     return miniY(getCategoryIndex(d) + 0.5)
+                     return yScale(getCategoryIndex(d) + 0.5)
                      },
                      dy: ".5ex"
                      });
@@ -169,8 +168,8 @@ angular
 
                     // create interactive brush
                     that.brush = d3.svg.brush()
-                        // miniX is undefined at this point, it is updated later when data is added
-                        .x(miniX)
+                        // xScale is undefined at this point, it is updated later when data is added
+                        .x(xScale)
                         .on("brush", that.display);
 
                     // create surface for the brush
@@ -189,9 +188,9 @@ angular
                 function updateDataVariables(data) {
                     // public field - share the reference
                     that.items = data.items || [];
-                    that.lanes = d3.set(that.items.map(functions.getCategory)).values();
-                    that.maximum = Math.max.apply(null, that.items.map(functions.getHigh, functions));
-                    that.minimum = Math.min.apply(null, that.items.map(functions.getLow, functions));
+                    that.lanes = data.lanes || [];
+                    that.maximum = data.maximum;
+                    that.minimum = data.minimum;
                 }
 
                 /**
@@ -199,15 +198,15 @@ angular
                  */
                 function updateScales() {
                     // a normal linear scale also works
-                    miniX = d3.time.scale()
+                    xScale = d3.time.scale()
                         .domain([that.minimum, that.maximum])
                         .range([0, miniWidth]);
-                    miniY = d3.scale.linear()
+                    yScale = d3.scale.linear()
                         .domain([0, that.getLaneLength()])
                         .range([0, miniHeight]);
 
                     // update the brush
-                    that.brush.x(miniX);
+                    that.brush.x(xScale);
                 }
 
                 /**
@@ -217,7 +216,7 @@ angular
                 function updateMini(mini) {
                     // separator lines between categories
                     function getSeparatorLineY(d, i) {
-                        return miniY(i);
+                        return yScale(i);
                     }
 
                     mini.select(".laneLinesGroup")
@@ -230,7 +229,6 @@ angular
                             y1: getSeparatorLineY,
                             x2: miniWidth,
                             y2: getSeparatorLineY,
-                            stroke: "lightgray",
                             class: "laneLines"
                         });
 
@@ -245,7 +243,7 @@ angular
                             x: -labelRectPadding,
                             y: function (d, i) {
                                 // 0.5 shifts it halfway into lane
-                                return miniY(i + 0.5);
+                                return yScale(i + 0.5);
                             },
                             dy: ".5ex",
                             "text-anchor": "end",
@@ -258,15 +256,15 @@ angular
                             return "miniItem" + getCategoryIndex(d);
                         },
                         x: function (d) {
-                            return miniX(functions.getLow(d));
+                            return xScale(functions.getLow(d));
                         },
                         y: function (d) {
-                            return miniY(getCategoryIndex(d) + lanePaddingDomain);
+                            return yScale(getCategoryIndex(d) + lanePaddingDomain);
                         },
                         width: function (d) {
-                            return miniX(functions.getHigh(d)) - miniX(functions.getLow(d));
+                            return xScale(functions.getHigh(d)) - xScale(functions.getLow(d));
                         },
-                        height: miniY(1.0 - (2 * lanePaddingDomain))
+                        height: yScale(1.0 - (2 * lanePaddingDomain))
                     };
                     mini.select(".miniItemsGroup")
                         .selectAll()
@@ -288,7 +286,6 @@ angular
                 /**
                  * Updates the brush's extent (positions of minimum and maximum)
                  * and also updates the bounds as data (for binding).
-                 *
                  */
                 function display() {
                     var brushExtent = that.brush.extent();
@@ -331,65 +328,12 @@ angular
             // directive definition object
             return {
                 restrict: "EA",
-                scope: {
-                    data: "=",
-                    options: "="
-                },
-               // controller: "distributionController",
+                scope: false,
+                controller: "distributionController",
                 require:"^^eventDistribution",
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
-
                     var element = $element[0];
-                    $scope.options = $scope.options || {};
-
-                    // TODO: refactor the functions, they should not be data specific in this component
-                    var instance = new DistributionOverview(element, {items: $scope.data}, {
-                        getId: function (d) {
-                            return d.audioId;
-                        },
-                        getCategory: function (d) {
-                            return d.siteId;
-                        },
-                        getLow: function (d) {
-                            if ((typeof d.recordedDate) === "string") {
-                                d.recordedDate = new Date(d.recordedDate);
-                                d.minimumMilliseconds = d.recordedDate.getTime();
-                            }
-                            return d.minimumMilliseconds;
-                        },
-                        getHigh: function (d) {
-                            if ((typeof d.durationSeconds) === "string") {
-                                d.durationSeconds = Number(d.durationSeconds);
-                                d.durationMilliseconds = d.durationSeconds * 1000;
-                            }
-                            return this.getLow(d) + d.durationMilliseconds;
-                        },
-                        getText: function (d) {
-                            return d.audioId;
-                        },
-                        extentUpdate: function (newExtent) {
-                            function update() {
-                                $scope.options.overviewExtent = newExtent;
-                            }
-
-                            if (!$scope.$root.$$phase) {
-                                $scope.$apply(update);
-                            }
-                            else {
-                                $scope.$eval(update);
-                            }
-                        }
-                    });
-
-                    console.debug("test", $scope.test);
-
-                    // only watches changes to object reference
-                    $scope.$watch(function () {
-                        return $scope.data;
-                    }, function (newValue, oldValue) {
-                        instance.updateData({items: $scope.data});
-                    });
-
+                    controller.overview = new DistributionOverview(element, controller.data, controller.options.functions);
                 }
             }
         }

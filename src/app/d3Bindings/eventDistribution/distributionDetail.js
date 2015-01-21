@@ -24,27 +24,50 @@ angular
                     laneLinesGroup,
                     laneLabelsGroup,
                     mainItemsGroup,
+                    laneLabelMarginRight = 5,
+                    xAxisHeight = 30,
                     margin = {
                         top: 5,
                         right: 20,
-                        bottom: 5,
+                        bottom: 5 + xAxisHeight,
                         left: 120
                     },
                     // these are initial values only
                     // this is the width and height of the main group
                     mainWidth = 1000,
-                    mainHeight = 256;
+                    mainHeight = 256,
+                    laneHeight = 120;
 
                 // exports
                 this.updateData = updateData;
+                this.updateExtent = updateExtent;
+                this.items = [];
+                this.lanes = [];
+                this.minimum = null;
+                this.maximum = null;
+                this.visibleExtent = null;
 
                 // init
                 create();
 
                 // exported functions
 
-                function updateData() {
+                function updateData(data) {
+                    updateDataVariables(data);
 
+                    updateDimensions();
+
+                    updateScales();
+
+                    updateMain();
+                }
+
+                function updateExtent(extent) {
+                    that.visibleExtent = extent;
+
+                    updateScales();
+
+                    extentUpdateMain();
                 }
 
                 // other functions
@@ -57,6 +80,12 @@ angular
                 function createChart() {
                     chart = container.append("svg")
                         .classed("chart", true);
+                }
+
+                function updateDimensions() {
+                    mainWidth = calculateMainWidth();
+                    mainHeight = Math.max(getLaneLength() * laneHeight, laneHeight);
+                    chart.style("height", svgHeight());
                 }
 
                 function createMain() {
@@ -75,6 +104,97 @@ angular
 
                     xAxis = new TimeAxis(main, xScale, {y: mainHeight})
                 }
+
+                function updateDataVariables(data) {
+                    // public field - share the reference
+                    that.items = data.items || [];
+                    that.lanes = data.lanes || [];
+                    that.maximum = data.maximum;
+                    that.minimum = data.minimum;
+                }
+
+                function updateScales() {
+                    xScale = d3.time.scale()
+                        .domain(that.visibleExtent || [that.minimum, that.maximum])
+                        .range([0, mainWidth]);
+
+                    yScale = d3.scale.linear()
+                        .domain([0, getLaneLength()])
+                        .range([0, mainHeight]);
+                }
+
+
+                function updateMain() {
+
+                    // separator lines between categories
+                    function getSeparatorLineY(d, i) {
+                        return yScale(i);
+                    }
+                    laneLinesGroup.selectAll()
+                        .data(that.lanes)
+                        .enter()
+                        .append("line")
+                        .attr({
+                            x1: 0,
+                            y1: getSeparatorLineY,
+                            x2: mainWidth,
+                            y2: getSeparatorLineY,
+                            class: "laneLines"
+                        });
+
+                    // lane labels
+                    laneLabelsGroup.selectAll()
+                        .data(that.lanes)
+                        .enter()
+                        .append("text")
+                        .text(id)
+                        .attr({
+                            x: -laneLabelMarginRight,
+                            y: function (d, i) {
+                                // 0.5 shifts it halfway into lane
+                                return yScale(i + 0.5);
+                            },
+                            dy: ".5ex",
+                            "text-anchor": "end",
+                            class: "laneText"
+                        });
+
+                    extentUpdateMain();
+                }
+
+                /**
+                 * Called when the extent is updated to repaint rects
+                 */
+                function extentUpdateMain() {
+
+
+                    // finally update the axis
+                    if (data && data.items.length > 0) {
+                        xAxis.update(xScale, [0, mainHeight]);
+                    }
+
+                }
+
+                function isRectVisible(d) {
+                    return dataFunctions.getLow(d) >= that.visibleExtent
+                     || dataFunctions.getHigh() <= that.visibleExtent;
+                }
+
+                function getLaneLength() {
+                    return that.lanes && that.lanes.length || 0;
+                }
+
+                function calculateMainWidth() {
+                    return chart.node().getBoundingClientRect().width - margin.left - margin.right;
+                }
+
+                function svgHeight() {
+                    return mainHeight + margin.top + margin.bottom;
+                }
+
+                function id(a) {
+                    return a;
+                }
             }
         }
     ]
@@ -86,12 +206,12 @@ angular
             // directive definition object
             return {
                 restrict: "EA",
-                scope: {},
+                scope: false,
                 require: "^^eventDistribution",
+                controller: "distributionController",
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
-
-                    controller.detail = new DistributionDetail(element, {}, controller.dataFunctions);
+                    controller.detail = new DistributionDetail(element, controller.data, controller.options.functions);
                 }
             };
         }

@@ -4,11 +4,11 @@
         <small>Current filter: e.g. Project 341</small>
         <!--<textarea style="width:940px">{{recordingData}}</textarea>-->
     </section>
-    <div event-distribution>
+    <div event-distribution data="recordingData" options="distributionOptions">
         <section class="row">
             <h2>Overview</h2>
-            <event-distribution-overview data="recordingData" options="overviewOptions"></event-distribution-overview>
-            {{overviewOptions.overviewExtent}}
+            <event-distribution-overview> </event-distribution-overview>
+            {{distributionOptions.overviewExtent}}
         </section>
 
         <section class="row">
