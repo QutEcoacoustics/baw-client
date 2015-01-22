@@ -5,11 +5,16 @@ angular
     [
         "d3",
         function(d3) {
-            return function TimeAxis(targetGroup, _scale, options) {
+            return function TimeAxis(targetGroup, _scale, _options) {
                 // variables
                 var that = this,
-                    defaultTickSize = 6,
-                    defaultTickPadding = 8,
+                    defaultOptions = {
+                        tickSize: 6,
+                        tickPadding: 8,
+                        position: [0, 0],
+                        isVisible: true
+                    },
+                    options = angular.extend(defaultOptions, options),
                     scale = _scale || d3.time.scale(),
                     axisG;
 
@@ -30,28 +35,45 @@ angular
                         //.ticks(d3.time.month, 1)
                         // TODO: provide a dynamic/multiscale set of time formats
                         //.tickFormat(d3.time.format("%y-%m"))
-                        .tickSize(options.tickSize || defaultTickSize)
-                        .tickPadding(options.tickPadding || defaultTickPadding);
+                        .tickSize(options.tickSize)
+                        .tickPadding(options.tickPadding);
 
                     axisG = targetGroup.append("g")
                         .classed("x axis time", true)
-                        .translate([0, options.y])
+                        .translate(options.position)
                         .call(axis);
+
+                    setVisibility();
 
                     return axis;
                 }
 
-                function update(_scale, position) {
+                function update(_scale, position, isVisible) {
                     if (_scale) {
                         scale = _scale;
                     }
 
                     if (position) {
+                        options.position = position;
                         axisG.translate(position);
+                    }
+
+                    if (isVisible !== undefined) {
+                        var changeVisibility = options.isVisible !== isVisible;
+                        options.isVisible = isVisible;
+
+                        if (changeVisibility) {
+                            setVisibility();
+                        }
                     }
 
                     that.axis.scale(scale);
                     axisG.call(that.axis);
+
+                }
+
+                function setVisibility() {
+                    axisG.attr("visibility", options.isVisible ? "visible" : "hidden");
                 }
             }
         }

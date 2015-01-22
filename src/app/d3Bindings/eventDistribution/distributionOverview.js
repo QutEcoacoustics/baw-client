@@ -80,7 +80,7 @@ angular
                     updateDimensions();
 
                     mini = createMini(chart);
-                    xAxis = new TimeAxis(mini, xScale, {y: miniHeight});
+                    xAxis = new TimeAxis(mini, xScale, {position: [0, miniHeight]});
                 }
 
                 function updateData(data) {

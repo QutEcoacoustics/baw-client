@@ -10,10 +10,13 @@ event-distribution-overview, event-distribution-detail {
   & svg {
     width: 100%;
     fill: black;
+
+    & * {
+      shape-rendering: crispEdges;
+    }
   }
 
   & .chart {
-    shape-rendering: crispEdges;
     background-color: #ffffff;
   }
 
@@ -59,7 +62,7 @@ event-distribution-detail {
   }
 
   & text {
-    font: 14px sans-serif;
+    font: 13px sans-serif;
   }
 }
 

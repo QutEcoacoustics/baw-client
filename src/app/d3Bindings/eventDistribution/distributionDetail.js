@@ -13,11 +13,12 @@ angular
         "d3",
         "TimeAxis",
         function (d3, TimeAxis) {
-            return function DistributionDetail(target, data, dataFunctions) {
+            return function DistributionDetail(target, data, dataFunctions, uniqueId) {
                 var that = this,
                     container = d3.select(target),
                     chart,
                     main,
+                    mainClip,
                     xAxis,
                     xScale,
                     yScale,
@@ -32,11 +33,12 @@ angular
                         bottom: 5 + xAxisHeight,
                         left: 120
                     },
-                    // these are initial values only
-                    // this is the width and height of the main group
+                // these are initial values only
+                // this is the width and height of the main group
                     mainWidth = 1000,
                     mainHeight = 256,
-                    laneHeight = 120;
+                    laneHeight = 120,
+                    lanePaddingDomain = 0.125;
 
                 // exports
                 this.updateData = updateData;
@@ -72,20 +74,46 @@ angular
 
                 // other functions
                 function create() {
+
+
                     createChart();
 
+                    mainClip = chart.append("defs")
+                        .append("clipPath")
+                        .attr("id", "mainClipPath" + uniqueId)
+                        .append("rect")
+                        .attr({
+                            x: 0,
+                            y: 0,
+                            width: 500,
+                            height: 200
+                        });
+
+                    updateDimensions();
+
                     createMain();
+
+
                 }
 
                 function createChart() {
                     chart = container.append("svg")
                         .classed("chart", true);
+
+
                 }
 
                 function updateDimensions() {
                     mainWidth = calculateMainWidth();
                     mainHeight = Math.max(getLaneLength() * laneHeight, laneHeight);
-                    chart.style("height", svgHeight());
+
+
+                    //mainClip.attr({
+                    //    width: mainWidth,
+                    //    height: mainHeight
+                    //});
+
+                    chart.style("height", svgHeight() + "px");
                 }
 
                 function createMain() {
@@ -100,9 +128,11 @@ angular
                     laneLabelsGroup = main.append("g").classed("laneLabelsGroup", true);
 
                     // group for rects painted in lanes
-                    mainItemsGroup = main.append("g").classed("mainItemsGroup", true);
+                    mainItemsGroup = main.append("g")
+                        .attr("clip-path", "url(#mainClipPath" + uniqueId + ")")
+                        .classed("mainItemsGroup", true);
 
-                    xAxis = new TimeAxis(main, xScale, {y: mainHeight})
+                    xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight]})
                 }
 
                 function updateDataVariables(data) {
@@ -130,6 +160,7 @@ angular
                     function getSeparatorLineY(d, i) {
                         return yScale(i);
                     }
+
                     laneLinesGroup.selectAll()
                         .data(that.lanes)
                         .enter()
@@ -167,17 +198,64 @@ angular
                  */
                 function extentUpdateMain() {
 
+                    // filter out data that is not in range
+                    var visibleItems = that.items.filter(isRectVisible);
+
+                    // paint the visible rects
+                    var rectAttrsUpdate = {
+                            x: function (d) {
+                                return xScale(dataFunctions.getLow(d));
+                            },
+                            width: function (d) {
+                                return xScale(dataFunctions.getHigh(d)) - xScale(dataFunctions.getLow(d));
+                            }
+                        },
+                        rectAttrs = {
+                            "class": function (d) {
+                                return "miniItem" + getCategoryIndex(d);
+                            },
+                            x: rectAttrsUpdate.x,
+                            y: function (d) {
+                                return yScale(getCategoryIndex(d) + lanePaddingDomain);
+                            },
+                            width: rectAttrsUpdate.width,
+                            height: yScale(1.0 - (2 * lanePaddingDomain))
+                        };
+
+                    // update the visible rects
+                    var rects = mainItemsGroup.selectAll("rect")
+                        .data(visibleItems, function getKey(d) {
+                            return dataFunctions.getId(d);
+                        })
+                        .attr(rectAttrsUpdate);
+
+                    // add new rects
+                    rects.enter()
+                        .append("rect")
+                        .attr(rectAttrs);
+
+                    // remove old rects
+                    rects.exit().remove();
+
 
                     // finally update the axis
                     if (data && data.items.length > 0) {
-                        xAxis.update(xScale, [0, mainHeight]);
+                        var domain = xScale.domain(),
+                        // intentionally falsey
+                            showAxis = domain[1] - domain[0] != 0;
+
+                        xAxis.update(xScale, [0, mainHeight], showAxis);
                     }
 
                 }
 
                 function isRectVisible(d) {
-                    return dataFunctions.getLow(d) >= that.visibleExtent
-                     || dataFunctions.getHigh() <= that.visibleExtent;
+                    return dataFunctions.getLow(d) < that.visibleExtent[1]
+                        && dataFunctions.getHigh(d) > that.visibleExtent[0];
+                }
+
+                function getCategoryIndex(d) {
+                    return that.lanes.indexOf(dataFunctions.getCategory(d));
                 }
 
                 function getLaneLength() {
@@ -211,7 +289,11 @@ angular
                 controller: "distributionController",
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
-                    controller.detail = new DistributionDetail(element, controller.data, controller.options.functions);
+                    controller.detail = new DistributionDetail(
+                        element,
+                        controller.data,
+                        controller.options.functions,
+                        $scope.$id);
                 }
             };
         }
