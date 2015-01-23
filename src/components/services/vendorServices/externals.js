@@ -38,7 +38,7 @@ angular
             // augment d3
             var d3 = d3Provider.configureVendorInstance();
             d3.selection.prototype.translate = function (position) {
-                var coordinatesRegex = /translate\((.*)\)/
+                var coordinatesRegex = /translate\((.*)\)/;
                 if (position) {
                     return this.attr("transform", "translate(" + position[0] + "," + position[1] + ")");
                 }
@@ -56,7 +56,26 @@ angular
 
                     return result;
                 }
-            }
+            };
+
+            d3.selection.prototype.clipPath = function(clipUrl) {
+                var funcIriRegex = /url\(#(.*)\)/;
+                if (arguments.length == 1) {
+                    var match = funcIriRegex.exec(clipUrl),
+                        newUrl = clipUrl;
+                    if (match) {
+                        // angular's HTML 5 mode breaks relative links for the clip-path attribute
+                        // See:https://github.com/angular/angular.js/issues/8934
+                        // This function take a normal clip url and absolutifies it so it will work.
+                        var absoluteUrl = window.location.origin + window.location.pathname;
+                        newUrl = "url(" + absoluteUrl + "#" + match[1] + ")";
+                    }
+                    return this.attr("clip-path", newUrl);
+                }
+                else {
+                    return this.attr("clip-path");
+                }
+            };
 
 
         }]);

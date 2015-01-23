@@ -137,7 +137,7 @@ angular
 
                     // group for rects painted in lanes
                     mainItemsGroup = main.append("g")
-                        .attr("clip-path", "url(#clip)")
+                        .clipPath("url(#clip)")
                         .classed("mainItemsGroup", true);
 
                     xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight]})
