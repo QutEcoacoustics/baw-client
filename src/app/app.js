@@ -191,7 +191,7 @@ var app = angular.module('baw',
                                });
 
                  // location config
-                 $locationProvider.html5Mode(true);
+                 //$locationProvider.html5Mode(true);
 
                  // http default configuration
                  $httpProvider.defaults.withCredentials = true;

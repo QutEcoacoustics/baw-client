@@ -70,6 +70,9 @@ angular
                     updateScales();
 
                     extentUpdateMain();
+
+
+
                 }
 
                 // other functions
@@ -77,28 +80,30 @@ angular
 
 
                     createChart();
-
-                    mainClip = chart.append("defs")
+                    chart
+                        .attr("height", 0)
+                        .append("defs")
                         .append("clipPath")
-                        .attr("id", "mainClipPath" + uniqueId)
+                        .attr("id", "clip")
                         .append("rect")
                         .attr({
-                            x: 0,
-                            y: 0,
-                            width: 500,
-                            height: 200
-                        });
+                                  width: 500,
+                                  height: 200
+                              });
 
                     updateDimensions();
 
                     createMain();
 
 
+
                 }
 
                 function createChart() {
                     chart = container.append("svg")
-                        .classed("chart", true);
+                        .classed("chart", true)
+                        .attr("width", mainWidth)
+                        .attr("height", mainHeight);
 
 
                 }
@@ -119,6 +124,9 @@ angular
                 function createMain() {
                     // create main surface
                     main = chart.append("g")
+                        .attr("width", mainWidth)
+                        .attr("height", mainHeight)
+                        .classed("main", true)
                         .translate([margin.left, margin.top]);
 
                     // group for separator lines between lanes/categories
@@ -129,7 +137,7 @@ angular
 
                     // group for rects painted in lanes
                     mainItemsGroup = main.append("g")
-                        .attr("clip-path", "url(#mainClipPath" + uniqueId + ")")
+                        .attr("clip-path", "url(#clip)")
                         .classed("mainItemsGroup", true);
 
                     xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight]})
