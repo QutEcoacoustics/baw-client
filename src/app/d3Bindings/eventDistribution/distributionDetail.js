@@ -18,7 +18,8 @@ angular
                     container = d3.select(target),
                     chart,
                     main,
-                    mainClip,
+                    mainClipRect,
+                    clipId = "distributionDetail_" + uniqueId,
                     xAxis,
                     xScale,
                     yScale,
@@ -80,16 +81,7 @@ angular
 
 
                     createChart();
-                    chart
-                        .attr("height", 0)
-                        .append("defs")
-                        .append("clipPath")
-                        .attr("id", "clip")
-                        .append("rect")
-                        .attr({
-                                  width: 500,
-                                  height: 200
-                              });
+
 
                     updateDimensions();
 
@@ -105,18 +97,24 @@ angular
                         .attr("width", mainWidth)
                         .attr("height", mainHeight);
 
-
+                    mainClipRect = chart.append("defs")
+                        .append("clipPath")
+                        .attr("id", clipId)
+                        .append("rect")
+                        .attr({
+                                  width: mainWidth,
+                                  height: mainHeight
+                              });
                 }
 
                 function updateDimensions() {
                     mainWidth = calculateMainWidth();
                     mainHeight = Math.max(getLaneLength() * laneHeight, laneHeight);
 
-
-                    //mainClip.attr({
-                    //    width: mainWidth,
-                    //    height: mainHeight
-                    //});
+                    mainClipRect.attr({
+                        width: mainWidth,
+                        height: mainHeight
+                    });
 
                     chart.style("height", svgHeight() + "px");
                 }
@@ -137,7 +135,7 @@ angular
 
                     // group for rects painted in lanes
                     mainItemsGroup = main.append("g")
-                        .clipPath("url(#clip)")
+                        .clipPath("url(#" + clipId + ")")
                         .classed("mainItemsGroup", true);
 
                     xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight]})

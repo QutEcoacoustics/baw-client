@@ -66,3 +66,38 @@ event-distribution-detail {
   }
 }
 
+event-distribution-visualisation {
+    text-align: center;
+
+    .metaTrack {
+    }
+
+    .imageTrack {
+
+      .tiles {
+        background-color: paleturquoise;
+        position: relative;
+        height: 256px;
+
+        .tile {
+          width: 60px;
+          border: grey solid 1px;
+          border-left: deeppink solid 1px;
+          border-right: blue solid 1px;
+          height: 256px;
+          display: inline-block;
+          position: absolute;
+
+        }
+      }
+
+      .dayImageContainer {
+        position: relative;
+        display: inline-block;
+
+        margin: 1em 1em 2em 1em;
+
+      }
+    }
+
+}

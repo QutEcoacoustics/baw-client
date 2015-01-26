@@ -20,9 +20,9 @@ angular
                     xAxis,
                     xScale,
                     yScale,
-                    // this default value will be overwritten almost immediately
+                // this default value will be overwritten almost immediately
                     miniWidth = 1000,
-                    // this default value will be overwritten almost immediately
+                // this default value will be overwritten almost immediately
                     miniHeight = 200,
                     xAxisHeight = 30,
                     margin = {
@@ -221,16 +221,16 @@ angular
 
                     mini.select(".laneLinesGroup")
                         .selectAll()
-                        .data(that.lanes.concat("fake"))
+                        .data(that.lanes)
                         .enter()
                         .append("line")
                         .attr({
-                            x1: 0,
-                            y1: getSeparatorLineY,
-                            x2: miniWidth,
-                            y2: getSeparatorLineY,
-                            class: "laneLines"
-                        });
+                                  x1: 0,
+                                  y1: getSeparatorLineY,
+                                  x2: miniWidth,
+                                  y2: getSeparatorLineY,
+                                  class: "laneLines"
+                              });
 
                     // lane labels
                     mini.select(".laneLabelsGroup")
@@ -240,15 +240,15 @@ angular
                         .append("text")
                         .text(id)
                         .attr({
-                            x: -labelRectPadding,
-                            y: function (d, i) {
-                                // 0.5 shifts it halfway into lane
-                                return yScale(i + 0.5);
-                            },
-                            dy: ".5ex",
-                            "text-anchor": "end",
-                            class: "laneText"
-                        });
+                                  x: -labelRectPadding,
+                                  y: function (d, i) {
+                                      // 0.5 shifts it halfway into lane
+                                      return yScale(i + 0.5);
+                                  },
+                                  dy: ".5ex",
+                                  "text-anchor": "end",
+                                  class: "laneText"
+                              });
 
                     // update/redraw mini rectangles
                     var rectAttrs = {
@@ -278,9 +278,9 @@ angular
                         .call(that.brush)
                         .selectAll("rect")
                         .attr({
-                            y: 1,
-                            height: miniHeight - 2
-                        })
+                                  y: 1,
+                                  height: miniHeight - 2
+                              })
                 }
 
                 /**
@@ -321,19 +321,20 @@ angular
 ).directive(
     "eventDistributionOverview",
     [
-        "$rootScope",
-        "$timeout",
         "DistributionOverview",
-        function ($rootScope, $timeout, DistributionOverview) {
+        function (DistributionOverview) {
             // directive definition object
             return {
                 restrict: "EA",
                 scope: false,
                 controller: "distributionController",
-                require:"^^eventDistribution",
+                require: "^^eventDistribution",
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
-                    controller.overview = new DistributionOverview(element, controller.data, controller.options.functions);
+                    controller.overview = new DistributionOverview(
+                        element,
+                        controller.data,
+                        controller.options.functions);
                 }
             }
         }

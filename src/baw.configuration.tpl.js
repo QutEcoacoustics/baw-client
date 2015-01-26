@@ -107,6 +107,11 @@ angular.module('bawApp.configuration', ['url'])
                         rendering: 'demo/rendering.tpl.html',
                         bdCloud2014: 'demo/BDCloud2014Demo.tpl.html'
                     },
+                    d3Bindings: {
+                        eventDistribution: {
+                            distributionVisualisation: "d3Bindings/eventDistribution/distributionVisualisation.tpl.html"
+                        }
+                    },
                     visualize: "visualize/visualize.tpl.html"
                 },
                 // routes used by angular
