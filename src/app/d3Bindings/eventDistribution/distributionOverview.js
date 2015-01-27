@@ -34,28 +34,7 @@ angular
                     laneHeight = 60,
                     lanePaddingDomain = 0.125,
                     labelRectPadding = 5,
-                    container = d3.select(target),
-                    defaultFunctions = {
-                        getId: function (d) {
-                            return d.id;
-                        },
-                        getCategory: function (d) {
-                            return d.lane;
-                        },
-                        getLow: function (d) {
-                            return d.min;
-                        },
-                        getHigh: function (d) {
-                            return d.max;
-                        },
-                        getText: function (d) {
-                            return d.text;
-                        },
-                        extentUpdate: function (extent) {
-                            console.log("DistributionOverview:extentUpdate: You should override this", extent);
-                        }
-                    },
-                    functions = angular.extend(defaultFunctions, dataFunctions);
+                    container = d3.select(target);
 
                 // exports
                 that.updateData = updateData;
@@ -156,7 +135,7 @@ angular
                      .data(that.items)
                      .enter()
                      .append("text")
-                     .text(functions.getId)
+                     .text(dataFunctions.getId)
                      .attr({
                      x: 0, // TODO: -m[1] === -15
                      y: function (d) {
@@ -256,13 +235,13 @@ angular
                             return "miniItem" + getCategoryIndex(d);
                         },
                         x: function (d) {
-                            return xScale(functions.getLow(d));
+                            return xScale(dataFunctions.getLow(d));
                         },
                         y: function (d) {
                             return yScale(getCategoryIndex(d) + lanePaddingDomain);
                         },
                         width: function (d) {
-                            return xScale(functions.getHigh(d)) - xScale(functions.getLow(d));
+                            return xScale(dataFunctions.getHigh(d)) - xScale(dataFunctions.getLow(d));
                         },
                         height: yScale(1.0 - (2 * lanePaddingDomain))
                     };
@@ -280,7 +259,7 @@ angular
                         .attr({
                                   y: 1,
                                   height: miniHeight - 2
-                              })
+                              });
                 }
 
                 /**
@@ -295,13 +274,13 @@ angular
                         .call(that.brush.extent(brushExtent));
 
                     // update the outside world
-                    functions.extentUpdate(brushExtent);
+                    dataFunctions.extentUpdate(brushExtent);
                 }
 
                 // helper functions
 
                 function getCategoryIndex(d) {
-                    return that.lanes.indexOf(functions.getCategory(d));
+                    return that.lanes.indexOf(dataFunctions.getCategory(d));
                 }
 
                 function id(a) {
@@ -315,7 +294,7 @@ angular
                 function svgHeight() {
                     return miniHeight + margin.top + margin.bottom;
                 }
-            }
+            };
         }
     ]
 ).directive(
@@ -336,7 +315,7 @@ angular
                         controller.data,
                         controller.options.functions);
                 }
-            }
+            };
         }
     ]
 );

@@ -75,7 +75,7 @@ angular
                 function setVisibility() {
                     axisG.attr("visibility", options.isVisible ? "visible" : "hidden");
                 }
-            }
+            };
         }
     ]
 );

@@ -9,21 +9,32 @@ angular
         "d3",
         function distributionController($scope, $element, $attrs, d3) {
             console.debug("event distribution controller:init");
-            var that = this;
+            var that = this,
+                defaultFunctions = {
+                    getId: function (d) {
+                        return d.id;
+                    },
+                    getCategory: function (d) {
+                        return d.lane;
+                    },
+                    getLow: function (d) {
+                        return d.min;
+                    },
+                    getHigh: function (d) {
+                        return d.max;
+                    },
+                    getText: function (d) {
+                        return d.text;
+                    }
+                };
 
-            $scope.test = "hello world";
-
-            this.test = function() {
-                alert("hello world2");
-            };
 
             this.data = {};
+
             // object reference!
             this.options = $scope.options || {};
-            this.options.functions = this.options.functions || {};
-            this.detail = null;
-            this.overview = null;
 
+            this.options.functions = angular.extend(defaultFunctions, this.options.functions || {});
             this.options.functions.extentUpdate = function (newExtent) {
                 function update() {
                     // object reference!
@@ -39,6 +50,12 @@ angular
                     $scope.$eval(update);
                 }
             };
+
+            this.detail = null;
+            this.overview = null;
+            this.visualisation = null;
+
+
 
 
             // only watches changes to object reference
@@ -81,6 +98,6 @@ angular
                 options: "="
             },
             controller: "distributionController"
-        }
+        };
     }
 );

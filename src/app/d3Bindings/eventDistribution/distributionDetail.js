@@ -138,7 +138,7 @@ angular
                         .clipPath("url(#" + clipId + ")")
                         .classed("mainItemsGroup", true);
 
-                    xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight]})
+                    xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight]});
                 }
 
                 function updateDataVariables(data) {
@@ -248,7 +248,7 @@ angular
                     if (data && data.items.length > 0) {
                         var domain = xScale.domain(),
                         // intentionally falsey
-                            showAxis = domain[1] - domain[0] != 0;
+                            showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
 
                         xAxis.update(xScale, [0, mainHeight], showAxis);
                     }
@@ -256,8 +256,8 @@ angular
                 }
 
                 function isRectVisible(d) {
-                    return dataFunctions.getLow(d) < that.visibleExtent[1]
-                        && dataFunctions.getHigh(d) > that.visibleExtent[0];
+                    return dataFunctions.getLow(d) < that.visibleExtent[1] &&
+                        dataFunctions.getHigh(d) > that.visibleExtent[0];
                 }
 
                 function getCategoryIndex(d) {
@@ -279,7 +279,7 @@ angular
                 function id(a) {
                     return a;
                 }
-            }
+            };
         }
     ]
 ).directive(
