@@ -19,27 +19,36 @@ angular
                     metaTrack = container.select(".metaTrack"),
                     tiles = container.select(".imageTrack .tiles"),
 
+                    tileSizePixels = 60,
+                    tileSizeSeconds = 60 * 60,
+
                     // default value, overridden almost straight away
                     height = 256,
                     // default value, overridden almost straight away
                     width = 1440,
-
                     // 86400 seconds
                     oneDay = 60 * 60 * 24,
-                    tileSizePixels = 60,
-                    tileSizeSeconds = 60 * 60,
+
+
                     // seconds per pixel
                     resolution = updateResolution(),
 
                     xScale,
                     yScale,
 
+                    visibleExtent = [],
+
                     // +1 so that 0.5 tile can fall off either end
                     tileCount = (oneDay / tileSizeSeconds) + 2;
 
                 // exports
-                that.extents = [];
+                that.items = [];
                 that.nyquist = 11025;
+                that.spectrogramWindowSize = 512;
+                that.visibleDuration = oneDay;
+                that.middle = null;
+                that.updateData = updateData;
+                that.updateMiddle = updateMiddle;
 
 
 
@@ -50,7 +59,23 @@ angular
                 function updateData(data) {
                     updateDataVariables(data);
 
-                    updateScales()
+                    setDimensions();
+
+                    updateScales();
+
+                    generateTiles();
+
+                    updateElements();
+
+                }
+
+                function updateMiddle(newMiddle, category) {
+                    that.middle = newMiddle;
+                    that.category = category;
+
+                    generateTiles();
+
+                    updateElements();
                 }
 
                 function create() {
@@ -65,35 +90,50 @@ angular
                 }
 
                 function updateDataVariables(data) {
-                    // data should be an array of extents
-                    that.extents = data.extents;
+                    // data should be an array of items with extents
+                    that.items = data.items;
                     that.nyquistFrequency = data.nyquistFrequency;
+                    that.spectrogramWindowSize = data.spectrogramWindowSize;
+                    that.middle = null;
                 }
 
                 function setDimensions() {
-                    // want width to be a factor of tile size
-                    var containerWidth = tiles.node().parentNode.getBoundingClientRect().width;
-                    var tileCount = Math.floor(containerWidth / tileSizePixels);
-                    //tileCount = tiles + 1;
-                    width = tileCount * tileSizePixels;
+                    var widths = getWidth();
+                    width = widths.width;
+                    that.visibleDuration = widths.duration;
+
                     tiles.style("width", width + "px");
 
 
-                    // want height to be a function of nyquistRate
-                    height = yScale(that.nyquist);
-                    tiles.style("height", height)
-
+                    // want height to be a function of nyquistRate and window
+                    height = getHeight();
+                    tiles.style("height", height + "px");
                 }
 
                 function updateScales() {
+                    // calculate then end date for the domain
+                    var halfVisibleDuration = that.visibleDuration / 2.0;
+                    visibleExtent[0] = d3.time.second.offset(that.middle, -halfVisibleDuration);
+                    visibleExtent[1] = d3.time.second.offset(that.middle, halfVisibleDuration);
 
-                    xScale = d3.scale.linear()//time.scale()
-                        .domain([0, 1])
-                        .range([0, 1]);
+                    xScale = d3.time.scale()
+                        .domain(visibleExtent)
+                        .range([0, width]);
 
                     yScale = d3.scale.linear()
                         .domain([0, 1])
-                        .range([0, 1]);
+                        .range([0, height]);
+                }
+
+                function generateTiles() {
+                    // need to generate a series of tiles that can show the data in that.items
+                    var f = isItemVisible.bind(visibleExtent),
+                        g = isInCategory.bind(that.category),
+                        h = and.bind(f, g);
+
+                    var filteredItems = that.items.filter(h);
+
+                    var tiles = filteredItems.reduce(splitIntoTiles, []);
                 }
 
                 function createElements() {
@@ -109,15 +149,52 @@ angular
                         .attr("class", "tile");
                 }
 
+                function updateElements() {
+                    tiles.selectAll(".tile");
+
+                }
+
                 function updateResolution() {
                     resolution = tileSizeSeconds / tileSizePixels;
                     return resolution;
                 }
 
-                function updateTileCount()  {
-
+                function getWidth() {
+                    // want width to be a factor of tile size
+                    var containerWidth = tiles.node().parentNode.getBoundingClientRect().width;
+                    var tileCount = Math.floor(containerWidth / tileSizePixels);
+                    return {width: tileCount * tileSizePixels, duration: tileCount * tileSizeSeconds};
                 }
 
+                function getHeight() {
+                    return that.spectrogramWindowSize / 2;
+                }
+
+                function isInCategory(category, d) {
+                    return dataFunctions.getCategory(d) === category;
+                }
+
+                function isItemVisible(visibleExtent, d) {
+                    return dataFunctions.getLow(d) < visibleExtent[1] &&
+                        dataFunctions.getHigh(d) > visibleExtent[0];
+                }
+
+                function and(a, b, d) {
+                    return a(d) && b(d);
+                }
+
+                function splitIntoTiles(previous, current, i) {
+                    var low = dataFunctions.getLow(current),
+                        high = dataFunctions.getHigh(current),
+                        tileOffset = 0;
+
+                    while (tileOffset < high) {
+
+                        previous.push()
+                    }
+
+                    tileSizeSeconds
+                }
             }
         }
     ]
@@ -136,7 +213,10 @@ angular
                 templateUrl: paths.site.files.d3Bindings.eventDistribution.distributionVisualisation,
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
-                    controller.visualisation = new DistributionVisualisation(element, [], {});
+                    controller.visualisation = new DistributionVisualisation(
+                        element,
+                        controller.data,
+                        controller.options.functions);
                 }
             }
         }

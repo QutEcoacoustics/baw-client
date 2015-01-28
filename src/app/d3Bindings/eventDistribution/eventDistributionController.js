@@ -30,9 +30,18 @@ angular
 
 
             this.data = {};
+            //this.visualisationData = {
+            //    items: [],
+            //    nyquistFreuency: 11025,
+            //    spectrogramWindowSize: 512,
+            //    middle: new Date()
+            //};
 
             // object reference!
-            this.options = $scope.options || {};
+            this.options = angular.extend({
+                nyquistFrequency: 11025,
+                spectrogramWindowSize: 512
+            }, $scope.options);
 
             this.options.functions = angular.extend(defaultFunctions, this.options.functions || {});
             this.options.functions.extentUpdate = function (newExtent) {
@@ -42,6 +51,9 @@ angular
                 }
 
                 that.detail.updateExtent(newExtent);
+
+                // TODO: fix 2nd arg
+                that.visualisation.updateMiddle((newExtent[1] - newExtent[0]) / 2.0,  "SW Site");
 
                 if (!$scope.$root.$$phase) {
                     $scope.$apply(update);
@@ -56,8 +68,6 @@ angular
             this.visualisation = null;
 
 
-
-
             // only watches changes to object reference
             $scope.$watch(function () {
                 return $scope.data;
@@ -65,6 +75,7 @@ angular
                 if (tryUpdateDataVariables(that.data, newValue, that.options.functions)) {
                     that.overview.updateData(that.data);
                     that.detail.updateData(that.data);
+                    that.visualisation.updateData(that.data);
                 }
             });
 
@@ -75,6 +86,8 @@ angular
                     data.lanes = [];
                     data.maximum = null;
                     data.minimum = null;
+                    data.nyquistFrequency = null;
+                    data.spectrogramWindowSize = null;
                     return false;
                 }
                 else {
@@ -82,16 +95,16 @@ angular
                     data.lanes = d3.set(data.items.map(functions.getCategory)).values();
                     data.maximum = Math.max.apply(null, data.items.map(functions.getHigh, functions));
                     data.minimum = Math.min.apply(null, data.items.map(functions.getLow, functions));
+                    data.nyquistFrequency = that.options.nyquistFrequency;
+                    data.spectrogramWindowSize = that.options.spectrogramWindowSize;
                     return true;
                 }
             }
-
-
         }
     ])
     .directive(
     "eventDistribution",
-    function() {
+    function () {
         return {
             scope: {
                 data: "=",
