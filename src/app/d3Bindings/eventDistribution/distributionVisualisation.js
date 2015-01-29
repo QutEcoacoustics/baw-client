@@ -195,7 +195,7 @@ angular
                     var niceLow = d3.time.second.floor(low);
                     var niceHigh = d3.time.second.ceil(floor);
 
-                    var m = moment();
+                    var m = roundDate(tileSizePixels, low);
 
                     // use d3's in built range functionality to generate steps
                     var steps = d3.time.seconds(niceLow, niceHigh, tileSizeSeconds);
@@ -208,7 +208,33 @@ angular
                     tileSizeSeconds
                 }
 
-                function roundDate()
+                function roundDate(roundToSeconds, roundStyle, date) {
+                    if (arguments.length === 2) {
+                        date = roundStyle;
+                        roundStyle = "round";
+                    }
+                    else if (arguments.length !== 3) {
+                        throw new Error("Expected either 2 or 3 arguments");
+                    }
+
+                    var roundToMilliseconds = roundToSeconds * 1000,
+                        unix = date.getTime(),
+                        remainder = unix % roundToMilliseconds,
+                        result;
+
+                    if (roundStyle === "round") {
+                        roundStyle = unix / remainder >= 0.5 ? "ceil" : "floor";
+                    }
+
+                    if (roundStyle === "floor") {
+                        result = new Date(unix - remainder)
+                    }
+                    else if (roundStyle === "ceil") {
+                        result = new Date(unix + (roundToMilliseconds - remainder));
+                    }
+
+                    return result;
+                }
             }
         }
     ]
