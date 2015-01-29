@@ -126,14 +126,17 @@ angular
                 }
 
                 function generateTiles() {
-                    // need to generate a series of tiles that can show the data in that.items
-                    var f = isItemVisible.bind(visibleExtent),
-                        g = isInCategory.bind(that.category),
-                        h = and.bind(f, g);
+                    var tiles = [];
+                    if (that.items.length > 0) {
+                        // need to generate a series of tiles that can show the data in that.items
+                        var f = isItemVisible.bind(null, [new Date(0), new Date(2000000000000)] /*visibleExtent*/),
+                            g = isInCategory.bind(null, that.category),
+                            h = and.bind(null, f, g);
 
-                    var filteredItems = that.items.filter(h);
+                        var filteredItems = that.items.filter(h);
 
-                    var tiles = filteredItems.reduce(splitIntoTiles, []);
+                        tiles = filteredItems.reduce(splitIntoTiles, []);
+                    }
                 }
 
                 function createElements() {
@@ -184,17 +187,28 @@ angular
                 }
 
                 function splitIntoTiles(previous, current, i) {
-                    var low = dataFunctions.getLow(current),
-                        high = dataFunctions.getHigh(current),
-                        tileOffset = 0;
+                    // coerce just in case (d3 does this internally)
+                    var low = new Date(dataFunctions.getLow(current)),
+                        high = new Date(dataFunctions.getHigh(current));
 
-                    while (tileOffset < high) {
+                    // round down to the lower unit of time, determined by `tileSizeSeconds`
+                    var niceLow = d3.time.second.floor(low);
+                    var niceHigh = d3.time.second.ceil(floor);
+
+                    var m = moment();
+
+                    // use d3's in built range functionality to generate steps
+                    var steps = d3.time.seconds(niceLow, niceHigh, tileSizeSeconds);
+
+                    while (false /*tileOffset < high*/) {
 
                         previous.push()
                     }
 
                     tileSizeSeconds
                 }
+
+                function roundDate()
             }
         }
     ]
