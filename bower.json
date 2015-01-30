@@ -23,6 +23,7 @@
     "modernizr": "~2.8.x",
     "momentjs": "~2.8.x",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
+    "round-date": "~1.0.1",
     "sass-bootstrap": "3.0.2"
   },
   "dependencies": {},

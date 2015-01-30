@@ -11,7 +11,8 @@ angular
     "DistributionVisualisation",
     [
         "d3",
-        function (d3) {
+        "roundDate",
+        function (d3, roundDate) {
             return function DistributionVisualisation(target, data, dataFunctions) {
                 // variables
                 var that = this,
@@ -192,49 +193,21 @@ angular
                         high = new Date(dataFunctions.getHigh(current));
 
                     // round down to the lower unit of time, determined by `tileSizeSeconds`
-                    var niceLow = d3.time.second.floor(low);
-                    var niceHigh = d3.time.second.ceil(floor);
-
-                    var m = roundDate(tileSizePixels, low);
+                    var niceLow = roundDate.floor(tileSizeSeconds, low),
+                        niceHigh = roundDate.ceil(tileSizeSeconds, high),
+                        offset = niceLow;
 
                     // use d3's in built range functionality to generate steps
-                    var steps = d3.time.seconds(niceLow, niceHigh, tileSizeSeconds);
-
-                    while (false /*tileOffset < high*/) {
-
-                        previous.push()
+                    var steps = [];
+                    while (offset <= niceHigh) {
+                        steps.push(offset);
+                        offset = d3.time.second.offset(offset, tileSizeSeconds);
                     }
 
-                    tileSizeSeconds
+                    return steps;
                 }
 
-                function roundDate(roundToSeconds, roundStyle, date) {
-                    if (arguments.length === 2) {
-                        date = roundStyle;
-                        roundStyle = "round";
-                    }
-                    else if (arguments.length !== 3) {
-                        throw new Error("Expected either 2 or 3 arguments");
-                    }
 
-                    var roundToMilliseconds = roundToSeconds * 1000,
-                        unix = date.getTime(),
-                        remainder = unix % roundToMilliseconds,
-                        result;
-
-                    if (roundStyle === "round") {
-                        roundStyle = unix / remainder >= 0.5 ? "ceil" : "floor";
-                    }
-
-                    if (roundStyle === "floor") {
-                        result = new Date(unix - remainder)
-                    }
-                    else if (roundStyle === "ceil") {
-                        result = new Date(unix + (roundToMilliseconds - remainder));
-                    }
-
-                    return result;
-                }
             }
         }
     ]
