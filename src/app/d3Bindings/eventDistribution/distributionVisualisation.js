@@ -38,9 +38,7 @@ angular
                     yScale,
 
                     visibleExtent = [],
-
-                    // +1 so that 0.5 tile can fall off either end
-                    tileCount = (oneDay / tileSizeSeconds) + 2;
+                    tiles = [];
 
                 // exports
                 that.items = [];
@@ -127,16 +125,18 @@ angular
                 }
 
                 function generateTiles() {
-                    var tiles = [];
                     if (that.items.length > 0) {
                         // need to generate a series of tiles that can show the data in that.items
-                        var f = isItemVisible.bind(null, [new Date(0), new Date(2000000000000)] /*visibleExtent*/),
+                        var f = isItemVisible.bind(null, visibleExtent),
                             g = isInCategory.bind(null, that.category),
                             h = and.bind(null, f, g);
 
                         var filteredItems = that.items.filter(h);
 
                         tiles = filteredItems.reduce(splitIntoTiles, []);
+                    }
+                    else {
+                        tiles = [];
                     }
                 }
 
