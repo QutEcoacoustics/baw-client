@@ -38,7 +38,7 @@ angular
                     yScale,
 
                     visibleExtent = [],
-                    tiles = [];
+                    generatedTiles = [];
 
                 // exports
                 that.items = [];
@@ -127,22 +127,29 @@ angular
                 function generateTiles() {
                     if (that.items.length > 0) {
                         // need to generate a series of tiles that can show the data in that.items
-                        var f = isItemVisible.bind(null, visibleExtent),
+                        var f = isItemVisible.bind(null, that.visibleDuration),
                             g = isInCategory.bind(null, that.category),
                             h = and.bind(null, f, g);
 
                         var filteredItems = that.items.filter(h);
 
-                        tiles = filteredItems.reduce(splitIntoTiles, []);
+                        generatedTiles = filteredItems.reduce(splitIntoTiles, []);
                     }
                     else {
-                        tiles = [];
+                        generatedTiles = [];
                     }
                 }
 
                 function createElements() {
+                    // this example has an associated html template...
+                    // most of the creation is not necessary
+
+                    updateElements();
+                }
+
+                function updateElements() {
                     tiles.selectAll(".tile")
-                        .data(d3.range(tileCount))
+                        .data(generatedTiles)
                         .enter()
                         .append("div")
                         .style("top", 0)
@@ -151,10 +158,6 @@ angular
                         })
                         .style("width", tileSizePixels + "px")
                         .attr("class", "tile");
-                }
-
-                function updateElements() {
-                    tiles.selectAll(".tile");
 
                 }
 
@@ -200,11 +203,14 @@ angular
                     // use d3's in built range functionality to generate steps
                     var steps = [];
                     while (offset <= niceHigh) {
-                        steps.push(offset);
+                        steps.push({
+                            offset: offset,
+                            source: current
+                        });
                         offset = d3.time.second.offset(offset, tileSizeSeconds);
                     }
 
-                    return steps;
+                    return previous.concat(steps);
                 }
 
 
