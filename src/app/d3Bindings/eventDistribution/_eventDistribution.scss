@@ -84,10 +84,21 @@ event-distribution-visualisation {
           border: grey solid 1px;
           border-left: deeppink solid 1px;
           border-right: blue solid 1px;
+          background-color: rgba(255, 0, 0, 0.2);
           height: 256px;
           display: inline-block;
           position: absolute;
 
+          & div {
+            font-size: 8pt;
+            height: 60px;
+            width: 256px;
+            @include vendor-prefix(transform, rotate(-90deg));
+            @include vendor-prefix(transform-origin, right center 0);
+            top: -31px;
+            right: 30px;
+            position: absolute;
+          }
         }
       }
 

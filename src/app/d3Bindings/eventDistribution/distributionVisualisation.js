@@ -23,15 +23,15 @@ angular
                     tileSizePixels = 60,
                     tileSizeSeconds = 60 * 60,
 
-                    // default value, overridden almost straight away
+                // default value, overridden almost straight away
                     height = 256,
-                    // default value, overridden almost straight away
+                // default value, overridden almost straight away
                     width = 1440,
-                    // 86400 seconds
+                // 86400 seconds
                     oneDay = 60 * 60 * 24,
 
 
-                    // seconds per pixel
+                // seconds per pixel
                     resolution = updateResolution(),
 
                     xScale,
@@ -48,7 +48,6 @@ angular
                 that.middle = null;
                 that.updateData = updateData;
                 that.updateMiddle = updateMiddle;
-
 
 
                 // init
@@ -72,6 +71,8 @@ angular
                     that.middle = newMiddle;
                     that.category = category;
 
+                    updateScales();
+
                     generateTiles();
 
                     updateElements();
@@ -83,6 +84,8 @@ angular
                     setDimensions();
 
                     updateScales();
+
+                    generateTiles();
 
                     createElements();
 
@@ -125,11 +128,11 @@ angular
                 }
 
                 function generateTiles() {
-                    if (that.items.length > 0) {
+                    if (that.items && that.items.length > 0) {
                         // need to generate a series of tiles that can show the data in that.items
-                        var f = isItemVisible.bind(null, that.visibleDuration),
+                        var f = isItemVisible.bind(null, visibleExtent),
                             g = isInCategory.bind(null, that.category),
-                            h = and.bind(null, f, g);
+                            h = and.bind(null, g, f);
 
                         var filteredItems = that.items.filter(h);
 
@@ -148,16 +151,42 @@ angular
                 }
 
                 function updateElements() {
-                    tiles.selectAll(".tile")
-                        .data(generatedTiles)
-                        .enter()
+                    var style = {
+                        top: function(d, i) {
+                            return i + "px";
+                        },
+                        left: function (d, i) {
+                            return xScale(d.offset) + "px";
+                        },
+                        width: tileSizePixels + "px"
+                    };
+                    function getOffset(d) {
+                        return d.offset.toISOString();
+                    }
+                    function getKey(d) {
+                        return d.offset.toISOString() + dataFunctions.getCategory(d.source);
+                    }
+
+
+                    // update old tiles
+                    var tileElements = tiles.selectAll(".tile")
+                        .data(generatedTiles, getKey);
+
+                    tileElements.style(style)
+                        .classed("tile", true)
                         .append("div")
-                        .style("top", 0)
-                        .style("left", function (d, i) {
-                            return ((i * 60) - 30) + "px";
-                        })
-                        .style("width", tileSizePixels + "px")
-                        .attr("class", "tile");
+                        .text(getOffset);
+
+                    // add new tiles
+                    tileElements.enter()
+                        .append("div")
+                        .style(style)
+                        .classed("tile", true)
+                        .append("div")
+                        .text(getOffset);
+
+                    // remove old tiles
+                    tileElements.exit().remove();
 
                 }
 
@@ -183,7 +212,7 @@ angular
 
                 function isItemVisible(visibleExtent, d) {
                     return dataFunctions.getLow(d) < visibleExtent[1] &&
-                        dataFunctions.getHigh(d) > visibleExtent[0];
+                           dataFunctions.getHigh(d) > visibleExtent[0];
                 }
 
                 function and(a, b, d) {
@@ -204,9 +233,9 @@ angular
                     var steps = [];
                     while (offset <= niceHigh) {
                         steps.push({
-                            offset: offset,
-                            source: current
-                        });
+                                       offset: offset,
+                                       source: current
+                                   });
                         offset = d3.time.second.offset(offset, tileSizeSeconds);
                     }
 

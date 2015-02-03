@@ -53,7 +53,7 @@ angular
                 that.detail.updateExtent(newExtent);
 
                 // TODO: fix 2nd arg
-                that.visualisation.updateMiddle((newExtent[1] - newExtent[0]) / 2.0,  "SW Site");
+                that.visualisation.updateMiddle(middlePointBetweenDates(newExtent),  "NE Site");
 
                 if (!$scope.$root.$$phase) {
                     $scope.$apply(update);
@@ -99,6 +99,18 @@ angular
                     data.spectrogramWindowSize = that.options.spectrogramWindowSize;
                     return true;
                 }
+            }
+
+            function middlePointBetweenDates(extent) {
+                if (!extent || extent.length !== 2) {
+                    return null;
+                }
+
+                var min = extent[0],
+                    max = extent[1];
+
+                var midDiff = (max - min) / 2.0;
+                return (+min) + midDiff;
             }
         }
     ])
