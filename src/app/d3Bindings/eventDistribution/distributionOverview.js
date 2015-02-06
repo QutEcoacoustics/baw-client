@@ -31,8 +31,8 @@ angular
                         bottom: 5 + xAxisHeight,
                         left: 120
                     },
-                    laneHeight = 60,
-                    lanePaddingDomain = 0.125,
+                    laneHeight = 30,
+                    lanePaddingDomain = 0.1,
                     labelRectPadding = 5,
                     container = d3.select(target);
 
@@ -306,7 +306,6 @@ angular
             return {
                 restrict: "EA",
                 scope: false,
-                controller: "distributionController",
                 require: "^^eventDistribution",
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];

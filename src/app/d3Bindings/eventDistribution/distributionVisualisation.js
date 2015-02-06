@@ -38,7 +38,7 @@ angular
                     yScale,
 
                     visibleExtent = [],
-                    generatedTiles = [];
+                    visibleTiles = [];
 
                 // exports
                 that.items = [];
@@ -63,6 +63,8 @@ angular
 
                     generateTiles();
 
+                    filterTiles();
+
                     updateElements();
 
                 }
@@ -73,7 +75,7 @@ angular
 
                     updateScales();
 
-                    generateTiles();
+                    filterTiles();
 
                     updateElements();
                 }
@@ -130,17 +132,29 @@ angular
                 function generateTiles() {
                     if (that.items && that.items.length > 0) {
                         // need to generate a series of tiles that can show the data in that.items
-                        var f = isItemVisible.bind(null, visibleExtent),
-                            g = isInCategory.bind(null, that.category),
-                            h = and.bind(null, g, f);
-
-                        var filteredItems = that.items.filter(h);
-
-                        generatedTiles = filteredItems.reduce(splitIntoTiles, []);
+                        that.items.forEach(function(current) {
+                            // warning: to future self: this is creating cyclic references
+                            // as each tile keeps a reference to current
+                           current.tiles = splitIntoTiles(current);
+                        });
                     }
-                    else {
-                        generatedTiles = [];
-                    }
+                }
+
+                function filterTiles() {
+                    // item filter
+                    var f = isItemVisible.bind(null, visibleExtent),
+                        g = isInCategory.bind(null, that.category),
+                        h = and.bind(null, g, f);
+
+                    // tile filter
+                    var l = isTileVisible.bind(null, visibleExtent);
+
+                    visibleTiles = that.items
+                        .filter(h)
+                        .reduce(function (previous, current) {
+                            var t = current.tiles.filter(l);
+                            return previous.concat(t);
+                        }, []);
                 }
 
                 function createElements() {
@@ -151,31 +165,28 @@ angular
                 }
 
                 function updateElements() {
+                    function left(d, i) {
+                        return xScale(d.offset) + "px";
+                    }
+
                     var style = {
-                        top: function(d, i) {
-                            return i + "px";
-                        },
-                        left: function (d, i) {
-                            return xScale(d.offset) + "px";
-                        },
+                        top: 0,
+                        left: left,
                         width: tileSizePixels + "px"
                     };
+
                     function getOffset(d) {
                         return d.offset.toISOString();
                     }
-                    function getKey(d) {
-                        return d.offset.toISOString() + dataFunctions.getCategory(d.source);
-                    }
-
 
                     // update old tiles
                     var tileElements = tiles.selectAll(".tile")
-                        .data(generatedTiles, getKey);
+                        .data(visibleTiles, function (d) {
+                            return d.key;
+                        });
 
-                    tileElements.style(style)
-                        .classed("tile", true)
-                        .append("div")
-                        .text(getOffset);
+                    // update old tiles
+                    tileElements.style("left", left);
 
                     // add new tiles
                     tileElements.enter()
@@ -212,14 +223,20 @@ angular
 
                 function isItemVisible(visibleExtent, d) {
                     return dataFunctions.getLow(d) < visibleExtent[1] &&
-                           dataFunctions.getHigh(d) > visibleExtent[0];
+                        dataFunctions.getHigh(d) >= visibleExtent[0];
                 }
 
                 function and(a, b, d) {
                     return a(d) && b(d);
                 }
 
-                function splitIntoTiles(previous, current, i) {
+                function isTileVisible(visibleExtent, d) {
+                    return d &&
+                        d.offset < visibleExtent[1] &&
+                        d.offsetEnd >= visibleExtent[0];
+                }
+
+                function splitIntoTiles(current, i) {
                     // coerce just in case (d3 does this internally)
                     var low = new Date(dataFunctions.getLow(current)),
                         high = new Date(dataFunctions.getHigh(current));
@@ -232,14 +249,17 @@ angular
                     // use d3's in built range functionality to generate steps
                     var steps = [];
                     while (offset <= niceHigh) {
+                        var nextOffset = d3.time.second.offset(offset, tileSizeSeconds);
                         steps.push({
-                                       offset: offset,
-                                       source: current
-                                   });
-                        offset = d3.time.second.offset(offset, tileSizeSeconds);
+                            offset: offset,
+                            offsetEnd: nextOffset,
+                            source: current,
+                            key: offset.toISOString() + dataFunctions.getId(current)
+                        });
+                        offset = nextOffset;
                     }
 
-                    return previous.concat(steps);
+                    return steps;
                 }
 
 
@@ -256,7 +276,6 @@ angular
             return {
                 restrict: "EA",
                 scope: false,
-                controller: "distributionController",
                 require: "^^eventDistribution",
                 templateUrl: paths.site.files.d3Bindings.eventDistribution.distributionVisualisation,
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {

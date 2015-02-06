@@ -23,6 +23,9 @@ angular
                     xAxis,
                     xScale,
                     yScale,
+                    zoom,
+                    // 6 hours
+                    zoomLimitSeconds = 6 * 60 * 60,
                     laneLinesGroup,
                     laneLabelsGroup,
                     mainItemsGroup,
@@ -39,7 +42,7 @@ angular
                     mainWidth = 1000,
                     mainHeight = 256,
                     laneHeight = 120,
-                    lanePaddingDomain = 0.125;
+                    lanePaddingDomain = 0.1;
 
                 // exports
                 this.updateData = updateData;
@@ -117,6 +120,11 @@ angular
                     });
 
                     chart.style("height", svgHeight() + "px");
+
+                    if (zoom) {
+                        zoom.size([mainWidth, mainHeight]);
+                        updateZoom();
+                    }
                 }
 
                 function createMain() {
@@ -126,6 +134,15 @@ angular
                         .attr("height", mainHeight)
                         .classed("main", true)
                         .translate([margin.left, margin.top]);
+
+                    // zoom behaviour
+                    zoom = d3.behavior.zoom()
+                        //.scaleExtent([that.minimum, that.maximum])
+                        .size([mainWidth, mainHeight])
+                        .on("zoomstart", onZoomStart)
+                        .on("zoom", onZoom)
+                        .on("zoomend", onZoomEnd);
+                    zoom(main);
 
                     // group for separator lines between lanes/categories
                     laneLinesGroup = main.append("g").classed("laneLinesGroup", true);
@@ -150,9 +167,16 @@ angular
                 }
 
                 function updateScales() {
+                    that.visibleExtent = that.visibleExtent || [that.minimum, that.maximum];
+
                     xScale = d3.time.scale()
-                        .domain(that.visibleExtent || [that.minimum, that.maximum])
+                        .domain(that.visibleExtent)
                         .range([0, mainWidth]);
+
+                    // update the zoom behaviour
+                    zoom.x(xScale);
+                    zoom.scaleExtent(getZoomFactors([that.minimum, that.maximum], that.visibleExtent, zoomLimitSeconds));
+                    updateZoom();
 
                     yScale = d3.scale.linear()
                         .domain([0, getLaneLength()])
@@ -255,6 +279,75 @@ angular
 
                 }
 
+                function onZoomStart() {
+
+                    console.debug("DistributionDetail:zoomStart:",d3.event.translate, d3.event.scale);
+                }
+
+                function onZoom() {
+                    // the xScale is automatically updated
+                    // now just rerender everything
+
+
+                    // prevent translating off the edge of our data (i.e. clamp the zoom)
+                    var domain = null;
+                    if (xScale) {
+                        var t = zoom.translate(),
+                            tx = t[0],
+                            ty = t[1];
+                        //if (t[0] < xScale(that.minimum)) {
+                        //    zoom.translate([xScale(that.minimum), t[1] - t[0]]);
+                        //}
+                        //
+                        //if (t[1] > xScale(that.maximum)) {
+                        //    zoom.translate([t[1] - t[0], xScale(that.maximum)]);
+                        //}
+
+                        //tx = Math.min(tx, 0);
+                        //tx = Math.max(tx, mainWidth - xScale.range()[1]);
+                        //zoom.translate([tx, ty]);
+
+                        domain = xScale.domain();
+                    }
+
+                    console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain);
+
+                    // updates the public visible extent field
+                    that.visibleExtent = domain;
+
+                    // redraw elements and axes
+                    extentUpdateMain();
+                }
+
+                function onZoomEnd() {
+                    console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
+                }
+
+                function updateZoom() {
+                    //zoom.event(main);
+                }
+
+                function getZoomFactors(fullExtent, visibleExtent, limitSeconds) {
+                    var fullDifference = (+fullExtent[1]) - (+fullExtent[0]),
+                        visibleDifference = (+visibleExtent[1]) - (+visibleExtent[0]);
+                    var limit = limitSeconds * 1000;
+
+                    /*
+                     [0, 1] adjusts zoom to be wider than visible extent (zoom out)
+                     (1, 1) is zoomScale where zoom == visibleExtent
+                     [1, ∞] adjusts zoom to be narrower than visible extent (zoom in)
+
+                     after zoom changes, the visible extent also changes
+                    */
+
+                    var scaleLower = 1 / (fullDifference / visibleDifference),
+                        scaleUpper = visibleDifference / limit;
+
+                    console.debug("DistributionDetail:getZoomFactors:", scaleLower, scaleUpper);
+
+                    return [scaleLower, scaleUpper];
+                }
+
                 function isRectVisible(d) {
                     return dataFunctions.getLow(d) < that.visibleExtent[1] &&
                         dataFunctions.getHigh(d) > that.visibleExtent[0];
@@ -292,7 +385,6 @@ angular
                 restrict: "EA",
                 scope: false,
                 require: "^^eventDistribution",
-                controller: "distributionController",
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
                     controller.detail = new DistributionDetail(
