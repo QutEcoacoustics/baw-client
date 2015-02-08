@@ -25,7 +25,9 @@ angular
                     yScale,
                     zoom,
                     // 6 hours
-                    zoomLimitSeconds = 6 * 60 * 60,
+                    zoomLimitSeconds = 1 * 60 * 60,
+                    // HACK: a "lock" placed around the invocation of manual zoom events. Assumes synchronicity.
+                    _lockManualZoom = false,
                     laneLinesGroup,
                     laneLabelsGroup,
                     mainItemsGroup,
@@ -90,8 +92,6 @@ angular
 
                     createMain();
 
-
-
                 }
 
                 function createChart() {
@@ -123,7 +123,6 @@ angular
 
                     if (zoom) {
                         zoom.size([mainWidth, mainHeight]);
-                        updateZoom();
                     }
                 }
 
@@ -170,13 +169,17 @@ angular
                     that.visibleExtent = that.visibleExtent || [that.minimum, that.maximum];
 
                     xScale = d3.time.scale()
-                        .domain(that.visibleExtent)
+                        .domain([that.minimum, that.maximum])
                         .range([0, mainWidth]);
 
                     // update the zoom behaviour
                     zoom.x(xScale);
-                    zoom.scaleExtent(getZoomFactors([that.minimum, that.maximum], that.visibleExtent, zoomLimitSeconds));
-                    updateZoom();
+                    var zf = getZoomFactors([that.minimum, that.maximum], that.visibleExtent, zoomLimitSeconds);
+                    zoom.scaleExtent(zf.scaleExtent);
+                    zoom.scale(zf.currentScale);
+
+                    // falsely trigger zoom events to force d3 to re-render with new scale
+                    zoomUpdate();
 
                     yScale = d3.scale.linear()
                         .domain([0, getLaneLength()])
@@ -288,6 +291,9 @@ angular
                     // the xScale is automatically updated
                     // now just rerender everything
 
+                    // HACK: check whether this event was triggered manually
+                    var isManual = _lockManualZoom;
+
 
                     // prevent translating off the edge of our data (i.e. clamp the zoom)
                     var domain = null;
@@ -310,7 +316,12 @@ angular
                         domain = xScale.domain();
                     }
 
-                    console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain);
+                    console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, isManual);
+
+                    if (isManual) {
+                        return;
+                    }
+
 
                     // updates the public visible extent field
                     that.visibleExtent = domain;
@@ -323,9 +334,7 @@ angular
                     console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
                 }
 
-                function updateZoom() {
-                    //zoom.event(main);
-                }
+
 
                 function getZoomFactors(fullExtent, visibleExtent, limitSeconds) {
                     var fullDifference = (+fullExtent[1]) - (+fullExtent[0]),
@@ -333,19 +342,28 @@ angular
                     var limit = limitSeconds * 1000;
 
                     /*
-                     [0, 1] adjusts zoom to be wider than visible extent (zoom out)
-                     (1, 1) is zoomScale where zoom == visibleExtent
-                     [1, ∞] adjusts zoom to be narrower than visible extent (zoom in)
+                     [0, 1] adjusts zoom to be wider than specified extent (zoom out)
+                     (1, 1) is zoomScale where zoom == specified extent
+                     [1, ∞] adjusts zoom to be narrower than specified extent (zoom in)
 
                      after zoom changes, the visible extent also changes
                     */
 
-                    var scaleLower = 1 / (fullDifference / visibleDifference),
-                        scaleUpper = visibleDifference / limit;
+                    var scaleLower = 1 ,
+                        scaleUpper = fullDifference / limit,
+                        //currentScale = scaleUpper - (((scaleUpper - scaleLower) * (visibleDifference / fullDifference)) + scaleLower);
+                        //currentScale = (1 / (fullDifference / visibleDifference)) + 1;
+                        currentScale = fullDifference / visibleDifference;
 
-                    console.debug("DistributionDetail:getZoomFactors:", scaleLower, scaleUpper);
+                    console.debug("DistributionDetail:getZoomFactors:", scaleLower, scaleUpper, currentScale);
 
-                    return [scaleLower, scaleUpper];
+                    return {scaleExtent: [scaleLower, scaleUpper], currentScale: currentScale};
+                }
+
+                function zoomUpdate() {
+                    _lockManualZoom = true;
+                    zoom.event(main);
+                    _lockManualZoom = false;
                 }
 
                 function isRectVisible(d) {
