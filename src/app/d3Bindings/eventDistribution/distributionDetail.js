@@ -24,9 +24,10 @@ angular
                     xScale,
                     yScale,
                     zoom,
-                    // 6 hours
-                    zoomLimitSeconds = 1 * 60 * 60,
-                    // HACK: a "lock" placed around the invocation of manual zoom events. Assumes synchronicity.
+                    zoomSurface,
+                // 6 hours - from edge to edge of the graph.
+                    zoomLimitSeconds = 6 * 60 * 60,
+                // HACK: a "lock" placed around the invocation of manual zoom events. Assumes synchronicity.
                     _lockManualZoom = false,
                     laneLinesGroup,
                     laneLabelsGroup,
@@ -71,12 +72,20 @@ angular
                 }
 
                 function updateExtent(extent) {
+                    if (extent.length != 2) {
+                        throw new Error("Can't handle this many dimensions");
+                    }
+
+                    if (extent[0] === that.visibleExtent[0] && extent[1] === that.visibleExtent[1]) {
+                        console.debug("DistributionDetail:updateExtent: update skipped");
+                        return;
+                    }
+
                     that.visibleExtent = extent;
 
                     updateScales();
 
                     extentUpdateMain();
-
 
 
                 }
@@ -105,19 +114,24 @@ angular
                         .attr("id", clipId)
                         .append("rect")
                         .attr({
-                                  width: mainWidth,
-                                  height: mainHeight
-                              });
+                            width: mainWidth,
+                            height: mainHeight
+                        });
                 }
 
                 function updateDimensions() {
                     mainWidth = calculateMainWidth();
                     mainHeight = Math.max(getLaneLength() * laneHeight, laneHeight);
 
-                    mainClipRect.attr({
+                    var dims = {
                         width: mainWidth,
                         height: mainHeight
-                    });
+                    };
+
+                    mainClipRect.attr(dims);
+                    if (zoomSurface) {
+                        zoomSurface.attr(dims);
+                    }
 
                     chart.style("height", svgHeight() + "px");
 
@@ -142,6 +156,15 @@ angular
                         .on("zoom", onZoom)
                         .on("zoomend", onZoomEnd);
                     zoom(main);
+
+                    zoomSurface = main.append("rect")
+                        .attr({
+                            width: mainWidth,
+                            height: mainHeight,
+                            fill: "white",
+                            opacity: 1.0
+                        })
+                        .classed("zoomSurface");
 
                     // group for separator lines between lanes/categories
                     laneLinesGroup = main.append("g").classed("laneLinesGroup", true);
@@ -168,8 +191,11 @@ angular
                 function updateScales() {
                     that.visibleExtent = that.visibleExtent || [that.minimum, that.maximum];
 
-                    xScale = d3.time.scale()
-                        .domain([that.minimum, that.maximum])
+                    if (!xScale) {
+                        xScale = d3.time.scale();
+
+                    }
+                    xScale.domain([that.minimum, that.maximum])
                         .range([0, mainWidth]);
 
                     // update the zoom behaviour
@@ -177,6 +203,7 @@ angular
                     var zf = getZoomFactors([that.minimum, that.maximum], that.visibleExtent, zoomLimitSeconds);
                     zoom.scaleExtent(zf.scaleExtent);
                     zoom.scale(zf.currentScale);
+                    setZoomTranslate(zf.dateTranslate);
 
                     // falsely trigger zoom events to force d3 to re-render with new scale
                     zoomUpdate();
@@ -284,7 +311,7 @@ angular
 
                 function onZoomStart() {
 
-                    console.debug("DistributionDetail:zoomStart:",d3.event.translate, d3.event.scale);
+                    console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);
                 }
 
                 function onZoom() {
@@ -294,51 +321,68 @@ angular
                     // HACK: check whether this event was triggered manually
                     var isManual = _lockManualZoom;
 
-
                     // prevent translating off the edge of our data (i.e. clamp the zoom)
                     var domain = null;
                     if (xScale) {
-                        var t = zoom.translate(),
-                            tx = t[0],
-                            ty = t[1];
-                        //if (t[0] < xScale(that.minimum)) {
-                        //    zoom.translate([xScale(that.minimum), t[1] - t[0]]);
-                        //}
-                        //
-                        //if (t[1] > xScale(that.maximum)) {
-                        //    zoom.translate([t[1] - t[0], xScale(that.maximum)]);
-                        //}
-
-                        //tx = Math.min(tx, 0);
-                        //tx = Math.max(tx, mainWidth - xScale.range()[1]);
-                        //zoom.translate([tx, ty]);
-
+                        zoom.translate(panLimit());
                         domain = xScale.domain();
                     }
 
                     console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, isManual);
 
+                    // don't propagate cyclical events
                     if (isManual) {
                         return;
                     }
 
-
-                    // updates the public visible extent field
+                    // updates the public visibleExtent field - has no effect on the graph
                     that.visibleExtent = domain;
+
+                    // updates the controller - bind back
+                    dataFunctions.extentUpdate(that.visibleExtent, "DistributionDetail");
 
                     // redraw elements and axes
                     extentUpdateMain();
+                }
+
+                /**
+                 * Constrains the zoom's translation.
+                 * Adapted from: http://bl.ocks.org/garrilla/11280861
+                 * @returns {*[]}
+                 */
+                function panLimit() {
+                    var tx, ty = 0,
+                        zoomScale = zoom.scale(),
+                        xDomain = xScale.domain(),
+                        x1 = xDomain[1],
+                        x0 = xDomain[0],
+                        panExtent1 = that.maximum,
+                        panExtent0 = that.minimum,
+                        divisorWidth = mainWidth / ((x1 - x0) * zoomScale),
+                        minX = -(((x0 - x1) * zoomScale) + (panExtent1 - (panExtent1 - (mainWidth / divisorWidth)))),
+                        maxX = -(((x0 - x1)) + (panExtent1 - panExtent0)) * divisorWidth * zoomScale;
+
+
+                    if (x0 < panExtent0) {
+                        tx = minX;
+                    } else if (x1 > panExtent1) {
+                        tx = maxX;
+                    } else {
+                        tx = zoom.translate()[0];
+                    }
+
+                    return [tx, ty];
                 }
 
                 function onZoomEnd() {
                     console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
                 }
 
-
-
                 function getZoomFactors(fullExtent, visibleExtent, limitSeconds) {
-                    var fullDifference = (+fullExtent[1]) - (+fullExtent[0]),
-                        visibleDifference = (+visibleExtent[1]) - (+visibleExtent[0]);
+                    var vl = +visibleExtent[0],
+                        vh = +visibleExtent[1],
+                        fullDifference = (+fullExtent[1]) - (+fullExtent[0]),
+                        visibleDifference = vh - vl;
                     var limit = limitSeconds * 1000;
 
                     /*
@@ -347,23 +391,42 @@ angular
                      [1, ∞] adjusts zoom to be narrower than specified extent (zoom in)
 
                      after zoom changes, the visible extent also changes
-                    */
+                     */
 
-                    var scaleLower = 1 ,
+                    var scaleLower = 1,
                         scaleUpper = fullDifference / limit,
-                        //currentScale = scaleUpper - (((scaleUpper - scaleLower) * (visibleDifference / fullDifference)) + scaleLower);
-                        //currentScale = (1 / (fullDifference / visibleDifference)) + 1;
-                        currentScale = fullDifference / visibleDifference;
+                        currentScale = fullDifference / visibleDifference,
+                        tx = vl;
 
-                    console.debug("DistributionDetail:getZoomFactors:", scaleLower, scaleUpper, currentScale);
+                    if (scaleUpper == -Infinity) {
+                        scaleUpper = Infinity;
+                    }
 
-                    return {scaleExtent: [scaleLower, scaleUpper], currentScale: currentScale};
+                    if (tx == Infinity || isNaN(tx)) {
+                        tx = 0;
+                    }
+
+                    if (currentScale == Infinity || currentScale == -Infinity || isNaN(currentScale)) {
+                        currentScale = 1;
+                    }
+
+                    console.debug("DistributionDetail:getZoomFactors:", scaleLower, scaleUpper, currentScale, new Date(tx).toISOString());
+
+                    return {
+                        scaleExtent: [scaleLower, scaleUpper],
+                        currentScale: currentScale,
+                        dateTranslate: tx
+                    };
                 }
 
                 function zoomUpdate() {
                     _lockManualZoom = true;
                     zoom.event(main);
                     _lockManualZoom = false;
+                }
+
+                function setZoomTranslate(dateOffset) {
+                    zoom.translate([-xScale(dateOffset), 0])
                 }
 
                 function isRectVisible(d) {

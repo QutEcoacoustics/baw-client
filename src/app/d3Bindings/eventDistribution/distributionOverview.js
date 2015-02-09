@@ -34,10 +34,12 @@ angular
                     laneHeight = 30,
                     lanePaddingDomain = 0.1,
                     labelRectPadding = 5,
-                    container = d3.select(target);
+                    container = d3.select(target),
+                    _lockManualBrush = false;
 
                 // exports
                 that.updateData = updateData;
+                that.updateExtent = updateExtent;
                 that.display = display;
                 that.getLaneLength = getLaneLength;
                 that.brush = null;
@@ -45,6 +47,7 @@ angular
                 that.lanes = null;
                 that.maximum = null;
                 that.minimum = null;
+                that.selectedExtent = null;
 
                 // init
                 create();
@@ -76,6 +79,21 @@ angular
 
                         xAxis.update(xScale, [0, miniHeight]);
                     }
+                }
+
+                function updateExtent(extent) {
+                    if (extent.length != 2) {
+                        throw new Error("Can't handle this many dimensions");
+                    }
+
+                    if (extent[0] === that.selectedExtent[0] && extent[1] === that.selectedExtent[1]) {
+                        console.debug("DistributionOverview:updateExtent: update skipped");
+                        return;
+                    }
+
+                    that.selectedExtent = extent;
+                    that.brush.extent(that.selectedExtent);
+                    brushUpdate();
                 }
 
                 function getLaneLength() {
@@ -267,17 +285,29 @@ angular
                  * and also updates the bounds as data (for binding).
                  */
                 function display() {
-                    var brushExtent = that.brush.extent();
+                    var brushExtent = that.selectedExtent = that.brush.extent();
 
                     // change the length of brush (repaint it)
                     mini.select(".brush")
                         .call(that.brush.extent(brushExtent));
 
+                    // prevent cyclical updates
+                    if (_lockManualBrush) {
+                        return;
+                    }
+
                     // update the outside world
-                    dataFunctions.extentUpdate(brushExtent);
+                    dataFunctions.extentUpdate(brushExtent, "DistributionOverview");
+
                 }
 
                 // helper functions
+
+                function brushUpdate() {
+                    _lockManualBrush = true;
+                    that.brush.event(mini);
+                    _lockManualBrush = false;
+                }
 
                 function getCategoryIndex(d) {
                     return that.lanes.indexOf(dataFunctions.getCategory(d));

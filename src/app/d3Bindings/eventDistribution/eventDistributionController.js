@@ -45,16 +45,22 @@ angular
             }, $scope.options);
 
             $scope.options.functions = angular.extend(defaultFunctions, $scope.options.functions || {});
-            $scope.options.functions.extentUpdate = function (newExtent) {
+            $scope.options.functions.extentUpdate = function (newExtent, source) {
                 var difference = newExtent[1] - newExtent[0];
                 var humanDuration = difference === 0 ? "" : moment.duration(difference).humanize();
 
-                that.detail.updateExtent(newExtent);
-
-                // TODO: fix 2nd arg
-                that.visualisation.updateMiddle(middlePointBetweenDates(newExtent),  "NE Site");
-                var visualizationMiddle = that.visualisation.visibleDuration;
-                var humanized = visualizationMiddle && moment.duration(visualizationMiddle, "seconds").humanize() || "";
+                if (source != "DistributionOverview") {
+                    that.overview.updateExtent(newExtent);
+                }
+                if (source != "DistributionDetail") {
+                    that.detail.updateExtent(newExtent);
+                }
+                if (source != "DistributionVisualisation") {
+                    // TODO: fix 2nd arg
+                    that.visualisation.updateMiddle(middlePointBetweenDates(newExtent), "NE Site");
+                    var visualizationMiddle = that.visualisation.visibleDuration;
+                    var humanized = visualizationMiddle && moment.duration(visualizationMiddle, "seconds").humanize() || "";
+                }
 
                 function update() {
                     // object reference!
