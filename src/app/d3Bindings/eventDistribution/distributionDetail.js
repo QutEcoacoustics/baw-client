@@ -164,7 +164,7 @@ angular
                             fill: "white",
                             opacity: 1.0
                         })
-                        .classed("zoomSurface");
+                        .classed("zoomSurface", true);
 
                     // group for separator lines between lanes/categories
                     laneLinesGroup = main.append("g").classed("laneLinesGroup", true);

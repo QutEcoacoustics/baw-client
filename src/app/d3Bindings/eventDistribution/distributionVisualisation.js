@@ -172,11 +172,17 @@ angular
                     var style = {
                         top: 0,
                         left: left,
-                        width: tileSizePixels + "px"
+                        width: tileSizePixels + "px",
+
                     };
 
                     function getOffset(d) {
                         return d.offset.toISOString();
+                    }
+
+                    function getTileImage(d, i) {
+                        var hourOfDay = d.offset.getHours();
+                        return "url(assets/temp/tiles/tile_" + hourOfDay + ".png)";
                     }
 
                     // update old tiles
@@ -186,12 +192,14 @@ angular
                         });
 
                     // update old tiles
-                    tileElements.style("left", left);
+                    tileElements.style("left", left)
+                        .style("background-image", getTileImage);
 
                     // add new tiles
                     tileElements.enter()
                         .append("div")
                         .style(style)
+                        .style("background-image", getTileImage)
                         .classed("tile", true)
                         .append("div")
                         .text(getOffset);
