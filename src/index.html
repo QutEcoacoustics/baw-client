@@ -71,7 +71,8 @@
                         <li><button class="btn btn-default btn-block" ng-click="hideDebugUi()">Hide hidden features</button></li>
                         <li class="divider"></li>
                         <li><a href="/listen/234234">Easy Link</a></li>
-                        <li><a href="/d3Test">D3 tests</a></li>
+                        <li><a ng-href="{{paths.site.ngRoutes.demo.d3}}">D3 tests</a></li>
+                        <li><a ng-href="{{paths.site.ngRoutes.visualize}}">ADV tests</a></li>
                     </ul>
                 </li>
             </ul>
@@ -163,7 +164,7 @@
         </div>
     </div>
 
-    <footer class="clearfix" ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
+    <footer class="clearfix text-center" ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
         <ul class="nav nav-pills">
             <li >
                 <p class="nav-text">&copy; QUT 2014

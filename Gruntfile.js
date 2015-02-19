@@ -536,7 +536,7 @@ module.exports = function (grunt) {
                     hostname: '*',
                     port: 8080,
                     base: './<%= build_dir %>',
-                    debug: true,
+                    //debug: true,
                     livereload: true,
                     middleware: function (connect, options) {
 

@@ -20,6 +20,10 @@ body {
   margin: 0;
 }
 
+footer .nav {
+  display: inline-block;
+}
+
 @if $DEBUG {
   .debug-ui {
     width: auto;
