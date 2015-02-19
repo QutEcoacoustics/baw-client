@@ -77,5 +77,4 @@ angular
                     return this.attr("clip-path");
                 }
             };
-
         }]);
