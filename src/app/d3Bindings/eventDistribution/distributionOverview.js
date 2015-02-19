@@ -20,9 +20,9 @@ angular
                     xAxis,
                     xScale,
                     yScale,
-                    // this default value will be overwritten almost immediately
+                // this default value will be overwritten almost immediately
                     miniWidth = 1000,
-                    // this default value will be overwritten almost immediately
+                // this default value will be overwritten almost immediately
                     miniHeight = 200,
                     xAxisHeight = 30,
                     margin = {
@@ -31,34 +31,15 @@ angular
                         bottom: 5 + xAxisHeight,
                         left: 120
                     },
-                    laneHeight = 60,
-                    lanePaddingDomain = 0.125,
+                    laneHeight = 30,
+                    lanePaddingDomain = 0.1,
                     labelRectPadding = 5,
                     container = d3.select(target),
-                    defaultFunctions = {
-                        getId: function (d) {
-                            return d.id;
-                        },
-                        getCategory: function (d) {
-                            return d.lane;
-                        },
-                        getLow: function (d) {
-                            return d.min;
-                        },
-                        getHigh: function (d) {
-                            return d.max;
-                        },
-                        getText: function (d) {
-                            return d.text;
-                        },
-                        extentUpdate: function (extent) {
-                            console.log("DistributionOverview:extentUpdate: You should override this", extent);
-                        }
-                    },
-                    functions = angular.extend(defaultFunctions, dataFunctions);
+                    _lockManualBrush = false;
 
                 // exports
                 that.updateData = updateData;
+                that.updateExtent = updateExtent;
                 that.display = display;
                 that.getLaneLength = getLaneLength;
                 that.brush = null;
@@ -66,6 +47,7 @@ angular
                 that.lanes = null;
                 that.maximum = null;
                 that.minimum = null;
+                that.selectedExtent = null;
 
                 // init
                 create();
@@ -97,6 +79,21 @@ angular
 
                         xAxis.update(xScale, [0, miniHeight]);
                     }
+                }
+
+                function updateExtent(extent) {
+                    if (extent.length != 2) {
+                        throw new Error("Can't handle this many dimensions");
+                    }
+
+                    if (extent[0] === that.selectedExtent[0] && extent[1] === that.selectedExtent[1]) {
+                        console.debug("DistributionOverview:updateExtent: update skipped");
+                        return;
+                    }
+
+                    that.selectedExtent = extent;
+                    that.brush.extent(that.selectedExtent);
+                    brushUpdate();
                 }
 
                 function getLaneLength() {
@@ -156,7 +153,7 @@ angular
                      .data(that.items)
                      .enter()
                      .append("text")
-                     .text(functions.getId)
+                     .text(dataFunctions.getId)
                      .attr({
                      x: 0, // TODO: -m[1] === -15
                      y: function (d) {
@@ -221,16 +218,16 @@ angular
 
                     mini.select(".laneLinesGroup")
                         .selectAll()
-                        .data(that.lanes.concat("fake"))
+                        .data(that.lanes)
                         .enter()
                         .append("line")
                         .attr({
-                            x1: 0,
-                            y1: getSeparatorLineY,
-                            x2: miniWidth,
-                            y2: getSeparatorLineY,
-                            class: "laneLines"
-                        });
+                                  x1: 0,
+                                  y1: getSeparatorLineY,
+                                  x2: miniWidth,
+                                  y2: getSeparatorLineY,
+                                  class: "laneLines"
+                              });
 
                     // lane labels
                     mini.select(".laneLabelsGroup")
@@ -240,15 +237,15 @@ angular
                         .append("text")
                         .text(id)
                         .attr({
-                            x: -labelRectPadding,
-                            y: function (d, i) {
-                                // 0.5 shifts it halfway into lane
-                                return yScale(i + 0.5);
-                            },
-                            dy: ".5ex",
-                            "text-anchor": "end",
-                            class: "laneText"
-                        });
+                                  x: -labelRectPadding,
+                                  y: function (d, i) {
+                                      // 0.5 shifts it halfway into lane
+                                      return yScale(i + 0.5);
+                                  },
+                                  dy: ".5ex",
+                                  "text-anchor": "end",
+                                  class: "laneText"
+                              });
 
                     // update/redraw mini rectangles
                     var rectAttrs = {
@@ -256,13 +253,13 @@ angular
                             return "miniItem" + getCategoryIndex(d);
                         },
                         x: function (d) {
-                            return xScale(functions.getLow(d));
+                            return xScale(dataFunctions.getLow(d));
                         },
                         y: function (d) {
                             return yScale(getCategoryIndex(d) + lanePaddingDomain);
                         },
                         width: function (d) {
-                            return xScale(functions.getHigh(d)) - xScale(functions.getLow(d));
+                            return xScale(dataFunctions.getHigh(d)) - xScale(dataFunctions.getLow(d));
                         },
                         height: yScale(1.0 - (2 * lanePaddingDomain))
                     };
@@ -278,9 +275,9 @@ angular
                         .call(that.brush)
                         .selectAll("rect")
                         .attr({
-                            y: 1,
-                            height: miniHeight - 2
-                        })
+                                  y: 1,
+                                  height: miniHeight - 2
+                              });
                 }
 
                 /**
@@ -288,20 +285,32 @@ angular
                  * and also updates the bounds as data (for binding).
                  */
                 function display() {
-                    var brushExtent = that.brush.extent();
+                    var brushExtent = that.selectedExtent = that.brush.extent();
 
                     // change the length of brush (repaint it)
                     mini.select(".brush")
                         .call(that.brush.extent(brushExtent));
 
+                    // prevent cyclical updates
+                    if (_lockManualBrush) {
+                        return;
+                    }
+
                     // update the outside world
-                    functions.extentUpdate(brushExtent);
+                    dataFunctions.extentUpdate(brushExtent, "DistributionOverview");
+
                 }
 
                 // helper functions
 
+                function brushUpdate() {
+                    _lockManualBrush = true;
+                    that.brush.event(mini);
+                    _lockManualBrush = false;
+                }
+
                 function getCategoryIndex(d) {
-                    return that.lanes.indexOf(functions.getCategory(d));
+                    return that.lanes.indexOf(dataFunctions.getCategory(d));
                 }
 
                 function id(a) {
@@ -315,27 +324,27 @@ angular
                 function svgHeight() {
                     return miniHeight + margin.top + margin.bottom;
                 }
-            }
+            };
         }
     ]
 ).directive(
     "eventDistributionOverview",
     [
-        "$rootScope",
-        "$timeout",
         "DistributionOverview",
-        function ($rootScope, $timeout, DistributionOverview) {
+        function (DistributionOverview) {
             // directive definition object
             return {
                 restrict: "EA",
                 scope: false,
-                controller: "distributionController",
-                require:"^^eventDistribution",
+                require: "^^eventDistribution",
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
-                    controller.overview = new DistributionOverview(element, controller.data, controller.options.functions);
+                    controller.overview = new DistributionOverview(
+                        element,
+                        controller.data,
+                        controller.options.functions);
                 }
-            }
+            };
         }
     ]
 );

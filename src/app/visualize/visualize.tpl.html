@@ -1,44 +1,25 @@
 <div id="content" class="visualize-content">
-    <section class="row">
-        <h1>Audio distribution visualisation</h1>
-        <small>Current filter: e.g. Project 341</small>
-        <!--<textarea style="width:940px">{{recordingData}}</textarea>-->
+    <section class="row visualizeContentHeader">
+        <h2>Audio distribution visualisation</h2>
+        <div class="text-center">
+            <small class="">Current filter: e.g. Project 341</small>
+        </div>
     </section>
+    <div event-distribution data="recordingData" options="distributionOptions" >
 
-    <div event-distribution data="recordingData" options="distributionOptions">
         <section class="row">
-            <h2>Overview</h2>
             <event-distribution-overview> </event-distribution-overview>
-            {{distributionOptions.overviewExtent}}
+            <!--{{distributionOptions.overviewExtent}}-->
         </section>
 
         <section class="row">
-            <h2>Detail</h2>
+            <h3>Detailed view for {{distributionOptions.detailDuration}}</h3>
             <event-distribution-detail></event-distribution-detail>
         </section>
 
         <section class="row">
-            <h2>Day</h2>
-
-            <p>
-                24 hours long,
-                two sections
-
-            </p>
-
-            <div class="day-visualization">
-                <div class="meta-track">
-                    meta data tracks
-                </div>
-                <div class="image-track">
-                    false color spectrogram
-                    <div class="day-image-container">
-                        <grid-lines configuration="gridConfig"></grid-lines>
-                        <img ng-src="assets/temp/eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN-trimmed-PLACEHOLDER.png"
-                             src=""/>
-                    </div>
-                </div>
-            </div>
+            <h3>False colour visualisation for {{distributionOptions.visualizationDuration}}</h3>
+            <event-distribution-visualisation></event-distribution-visualisation>
         </section>
     </div>
 

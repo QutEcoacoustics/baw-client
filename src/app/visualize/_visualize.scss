@@ -1,23 +1,17 @@
 .visualize-content {
   max-width: 1500px;
   @include center-block;
-}
 
-.day-visualization {
-  text-align: center;
+  & .visualizeContentHeader {
 
-  .meta-track {
-  }
+    h2 {
+      margin-top: 0;
+    }
 
-  .image-track {
-
-    .day-image-container {
-      position: relative;
-      display:  inline-block;
-
-      margin:   1em 1em 2em 1em;
-
+    small {
+      
     }
   }
 }
+
 
