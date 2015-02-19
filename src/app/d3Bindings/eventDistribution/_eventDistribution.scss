@@ -1,41 +1,68 @@
 $mini-backgrounds: darksalmon darkolivegreen slategray #8f7f6f #7a6f8f #8f6f8f;
 
-event-distribution-overview {
+event-distribution-overview, event-distribution-detail {
 
+  // purple only for debugging
+  background-color: purple;
+  width: 100%;
+  display: flex;
 
-    background-color: purple;
+  & svg {
     width: 100%;
+    fill: black;
 
-    & .chart {
-      shape-rendering: crispEdges;
-      background-color: greenyellow;
+    & * {
+      //shape-rendering: crispEdges;
     }
+  }
 
-    & .mini {
-      fill: blue;
+  & .chart {
+    background-color: #ffffff;
+  }
 
-      & text {
-        font: 9px sans-serif;
-      }
+  .laneLines {
+    stroke: lightgray;
+  }
+
+  .laneLinesGroup {
+
+  }
+
+  .brush .extent {
+    stroke: gray;
+    fill: dodgerblue;
+    fill-opacity: .365;
+  }
+
+  @for $i from 1 through length($mini-backgrounds) {
+    $item: nth($mini-backgrounds, $i);
+
+    & .miniItem#{$i - 1} {
+      fill: $item;
+      stroke-width: 6;
+      fill-opacity: 0.7;
     }
-
-    .brush .extent {
-      stroke: gray;
-      fill: dodgerblue;
-      fill-opacity: .365;
-    }
-
-    @for $i from 1 through length($mini-backgrounds) {
-      $item: nth($mini-backgrounds, $i);
-
-      & .miniItem#{$i - 1} {
-        fill: $item;
-        stroke-width: 6;
-        fill-opacity: 0.7;
-      }
-    }
+  }
 
 }
 
+event-distribution-overview {
+  & .mini {
 
+  }
+
+  & text {
+    font: 12px sans-serif;
+  }
+}
+
+event-distribution-detail {
+  & .main {
+
+  }
+
+  & text {
+    font: 13px sans-serif;
+  }
+}
 

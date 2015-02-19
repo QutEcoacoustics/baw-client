@@ -5,17 +5,43 @@ angular
     [
         "$scope",
         "$http",
-        function($scope, $http) {
+        function ($scope, $http) {
 
             // testing data
             $scope.recordingData = [];
-            $http.get("assets/temp/dummyData.json").then(function(response) {
+            $http.get("assets/temp/dummyData.json").then(function (response) {
                 $scope.recordingData = response.data;
-            }, function() {
-               console.error("loading dummy data failed", arguments);
+            }, function () {
+                console.error("loading dummy data failed", arguments);
             });
 
-
+            $scope.distributionOptions = {
+                functions: {
+                    getId: function (d) {
+                        return d.audioId;
+                    },
+                    getCategory: function (d) {
+                        return d.siteName;
+                    },
+                    getLow: function (d) {
+                        if ((typeof d.recordedDate) === "string") {
+                            d.recordedDate = new Date(d.recordedDate);
+                            d.minimumMilliseconds = d.recordedDate.getTime();
+                        }
+                        return d.minimumMilliseconds;
+                    },
+                    getHigh: function (d) {
+                        if ((typeof d.durationSeconds) === "string") {
+                            d.durationSeconds = Number(d.durationSeconds);
+                            d.durationMilliseconds = d.durationSeconds * 1000;
+                        }
+                        return this.getLow(d) + d.durationMilliseconds;
+                    },
+                    getText: function (d) {
+                        return d.audioId;
+                    }
+                }
+            };
 
 
             // gridlines
@@ -29,7 +55,7 @@ angular
                     min: 0,
                     step: 1000,
                     height: 256,
-                    labelFormatter: function(value, index, min, max) {
+                    labelFormatter: function (value, index, min, max) {
                         return (value / 1000).toFixed(1);
                     },
                     title: "Frequency (KHz)"
@@ -42,7 +68,7 @@ angular
                     min: 0,
                     step: 1,
                     width: 1440,
-                    labelFormatter: function(value, index, min, max) {
+                    labelFormatter: function (value, index, min, max) {
                         // show 'absolute' time.... i.e. seconds of the minute
                         var offset = (value % 60);
 
