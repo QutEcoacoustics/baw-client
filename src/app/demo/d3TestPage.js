@@ -54,7 +54,7 @@ angular.module("bawApp.demo.d3", [])
                 }
                 else {
                     key = "siteId";
-                    groupKey = "sites"
+                    groupKey = "sites";
                 }
 
                 if ($scope[groupKey]) {

@@ -3,6 +3,7 @@ module.exports = function (grunt) {
     var modRewrite = require('connect-modrewrite'),
         gzipStatic = require('connect-gzip-static'),
         path = require('path'),
+        slash = require("slash"),
         _ = require('lodash');
 
 
@@ -16,8 +17,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    //grunt.loadNpmTasks('grunt-conventional-changelog');
-    grunt.loadNpmTasks('grunt-changelog');
+    grunt.loadNpmTasks('grunt-conventional-changelog');
+    //grunt.loadNpmTasks('grunt-changelog');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-karma');
@@ -108,23 +109,25 @@ module.exports = function (grunt) {
          */
         meta: {
             banner: '/**\n' +
-                ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
-                ' * <%= pkg.homepage %>\n' +
-                ' *\n' +
-                ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
-                ' * Licensed <%= pkg.licenses.type %> <<%= pkg.licenses.url %>>\n' +
-                ' */\n'
+            ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+            ' * <%= pkg.homepage %>\n' +
+            ' *\n' +
+            ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
+            ' * Licensed <%= pkg.licenses.type %> <<%= pkg.licenses.url %>>\n' +
+            ' */\n'
         },
 
         /**
          * Creates a changelog on a new version.
          */
         changelog: {
-            options: {
-                //after: "2013-09-05T10:18:39.4492679+10:00",
-                //before: "now",
-                dest: 'CHANGELOG.md',
-                template: 'buildConfig/changelog.tpl'
+            main: {
+                options: {
+                    from: "6dec81ca099cf2cc7840b02d2f27ff8bffbce954",
+                    //to: "HEAD"
+                    dest: 'CHANGELOG.md',
+                    template: 'buildConfig/changelog.tpl'
+                }
             }
         },
 
@@ -179,7 +182,7 @@ module.exports = function (grunt) {
             build_app_assets: {
                 files: [
                     {
-                        src: [ '**' ],
+                        src: ['**'],
                         dest: '<%= build_dir %>/assets/',
                         cwd: 'src/assets',
                         expand: true,
@@ -242,7 +245,7 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        src: [ '<%= app_files.js %>' ],
+                        src: ['<%= app_files.js %>'],
                         dest: '<%= build_dir %>/',
                         cwd: '.',
                         expand: true,
@@ -256,7 +259,7 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        src: [ '<%= vendor_files.js %>' ],
+                        src: ['<%= vendor_files.js %>'],
                         dest: '<%= build_dir %>/',
                         cwd: '.',
                         expand: true,
@@ -267,7 +270,7 @@ module.exports = function (grunt) {
             compile_assets: {
                 files: [
                     {
-                        src: [ '**' ],
+                        src: ['**'],
                         dest: '<%= compile_dir %>/assets',
                         cwd: '<%= build_dir %>/assets',
                         expand: true,
@@ -290,8 +293,7 @@ module.exports = function (grunt) {
                     banner: '<%= meta.banner %>'
                 },
                 nonull: true,
-                src:
-                    [
+                src: [
                     '<%= vendor_files.css %>',
                     '<%= build_dir %>/assets/styles/*.css'
                 ],
@@ -307,8 +309,8 @@ module.exports = function (grunt) {
                 },
                 nonull: true,
                 src: [
-                    (function() {
-                        return userConfig.vendor_files.js.map(function(file) {
+                    (function () {
+                        return userConfig.vendor_files.js.map(function (file) {
                             return userConfig.build_dir + "/" + file;
                         });
                     }()),
@@ -330,7 +332,7 @@ module.exports = function (grunt) {
             compile: {
                 files: [
                     {
-                        src: [ '<%= app_files.js %>' ],
+                        src: ['<%= app_files.js %>'],
                         cwd: '<%= build_dir %>',
                         dest: '<%= build_dir %>',
                         expand: true
@@ -363,15 +365,13 @@ module.exports = function (grunt) {
          * This task is run after the sass file template has been processed.
          */
         sassReal: {
-            options: {
-
-            },
+            options: {},
             build: {
                 options: {
                     imagePath: '<%= build_configs.current.siteDir %>assets/img',
                     outputStyle: 'expanded',
                     sourceComments: 'normal' /*'map',
-                    sourceMap: '<%= sassDestName %>.map'*/
+                     sourceMap: '<%= sassDestName %>.map'*/
                 },
                 src: '<%= app_files.processedSass %>',
                 dest: '<%= sassDest %>'
@@ -438,7 +438,7 @@ module.exports = function (grunt) {
                 options: {
                     base: 'src/app'
                 },
-                src: [ '<%= app_files.atpl %>' ],
+                src: ['<%= app_files.atpl %>'],
                 dest: '<%= build_dir %>/templates-app.js'
             },
 
@@ -449,7 +449,7 @@ module.exports = function (grunt) {
                 options: {
                     base: 'src'
                 },
-                src: [ '<%= app_files.ctpl %>' ],
+                src: ['<%= app_files.ctpl %>'],
                 dest: '<%= build_dir %>/templates-common.js'
             }
         },
@@ -536,7 +536,7 @@ module.exports = function (grunt) {
                     hostname: '*',
                     port: 8080,
                     base: './<%= build_dir %>',
-                    debug: true,
+                    //debug: true,
                     livereload: true,
                     middleware: function (connect, options) {
 
@@ -553,7 +553,6 @@ module.exports = function (grunt) {
                                 '^/assets(.*) /assets$1 [L]',
 
 
-
                                 // this rule matches anything without an extension
                                 // if matched, the root (index.html) is sent back instead.
                                 // from there, angular deals with the route information
@@ -568,7 +567,7 @@ module.exports = function (grunt) {
                             ]),
 
                             // disable all caching
-                            function(req, res, next) {
+                            function (req, res, next) {
                                 req.headers['if-none-match'] = 'no-match-for-this';
                                 next();
                             },
@@ -604,7 +603,8 @@ module.exports = function (grunt) {
              * plugin should auto-detect.
              */
             options: {
-                livereload: true
+                livereload: true,
+                spawn: false
             },
 
             /**
@@ -613,7 +613,7 @@ module.exports = function (grunt) {
              */
             gruntfile: {
                 files: 'Gruntfile.js',
-                tasks: [ 'jshint:gruntfile' ],
+                tasks: ['jshint:gruntfile'],
                 options: {
                     livereload: false
                 }
@@ -629,7 +629,7 @@ module.exports = function (grunt) {
                 ],
                 // karma:unit:run is disabled because it breaks watch by stopping it
                 // see https://github.com/karma-runner/grunt-karma/issues/30
-                tasks: [ 'jshint:src', 'karma:unit:run', 'copy:build_appjs' ]
+                tasks: ['jshint:src', 'karma:unit:run', 'copy:build_appjs']
             },
 
             /**
@@ -640,15 +640,15 @@ module.exports = function (grunt) {
                 files: [
                     'src/assets/**/*'
                 ],
-                tasks: [ 'copy:build_app_assets' ]
+                tasks: ['copy:build_app_assets']
             },
 
             /**
              * When index.html changes, we need to compile it.
              */
             html: {
-                files: [ '<%= app_files.html %>' ],
-                tasks: [ 'index:build' ]
+                files: ['<%= app_files.html %>'],
+                tasks: ['index:build']
             },
 
             /**
@@ -659,14 +659,14 @@ module.exports = function (grunt) {
                     '<%= app_files.atpl %>',
                     '<%= app_files.ctpl %>'
                 ],
-                tasks: [ 'html2js' ]
+                tasks: ['html2js']
             },
 
             /**
              * When the CSS files change, we need to compile and minify them.
              */
             sass: {
-                files: [ 'src/**/*.scss' ],
+                files: ['src/**/*.scss'],
                 tasks: ['sass:build', 'concat:build_css']
             },
 
@@ -678,7 +678,7 @@ module.exports = function (grunt) {
                 files: [
                     '<%= app_files.jsunit %>'
                 ],
-                tasks: [ 'jshint:test', 'karma:unit:run' ],
+                tasks: ['jshint:test', 'karma:unit:run'],
                 options: {
                     livereload: false
                 }
@@ -699,12 +699,12 @@ module.exports = function (grunt) {
      * before watching for changes.
      */
     grunt.renameTask('watch', 'delta');
-    grunt.registerTask('watch', [ 'build', 'karma:unit', 'connect', 'delta' ]);
+    grunt.registerTask('watch', ['build', 'karma:unit', 'connect', 'delta']);
 
     /**
      * The default task is to build and compile.
      */
-    grunt.registerTask('default', [ 'build', 'compile' ]);
+    grunt.registerTask('default', ['build', 'compile']);
 
     /**
      * The `build` task gets your app ready to run for development and testing.
@@ -783,13 +783,50 @@ module.exports = function (grunt) {
     grunt.registerTask('sassTemplate', 'Transforming sass file', function () {
         var mainScss = grunt.config('app_files.sass');
         var processedScss = path.join(path.dirname(mainScss), path.basename(mainScss, ".tpl.scss")) + ".scss.processed";
+        //debugger;
+        var scssPartials = grunt.file.expand("src/**/_*.scss");
+        scssPartials = scssPartials.map(function (value) {
+            return slash(path.relative(path.dirname(mainScss), value));
+        });
+
+        scssPartials = scssPartials.sort(function compare(a, b) {
+            var dottedA = a.indexOf("..") === 0,
+                dottedB = b.indexOf("..") === 0,
+                isSlashedA = a.indexOf("/") > 0,
+                isSlashedB = b.indexOf("/") > 0;
+
+            if (isSlashedA && isSlashedB) {
+                if (dottedA && dottedB) {
+                    return a.localeCompare(b);
+                } else if (dottedA) {
+                    return 1;
+                } else if (dottedB) {
+                    return -1;
+                }
+
+
+
+            } else if(isSlashedA) {
+                return 1;
+            } else if (isSlashedB) {
+                return -1;
+            }
+
+
+        });
+
         grunt.config.set('app_files.processedSass', processedScss);
 
         grunt.log.write("Temp file: " + processedScss);
 
         grunt.file.copy(mainScss, processedScss, {
             process: function (contents, path) {
-                return grunt.template.process(contents, grunt.config());
+                return grunt.template.process(contents, {
+                    data: {
+                        build_configs: grunt.config("build_configs"),
+                        partials: scssPartials
+                    }
+                });
             }
         });
     });

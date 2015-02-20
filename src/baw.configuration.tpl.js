@@ -56,6 +56,9 @@ angular.module('bawApp.configuration', ['url'])
                         profile: "/my_account",
                         settings: "/my_account/prefs"
                     },
+                    audioEventComment: {
+                        show: '/audio_events/{audioEventId}/comments/{audioEventCommentId}'
+                    },
                     bookmark: {
                         show: "/bookmarks/{bookmarkId}"
                     }
@@ -83,6 +86,7 @@ angular.module('bawApp.configuration', ['url'])
                     listen: 'listen/listen.tpl.html',
                     annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
                     gridLines: 'annotationViewer/gridLines/gridLines.tpl.html',
+                    annotationComments: 'annotationLibrary/comments/comments.tpl.html',
                     library: {
                         list: 'annotationLibrary/annotationLibrary.tpl.html',
                         item: 'annotationLibrary/annotationItem.tpl.html'
@@ -102,19 +106,29 @@ angular.module('bawApp.configuration', ['url'])
                         d3: 'demo/d3TestPage.tpl.html',
                         rendering: 'demo/rendering.tpl.html',
                         bdCloud2014: 'demo/BDCloud2014Demo.tpl.html'
-                    }
+                    },
+                    d3Bindings: {
+                        eventDistribution: {
+                            distributionVisualisation: "d3Bindings/eventDistribution/distributionVisualisation.tpl.html"
+                        }
+                    },
+                    visualize: "visualize/visualize.tpl.html"
                 },
                 // routes used by angular
                 ngRoutes: {
                     recentRecordings: "/listen",
                     listen: "/listen/{recordingId}",
                     library: "/library",
-                    libraryItem: "/library/{recordingId}/audio_events/{audioEventId}"
+                    libraryItem: "/library/{recordingId}/audio_events/{audioEventId}",
+                    visualize: "/visualize",
+                    demo: {
+                        d3: "/demo/d3",
+                        rendering: "/demo/rendering",
+                        bdCloud: "/demo/BDCloud2014"
+                    }
                 },
                 // general links for use in <a />'s
-                links: {
-
-                }
+                links: {}
             }
         };
 
@@ -225,7 +239,7 @@ angular.module('bawApp.configuration', ['url'])
                 chrome: 30,
                 safari: 5.1,
                 opera: 23,
-                ios:  5.1,
+                ios: 5.1,
                 android: 4.0
             },
             baseMessage: "Your current internet browser ({name}, version {version}) is {reason}. <br/> Consider updating or try using <a target='_blank' href='https://www.google.com.au/intl/en_au/chrome/browser/' >Google Chrome</a>.",
@@ -239,5 +253,64 @@ angular.module('bawApp.configuration', ['url'])
         bookmark: {
             lastPlaybackPositionName: "Last playback position",
             appCategory: "<<application>>"
+        },
+        predictiveCache: {
+
+            profiles: {
+                "Media cache ahead": function bind($location, paths) {
+                    // request additional bits of media based the duration of the original request
+                    // do not make requests that would exceed the end of the recording
+                    function mediaProgressor(previous, data) {
+                        var media = data.responseData.data,
+                            duration = media.commonParameters.endOffset - media.commonParameters.startOffset,
+                            next = previous + duration,
+                            max = media.recording.durationSeconds;
+
+                        if (next >= max) {
+                            return;
+                        }
+                        else {
+                            return next;
+                        }
+                    }
+
+                    function formatMediaUrl(url, counters) {
+                        return paths.api.root + url
+                            .replace(/start_offset=[\.\d]+/, "start_offset=" + counters[0])
+                            .replace(/end_offset=[\.\d]+/, "end_offset=" + counters[1]);
+                    }
+                    return {
+                        name: "Media cache ahead",
+                        match: function (url, response) {
+                            // match only if on listen page and request is for a media's json
+                            if ($location.path().indexOf("/listen") === 0 &&
+                                /\/audio_recordings\/[\.\d]+\/media\.json.*/.test(url)) {
+                                var so = response.config.params.start_offset;
+                                var eo = response.config.params.end_offset;
+
+                                return so !== undefined && eo !== undefined ? [so, eo] : null;
+                            }
+
+                            return null;
+                        },
+                        request: [
+                            // spectrogram
+                            function (counters, data) {
+                               return formatMediaUrl(data.responseData.data.available.image["png"].url, counters);
+                            },
+                            // mp3
+                            function (counters, data) {
+                                return formatMediaUrl(data.responseData.data.available.audio["mp3"].url, counters);
+                            }
+                        ],
+                        progression: [
+                            mediaProgressor, mediaProgressor
+                        ],
+                        count: 10,
+                        method: "HEAD",
+                        progressive: true
+                    };
+                }
+            }
         }
     });

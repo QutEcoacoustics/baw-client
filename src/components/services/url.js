@@ -1,7 +1,7 @@
 angular
-    .module('url', ['ng'])
+    .module("url", [])
     .provider(
-    '$url',
+    "$url",
     function () {
         var _renamerFunc = function(key) {return key;};
 

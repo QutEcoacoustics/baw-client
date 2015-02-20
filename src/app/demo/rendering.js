@@ -138,7 +138,7 @@ angular.module("bawApp.demo.rendering", [])
             //. "C:\Program Files\ImageMagick-6.9.0-Q16\convert.exe" -crop 1435x1@ .\eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN-trimmed72.png  tiles/tile_%d.png
             $scope.loadTiles60 = function () {
                 $scope.tiles60 = [];
-                tileStart = performance.now()
+                tileStart = performance.now();
                 for (var i = min60; i < max60; i++) {
                     // i == minute of day
                     if (i % 60) {
@@ -152,7 +152,7 @@ angular.module("bawApp.demo.rendering", [])
                 if (tileCount >= 24) {
                     $scope.tileLoadTime = Math.round(performance.now() - tileStart);
                 }
-            }
+            };
 
         }
     ]

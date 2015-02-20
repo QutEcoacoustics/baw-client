@@ -73,8 +73,9 @@ module.exports = {
             'vendor/momentjs/moment.js',
             'vendor/lodash/dist/lodash.js',
             'vendor/bowser/bowser.js',
-            'vendor/humanize-duration/humanize-duration.js'
-        ],
+            'vendor/humanize-duration/humanize-duration.js',
+            'vendor/round-date/roundDate.js'
+],
         js: [
             'vendor/jquery/dist/jquery.js',
             'vendor/angular/angular.js',
@@ -121,7 +122,8 @@ module.exports = {
             'vendor/bowser/bowser.js',
             'vendor/angular-growl-v2/build/angular-growl.js',
             'vendor/angular-local-storage/dist/angular-local-storage.js',
-            'vendor/humanize-duration/humanize-duration.js'
+            'vendor/humanize-duration/humanize-duration.js',
+            'vendor/round-date/roundDate.js'
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss

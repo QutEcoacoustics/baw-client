@@ -1,0 +1,17 @@
+.visualize-content {
+  max-width: 1500px;
+  @include center-block;
+
+  & .visualizeContentHeader {
+
+    h2 {
+      margin-top: 0;
+    }
+
+    small {
+      
+    }
+  }
+}
+
+

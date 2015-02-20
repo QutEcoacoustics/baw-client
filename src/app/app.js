@@ -63,7 +63,7 @@ var app = angular.module('baw',
                              "bawApp.vendorServices", /* Loads all vendor libraries that are automatically wrapped in a module */
 
 
-                             'url', /* a custom uri formatter */
+                             "url", /* a custom uri formatter */
                              'bawApp.configuration', /* a mapping of all static path configurations
                                                         and a module that contains all app configuration */
 
@@ -81,10 +81,7 @@ var app = angular.module('baw',
 
                              'bawApp.filters', /* our filters.js     */
 
-
-                             'bawApp.services.queryBuilder',
                              'bawApp.services', /* our services.js    */
-                             'bawApp.services.unitConverter',
 
                              "baw.models",
 
@@ -112,7 +109,8 @@ var app = angular.module('baw',
                              'bawApp.search',
                              'bawApp.tags',
                              'bawApp.users',
-                             'bawApp.birdWalks'
+                             'bawApp.birdWalks',
+                             "bawApp.visualize"
                          ])
 
     .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider', "$urlProvider", "casingTransformers",
@@ -171,9 +169,16 @@ var app = angular.module('baw',
                          title: 'Audio Events' }).
                      when('/library/:recordingId/audio_events/:audioEventId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationItemCtrl', title: 'Annotation :audioEventId'}).
 
-                     when('/demo/d3', {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
-                     when('/demo/rendering', {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' , fullWidth: true }).
-                     when('/demo/BDCloud2014', {templateUrl: paths.site.files.demo.bdCloud2014, controller: 'BdCloud2014Ctrl', title: 'BDCloud2014 demo' , fullWidth: true }).
+                     when(paths.site.ngRoutes.demo.d3, {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
+                     when(paths.site.ngRoutes.demo.rendering, {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' , fullWidth: true }).
+                     when(paths.site.ngRoutes.demo.bdCloud, {templateUrl: paths.site.files.demo.bdCloud2014, controller: 'BdCloud2014Ctrl', title: 'BDCloud2014 demo' , fullWidth: true }).
+
+                     when(paths.site.ngRoutes.visualize, {
+                         templateUrl: paths.site.files.visualize,
+                         controller: "VisualizeController",
+                         title: "Visualize audio distribution",
+                         fullWidth: true
+                     }).
 
                      // missing route page
                      when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
@@ -208,8 +213,8 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'Authenticator', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url',
-          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url) {
+    .run(['$rootScope', '$location', '$route', '$http', 'Authenticator', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url', "predictiveCache", "conf.constants",
+          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constants) {
 
               // embed configuration for easy site-wide binding
               $rootScope.paths = paths;
@@ -345,6 +350,9 @@ var app = angular.module('baw',
               });    /* /deprecated */
 
               $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
+
+              // set up predictive cache service
+              predictiveCache(constants.predictiveCache.profiles["Media cache ahead"]($location, paths));
 
           }])
 
