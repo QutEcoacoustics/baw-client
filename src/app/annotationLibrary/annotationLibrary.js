@@ -1,5 +1,9 @@
 var baw = window.baw = window.baw || {};
 
+function dontRenameKeys(key) {
+    return key;
+}
+
 baw.annotationLibrary = {};
 baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties(audioEvent, $url, paths) {
 
@@ -14,33 +18,33 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
     var roundedFreqHigh = Math.round(audioEvent.highFrequencyHertz);
 
     audioEvent.urls = {
-        site: $url.formatUri(paths.api.links.siteAbsolute, {projectId: audioEvent.projects[0].id, siteId: audioEvent.siteId}),
-        user: $url.formatUri(paths.api.links.userAccountsAbsolute, {userId: audioEvent.ownerId}),
-        tagSearch: $url.formatUri(paths.site.ngRoutes.libraryAbsolute, {tagsPartial: audioEvent.priorityTag.text}),
+        site: $url.formatUri(paths.api.links.siteAbsolute, {projectId: audioEvent.projects[0].id, siteId: audioEvent.siteId}, dontRenameKeys),
+        user: $url.formatUri(paths.api.links.userAccountsAbsolute, {userId: audioEvent.ownerId}, dontRenameKeys),
+        tagSearch: $url.formatUri(paths.site.ngRoutes.libraryAbsolute, {tagsPartial: audioEvent.priorityTag.text}, dontRenameKeys),
         isReference: $url.formatUri(paths.site.ngRoutes.libraryAbsolute, {reference: audioEvent.isReference}),
         similar: $url.formatUri(paths.site.ngRoutes.libraryAbsolute,
             {
                 annotationDuration: roundedDuration,
                 freqMin: roundedFreqLow,
                 freqMax: roundedFreqHigh
-            }),
+            }, dontRenameKeys),
         singleItem: $url.formatUri(paths.site.ngRoutes.libraryItem,
             {
                 recordingId: audioEvent.audioRecordingId,
-                audioEventId: audioEvent.audioEventId
-            }),
+                audioEventId:  audioEvent.audioEventId
+            }, dontRenameKeys),
         listen: $url.formatUri(paths.site.ngRoutes.listen,
             {
                 recordingId: audioEvent.audioRecordingId,
                 start: audioEvent.calcOffsetStart,
                 end: audioEvent.calcOffsetEnd
-            }),
+            }, dontRenameKeys),
         listenWithoutPadding: $url.formatUri(paths.site.ngRoutes.listen,
             {
                 recordingId: audioEvent.audioRecordingId,
                 start: audioEvent.startTimeSeconds,
                 end: audioEvent.endTimeSeconds
-            })
+            }, dontRenameKeys)
     };
 
     audioEvent.tags.forEach(
@@ -157,7 +161,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
             loadFilter();
 
             $scope.setFilter = function setFilter() {
-                $location.path('/library').search($url.toKeyValue($scope.filterSettings, true));
+                $location.path('/library').search($url.toKeyValue($scope.filterSettings, true, dontRenameKeys));
             };
 
             $scope.clearFilter = function clearFilter() {
@@ -179,7 +183,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute, paramObj);
+                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute, paramObj, dontRenameKeys);
             };
 
             function getEmptyFilterSettings() {
@@ -368,7 +372,8 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                                 {
                                     recordingId: $scope.annotation.paging.nextEvent.audioRecordingId,
                                     audioEventId: $scope.annotation.paging.nextEvent.audioEventId
-                                }
+                                },
+                                dontRenameKeys
                             );
                     }
 
@@ -379,7 +384,8 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                                 {
                                     recordingId: $scope.annotation.paging.prevEvent.audioRecordingId,
                                     audioEventId: $scope.annotation.paging.prevEvent.audioEventId
-                                }
+                                },
+                                dontRenameKeys
                             );
                     }
                 }, function annotationShowError(httpResponse) {
@@ -387,11 +393,11 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
                 });
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute, paramObj);
+                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute, paramObj, dontRenameKeys);
             };
 
-            $scope.createProjectUrl = function createProjectUrl(projectId) {
-                return $url.formatUri(paths.api.links.projectAbsolute, {projectId: projectId});
+            $scope.createProjectUrl = function createProjectUrl(projectId){
+                return $url.formatUri(paths.api.links.projectAbsolute, {projectId: projectId}, dontRenameKeys);
             };
 
             $scope.createCommentLinkUrl = function createCommentLinkUrl(audioEventCommentId) {
