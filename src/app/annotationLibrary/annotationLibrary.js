@@ -17,11 +17,20 @@ baw.annotationLibrary.addCalculatedProperties = function addCalculatedProperties
     var roundedFreqLow = Math.round(audioEvent.lowFrequencyHertz);
     var roundedFreqHigh = Math.round(audioEvent.highFrequencyHertz);
 
+    // site url
+    // there are some sites in the database that have been orphaned
+    // in this case we can't provide a url to the site because the main website
+    // does not have a flat path for site access (i.e. requires a project id for the url)
+    var siteUrl = "";
+    if (audioEvent.projects.length != 0) {
+        siteUrl = $url.formatUri(paths.api.links.siteAbsolute, {projectId: audioEvent.projects[0].id, siteId: audioEvent.siteId}, dontRenameKeys);
+    }
+
     audioEvent.urls = {
-        site: $url.formatUri(paths.api.links.siteAbsolute, {projectId: audioEvent.projects[0].id, siteId: audioEvent.siteId}, dontRenameKeys),
+        site: siteUrl,
         user: $url.formatUri(paths.api.links.userAccountsAbsolute, {userId: audioEvent.ownerId}, dontRenameKeys),
         tagSearch: $url.formatUri(paths.site.ngRoutes.libraryAbsolute, {tagsPartial: audioEvent.priorityTag.text}, dontRenameKeys),
-        isReference: $url.formatUri(paths.site.ngRoutes.libraryAbsolute, {reference: audioEvent.isReference}),
+        isReference: $url.formatUri(paths.site.ngRoutes.libraryAbsolute, {reference: audioEvent.isReference}, dontRenameKeys),
         similar: $url.formatUri(paths.site.ngRoutes.libraryAbsolute,
             {
                 annotationDuration: roundedDuration,
@@ -183,7 +192,7 @@ angular.module('bawApp.annotationLibrary', ['bawApp.configuration'])
 
 
             $scope.createFilterUrl = function createFilterUrl(paramObj) {
-                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute, paramObj, dontRenameKeys);
+                return $url.formatUri(paths.site.ngRoutes.library, paramObj, dontRenameKeys);
             };
 
             function getEmptyFilterSettings() {
