@@ -66,9 +66,9 @@ angular
                         newUrl = clipUrl;
                     if (match) {
                         // angular's HTML 5 mode breaks relative links for the clip-path attribute
-                        // See:https://github.com/angular/angular.js/issues/8934
+                        // See: https://github.com/angular/angular.js/issues/8934
                         // This function take a normal clip url and absolutifies it so it will work.
-                        var absoluteUrl = window.location.origin + window.location.pathname;
+                        var absoluteUrl = window.location.href;
                         newUrl = "url(" + absoluteUrl + "#" + match[1] + ")";
                     }
                     return this.attr("clip-path", newUrl);

@@ -55,6 +55,7 @@ angular
                 this.minimum = null;
                 this.maximum = null;
                 this.visibleExtent = null;
+                this.selectedCategory = null;
 
                 // init
                 create();
@@ -186,6 +187,7 @@ angular
                     that.lanes = data.lanes || [];
                     that.maximum = data.maximum;
                     that.minimum = data.minimum;
+                    that.selectedCategory = that.lanes[0];
                 }
 
                 function updateScales() {
@@ -337,6 +339,14 @@ angular
 
                     // updates the public visibleExtent field - has no effect on the graph
                     that.visibleExtent = domain;
+
+                    // update public field - this will allow us to switch which
+                    // lane is shown based on where an interaction happens on the drawing surface
+                    var mouseY = d3.mouse(main[0][0])[1],
+                        inverted = yScale.invert(mouseY),
+                        rounded = Math.floor(inverted);
+                    that.selectedCategory = that.lanes[rounded];
+
 
                     // updates the controller - bind back
                     dataFunctions.extentUpdate(that.visibleExtent, "DistributionDetail");

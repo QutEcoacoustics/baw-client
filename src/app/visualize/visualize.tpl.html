@@ -1,14 +1,37 @@
 <div id="content" class="visualize-content">
     <section class="row visualizeContentHeader">
         <h2>Audio distribution visualisation</h2>
+
         <div class="text-center">
-            <small class="">Current filter: e.g. Project 341</small>
+            <p ng-if="::errorState" class="alert alert-danger" role="alert">
+                The page is unable to be loaded.
+                The error is: {{::errorState}}.
+            </p>
+            <small>
+                <span>Current filter: </span>
+                <span ng-switch="filterType">
+                    <span ng-switch-when="projectId">one project ({{ids[0]}})</span>
+                    <span ng-switch-when="siteId">one site ({{ids[0]}})</span>
+                    <span ng-switch-when="siteIds">many sites (ids)</span>
+                </span> that is showing information from&nbsp;
+                <span ng-repeat="p in projects" class="projectSiteList">
+                        <!--{{ $first && "" || ", "}}-->
+
+                        <a ng-href="{{::getProjectLink(p)}}" target="_self">{{p.name}}</a>
+                           &nbsp;&#47;&nbsp;
+                        <span ng-repeat="s in getSitesForProject(p)">
+                            <a ng-href="{{::getSiteLink(p, s)}}" target="_self">{{s.name}}</a>
+                            {{ $last && " " || ", "}}
+                        </span>
+                        {{ $last && " " || ";"}}
+                </span>
+            </small>
         </div>
     </section>
-    <div event-distribution data="recordingData" options="distributionOptions" >
+    <div ng-if="!errorState" event-distribution data="recordingData" options="distributionOptions">
 
         <section class="row">
-            <event-distribution-overview> </event-distribution-overview>
+            <event-distribution-overview></event-distribution-overview>
             <!--{{distributionOptions.overviewExtent}}-->
         </section>
 
@@ -18,7 +41,7 @@
         </section>
 
         <section class="row">
-            <h3>False colour visualisation for {{distributionOptions.visualizationDuration}}</h3>
+            <h3>False colour visualisation for {{distributionOptions.visualizationDuration}} in {{distributionOptions.selectedLane}}</h3>
             <event-distribution-visualisation></event-distribution-visualisation>
         </section>
     </div>

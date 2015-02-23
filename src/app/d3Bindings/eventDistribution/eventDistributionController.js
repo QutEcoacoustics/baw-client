@@ -48,6 +48,7 @@ angular
             $scope.options.functions.extentUpdate = function (newExtent, source) {
                 var difference = newExtent[1] - newExtent[0];
                 var humanDuration = difference === 0 ? "" : moment.duration(difference).humanize();
+                var selectedLane = that.detail.selectedCategory || that.data.lanes[0] || "";
 
                 if (source != "DistributionOverview") {
                     that.overview.updateExtent(newExtent);
@@ -56,8 +57,7 @@ angular
                     that.detail.updateExtent(newExtent);
                 }
                 if (source != "DistributionVisualisation") {
-                    // TODO: fix 2nd arg
-                    that.visualisation.updateMiddle(middlePointBetweenDates(newExtent), "NE Site");
+                    that.visualisation.updateMiddle(middlePointBetweenDates(newExtent), selectedLane);
                     var visualizationMiddle = that.visualisation.visibleDuration;
                     var humanized = visualizationMiddle && moment.duration(visualizationMiddle, "seconds").humanize() || "";
                 }
@@ -67,6 +67,7 @@ angular
                     $scope.options.overviewExtent = newExtent;
                     $scope.options.detailDuration = humanDuration;
                     $scope.options.visualizationDuration = humanized;
+                    $scope.options.selectedLane = selectedLane;
                 }
 
                 if (!$scope.$root.$$phase) {
