@@ -9,7 +9,13 @@
     }
 
     small {
-      
+      .projectSiteList {
+        border-left: $gray-lighter solid 1px;
+        border-bottom: $gray-lighter solid 1px;
+        border-right: $gray-lighter solid 1px;
+        padding: 1px;
+        margin-right: 1em;
+      }
     }
   }
 }

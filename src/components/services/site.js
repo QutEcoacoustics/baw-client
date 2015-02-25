@@ -34,13 +34,13 @@ angular
                 return $http.post(url, query.toJSON());
             };
 
-            resource.getAllSites = function () {
+            /*resource.getAllSites = function () {
                 var url = paths.api.routes.site.filterAbsolute;
                 var query = QueryBuilder.create(function (q) {
                     return q.project({"include": ["id", "name"]});
                 });
                 return $http.post(url, query.toJSON());
-            };
+            };*/
 
 
             return resource;
