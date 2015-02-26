@@ -60,6 +60,7 @@ var app = angular.module('baw',
                              'decipher.tags',
                              'angular-growl',
                              'LocalStorageModule',
+                             'angular-loading-bar',
                              "bawApp.vendorServices", /* Loads all vendor libraries that are automatically wrapped in a module */
 
 
@@ -113,8 +114,8 @@ var app = angular.module('baw',
                              "bawApp.visualize"
                          ])
 
-    .config(['$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider', "$urlProvider", "casingTransformers",
-             function ($routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, $urlProvider, casingTransformers) {
+    .config(["$provide", '$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider', "cfpLoadingBarProvider", "$urlProvider", "casingTransformers",
+             function ($provide, $routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, cfpLoadingBarProvider, $urlProvider, casingTransformers) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
                  currentWhitelist.push(paths.api.root+'/**');
@@ -207,8 +208,20 @@ var app = angular.module('baw',
                  // configure local storage provider with our own namepspace
                  localStorageServiceProvider.setPrefix(constants.namespace);
 
+                 // for compatibility with rails api
                  $urlProvider.renamer(function(key) {
                      return casingTransformers.underscore(key);
+                 });
+
+                 // configure the loader bar
+                 // only show bar after waiting for 200ms
+                 cfpLoadingBarProvider.latencyThreshold = 200;
+                 // add a standard way to add ignores to http objects
+                 $provide.decorator('cfpLoadingBar', function ($delegate) {
+                     $delegate.ignore = function ($httpConfig) {
+                         return $httpConfig && ($httpConfig.ignoreLoadingBar = true, $httpConfig) || $httpConfig;
+                     };
+                     return $delegate;
                  });
              }])
 

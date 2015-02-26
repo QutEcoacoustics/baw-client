@@ -1,5 +1,5 @@
 angular
-    .module("bawApp.services.predictiveCache", [])
+    .module("bawApp.services.predictiveCache", ["angular-loading-bar"])
     .factory(
     "predictiveCacheInterceptor",
     [
@@ -34,7 +34,8 @@ angular
         "$http",
         "predictiveCacheInterceptor",
         "$q",
-        function ($http, predictiveCacheInterceptor, $q) {
+        "cfpLoadingBar",
+        function ($http, predictiveCacheInterceptor, $q, cfpLoadingBar) {
 
             var defaults = {
                 name: null,
@@ -169,10 +170,15 @@ angular
 
                 function invokeHttp(url) {
                     console.debug("predictiveCache:promiseResolution enqueued " + url);
-                    return $http({
+                    var config = {
                         url: url,
                         method: profile.method
-                    }).then(function (value) {
+                    };
+                    //HACK: this is nasty... only done so unit tests pass
+                    if (cfpLoadingBar.ignore) {
+                        config = cfpLoadingBar.ignore(config);
+                    }
+                    return $http(config).then(function (value) {
                         console.debug("predictiveCache:promiseResolution completed " + url);
                         return value;
                     });

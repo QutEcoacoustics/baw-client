@@ -123,7 +123,9 @@ module.exports = {
             'vendor/angular-growl-v2/build/angular-growl.js',
             'vendor/angular-local-storage/dist/angular-local-storage.js',
             'vendor/humanize-duration/humanize-duration.js',
-            'vendor/round-date/roundDate.js'
+            'vendor/round-date/roundDate.js',
+
+            'vendor/angular-loading-bar/build/loading-bar.js'
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss
@@ -135,7 +137,9 @@ module.exports = {
             //'vendor/select2/select2.css'
 
             'vendor/angular-tags/dist/angular-tags-0.3.1.css',
-            'vendor/angular-growl-v2/build/angular-growl.css'
+            'vendor/angular-growl-v2/build/angular-growl.css',
+
+            'vendor/angular-loading-bar/build/loading-bar.css'
         ],
         assets: [
             // jquery-ui is stoopid, special case

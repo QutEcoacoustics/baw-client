@@ -6,7 +6,18 @@ describe("The predictiveCache service", function () {
         $httpProvider = _$httpProvider_;
     }));
 
+    //beforeEach(module("baw"));
+
     beforeEach(function () {
+        //
+        //$provide.decorator('cfpLoadingBar', function ($delegate) {
+        //    $delegate.ignore = function ($httpConfig) {
+        //        return $httpConfig && ($httpConfig.ignoreLoadingBar = true) || $httpConfig;
+        //    };
+        //
+        //    return $delegate;
+        //});
+
         testProfile = {
             name: "Media cache ahead",
             match: /google\.com\?page=(.*)&size=(.*)/,

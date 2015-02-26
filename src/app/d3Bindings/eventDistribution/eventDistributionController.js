@@ -29,7 +29,7 @@ angular
                     },
                     getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum, index) {
                         var hourOfDay = date.getHours();
-                        return "/tile_" + hourOfDay + ".png"
+                        return "/tile_" + hourOfDay + ".png";
                     }
                 };
 
