@@ -217,12 +217,12 @@ var app = angular.module('baw',
                  // only show bar after waiting for 200ms
                  cfpLoadingBarProvider.latencyThreshold = 200;
                  // add a standard way to add ignores to http objects
-                 $provide.decorator('cfpLoadingBar', function ($delegate) {
+                 $provide.decorator('cfpLoadingBar', ["$delegate", function ($delegate) {
                      $delegate.ignore = function ($httpConfig) {
                          return $httpConfig && ($httpConfig.ignoreLoadingBar = true, $httpConfig) || $httpConfig;
                      };
                      return $delegate;
-                 });
+                 }]);
              }])
 
 
