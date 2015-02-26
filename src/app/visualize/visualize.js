@@ -21,6 +21,7 @@ angular
             $scope.filterType = null;
             $scope.sites = [];
             $scope.projects = [];
+            $scope.isLoading = true;
 
 
             var parameters = validateParameters();
@@ -38,6 +39,8 @@ angular
                 chain.then(sitesRetrieved)
                     .then(getOtherData)
                     .then(processOtherData, function error() {
+                        $scope.isLoading = false;
+
                         if (!$scope.errorState) {
                             $scope.errorState = "an unknown error occurred";
                         }
@@ -45,14 +48,6 @@ angular
                     }
                 );
             }
-
-            /*
-             $http.get("assets/temp/dummyData.json").then(function (response) {
-             $scope.recordingData = response.data;
-             }, function () {
-             console.error("loading dummy data failed", arguments);
-             });
-             */
 
             // options that bind the generic event distribution
             // controls to our particular data structures
@@ -87,6 +82,17 @@ angular
                     },
                     getText: function (d) {
                         return d.id;
+                    },
+                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum, index) {
+                        var hourOfDay = date.getHours();
+
+                        if (datum.source.id !== 188238) {
+                            return;
+                        }
+
+                        // do not attempt to load dll's for demo
+                        var url = "/assets/temp/demo/188238_" + hourOfDay + ".png";
+                        return url;
                     }
                 }
             };
@@ -234,6 +240,8 @@ angular
 
             function processOtherData(results) {
                 console.debug("Visualise data promise chain success", arguments);
+
+                $scope.isLoading = false;
 
                 var projects = results[1].data.data;
                 $scope.projects = projects;

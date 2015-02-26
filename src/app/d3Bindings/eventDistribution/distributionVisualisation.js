@@ -46,6 +46,7 @@ angular
                 that.spectrogramWindowSize = 512;
                 that.visibleDuration = oneDay;
                 that.middle = null;
+                that.category = null;
                 that.updateData = updateData;
                 that.updateMiddle = updateMiddle;
 
@@ -132,10 +133,10 @@ angular
                 function generateTiles() {
                     if (that.items && that.items.length > 0) {
                         // need to generate a series of tiles that can show the data in that.items
-                        that.items.forEach(function(current) {
+                        that.items.forEach(function (current) {
                             // warning: to future self: this is creating cyclic references
                             // as each tile keeps a reference to current
-                           current.tiles = splitIntoTiles(current);
+                            current.tiles = splitIntoTiles(current);
                         });
                     }
                 }
@@ -173,16 +174,23 @@ angular
                         top: 0,
                         left: left,
                         width: tileSizePixels + "px",
-
+                        "z-index": function (d) {
+                            return d.source.recordedDate.getDay();
+                        }
                     };
 
                     function getOffset(d) {
-                        return d.offset.toISOString();
+                        return d.offset.toLocaleDateString() + "<br/>" + d.offset.toLocaleTimeString();
                     }
 
                     function getTileImage(d, i) {
-                        var hourOfDay = d.offset.getHours();
-                        return "url(assets/temp/tiles/tile_" + hourOfDay + ".png)";
+                        var url = dataFunctions.getTileUrl(d.offset, that.category, tileSizeSeconds, tileSizePixels, d, i);
+
+                        if (url) {
+                            return "url(" + url + ")";
+                        }
+
+                        return "";
                     }
 
                     // update old tiles
@@ -201,8 +209,22 @@ angular
                         .style(style)
                         .style("background-image", getTileImage)
                         .classed("tile", true)
+                        .on("click", function (datum) {
+                            // HACK: temporary behaviour for demo
+                            // construct url
+                            var ar = datum.source,
+                                id = ar.id,
+                                startOffset = (datum.offset - ar.recordedDate) / 1000,
+                                endOffset = startOffset + 30.0;
+
+                            var url = "/listen/" + id + "?start=" + startOffset + "&end=" + endOffset;
+
+                            console.warn("navigating to ", url);
+
+                            window.location = url;
+                        })
                         .append("div")
-                        .text(getOffset);
+                        .html(getOffset);
 
                     // remove old tiles
                     tileElements.exit().remove();

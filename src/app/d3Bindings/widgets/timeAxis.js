@@ -14,7 +14,7 @@ angular
                         position: [0, 0],
                         isVisible: true
                     },
-                    options = angular.extend(defaultOptions, options),
+                    options = angular.extend(defaultOptions, _options),
                     scale = _scale || d3.time.scale(),
                     axisG;
 

@@ -62,7 +62,7 @@ angular
                     updateDimensions();
 
                     mini = createMini(chart);
-                    xAxis = new TimeAxis(mini, xScale, {position: [0, miniHeight]});
+                    xAxis = new TimeAxis(mini, xScale, {position: [0, miniHeight], isVisible: false});
                 }
 
                 function updateData(data) {
@@ -77,7 +77,7 @@ angular
                     if (data && data.items.length > 0) {
                         display();
 
-                        xAxis.update(xScale, [0, miniHeight]);
+                        xAxis.update(xScale, [0, miniHeight], true);
                     }
                 }
 
