@@ -91,7 +91,7 @@ angular
                         }
 
                         // do not attempt to load dll's for demo
-                        var url = "/assets/temp/demo/188238_" + hourOfDay + ".png";
+                        var url = paths.site.root + "/assets/temp/demo/188238_" + hourOfDay + ".png";
                         return url;
                     }
                 }
