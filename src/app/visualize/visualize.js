@@ -21,6 +21,7 @@ angular
             $scope.filterType = null;
             $scope.sites = [];
             $scope.projects = [];
+            $scope.isLoading = true;
 
 
             var parameters = validateParameters();
@@ -38,6 +39,8 @@ angular
                 chain.then(sitesRetrieved)
                     .then(getOtherData)
                     .then(processOtherData, function error() {
+                        $scope.isLoading = false;
+
                         if (!$scope.errorState) {
                             $scope.errorState = "an unknown error occurred";
                         }
@@ -81,10 +84,15 @@ angular
                         return d.id;
                     },
                     getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum, index) {
-                        //var hourOfDay = date.getHours();
+                        var hourOfDay = date.getHours();
+
+                        if (datum.source.id !== 188238) {
+                            return;
+                        }
 
                         // do not attempt to load dll's for demo
-                        return;
+                        var url = "/assets/temp/demo/188238_" + hourOfDay + ".png";
+                        return url;
                     }
                 }
             };
@@ -232,6 +240,8 @@ angular
 
             function processOtherData(results) {
                 console.debug("Visualise data promise chain success", arguments);
+
+                $scope.isLoading = false;
 
                 var projects = results[1].data.data;
                 $scope.projects = projects;

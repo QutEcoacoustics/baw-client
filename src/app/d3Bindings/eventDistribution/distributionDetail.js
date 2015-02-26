@@ -178,7 +178,7 @@ angular
                         .clipPath("url(#" + clipId + ")")
                         .classed("mainItemsGroup", true);
 
-                    xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight]});
+                    xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight], isVisible: false});
                 }
 
                 function updateDataVariables(data) {

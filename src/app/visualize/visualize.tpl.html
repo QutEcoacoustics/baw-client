@@ -32,12 +32,13 @@
 
         <section class="row">
             <event-distribution-overview></event-distribution-overview>
-            <!--{{distributionOptions.overviewExtent}}-->
+            <div ng-if="isLoading" class="loadingImage"></div>
         </section>
 
         <section class="row">
             <h3>Detailed view for {{distributionOptions.detailDuration}}</h3>
             <event-distribution-detail></event-distribution-detail>
+            <div ng-if="isLoading" class="loadingImage"></div>
         </section>
 
         <section class="row">
