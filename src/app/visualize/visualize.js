@@ -8,20 +8,30 @@ angular
         "$http",
         "$q",
         "lodash",
+        "moment",
         "conf.paths",
+        "conf.constants",
         "Project",
         "Site",
         "AudioRecording",
-        function ($scope, $routeParams, $http, $q, _, paths, Project, Site, AudioRecording) {
+        "UserProfile",
+        function ($scope, $routeParams, $http, $q, _, moment, paths, constants, Project, Site, AudioRecording, UserProfile) {
 
             var sitesMap = {};
 
             $scope.recordingData = [];
             $scope.errorState = undefined;
+            $scope.showOverview = false;
             $scope.filterType = null;
             $scope.sites = [];
             $scope.projects = [];
             $scope.isLoading = true;
+
+            // get user profile
+            UserProfile.get.then(function() {
+                $scope.showOverview = UserProfile.profile.preferences.visualize.showTemporalContext;
+                console.debug("Visualize::User preference for showing overview set to ", $scope.showOverview);
+            });
 
 
             var parameters = validateParameters();
@@ -48,6 +58,17 @@ angular
                     }
                 );
             }
+
+            // update user profile if needed
+            $scope.$watch(function() {
+                return $scope.showOverview;
+            }, function (newValue) {
+               if (UserProfile.profile && newValue != UserProfile.profile.preferences.visualize.showTemporalContext) {
+                   UserProfile.profile.preferences.visualize.showTemporalContext = newValue;
+
+                   UserProfile.updatePreferences();
+               }
+            });
 
             // options that bind the generic event distribution
             // controls to our particular data structures
@@ -97,41 +118,6 @@ angular
                 }
             };
 
-
-            // gridlines
-            $scope.gridConfig = {
-
-                y: {
-                    showGrid: true,
-                    showScale: true,
-                    showTitle: true,
-                    max: 11025,
-                    min: 0,
-                    step: 1000,
-                    height: 256,
-                    labelFormatter: function (value, index, min, max) {
-                        return (value / 1000).toFixed(1);
-                    },
-                    title: "Frequency (KHz)"
-                },
-                x: {
-                    showGrid: true,
-                    showScale: true,
-                    showTitle: true,
-                    max: 24,
-                    min: 0,
-                    step: 1,
-                    width: 1440,
-                    labelFormatter: function (value, index, min, max) {
-                        // show 'absolute' time.... i.e. seconds of the minute
-                        var offset = (value % 60);
-
-                        return (offset).toFixed(0);
-                    },
-                    title: "Time (hours)"
-                }
-            };
-
             $scope.getProjectLink = function(project) {
                 if (project) {
                     return paths.api.routes.project.showAbsolute.format({projectId: project.id});
@@ -150,6 +136,9 @@ angular
                 });
             };
 
+            $scope.formatDate = function(d) {
+                return moment(d).format(constants.localization.dateTimeShortFormat);
+            };
 
             function validateParameters() {
 

@@ -24,22 +24,28 @@ angular
                     miniWidth = 1000,
                 // this default value will be overwritten almost immediately
                     miniHeight = 200,
-                    xAxisHeight = 30,
+                    xAxisHeight = 17,
                     margin = {
                         top: 5,
                         right: 20,
                         bottom: 5 + xAxisHeight,
                         left: 120
                     },
-                    laneHeight = 30,
+                    laneHeight = 18,
                     lanePaddingDomain = 0.1,
                     labelRectPadding = 5,
                     container = d3.select(target),
-                    _lockManualBrush = false;
+                    _lockManualBrush = false,
+                    visualisationDuration = null;
 
                 // exports
                 that.updateData = updateData;
                 that.updateExtent = updateExtent;
+                that.updateVisualisationDuration = function(newDuration) {
+                    // update internal value for tracking
+                    // but this is basically a noop
+                    visualisationDuration = newDuration;
+                };
                 that.display = display;
                 that.getLaneLength = getLaneLength;
                 that.brush = null;
@@ -65,7 +71,7 @@ angular
                     xAxis = new TimeAxis(mini, xScale, {position: [0, miniHeight], isVisible: false});
                 }
 
-                function updateData(data) {
+                function updateData(data, extent) {
                     updateDataVariables(data);
 
                     updateDimensions();
@@ -75,7 +81,12 @@ angular
                     updateMini(mini);
 
                     if (data && data.items.length > 0) {
-                        display();
+                        if (extent) {
+                            updateExtent(extent);
+                        }
+                        else {
+                            display();
+                        }
 
                         xAxis.update(xScale, [0, miniHeight], true);
                     }
@@ -86,9 +97,11 @@ angular
                         throw new Error("Can't handle this many dimensions");
                     }
 
-                    if (extent[0] === that.selectedExtent[0] && extent[1] === that.selectedExtent[1]) {
-                        console.debug("DistributionOverview:updateExtent: update skipped");
-                        return;
+                    if (that.selectedExtent) {
+                        if (extent[0] === that.selectedExtent[0] && extent[1] === that.selectedExtent[1]) {
+                            console.debug("DistributionOverview:updateExtent: update skipped");
+                            return;
+                        }
                     }
 
                     that.selectedExtent = extent;
@@ -164,6 +177,7 @@ angular
                      */
 
                     // create interactive brush
+                    _lockManualBrush = true;
                     that.brush = d3.svg.brush()
                         // xScale is undefined at this point, it is updated later when data is added
                         .x(xScale)
@@ -173,6 +187,7 @@ angular
                     mini.append("g")
                         .classed("x brush", true)
                         .call(that.brush);
+                    _lockManualBrush = false;
 
                     return mini;
                 }
@@ -298,7 +313,6 @@ angular
 
                     // update the outside world
                     dataFunctions.extentUpdate(brushExtent, "DistributionOverview");
-
                 }
 
                 // helper functions
@@ -343,6 +357,10 @@ angular
                         element,
                         controller.data,
                         controller.options.functions);
+
+                    if (controller.data && controller.data.items.length > 0) {
+                        controller.overview.updateData(controller.data, controller.currentExtent);
+                    }
                 }
             };
         }

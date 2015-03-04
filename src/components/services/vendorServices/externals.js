@@ -38,10 +38,19 @@ angular
 
             // augment d3
             var d3 = d3Provider.configureVendorInstance();
+            var coordinatesRegex = /translate\((.*)\)/;
             d3.selection.prototype.translate = function (position) {
-                var coordinatesRegex = /translate\((.*)\)/;
                 if (position) {
-                    return this.attr("transform", "translate(" + position[0] + "," + position[1] + ")");
+                    if (typeof position === "function") {
+                        return this.attr("transform", function() {
+                            var p = position.apply(this, arguments);
+
+                            return "translate(" + p[0] + "," + p[1] + ")";
+                        });
+                    }
+                    else {
+                        return this.attr("transform", "translate(" + position[0] + "," + position[1] + ")");
+                    }
                 }
                 else {
                     var result = [];

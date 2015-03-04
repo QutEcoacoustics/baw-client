@@ -1,20 +1,27 @@
 <div id="content" class="visualize-content">
-    <section class="row visualizeContentHeader">
-        <h2>Audio distribution visualisation</h2>
+    <section ng-if="::errorState" class="row visualizeContentHeader">
+        <h2>Audio distribution</h2>
 
         <div class="text-center">
-            <p ng-if="::errorState" class="alert alert-danger" role="alert">
+            <p class="alert alert-danger" role="alert">
                 The page is unable to be loaded.
                 The error is: {{::errorState}}.
             </p>
-            <small>
+        </div>
+    </section>
+    <div ng-if="!errorState" event-distribution data="recordingData" options="distributionOptions">
+        <h2>Audio distribution from {{formatDate(distributionOptions.detailExtent[0])}} to
+            {{formatDate(distributionOptions.detailExtent[1])}} (about {{distributionOptions.detailDuration}})</h2>
+        <section class="row text-center">
+            <small class="col-md-8 col-md-offset-2">
                 <span>Current filter: </span>
                 <span ng-switch="filterType">
                     <span ng-switch-when="projectId">one project ({{ids[0]}})</span>
                     <span ng-switch-when="siteId">one site ({{ids[0]}})</span>
                     <span ng-switch-when="siteIds">many sites (ids)</span>
                 </span> that is showing information from&nbsp;
-                <span ng-repeat="p in projects" class="projectSiteList">
+                <span ng-repeat="p in projects">
+                    <span class="projectSiteList">
                         <!--{{ $first && "" || ", "}}-->
 
                         <a ng-href="{{::getProjectLink(p)}}" target="_self">{{p.name}}</a>
@@ -23,26 +30,29 @@
                             <a ng-href="{{::getSiteLink(p, s)}}" target="_self">{{s.name}}</a>
                             {{ $last && " " || ", "}}
                         </span>
-                        {{ $last && " " || ";"}}
+
+                    </span>
+                     {{ $last && " " || ";"}} &nbsp;
                 </span>
             </small>
-        </div>
-    </section>
-    <div ng-if="!errorState" event-distribution data="recordingData" options="distributionOptions">
-
-        <section class="row">
+            <div class="col-md-2 text-right">
+                <label class="temporalContextLabel" for="showTemporalContext">Show overview</label>
+                <input id="showTemporalContext" class="input-xs" type="checkbox" ng-model="$parent.showOverview"/>
+            </div>
+        </section>
+        <section class="row" ng-if="$parent.showOverview">
             <event-distribution-overview></event-distribution-overview>
             <div ng-if="isLoading" class="loadingImage"></div>
         </section>
 
         <section class="row">
-            <h3>Detailed view for {{distributionOptions.detailDuration}}</h3>
             <event-distribution-detail></event-distribution-detail>
             <div ng-if="isLoading" class="loadingImage"></div>
         </section>
 
         <section class="row">
-            <h3>False colour visualisation for {{distributionOptions.visualizationDuration}} in {{distributionOptions.selectedLane}}</h3>
+            <h3>False colour visualisation for {{distributionOptions.visualizationDuration}} in
+                {{distributionOptions.selectedLane}}</h3>
             <event-distribution-visualisation></event-distribution-visualisation>
         </section>
     </div>

@@ -2,7 +2,8 @@
  * Created by Anthony.
  *
  * Intended to show the visualisation chosen by the other event distribution controls
- * A large visual surface of html elements, still controlled by d3
+ * A large visual surface of SVG elements, controlled by d3
+ * It shows a series of tiles
  *
  */
 angular
@@ -12,21 +13,26 @@ angular
     [
         "d3",
         "roundDate",
-        function (d3, roundDate) {
-            return function DistributionVisualisation(target, data, dataFunctions) {
+        "TimeAxis",
+        function (d3, roundDate, TimeAxis) {
+            return function DistributionVisualisation(target, data, dataFunctions, uniqueId) {
                 // variables
-                var that = this,
+                var self = this,
                     container = d3.select(target),
-                    metaTrack = container.select(".metaTrack"),
-                    tiles = container.select(".imageTrack .tiles"),
+                    svg = container.select(".imageTrack svg"),
+                //metaTrack = container.select(".metaTrack"),
+                    main = container.select(".imageTrack .main"),
+                    tilesBackground = main.select(".tilesBackground"),
+                    tilesGroup = main.select(".tiles"),
+                    tilesClipRect,
 
                     tileSizePixels = 60,
                     tileSizeSeconds = 60 * 60,
 
                 // default value, overridden almost straight away
-                    height = 256,
+                    tilesHeight = 256,
                 // default value, overridden almost straight away
-                    width = 1440,
+                    tilesWidth = 1440,
                 // 86400 seconds
                     oneDay = 60 * 60 * 24,
 
@@ -34,22 +40,33 @@ angular
                 // seconds per pixel
                     resolution = updateResolution(),
 
+                    clipId = "distributionVisualization_" + uniqueId,
                     xScale,
                     yScale,
+                    xAxis,
+                    xAxisHeight = 30,
+                    yAxis,
+                    yAxisGroup,
+                    yAxisWidth = 52,
+                    margin = {
+                        top: 13,
+                        right: 0,
+                        left: 0 + yAxisWidth,
+                        bottom: 0 + xAxisHeight
+                    },
 
                     visibleExtent = [],
                     visibleTiles = [];
 
                 // exports
-                that.items = [];
-                that.nyquist = 11025;
-                that.spectrogramWindowSize = 512;
-                that.visibleDuration = oneDay;
-                that.middle = null;
-                that.category = null;
-                that.updateData = updateData;
-                that.updateMiddle = updateMiddle;
-
+                self.items = [];
+                self.nyquist = 11025;
+                self.spectrogramWindowSize = 512;
+                self.visibleDuration = oneDay;
+                self.middle = null;
+                self.category = null;
+                self.updateData = updateData;
+                self.updateMiddle = updateMiddle;
 
                 // init
                 create();
@@ -68,11 +85,15 @@ angular
 
                     updateElements();
 
+                    // pulling our y-axis update because yScale never changes for updateMiddle
+                    // and thus only changes from update data
+                    yAxis.scale(yScale).tickValues(yScale.ticks(10).slice(0, -1).concat([self.nyquist]));
+                    yAxisGroup.call(yAxis);
                 }
 
                 function updateMiddle(newMiddle, category) {
-                    that.middle = newMiddle;
-                    that.category = category;
+                    self.middle = newMiddle;
+                    self.category = category;
 
                     updateScales();
 
@@ -91,49 +112,63 @@ angular
                     generateTiles();
 
                     createElements();
-
                 }
 
                 function updateDataVariables(data) {
                     // data should be an array of items with extents
-                    that.items = data.items;
-                    that.nyquistFrequency = data.nyquistFrequency;
-                    that.spectrogramWindowSize = data.spectrogramWindowSize;
-                    that.middle = null;
+                    self.items = data.items;
+                    self.nyquistFrequency = data.nyquistFrequency;
+                    self.spectrogramWindowSize = data.spectrogramWindowSize;
+                    self.middle = null;
                 }
 
                 function setDimensions() {
                     var widths = getWidth();
-                    width = widths.width;
-                    that.visibleDuration = widths.duration;
+                    tilesWidth = widths.width;
+                    self.visibleDuration = widths.duration;
 
-                    tiles.style("width", width + "px");
+                    // want tilesHeight to be a function of nyquistRate and window
+                    var newHeight = getTilesGroupHeight();
+                    if (newHeight >= 0) {
+                        tilesHeight = newHeight;
+                    }
+                    var svgHeight = tilesHeight + margin.top + margin.bottom;
+                    svg.style("height", svgHeight + "px");
 
+                    var attrs = {
+                        width: tilesWidth,
+                        height: tilesHeight
+                    };
+                    tilesGroup.attr(attrs);
+                    tilesBackground.attr(attrs);
+                    if (tilesClipRect) {
+                        tilesClipRect.attr(attrs);
+                    }
 
-                    // want height to be a function of nyquistRate and window
-                    height = getHeight();
-                    tiles.style("height", height + "px");
+                    // update the controller with the visible tilesWidth
+                    dataFunctions.visualisationDurationUpdate(self.visibleDuration);
                 }
 
                 function updateScales() {
                     // calculate then end date for the domain
-                    var halfVisibleDuration = that.visibleDuration / 2.0;
-                    visibleExtent[0] = d3.time.second.offset(that.middle, -halfVisibleDuration);
-                    visibleExtent[1] = d3.time.second.offset(that.middle, halfVisibleDuration);
+                    var halfVisibleDuration = self.visibleDuration / 2.0;
+                    visibleExtent[0] = d3.time.second.offset(self.middle, -halfVisibleDuration);
+                    visibleExtent[1] = d3.time.second.offset(self.middle, halfVisibleDuration);
 
                     xScale = d3.time.scale()
                         .domain(visibleExtent)
-                        .range([0, width]);
+                        .range([0, tilesWidth]);
 
                     yScale = d3.scale.linear()
-                        .domain([0, 1])
-                        .range([0, height]);
+                        // inverted y-axis
+                        .domain([self.nyquistFrequency, 0])
+                        .range([0, tilesHeight]);
                 }
 
                 function generateTiles() {
-                    if (that.items && that.items.length > 0) {
+                    if (self.items && self.items.length > 0) {
                         // need to generate a series of tiles that can show the data in that.items
-                        that.items.forEach(function (current) {
+                        self.items.forEach(function (current) {
                             // warning: to future self: this is creating cyclic references
                             // as each tile keeps a reference to current
                             current.tiles = splitIntoTiles(current);
@@ -144,91 +179,131 @@ angular
                 function filterTiles() {
                     // item filter
                     var f = isItemVisible.bind(null, visibleExtent),
-                        g = isInCategory.bind(null, that.category),
+                        g = isInCategory.bind(null, self.category),
                         h = and.bind(null, g, f);
 
                     // tile filter
                     var l = isTileVisible.bind(null, visibleExtent);
 
-                    visibleTiles = that.items
+                    visibleTiles = self.items
                         .filter(h)
                         .reduce(function (previous, current) {
-                            var t = current.tiles.filter(l);
-                            return previous.concat(t);
-                        }, []);
+                                    var t = current.tiles.filter(l);
+                                    return previous.concat(t);
+                                }, []);
                 }
 
                 function createElements() {
                     // this example has an associated html template...
                     // most of the creation is not necessary
 
+                    tilesClipRect = svg.append("defs")
+                        .append("clipPath")
+                        .attr("id", clipId)
+                        .append("rect")
+                        .attr({
+                            width: tilesWidth,
+                            height: tilesHeight
+                        });
+
+                    main.translate([margin.left, margin.top]);
+
+                    tilesGroup.clipPath("url(#" + clipId + ")");
+
+                    xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeight], isVisible: false});
+                    yAxis = d3.svg.axis()
+                        .scale(yScale)
+                        .orient("left")
+                        .tickSize(6)
+                        .tickPadding(8);
+                    yAxisGroup = main.append("g")
+                        .classed("y axis", true)
+                        .translate([0,0])
+                        .call(yAxis);
+
                     updateElements();
                 }
 
                 function updateElements() {
-                    function left(d, i) {
-                        return xScale(d.offset) + "px";
-                    }
-
-                    var style = {
-                        top: 0,
-                        left: left,
-                        width: tileSizePixels + "px",
+                    var gAttrs = {
                         "z-index": function (d) {
                             return d.source.recordedDate.getDay();
                         }
                     };
 
-                    function getOffset(d) {
-                        return d.offset.toLocaleDateString() + "<br/>" + d.offset.toLocaleTimeString();
+                    var imageAttrs = {
+                        height: tilesHeight,
+                        width: tileSizePixels
+                    };
+
+                    function tileGTranslation(d, i) {
+                        return [getTileLeft(d, i), 0];
                     }
 
-                    function getTileImage(d, i) {
-                        var url = dataFunctions.getTileUrl(d.offset, that.category, tileSizeSeconds, tileSizePixels, d, i);
-
-                        if (url) {
-                            return "url(" + url + ")";
-                        }
-
-                        return "";
-                    }
-
-                    // update old tiles
-                    var tileElements = tiles.selectAll(".tile")
+                    // create data join
+                    var tileElements = tilesGroup.selectAll(".tile")
                         .data(visibleTiles, function (d) {
-                            return d.key;
-                        });
+                                  return d.key;
+                              });
 
                     // update old tiles
-                    tileElements.style("left", left)
-                        .style("background-image", getTileImage);
+                    tileElements.translate(tileGTranslation)
+                        .select("image")
+                        .attr("href", getTileImage);
 
                     // add new tiles
-                    tileElements.enter()
-                        .append("div")
-                        .style(style)
-                        .style("background-image", getTileImage)
+                    var newTileElements = tileElements.enter()
+                        .append("g")
+                        .attr(gAttrs)
+                        .translate(tileGTranslation)
                         .classed("tile", true)
                         .on("click", function (datum) {
-                            // HACK: temporary behaviour for demo
-                            // construct url
-                            var ar = datum.source,
-                                id = ar.id,
-                                startOffset = (datum.offset - ar.recordedDate) / 1000,
-                                endOffset = startOffset + 30.0;
+                                // HACK: temporary behaviour for demo
+                                // construct url
+                                var ar = datum.source,
+                                    id = ar.id,
+                                    startOffset = (datum.offset - ar.recordedDate) / 1000,
+                                    endOffset = startOffset + 30.0;
 
-                            var url = "/listen/" + id + "?start=" + startOffset + "&end=" + endOffset;
+                                var url = "/listen/" + id + "?start=" + startOffset + "&end=" + endOffset;
 
-                            console.warn("navigating to ", url);
+                                console.warn("navigating to ", url);
 
-                            window.location = url;
-                        })
-                        .append("div")
-                        .html(getOffset);
+                                window.location = url;
+                            });
+                    newTileElements.append("rect")
+                        .attr(imageAttrs);
+
+                    newTileElements.append("text")
+                        .text(getOffsetDate)
+                        .attr({
+                            y: tilesHeight / 2.0,
+                            x: tileSizePixels / 2.0,
+                            width: tilesWidth,
+                            "text-anchor": "middle",
+                            dy: "0em"
+                        });
+                    newTileElements.append("text")
+                        .text(getOffsetTime)
+                        .attr({
+                            y: tilesHeight / 2.0,
+                            x: tileSizePixels / 2.0,
+                            width: tileSizePixels,
+                            "text-anchor": "middle",
+                            dy: "1em"
+                        });
+                    newTileElements.append("image")
+                        .attr(imageAttrs)
+                        .attr("xlink:href", getTileImage);
 
                     // remove old tiles
                     tileElements.exit().remove();
 
+                    var domain = xScale.domain(),
+                    // intentionally falsey
+                        showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
+
+                    xAxis.update(xScale, [0, tilesHeight], showAxis);
                 }
 
                 function updateResolution() {
@@ -237,14 +312,15 @@ angular
                 }
 
                 function getWidth() {
-                    // want width to be a factor of tile size
-                    var containerWidth = tiles.node().parentNode.getBoundingClientRect().width;
-                    var tileCount = Math.floor(containerWidth / tileSizePixels);
+                    // want tilesWidth to be a factor of tile size
+                    var containerWidth = svg.node().parentNode.getBoundingClientRect().width;
+                    var availableWidth = containerWidth - (margin.left + margin.right);
+                    var tileCount = Math.floor(availableWidth / tileSizePixels);
                     return {width: tileCount * tileSizePixels, duration: tileCount * tileSizeSeconds};
                 }
 
-                function getHeight() {
-                    return that.spectrogramWindowSize / 2;
+                function getTilesGroupHeight() {
+                    return (self.spectrogramWindowSize / 2);
                 }
 
                 function isInCategory(category, d) {
@@ -253,7 +329,7 @@ angular
 
                 function isItemVisible(visibleExtent, d) {
                     return dataFunctions.getLow(d) < visibleExtent[1] &&
-                        dataFunctions.getHigh(d) >= visibleExtent[0];
+                           dataFunctions.getHigh(d) >= visibleExtent[0];
                 }
 
                 function and(a, b, d) {
@@ -262,8 +338,8 @@ angular
 
                 function isTileVisible(visibleExtent, d) {
                     return d &&
-                        d.offset < visibleExtent[1] &&
-                        d.offsetEnd >= visibleExtent[0];
+                           d.offset < visibleExtent[1] &&
+                           d.offsetEnd >= visibleExtent[0];
                 }
 
                 function splitIntoTiles(current, i) {
@@ -292,6 +368,32 @@ angular
                     return steps;
                 }
 
+                function getTileLeft(d, i) {
+                    return xScale(d.offset);
+                }
+
+                function getOffsetDate(d) {
+                    return d.offset.toLocaleDateString();
+                }
+
+                function getOffsetTime(d) {
+                    return d.offset.toLocaleTimeString();
+                }
+
+                function getTileImage(d, i) {
+                    var url = dataFunctions.getTileUrl(d.offset,
+                                                       self.category,
+                                                       tileSizeSeconds,
+                                                       tileSizePixels,
+                                                       d,
+                                                       i);
+
+                    if (url) {
+                        return  url;
+                    }
+
+                    return "";
+                }
 
             }
         }
@@ -313,7 +415,8 @@ angular
                     controller.visualisation = new DistributionVisualisation(
                         element,
                         controller.data,
-                        controller.options.functions);
+                        controller.options.functions,
+                        $scope.$id);
                 }
             }
         }

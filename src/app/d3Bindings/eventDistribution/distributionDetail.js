@@ -14,8 +14,9 @@ angular
         "TimeAxis",
         function (d3, TimeAxis) {
             return function DistributionDetail(target, data, dataFunctions, uniqueId) {
-                var that = this,
+                var self = this,
                     container = d3.select(target),
+                    isItemsToRender,
                     chart,
                     main,
                     mainClipRect,
@@ -27,10 +28,13 @@ angular
                     zoomSurface,
                 // 6 hours - from edge to edge of the graph.
                     zoomLimitSeconds = 6 * 60 * 60,
+                    visualizationDuration = null,
                 // HACK: a "lock" placed around the invocation of manual zoom events. Assumes synchronicity.
                     _lockManualZoom = false,
                     laneLinesGroup,
                     laneLabelsGroup,
+                    visualizationBrushArea,
+                    visualizationBrushLaneOverlay,
                     mainItemsGroup,
                     laneLabelMarginRight = 5,
                     xAxisHeight = 30,
@@ -44,18 +48,20 @@ angular
                 // this is the width and height of the main group
                     mainWidth = 1000,
                     mainHeight = 256,
-                    laneHeight = 120,
+
+                    laneHeight = 100,
                     lanePaddingDomain = 0.1;
 
                 // exports
-                this.updateData = updateData;
-                this.updateExtent = updateExtent;
-                this.items = [];
-                this.lanes = [];
-                this.minimum = null;
-                this.maximum = null;
-                this.visibleExtent = null;
-                this.selectedCategory = null;
+                self.updateData = updateData;
+                self.updateExtent = updateExtent;
+                self.updateVisualisationDuration = updateVisualisationDuration;
+                self.items = [];
+                self.lanes = [];
+                self.minimum = null;
+                self.maximum = null;
+                self.visibleExtent = null;
+                self.selectedCategory = null;
 
                 // init
                 create();
@@ -77,31 +83,36 @@ angular
                         throw new Error("Can't handle this many dimensions");
                     }
 
-                    if (extent[0] === that.visibleExtent[0] && extent[1] === that.visibleExtent[1]) {
+                    if (extent[0] === self.visibleExtent[0] && extent[1] === self.visibleExtent[1]) {
                         console.debug("DistributionDetail:updateExtent: update skipped");
                         return;
                     }
 
-                    that.visibleExtent = extent;
+                    self.visibleExtent = extent;
 
                     updateScales();
 
                     extentUpdateMain();
+                }
 
+                function updateVisualisationDuration(newDuration) {
+                    // update internal tracking value
+                    visualizationDuration = newDuration;
 
+                    // repaint visualisation brush
+                    if (isItemsToRender) {
+                        updateVisualizationBrush();
+                    }
                 }
 
                 // other functions
                 function create() {
 
-
                     createChart();
-
 
                     updateDimensions();
 
                     createMain();
-
                 }
 
                 function createChart() {
@@ -133,6 +144,9 @@ angular
                     if (zoomSurface) {
                         zoomSurface.attr(dims);
                     }
+                    if (visualizationBrushArea) {
+                        visualizationBrushArea.attr("height", dims.width);
+                    }
 
                     chart.style("height", svgHeight() + "px");
 
@@ -151,7 +165,7 @@ angular
 
                     // zoom behaviour
                     zoom = d3.behavior.zoom()
-                        //.scaleExtent([that.minimum, that.maximum])
+                        //.scaleExtent([self.minimum, self.maximum])
                         .size([mainWidth, mainHeight])
                         .on("zoomstart", onZoomStart)
                         .on("zoom", onZoom)
@@ -167,6 +181,13 @@ angular
                         })
                         .classed("zoomSurface", true);
 
+                    // rect for showing visualisation extent
+                    visualizationBrushArea = main.append("g")
+                        .clipPath("url(#" + clipId + ")")
+                        .append("rect")
+                        .classed("visualizationBrushArea", true)
+                        .attr("height", mainHeight);
+
                     // group for separator lines between lanes/categories
                     laneLinesGroup = main.append("g").classed("laneLinesGroup", true);
 
@@ -178,31 +199,40 @@ angular
                         .clipPath("url(#" + clipId + ")")
                         .classed("mainItemsGroup", true);
 
+                    // rect for showing selected lane (and visualization brush bounds)
+                    visualizationBrushLaneOverlay = main.append("g")
+                        .clipPath("url(#" + clipId + ")")
+                        .append("rect")
+                        .classed("visualizationBrushLaneOverlay", true)
+                        .attr("height", laneHeight);
+
                     xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight], isVisible: false});
                 }
 
                 function updateDataVariables(data) {
                     // public field - share the reference
-                    that.items = data.items || [];
-                    that.lanes = data.lanes || [];
-                    that.maximum = data.maximum;
-                    that.minimum = data.minimum;
-                    that.selectedCategory = that.lanes[0];
+                    self.items = data.items || [];
+                    self.lanes = data.lanes || [];
+                    self.maximum = data.maximum;
+                    self.minimum = data.minimum;
+                    self.selectedCategory = self.lanes[0];
+
+                    isItemsToRender = self.items && self.items.length > 0;
                 }
 
                 function updateScales() {
-                    that.visibleExtent = that.visibleExtent || [that.minimum, that.maximum];
+                    self.visibleExtent = self.visibleExtent || [self.minimum, self.maximum];
 
                     if (!xScale) {
                         xScale = d3.time.scale();
 
                     }
-                    xScale.domain([that.minimum, that.maximum])
+                    xScale.domain([self.minimum, self.maximum])
                         .range([0, mainWidth]);
 
                     // update the zoom behaviour
                     zoom.x(xScale);
-                    var zf = getZoomFactors([that.minimum, that.maximum], that.visibleExtent, zoomLimitSeconds);
+                    var zf = getZoomFactors([self.minimum, self.maximum], self.visibleExtent, zoomLimitSeconds);
                     zoom.scaleExtent(zf.scaleExtent);
                     zoom.scale(zf.currentScale);
                     setZoomTranslate(zf.dateTranslate);
@@ -224,7 +254,7 @@ angular
                     }
 
                     laneLinesGroup.selectAll()
-                        .data(that.lanes)
+                        .data(self.lanes)
                         .enter()
                         .append("line")
                         .attr({
@@ -237,7 +267,7 @@ angular
 
                     // lane labels
                     laneLabelsGroup.selectAll()
-                        .data(that.lanes)
+                        .data(self.lanes)
                         .enter()
                         .append("text")
                         .text(id)
@@ -261,7 +291,7 @@ angular
                 function extentUpdateMain() {
 
                     // filter out data that is not in range
-                    var visibleItems = that.items.filter(isRectVisible);
+                    var visibleItems = self.items.filter(isRectVisible);
 
                     // paint the visible rects
                     var rectAttrsUpdate = {
@@ -299,21 +329,40 @@ angular
                     // remove old rects
                     rects.exit().remove();
 
+                    // finally update the axis and other details
+                    if (isItemsToRender) {
+                        updateVisualizationBrush();
 
-                    // finally update the axis
-                    if (data && data.items.length > 0) {
                         var domain = xScale.domain(),
                         // intentionally falsey
                             showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
 
                         xAxis.update(xScale, [0, mainHeight], showAxis);
                     }
+                }
 
+                function updateVisualizationBrush() {
+                    var domain = xScale.domain(),
+                        middle = +domain[0] + ((+domain[1] - +domain[0]) / 2.0),
+                        halfVis = visualizationDuration * 1000 / 2.0,
+                        left = xScale(middle - halfVis),
+                        right = xScale(middle + halfVis),
+                        width =  right - left;
+                        //center = left + (width / 2.0);
+
+                    // update the width of the extent marker
+                    // correct offset of brush
+                    visualizationBrushArea.attr("width", width).translate([left, 0]);
+
+                    // also update the top translation to select a lane
+                    var top = yScale(self.lanes.indexOf(self.selectedCategory));
+                    visualizationBrushLaneOverlay.attr("width", width).translate([left, top]);
                 }
 
                 function onZoomStart() {
+                    //console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);// update which lane is shown in visualisation
+                    switchSelectedCategory();
 
-                    console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);
                 }
 
                 function onZoom() {
@@ -330,7 +379,7 @@ angular
                         domain = xScale.domain();
                     }
 
-                    console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, isManual);
+                    //console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, isManual);
 
                     // don't propagate cyclical events
                     if (isManual) {
@@ -338,21 +387,24 @@ angular
                     }
 
                     // updates the public visibleExtent field - has no effect on the graph
-                    that.visibleExtent = domain;
+                    self.visibleExtent = domain;
 
-                    // update public field - this will allow us to switch which
-                    // lane is shown based on where an interaction happens on the drawing surface
-                    var mouseY = d3.mouse(main[0][0])[1],
-                        inverted = yScale.invert(mouseY),
-                        rounded = Math.floor(inverted);
-                    that.selectedCategory = that.lanes[rounded];
-
+                    // update which lane is shown in visualisation
+                    switchSelectedCategory();
 
                     // updates the controller - bind back
-                    dataFunctions.extentUpdate(that.visibleExtent, "DistributionDetail");
+                    dataFunctions.extentUpdate(self.visibleExtent, "DistributionDetail");
 
                     // redraw elements and axes
                     extentUpdateMain();
+                }
+
+                function onZoomEnd() {
+                    //console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
+
+                    if (isItemsToRender) {
+                        dataFunctions.extentUpdate(self.visibleExtent, "DistributionDetail");
+                    }
                 }
 
                 /**
@@ -366,8 +418,8 @@ angular
                         xDomain = xScale.domain(),
                         x1 = xDomain[1],
                         x0 = xDomain[0],
-                        panExtent1 = that.maximum,
-                        panExtent0 = that.minimum,
+                        panExtent1 = self.maximum,
+                        panExtent0 = self.minimum,
                         divisorWidth = mainWidth / ((x1 - x0) * zoomScale),
                         minX = -(((x0 - x1) * zoomScale) + (panExtent1 - (panExtent1 - (mainWidth / divisorWidth)))),
                         maxX = -(((x0 - x1)) + (panExtent1 - panExtent0)) * divisorWidth * zoomScale;
@@ -384,8 +436,21 @@ angular
                     return [tx, ty];
                 }
 
-                function onZoomEnd() {
-                    console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
+                function switchSelectedCategory() {
+                    if (yScale) {
+                        //console.debug("DistributionDetail:Category switch");
+                        var mouseY = d3.mouse(main[0][0])[1],
+                            inverted = yScale.invert(mouseY),
+                            rounded = Math.floor(inverted),
+                            newCategory = self.lanes[rounded] || self.selectedCategory;
+
+                        if (newCategory !== self.selectedCategory) {
+                            // update public field - this will allow us to switch which
+                            // lane is shown based on where an interaction happens on the drawing surface
+                            self.selectedCategory = newCategory;
+                            updateVisualizationBrush();
+                        }
+                    }
                 }
 
                 function getZoomFactors(fullExtent, visibleExtent, limitSeconds) {
@@ -440,16 +505,16 @@ angular
                 }
 
                 function isRectVisible(d) {
-                    return dataFunctions.getLow(d) < that.visibleExtent[1] &&
-                        dataFunctions.getHigh(d) > that.visibleExtent[0];
+                    return dataFunctions.getLow(d) < self.visibleExtent[1] &&
+                        dataFunctions.getHigh(d) > self.visibleExtent[0];
                 }
 
                 function getCategoryIndex(d) {
-                    return that.lanes.indexOf(dataFunctions.getCategory(d));
+                    return self.lanes.indexOf(dataFunctions.getCategory(d));
                 }
 
                 function getLaneLength() {
-                    return that.lanes && that.lanes.length || 0;
+                    return self.lanes && self.lanes.length || 0;
                 }
 
                 function calculateMainWidth() {
