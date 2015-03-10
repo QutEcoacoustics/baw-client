@@ -71,7 +71,8 @@ angular
                 // init
                 create();
 
-                // functions
+                /* exported functions */
+
                 function updateData(data) {
                     updateDataVariables(data);
 
@@ -101,6 +102,8 @@ angular
 
                     updateElements();
                 }
+
+                /* internal functions*/
 
                 function create() {
                     updateDataVariables(data);
@@ -257,20 +260,7 @@ angular
                         .attr(gAttrs)
                         .translate(tileGTranslation)
                         .classed("tile", true)
-                        .on("click", function (datum) {
-                                // HACK: temporary behaviour for demo
-                                // construct url
-                                var ar = datum.source,
-                                    id = ar.id,
-                                    startOffset = (datum.offset - ar.recordedDate) / 1000,
-                                    endOffset = startOffset + 30.0;
-
-                                var url = "/listen/" + id + "?start=" + startOffset + "&end=" + endOffset;
-
-                                console.warn("navigating to ", url);
-
-                                window.location = url;
-                            });
+                        .on("click", navigateToAudio);
                     newTileElements.append("rect")
                         .attr(imageAttrs);
 
@@ -305,6 +295,8 @@ angular
 
                     xAxis.update(xScale, [0, tilesHeight], showAxis);
                 }
+
+                /* helper functions */
 
                 function updateResolution() {
                     resolution = tileSizeSeconds / tileSizePixels;
@@ -393,6 +385,21 @@ angular
                     }
 
                     return "";
+                }
+
+                function navigateToAudio(datum) {
+                    // HACK: temporary behaviour for demo
+                    // construct url
+                    var ar = datum.source,
+                        id = ar.id,
+                        startOffset = (datum.offset - ar.recordedDate) / 1000,
+                        endOffset = startOffset + 30.0;
+
+                    var url = "/listen/" + id + "?start=" + startOffset + "&end=" + endOffset;
+
+                    console.warn("navigating to ", url);
+
+                    //window.location = url;
                 }
 
             }
