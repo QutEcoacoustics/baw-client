@@ -10,7 +10,7 @@ angular
         "moment",
         function distributionController($scope, $element, $attrs, d3, moment) {
             console.debug("event distribution controller:init");
-            var that = this,
+            var self = this,
                 defaultFunctions = {
                     getId: function (d) {
                         return d.id;
@@ -34,7 +34,7 @@ angular
                 };
 
 
-            this.data = {};
+            self.data = {};
             //this.visualisationData = {
             //    items: [],
             //    nyquistFreuency: 11025,
@@ -43,26 +43,35 @@ angular
             //};
 
             // object reference!
-            this.options = $scope.options = angular.extend({
+            self.options = $scope.options = angular.extend({
                 nyquistFrequency: 11025,
                 spectrogramWindowSize: 512
             }, $scope.options);
 
             $scope.options.functions = angular.extend(defaultFunctions, $scope.options.functions || {});
+
+            function tryUpdateExtent(name, data) {
+                if (self[name]) {
+                    self[name].updateExtent(data);
+                }
+            }
+
+            self.currentExtent = null;
             $scope.options.functions.extentUpdate = function (newExtent, source) {
+                self.currentExtent = newExtent;
                 var difference = newExtent[1] - newExtent[0];
                 var humanDuration = difference === 0 ? "" : moment.duration(difference).humanize();
-                var selectedLane = that.detail.selectedCategory || that.data.lanes[0] || "";
+                var selectedLane = self.detail.selectedCategory || self.data.lanes[0] || "";
 
                 if (source != "DistributionOverview") {
-                    that.overview.updateExtent(newExtent);
+                    tryUpdateExtent("overview", newExtent);
                 }
                 if (source != "DistributionDetail") {
-                    that.detail.updateExtent(newExtent);
+                    self.detail.updateExtent(newExtent);
                 }
                 if (source != "DistributionVisualisation") {
-                    that.visualisation.updateMiddle(middlePointBetweenDates(newExtent), selectedLane);
-                    var visualizationMiddle = that.visualisation.visibleDuration;
+                    self.visualisation.updateMiddle(middlePointBetweenDates(newExtent), selectedLane);
+                    var visualizationMiddle = self.visualisation.visibleDuration;
                     var humanized = visualizationMiddle && moment.duration(visualizationMiddle, "seconds").humanize() || "";
                 }
 
@@ -70,6 +79,7 @@ angular
                     // object reference!
                     $scope.options.overviewExtent = newExtent;
                     $scope.options.detailDuration = humanDuration;
+                    $scope.options.detailExtent = newExtent;
                     $scope.options.visualizationDuration = humanized;
                     $scope.options.selectedLane = selectedLane;
                 }
@@ -82,20 +92,40 @@ angular
                 }
             };
 
+            $scope.options.functions.visualisationDurationUpdate = function(newDuration) {
+                if (self.overview) {
+                    self.overview.updateVisualisationDuration(newDuration);
+                }
+
+                if (self.detail) {
+                    self.detail.updateVisualisationDuration(newDuration);
+                }
+            };
+
 
             this.detail = null;                //$scope.controls.detail        =
             this.overview = null;              //$scope.controls.overview      =
             this.visualisation = null;         //$scope.controls.visualisation =
 
+            function tryUpdateData(name, data) {
+                if (self[name]) {
+                    self[name].updateData(data);
+                }
+            }
 
             // only watches changes to object reference
             $scope.$watch(function () {
                 return $scope.data;
             }, function (newValue, oldValue) {
-                if (tryUpdateDataVariables(that.data, newValue, $scope.options)) {
-                    that.overview.updateData(that.data);
-                    that.detail.updateData(that.data);
-                    that.visualisation.updateData(that.data);
+                if (tryUpdateDataVariables(self.data, newValue, $scope.options)) {
+                    tryUpdateData("overview", self.data);
+                    tryUpdateData("detail", self.data);
+                    tryUpdateData("visualisation", self.data);
+
+                    // new behaviour, set default extent to full width of data
+                    if (self.data.items.length > 0) {
+                        $scope.options.functions.extentUpdate([self.data.minimum, self.data.maximum]);
+                    }
                 }
             });
 
@@ -114,8 +144,14 @@ angular
                 else {
                     data.items = newValue || [];
                     data.lanes = d3.set(data.items.map(functions.getCategory)).values();
-                    data.maximum = Math.max.apply(null, data.items.map(functions.getHigh, functions));
-                    data.minimum = Math.min.apply(null, data.items.map(functions.getLow, functions));
+                    if (data.items.length > 0) {
+                        data.maximum = Math.max.apply(null, data.items.map(functions.getHigh, functions));
+                        data.minimum = Math.min.apply(null, data.items.map(functions.getLow, functions));
+                    }
+                    else {
+                        data.maximum = 0;
+                        data.minimum = 0;
+                    }
                     data.nyquistFrequency = options.nyquistFrequency;
                     data.spectrogramWindowSize = options.spectrogramWindowSize;
                     return true;

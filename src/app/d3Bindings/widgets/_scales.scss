@@ -10,4 +10,15 @@ svg {
     }
   }
 
+  .y.axis {
+
+    // this style is quite important
+    //  if missing the scale will be appear as a thick black line
+    & line, path {
+      fill: none;
+      stroke: gray;
+      shape-rendering: crispEdges;
+    }
+  }
+
 }

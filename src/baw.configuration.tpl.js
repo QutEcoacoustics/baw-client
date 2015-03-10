@@ -207,6 +207,11 @@ angular.module('bawApp.configuration', ['url'])
 )
     .constant("conf.constants", {
         namespace: "baw-client",
+        localization: {
+            dateTimeFormat: "YYYY-MMM-DD HH:mm:ss",
+            dateTimeShortFormat: "YYYY-MMM-DD HH:mm",
+            dateFormat: "YYYY-MMM-DD"
+        },
         listen: {
             chunkDurationSeconds: 30.0,
             minAudioDurationSeconds: 2.0
@@ -222,7 +227,10 @@ angular.module('bawApp.configuration', ['url'])
             preferences: {
                 volume: 1.0,
                 muted: false,
-                autoPlay: false
+                autoPlay: false,
+                visualize: {
+                    showTemporalContext: true
+                }
             },
             userName: "Unknown user"
         },
