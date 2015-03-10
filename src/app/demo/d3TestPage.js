@@ -107,7 +107,7 @@ angular.module("bawApp.demo.d3", [])
                 }, function getSiteError() {
                     console.error("Retrieval of sites json failed");
                 }
-            ).then(AudioRecording.getRecordingsForVisulisation)
+            ).then(AudioRecording.getRecordingsForVisualization)
                 // get audio recording info for the current site
                 .then(
                 function (response) {

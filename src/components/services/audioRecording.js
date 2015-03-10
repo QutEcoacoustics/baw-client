@@ -21,7 +21,7 @@ angular
                 return $http.post(filterUrl, query.toJSON());
             };
 
-            resource.getRecordingsForVisulisation = function (siteIds) {
+            resource.getRecordingsForVisualization = function (siteIds) {
                 var query = QueryBuilder.create(function (q) {
 
                     //  WARNING: potentially very large queries because paging is disabled

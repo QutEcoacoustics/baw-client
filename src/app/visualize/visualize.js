@@ -222,7 +222,7 @@ angular
                 });
 
                 return $q.all([
-                    AudioRecording.getRecordingsForVisulisation(siteIds),
+                    AudioRecording.getRecordingsForVisualization(siteIds),
                     Project.getByIds(projectIds)
                 ])
             }
