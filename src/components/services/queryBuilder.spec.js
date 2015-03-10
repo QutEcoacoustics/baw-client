@@ -330,6 +330,43 @@ describe("The QueryBuilder", function () {
         }).toThrowError(Error, "paging.items must be an integer");
     });
 
+    it("should allow disablePaging to be set", function() {
+        var expected = {
+            paging: {
+                disablePaging: true
+            }
+        };
+
+        var actual = q.page.disable();
+        expect(actual.toJSON(spaces)).toBe(j(expected));
+    });
+
+
+    it("should ensure that setting disablePaging will overwrite previous calls to set paging (and vice versa)", function() {
+        var expected = {
+            paging: {
+                disablePaging: true
+            }
+        };
+
+        var actual = q.page({}).page.disable();
+        expect(actual.toJSON(spaces)).toBe(j(expected));
+    });
+
+    it("should should allow re-enabling of paging", function() {
+        var expected = {
+            paging: {
+                items: 10,
+                page: 0
+            }
+        };
+
+        // this essentially represents paging with the default options
+        actual = q.page.disable().page({});
+        expect(actual.toJSON(spaces)).toBe(j(expected));
+    });
+
+
     it("should always update root with paging...even if on a subquery", function () {
         var expected = {
             filter: {
@@ -344,6 +381,22 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.eq("fieldA", 30).page({items: 5, page: 2}).end();
+        expect(actual.toJSON(spaces)).toBe(j(expected));
+    });
+
+    it("should always update root with paging...even if on a subquery (for disablePaging too)", function () {
+        var expected = {
+            filter: {
+                fieldA: {
+                    eq: 30
+                }
+            },
+            paging: {
+                disablePaging: true
+            }
+        };
+
+        var actual = q.eq("fieldA", 30).page.disable().end();
         expect(actual.toJSON(spaces)).toBe(j(expected));
     });
 

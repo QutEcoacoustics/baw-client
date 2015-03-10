@@ -41,7 +41,8 @@ angular
             };
 
             function Query(currentFieldKey, rootQuery) {
-                var currentField = currentFieldKey;
+                var currentField = currentFieldKey,
+                    self = this;
                 this.root = rootQuery;
 
                 this.filter = {};
@@ -154,8 +155,18 @@ angular
 
                     this.root.paging.items = pageArguments.items;
                     this.root.paging.page = pageArguments.page;
+                    delete this.root.paging.disablePaging;
 
                     return this;
+                };
+
+                this.page.disable = function() {
+                    delete self.root.paging.items;
+                    delete self.root.paging.page;
+
+                    self.root.paging.disablePaging = true;
+
+                    return self;
                 };
 
                 this.project = function projection(projectionArguments) {

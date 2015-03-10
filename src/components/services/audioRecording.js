@@ -24,14 +24,11 @@ angular
             resource.getRecordingsForVisulisation = function (siteIds) {
                 var query = QueryBuilder.create(function (q) {
 
-                    // HACK: ask for a ridiculous amount of items since
-                    // paging cap automatically is enabled at 500 items.
-                    // TODO: add an option to disable paging
-                    // track issue here: https://github.com/QutBioacoustics/baw-server/issues/160
+                    //  WARNING: potentially very large queries because paging is disabled
                     return q
                         .in("siteId", siteIds)
                         .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]})
-                        .page({items: 100000, page: 1});
+                        .page.disable();
                 });
 
                 return $http.post(filterUrl, query.toJSON());
