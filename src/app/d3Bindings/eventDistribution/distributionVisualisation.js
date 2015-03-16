@@ -14,7 +14,9 @@ angular
         "d3",
         "roundDate",
         "TimeAxis",
-        function (d3, roundDate, TimeAxis) {
+        "$url",
+        "conf.paths",
+        function (d3, roundDate, TimeAxis, $url, paths) {
             return function DistributionVisualisation(target, data, dataFunctions, uniqueId) {
                 // variables
                 var self = this,
@@ -82,7 +84,7 @@ angular
 
                     generateTiles();
 
-                    filterTiles();
+                    visibleTiles = filterTiles(visibleExtent, self.category);
 
                     updateElements();
 
@@ -98,7 +100,7 @@ angular
 
                     updateScales();
 
-                    filterTiles();
+                    visibleTiles = filterTiles(visibleExtent, self.category);
 
                     updateElements();
                 }
@@ -120,6 +122,7 @@ angular
                 function updateDataVariables(data) {
                     // data should be an array of items with extents
                     self.items = data.items;
+
                     self.nyquistFrequency = data.nyquistFrequency;
                     self.spectrogramWindowSize = data.spectrogramWindowSize;
                     self.middle = null;
@@ -179,21 +182,26 @@ angular
                     }
                 }
 
-                function filterTiles() {
+                function filterTiles(visibleExtent, category) {
+                    var filterPadding = tileSizeSeconds * 1000;
                     // item filter
-                    var f = isItemVisible.bind(null, visibleExtent),
-                        g = isInCategory.bind(null, self.category),
+                    // pad the filtering extent with tileSize so that recordings that have
+                    // duration < tileSize aren't filtered out prematurely
+                    var fExtent = [(+visibleExtent[0]) - filterPadding, (+visibleExtent[1]) + filterPadding],
+                        f = isItemVisible.bind(null, fExtent),
+                        g = isInCategory.bind(null, category),
                         h = and.bind(null, g, f);
 
                     // tile filter
                     var l = isTileVisible.bind(null, visibleExtent);
 
-                    visibleTiles = self.items
+                    return self.items
                         .filter(h)
                         .reduce(function (previous, current) {
                                     var t = current.tiles.filter(l);
                                     return previous.concat(t);
-                                }, []);
+                                }, [])
+                        .sort(sortTiles);
                 }
 
                 function createElements() {
@@ -221,19 +229,13 @@ angular
                         .tickPadding(8);
                     yAxisGroup = main.append("g")
                         .classed("y axis", true)
-                        .translate([0,0])
+                        .translate([0, 0])
                         .call(yAxis);
 
                     updateElements();
                 }
 
                 function updateElements() {
-                    var gAttrs = {
-                        "z-index": function (d) {
-                            return d.source.recordedDate.getDay();
-                        }
-                    };
-
                     var imageAttrs = {
                         height: tilesHeight,
                         width: tileSizePixels
@@ -257,10 +259,13 @@ angular
                     // add new tiles
                     var newTileElements = tileElements.enter()
                         .append("g")
-                        .attr(gAttrs)
                         .translate(tileGTranslation)
                         .classed("tile", true)
-                        .on("click", navigateToAudio);
+                        .append("a")
+                        .attr("xlink:href", function (d, i) {
+                                  return d.audioNavigationUrl;
+                              });
+
                     newTileElements.append("rect")
                         .attr(imageAttrs);
 
@@ -319,9 +324,9 @@ angular
                     return dataFunctions.getCategory(d) === category;
                 }
 
-                function isItemVisible(visibleExtent, d) {
-                    return dataFunctions.getLow(d) < visibleExtent[1] &&
-                           dataFunctions.getHigh(d) >= visibleExtent[0];
+                function isItemVisible(filterExtent, d) {
+                    return dataFunctions.getLow(d) < filterExtent[1] &&
+                           dataFunctions.getHigh(d) >= filterExtent[0];
                 }
 
                 function and(a, b, d) {
@@ -346,18 +351,39 @@ angular
 
                     // use d3's in built range functionality to generate steps
                     var steps = [];
-                    while (offset <= niceHigh) {
+                    while (offset < niceHigh) {
                         var nextOffset = d3.time.second.offset(offset, tileSizeSeconds);
                         steps.push({
                             offset: offset,
                             offsetEnd: nextOffset,
                             source: current,
-                            key: offset.toISOString() + dataFunctions.getId(current)
+                            key: offset.toISOString() + dataFunctions.getId(current),
+                            audioNavigationUrl: getNavigateToAudioUrl(current, offset)
                         });
                         offset = nextOffset;
                     }
 
                     return steps;
+                }
+
+                function getNavigateToAudioUrl(source, tileStart) {
+
+                    var ar = source,
+                        id = ar.id,
+                        startOffset = (tileStart - ar.recordedDate) / 1000;
+
+                    // do not allow negative indexing!
+                    if (startOffset < 0) {
+                        startOffset = 0;
+                    }
+
+                    // intentionally not specifying an end offset - let the listen page decide
+                    return $url.formatUri(paths.site.ngRoutes.listen,
+                        {
+                            recordingId: id,
+                            start: startOffset
+                        });
+
                 }
 
                 function getTileLeft(d, i) {
@@ -381,25 +407,20 @@ angular
                                                        i);
 
                     if (url) {
-                        return  url;
+                        return url;
                     }
 
                     return "";
                 }
 
-                function navigateToAudio(datum) {
-                    // HACK: temporary behaviour for demo
-                    // construct url
-                    var ar = datum.source,
-                        id = ar.id,
-                        startOffset = (datum.offset - ar.recordedDate) / 1000,
-                        endOffset = startOffset + 30.0;
-
-                    var url = "/listen/" + id + "?start=" + startOffset + "&end=" + endOffset;
-
-                    console.warn("navigating to ", url);
-
-                    //window.location = url;
+                /**
+                 * Order tiles based on their date. This allows elements to be painted in the
+                 * DOM in the right order
+                 * @param tileA
+                 * @param tileB
+                 */
+                function sortTiles(tileA, tileB) {
+                    return tileA.offset - tileB.offset;
                 }
 
             }
