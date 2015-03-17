@@ -28,7 +28,8 @@ angular
                     return q
                         .in("siteId", siteIds)
                         .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]})
-                        .page.disable();
+                        .page.disable()
+                        .sort({orderBy: "id"});
                 });
 
                 return $http.post(filterUrl, query.toJSON());

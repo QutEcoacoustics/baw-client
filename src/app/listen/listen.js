@@ -70,7 +70,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 // parse the start and end offsets
                 $routeParams.start = parseFloat($routeParams.start) || 0.0;
                 // warn: this converts 0 to chunk duration
-                $routeParams.end = parseFloat($routeParams.end) || CHUNK_DURATION_SECONDS;
+                $routeParams.end = parseFloat($routeParams.end) || ($routeParams.start + CHUNK_DURATION_SECONDS);
                 var chunkDuration = ($routeParams.end - $routeParams.start);
                 if (chunkDuration < 0) {
 
