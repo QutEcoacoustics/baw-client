@@ -21,7 +21,7 @@ angular
             resource.getSitesByProjectIds = function (projectIds) {
                 var projectIdsUnique = _.uniq(projectIds);
                 var query = QueryBuilder.create(function (q) {
-                    return q.in("projectIds", projectIdsUnique);
+                    return q.in("projects.id", projectIdsUnique);
                 });
                 return $http.post(url, query.toJSON());
             };
