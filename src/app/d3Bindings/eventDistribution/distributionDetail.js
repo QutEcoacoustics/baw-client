@@ -36,6 +36,8 @@ angular
                     visualizationBrushArea,
                     visualizationBrushLaneOverlay,
                     mainItemsGroup,
+                    outOfBoundsRect,
+                    datasetBoundsRect,
                     laneLabelMarginRight = 5,
                     xAxisHeight = 30,
                     margin = {
@@ -47,7 +49,7 @@ angular
                 // these are initial values only
                 // this is the width and height of the main group
                     mainWidth = 1000,
-                    mainHeight = 256,
+                    mainHeight = 0,
 
                     laneHeight = 100,
                     lanePaddingDomain = 0.1;
@@ -147,6 +149,13 @@ angular
                     if (visualizationBrushArea) {
                         visualizationBrushArea.attr("height", dims.width);
                     }
+                    if (outOfBoundsRect) {
+                        outOfBoundsRect.attr(dims);
+                    }
+                    if (datasetBoundsRect) {
+                        // width is updated by updateMain
+                        outOfBoundsRect.attr("height", mainHeight);
+                    }
 
                     chart.style("height", svgHeight() + "px");
 
@@ -180,6 +189,24 @@ angular
                             opacity: 1.0
                         })
                         .classed("zoomSurface", true);
+
+                    outOfBoundsRect = main.append("rect")
+                        .attr({
+                            height: mainHeight,
+                            width: mainWidth,
+                            x: 0,
+                            y: 0
+                        })
+                        .classed("outOfBounds", true);
+
+                    datasetBoundsRect = main.append("rect")
+                        .attr({
+                            height: mainHeight,
+                            width: mainWidth,
+                            x: 0,
+                            y: 0
+                        })
+                        .classed("datasetBounds", true);
 
                     // rect for showing visualisation extent
                     visualizationBrushArea = main.append("g")
@@ -333,6 +360,17 @@ angular
                     if (isItemsToRender) {
                         updateVisualizationBrush();
 
+                        // update datasetBounds
+                        // effect a manual clip on the range
+                        var dbMinimum = Math.max(self.visibleExtent[0], self.minimum);
+                        var dbMaximum = Math.min(self.visibleExtent[1], self.maximum);
+                        xScale.clamp(true);
+                        datasetBoundsRect.attr({
+                            x: xScale(dbMinimum),
+                            width: Math.max(0, xScale(dbMaximum) - xScale(dbMinimum))
+                        });
+                        xScale.clamp(false);
+
                         var domain = xScale.domain(),
                         // intentionally falsey
                             showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
@@ -372,14 +410,14 @@ angular
                     // HACK: check whether this event was triggered manually
                     var isManual = _lockManualZoom;
 
-                    // prevent translating off the edge of our data (i.e. clamp the zoom)
+                    // prevent translating off the edge of our data (i.e. clamp the zoom/pan)
                     var domain = null;
                     if (xScale) {
-                        zoom.translate(panLimit());
+                        //zoom.translate(panLimit());
                         domain = xScale.domain();
                     }
 
-                    //console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, isManual);
+                    //console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, zoom.translate(), isManual);
 
                     // don't propagate cyclical events
                     if (isManual) {
@@ -409,26 +447,25 @@ angular
 
                 /**
                  * Constrains the zoom's translation.
+                 * Clamp at each end is set to the opposite edge of the visualization brush
                  * Adapted from: http://bl.ocks.org/garrilla/11280861
                  * @returns {*[]}
                  */
                 function panLimit() {
                     var tx, ty = 0,
-                        zoomScale = zoom.scale(),
                         xDomain = xScale.domain(),
-                        x1 = xDomain[1],
-                        x0 = xDomain[0],
-                        panExtent1 = self.maximum,
-                        panExtent0 = self.minimum,
-                        divisorWidth = mainWidth / ((x1 - x0) * zoomScale),
-                        minX = -(((x0 - x1) * zoomScale) + (panExtent1 - (panExtent1 - (mainWidth / divisorWidth)))),
-                        maxX = -(((x0 - x1)) + (panExtent1 - panExtent0)) * divisorWidth * zoomScale;
+                        x1 = +xDomain[1],
+                        x0 = +xDomain[0],
+                        halfDomainDuration = (x1 - x0) / 2.0;
 
+                    // extent allowable pan range by half of the current on-screen visible domain
+                    var panExtent0 = self.minimum - halfDomainDuration,
+                        panExtent1 = self.maximum + halfDomainDuration;
 
                     if (x0 < panExtent0) {
-                        tx = minX;
+                        tx = xScale(self.minimum - (panExtent0 - x0));
                     } else if (x1 > panExtent1) {
-                        tx = maxX;
+                        tx = xScale((panExtent1 - self.maximum) + x1 - (panExtent1 - panExtent0));
                     } else {
                         tx = zoom.translate()[0];
                     }

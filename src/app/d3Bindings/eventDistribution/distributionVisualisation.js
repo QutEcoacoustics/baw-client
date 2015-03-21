@@ -25,6 +25,7 @@ angular
                 //metaTrack = container.select(".metaTrack"),
                     main = container.select(".imageTrack .main"),
                     tilesBackground = main.select(".tilesBackground"),
+                    datasetBoundsRect = main.select(".datasetBounds"),
                     tilesGroup = main.select(".tiles"),
                     tilesClipRect,
 
@@ -53,7 +54,7 @@ angular
                     margin = {
                         top: 13,
                         right: 0,
-                        left: 0 + yAxisWidth,
+                        left: 120 /* yAxisWidth*/,
                         bottom: 0 + xAxisHeight
                     },
 
@@ -122,7 +123,8 @@ angular
                 function updateDataVariables(data) {
                     // data should be an array of items with extents
                     self.items = data.items;
-
+                    self.maximum = data.maximum;
+                    self.minimum = data.minimum;
                     self.nyquistFrequency = data.nyquistFrequency;
                     self.spectrogramWindowSize = data.spectrogramWindowSize;
                     self.middle = null;
@@ -147,6 +149,7 @@ angular
                     };
                     tilesGroup.attr(attrs);
                     tilesBackground.attr(attrs);
+                    datasetBoundsRect.attr("height", tilesHeight);
                     if (tilesClipRect) {
                         tilesClipRect.attr(attrs);
                     }
@@ -293,6 +296,17 @@ angular
 
                     // remove old tiles
                     tileElements.exit().remove();
+
+                    // update datasetBounds
+                    // effect a manual clip on the range
+                    var dbMinimum = Math.max(visibleExtent[0], self.minimum);
+                    var dbMaximum = Math.min(visibleExtent[1], self.maximum);
+                    xScale.clamp(true);
+                    datasetBoundsRect.attr({
+                        x: xScale(dbMinimum) || 0.0,
+                        width: Math.max(0, xScale(dbMaximum) - xScale(dbMinimum)) || 0.0
+                    });
+                    xScale.clamp(false);
 
                     var domain = xScale.domain(),
                     // intentionally falsey
