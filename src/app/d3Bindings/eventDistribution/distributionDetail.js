@@ -154,7 +154,7 @@ angular
                     }
                     if (datasetBoundsRect) {
                         // width is updated by updateMain
-                        outOfBoundsRect.attr("height", mainHeight);
+                        datasetBoundsRect.attr("height", mainHeight);
                     }
 
                     chart.style("height", svgHeight() + "px");
@@ -413,7 +413,7 @@ angular
                     // prevent translating off the edge of our data (i.e. clamp the zoom/pan)
                     var domain = null;
                     if (xScale) {
-                        //zoom.translate(panLimit());
+                        zoom.translate(panLimit());
                         domain = xScale.domain();
                     }
 
