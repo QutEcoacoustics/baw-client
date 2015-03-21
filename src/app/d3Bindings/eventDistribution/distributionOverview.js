@@ -13,10 +13,12 @@ angular
         "d3",
         "TimeAxis",
         function (d3, TimeAxis) {
-            return function DistributionOverview(target, data, dataFunctions) {
+            return function DistributionOverview(target, data, dataFunctions, uniqueId) {
                 var that = this,
                     chart,
                     mini,
+                    clipId = "distributionOverview_" + uniqueId,
+                    miniClipRect,
                     xAxis,
                     xScale,
                     yScale,
@@ -120,6 +122,15 @@ angular
                         .append("svg")
                         .classed("chart", true);
 
+                    miniClipRect = chart.append("defs")
+                        .append("clipPath")
+                        .attr("id", clipId)
+                        .append("rect")
+                        .attr({
+                            width: miniWidth,
+                            height: miniHeight
+                        });
+
                     return chart;
                 }
 
@@ -133,6 +144,11 @@ angular
                     miniWidth = calculateMiniWidth();
                     miniHeight = Math.max(that.getLaneLength() * laneHeight, laneHeight);
                     chart.style("height", svgHeight());
+
+                    miniClipRect.attr({
+                        width: miniWidth,
+                        height: miniHeight
+                    })
                 }
 
                 /**
@@ -158,24 +174,6 @@ angular
                     // mini item rectangles
                     mini.append("g").classed("miniItemsGroup", true);
 
-                    /*// labels - disabled. TODO: turn in to hover text, don't forget to move logic too update
-                     // https://github.com/Caged/d3-tip/blob/master/docs/index.md
-                     mini.append("g")
-                     .attr("id", "miniLabels")
-                     .selectAll(".miniLabels")
-                     .data(that.items)
-                     .enter()
-                     .append("text")
-                     .text(dataFunctions.getId)
-                     .attr({
-                     x: 0, // TODO: -m[1] === -15
-                     y: function (d) {
-                     return yScale(getCategoryIndex(d) + 0.5)
-                     },
-                     dy: ".5ex"
-                     });
-                     */
-
                     // create interactive brush
                     _lockManualBrush = true;
                     that.brush = d3.svg.brush()
@@ -186,7 +184,8 @@ angular
                     // create surface for the brush
                     mini.append("g")
                         .classed("x brush", true)
-                        .call(that.brush);
+                        .call(that.brush)
+                        .clipPath("url(#" + clipId + ")");
                     _lockManualBrush = false;
 
                     return mini;
@@ -356,9 +355,11 @@ angular
                     controller.overview = new DistributionOverview(
                         element,
                         controller.data,
-                        controller.options.functions);
+                        controller.options.functions,
+                        $scope.$id
+                    );
 
-                    if (controller.data && controller.data.items.length > 0) {
+                    if (controller.data.items && controller.data.items.length > 0) {
                         controller.overview.updateData(controller.data, controller.currentExtent);
                     }
                 }

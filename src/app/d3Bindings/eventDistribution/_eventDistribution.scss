@@ -34,24 +34,24 @@ $color-complement-3: #FF7368;
 $color-complement-4: #FF938A;
 
 $mini-backgrounds: (
-    $color-primary-0 $color-secondary-1-0  $color-secondary-2-0 $color-complement-0
-    $color-primary-1 $color-secondary-1-1  $color-secondary-2-1 $color-complement-1
-    $color-primary-2 $color-secondary-1-2  $color-secondary-2-2 $color-complement-2
-    $color-primary-3 $color-secondary-1-3  $color-secondary-2-3 $color-complement-3
-    $color-primary-4 $color-secondary-1-4  $color-secondary-2-4 $color-complement-4
+        $color-primary-0 $color-secondary-1-0 $color-secondary-2-0 $color-complement-0 $color-primary-1 $color-secondary-1-1 $color-secondary-2-1 $color-complement-1 $color-primary-2 $color-secondary-1-2 $color-secondary-2-2 $color-complement-2 $color-primary-3 $color-secondary-1-3 $color-secondary-2-3 $color-complement-3 $color-primary-4 $color-secondary-1-4 $color-secondary-2-4 $color-complement-4
 );
 
 //$mini-backgrounds: darksalmon darkolivegreen slategray #8f7f6f #7a6f8f #8f6f8f;
 
-$visualize-no-data-color: #DDD;
+$out-of-bounds-color: #DDD;
+$dataset-in-bounds-bg-color: #ffffff;
+
 $tile-border-color: #777;
+
 $tile-background-color: #e5ffd8;
 $generating-tile-color: $text-color;
 $legend-size: 2em;
 
-$standard-brush-fill: rgba(30, 144, 255, 0.32);
+$standard-brush-fill: rgba(30, 144, 255, 0.2);
 $visualization-brush-fill: rgba(mix($standard-brush-fill, white), 1.0);
 $visualization-brush-lane-overlay-fill: $standard-brush-fill;
+$visualization-brush-stroke: $gray-light;
 
 event-distribution-overview, event-distribution-detail {
 
@@ -116,12 +116,20 @@ event-distribution-detail {
     font: 13px sans-serif;
   }
 
+  .outOfBounds {
+    fill: $out-of-bounds-color;
+  }
+
+  .datasetBounds {
+    fill: $dataset-in-bounds-bg-color;
+  }
+
   .visualizationBrushArea {
     fill: $visualization-brush-fill;
   }
 
   .visualizationBrushLaneOverlay {
-    stroke: $tile-border-color;
+    stroke: $visualization-brush-stroke;
     fill: $visualization-brush-lane-overlay-fill;
   }
 }
@@ -142,7 +150,11 @@ event-distribution-visualisation {
     }
 
     .tilesBackground {
-      fill: $visualize-no-data-color;
+      fill: $out-of-bounds-color;
+    }
+
+    .datasetBounds {
+      fill: $dataset-in-bounds-bg-color;
     }
 
     .tiles {
@@ -186,8 +198,12 @@ event-distribution-visualisation {
 
     }
 
-    .missing {
-      background-color: $visualize-no-data-color;
+    .outOfBounds {
+      background-color: $out-of-bounds-color;
+    }
+
+    .noAudioInDataset {
+      background-color: $dataset-in-bounds-bg-color;
     }
 
     .generating {
