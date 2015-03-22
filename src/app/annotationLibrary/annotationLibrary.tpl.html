@@ -1,177 +1,230 @@
 <div id="content">
-    <h3>Annotation Library</h3>
+    <h2>Annotation Library</h2>
 
     <div class="panel panel-default">
-        <div class="panel-body">
-            <form class="form-horizontal" role="form">
-                <div class="form-group">
-                    <label for="refLibraryTags" class="col-sm-1 control-label">Tags</label>
+        <div class="panel-heading clickable" ng-click="hideSearch = !hideSearch">
+            Search settings
+            <span class="glyphicon pull-right"
+                  ng-class="{'glyphicon-chevron-right': hideSearch, 'glyphicon-chevron-down': !hideSearch}"></span>
+        </div>
+        <div class="panel-body" collapse="hideSearch">
+            <form class="form-horizontal" role="form" name="annotationLibrarySearchForm">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="refLibraryTags" class="col-sm-2 control-label">Tags</label>
 
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" id="refLibraryTags" placeholder="Tags"
-                               ng-model="filterSettings.tagsPartial">
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="refLibraryTags" placeholder="Tags"
+                                       ng-model="filterSettings.tagsPartial">
+                            </div>
+                        </div>
                     </div>
-
-                    <p class="help-block text-muted col-sm-3">Use comma (,) to separate tags.</p>
-
-                    <!-- Blocks disabled for simplicity in testing -->
-                    <label style="display: none" for="refLibraryAudioRecordingId" class="col-sm-1 control-label">Recording Id</label>
-
-                    <div style="display: none"  class="col-sm-2">
-                        <input type="text" class="form-control" id="refLibraryAudioRecordingId"
-                               placeholder="Audio Recording Id" step="1" min="1"
-                               ng-model="filterSettings.audioRecordingId">
-                    </div>
-
-                </div>
-                <div class="form-group">
-                    <label for="refLibraryDuration" class="col-sm-1 control-label">Duration</label>
-
-                    <div class="col-sm-3">
-                        <input type="number" class="form-control" id="refLibraryDuration"
-                               placeholder="Duration (in seconds)" step="any"
-                               ng-model="filterSettings.annotationDuration">
-                    </div>
-
-                    <label for="refLibraryFreqMin" class="col-sm-2 control-label">Min Frequency</label>
-
                     <div class="col-sm-2">
-                        <input type="number" class="form-control" id="refLibraryFreqMin" step="any"
-                               placeholder="Minimum Frequency" ng-model="filterSettings.freqMin">
+                            <span class="help-block text-muted form-group">Use comma (,) to separate
+                                tags.</span>
                     </div>
-
-                    <label for="refLibraryFreqMax" class="col-sm-2 control-label">Max Frequency</label>
-
-                    <div class="col-sm-2">
-                        <input type="number" class="form-control" id="refLibraryFreqMax"  step="any"
-                               placeholder="Maximum Frequency" ng-model="filterSettings.freqMax">
-                    </div>
-                </div>
-                <!-- Block disabled for simplicity in testing -->
-                <div style="display: none" class="form-group">
-                    <label for="refLibraryReference1" class="col-sm-1 control-label">Annotations</label>
 
                     <div class="col-sm-4">
-                        <label class="radio-inline">
-                            <input type="radio" name="refLibraryReference" id="refLibraryReference1" disabled title="Coming soon to movie theaters near you..."
-                                   value="" checked ng-model="filterSettings.reference"> All
-                        </label>
+                        <div class="">
+                            <label for="referenceFilter" class="col-sm-4 control-label">Annotations</label>
 
-                        <label class="radio-inline">
-                            <input type="radio" name="refLibraryReference" id="refLibraryReference2"
-                                   value="true" ng-model="filterSettings.reference"> Only Reference
-                        </label>
+                            <div class="col-sm-8" id="referenceFilter">
+                                <label class="radio-inline">
+                                    <input type="radio" name="refLibraryReference" id="refLibraryReference1"
+                                           ng-value="'all'" checked ng-model="filterSettings.reference"> All
+                                </label>
 
-                        <label class="radio-inline">
-                            <input type="radio" name="refLibraryReference" id="refLibraryReference3" disabled title="Coming soon to movie theaters near you..."
-                                   value="false" ng-model="filterSettings.reference"> Not Reference
-                        </label>
-                    </div>
+                                <label class="radio-inline">
+                                    <input type="radio" name="refLibraryReference" id="refLibraryReference2"
+                                           ng-value="'reference'" ng-model="filterSettings.reference"> Only Reference
+                                </label>
 
-                    <label for="refLibraryPage" class="col-sm-1 control-label">Page</label>
-
-                    <div class="col-sm-1">
-                        <input type="number" class="form-control" id="refLibraryPage" placeholder="Page"
-                               ng-model="filterSettings.page" step="1" min="1">
-                    </div>
-
-                    <label for="refLibraryItems" class="col-sm-1 control-label">Items</label>
-
-                    <div class="col-sm-1">
-                        <input type="number" class="form-control" id="refLibraryItems" placeholder="Items"
-                               ng-model="filterSettings.items" step="1" min="1">
-                    </div>
-
-                    <label for="refLibraryUserId" class="col-sm-1 control-label">User Id</label>
-
-                    <div class="col-sm-1">
-                        <input type="number" class="form-control" id="refLibraryUserId" placeholder="User Id"
-                               ng-model="filterSettings.userId" step="1" min="1">
+                                <label class="radio-inline">
+                                    <input type="radio" name="refLibraryReference" id="refLibraryReference3"
+                                           ng-value="'notReference'" ng-model="filterSettings.reference"> Not Reference
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="refLibraryAudioRecordingId" class="col-sm-4 control-label">Recording
+                                Id</label>
+
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" id="refLibraryAudioRecordingId"
+                                       placeholder="Audio Recording Id" step="1" min="1"
+                                       ng-model="filterSettings.audioRecordingId">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="">
+                            <label for="userFilter" class="col-sm-4 control-label">User</label>
+
+                            <div class="col-sm-8" id="userFilter">
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="filterSettings.userId" ng-value="currentUser"
+                                           name="userGroup"/>
+                                    Just me
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="filterSettings.userId" ng-value="null"
+                                           name="userGroup"/>
+                                    Everyone
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="refLibraryDurationMin" class="col-sm-5 control-label">Min Duration</label>
+
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control" id="refLibraryDurationMin"
+                                       placeholder="in seconds" step="any" min="0"
+                                       ng-model="filterSettings.minDuration">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="refLibraryDurationMax" class="col-sm-5 control-label">Max Duration</label>
+
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control" id="refLibraryDurationMax"
+                                       placeholder="in seconds" step="any" min="0"
+                                       ng-model="filterSettings.maxDuration">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="refLibrarySortBy" class="col-sm-2 control-label">Sort order</label>
+
+                            <div class="col-sm-5">
+                                <select id="refLibrarySortBy" class="form-control"
+                                        ng-model="filterSettings.sortBy"
+                                        ng-change="setSortBy()"
+                                        ng-options="sort.id as sort.text for sort in sortableFields"></select>
+
+                            </div>
+                            <div class="col-sm-5">
+                                <select id="refLibrarySortByType" class="form-control"
+                                        ng-disabled="!filterSettings.sortBy"
+                                        ng-model="filterSettings.sortByType">
+                                    <option selected value="asc">ascending</option>
+                                    <option value="desc">descending</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="refLibraryFreqMin" class="col-sm-5 control-label">Min Frequency</label>
+
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control" id="refLibraryFreqMin" step="any" min="0"
+                                       placeholder="in hertz" ng-model="filterSettings.lowFrequency">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="refLibraryFreqMax" class="col-sm-5 control-label">Max Frequency</label>
+
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control" id="refLibraryFreqMax" step="any" min="0"
+                                       placeholder="in hertz" ng-model="filterSettings.highFrequency">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-offset-1 col-sm-2">
-                        <button type="submit" class="btn btn-primary" ng-click="searchFilter()">Filter</button>
-                        <button type="submit" class="btn btn-warning" ng-click="clearFilter()">Clear</button>
+                        <button type="submit" ng-disabled="annotationLibrarySearchForm.$invalid" class="btn btn-primary"
+                                ng-click="searchFilter()">Filter
+                        </button>
+                        <button type="submit" class="btn btn-warning"
+                                ng-click="clearFilter()">Clear</button>
                     </div>
-                    <div class="col-sm-2">
-                        <span ng-show="status == 'loaded'">{{paging.total}} results</span>
-                        <span ng-show="status == 'loaded' && paging.total < 1">The filter did not match any annotations.</span>
-                        <span ng-show="status == 'loading'">Loading results...</span>
-                        <span ng-show="status == 'error'">Results could not be loaded.</span>
-                    </div>
-                    <div class="col-sm-7">
-                        <ul class="pagination annotation-paging" ng-show="status == 'loaded' && paging.total > paging.items">
-                            <li ng-show="paging.page != paging.minPageNumber">
-                                <a ng-href="{{paging.links.prev}}">&laquo;</a>
-                            </li>
-                            <li ng-show="paging.page != paging.minPageNumber">
-                                <a ng-href="{{paging.links.first}}">{{paging.minPageNumber}}</a>
-                            </li>
-                            <li ng-show="paging.minCount > paging.minPageNumber">
-                                <span>&hellip;</span>
-                            </li>
-                            <li ng-repeat="pageItem in paging.links.before">
-                                <a ng-href="{{pageItem.link}}">{{pageItem.page}}</a>
-                            </li>
-                            <li class="active">
-                                <a ng-href="{{paging.current}}">{{paging.page}}</a>
-                            </li>
-                            <li ng-repeat="pageItem in paging.links.after">
-                                <a ng-href="{{pageItem.link}}">{{pageItem.page}}</a>
-                            </li>
-                            <li ng-show="paging.maxCount < paging.maxPageNumber">
-                                <span>&hellip;</span>
-                            </li>
-                            <li ng-show="paging.page != paging.maxPageNumber">
-                                <a ng-href="{{paging.links.last}}">{{paging.maxPageNumber}}</a>
-                            </li>
-                            <li ng-show="paging.page != paging.maxPageNumber">
-                                <a ng-href="{{paging.links.next}}">&raquo;</a>
-                            </li>
-                        </ul>
-                    </div>
+
+
                 </div>
             </form>
         </div>
     </div>
+    <div class="row annotation-library-results">
+        <h3 class="col-sm-4">Results</h3>
 
+        <div class="col-sm-4 text-center">
+            <pagination class="annotation-paging"
+                        total-items="paging.total"
+                        ng-model="paging.page"
+                        items-per-page="paging.items"
+                        boundary-links="true"
+                        max-size="paging.maxPageLinks"
+                        num-pages="numPages"
+                        rotate="false">
+            </pagination>
+        </div>
+        <h3 class="col-sm-4 text-right">
+            &nbsp;
+            <small class="">
+                <span ng-show="status == 'loaded'">{{paging.total}} results.</span>
+                <span ng-show="status == 'loaded' && paging.total < 1" class="text-warning">The filter did not match any annotations.</span>
+                <span ng-show="status == 'loading'">Loading results...</span>
+                <span ng-show="status == 'error'">Results could not be loaded.</span>
+            </small>
+        </h3>
+    </div>
     <div class="annotation-library clearfix">
         <div ng-repeat="item in annotations" class="pull-left library-item thumbnail">
+
             <div class="library-spectrogram">
                 <img ng-src="{{item.media.available.image.png.url}}" src=""
-                     ng-style="{width: item.converters.conversions.enforcedImageWidth, height: item.converters.conversions.enforcedImageHeight}">
+                     ng-style="{width: item.bounds.enforcedImageWidth, height: item.bounds.enforcedImageHeight}">
                 <grid-lines configuration="item.gridConfig" class="library-spectrogram-grid"></grid-lines>
                 <div class="library-spectrogram-bounds"
                      ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
             </div>
 
             <div class="library-item-info"
-                 ng-style="{'min-width':150, width:item.converters.conversions.enforcedImageWidth}">
-                <audio id="annotationLibraryItemInfoAudio{{$index}}" controls
-                       ng-style="{width:item.converters.conversions.enforcedImageWidth}">
-                    <source ng-repeat="key in item.media.available.audioOrder" ng-src="{{item.media.available.audio[key].url}}" src=""
+                 ng-style="{width:item.bounds.enforcedImageWidth}">
+                <audio controls>
+                    <source ng-repeat="key in item.media.available.audioOrder"
+                            ng-src="{{item.media.available.audio[key].url}}" src=""
                             type="{{item.media.available.audio[key].mimeType}}">
-                    Your browser does not support the audio element.
+                    Your browser does not support the audio element.wel
                 </audio>
-            <span ng-show="item.tags.length > 0">
-                <span class="info-entry">
+            <span>
+                <span class="info-entry"
+                      ng-switch="item.taggings.length > 0">
                     <span class="glyphicon glyphicon-tags"></span>
-                    <a ng-href="{{item.urls.tagSearch}}">
+                    <a ng-switch-when="true" ng-href="{{item.urls.tagSearch}}">
                         {{item.priorityTag.text}}
                     </a>
+                    <small ng-switch-when="false" class="text-muted">no tags</small>
                 </span>
             </span>
-            <span class="info-entry">
+            <span class="info-entry" ng-switch="!!item.audioRecording.site.url">
                 <span class="glyphicon glyphicon-map-marker"></span>
-                <a ng-href="{{item.urls.site}}">
-                    {{item.siteName}}
+                <small ng-switch-when="false" class="text-muted">site name not available</small>
+                <a ng-switch-when="true" ng-href="{{item.audioRecording.site.url[0]}}">
+                    {{item.audioRecording.site.name}}
                 </a>
             </span>
             <span class="info-entry">
                 <span class="glyphicon glyphicon-record"></span>
                 <a ng-href="{{item.urls.listen}}">
-                    {{item.audioEventStartDate | date: 'MMM d, yyyy HH:mm'}}
+                    {{item.startDate | date: dateFormat}}
                 </a>
             </span>
             <span class="info-entry">
@@ -183,5 +236,17 @@
             </div>
         </div>
 
+    </div>
+    <div class="row clearfix text-center">
+        <pagination ng-hide="paging.total < 1"
+                    class="annotation-paging center-block"
+                    total-items="paging.total"
+                    ng-model="paging.page"
+                    items-per-page="paging.items"
+                    boundary-links="true"
+                    max-size="paging.maxPageLinks"
+                    num-pages="numPages"
+                    rotate="false">
+        </pagination>
     </div>
 </div>

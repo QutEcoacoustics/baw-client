@@ -1,4 +1,4 @@
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
+var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration', "bawApp.directives.ui.bootstrap"]);
 
 bawds.directive("ngSlider", function () {
     return {

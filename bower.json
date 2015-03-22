@@ -20,14 +20,15 @@
     "jasmine-expect": "1.x",
     "jquery-ui": "~1.11.x",
     "lodash": "3.7",
-    "modernizr": "~2.8.x",
     "momentjs": "^2.10",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
-    "round-date": "~1.0.1",
+    "round-date": "^1.1",
     "sass-bootstrap": "3.0.2",
-    "angular-loading-bar": "~0.7.1"
+    "angular-loading-bar": "~0.7.1",
+    "ng-form-group": "~1.2.11"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "private": true,
   "resolutions": {
     "angular": "1.3.x"

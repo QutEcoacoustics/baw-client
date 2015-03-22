@@ -1,4 +1,4 @@
-var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.configuration']);
+var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.configuration', "bawApp.directives.ui.bootstrap"]);
 
 
 ngAudio.constant("ngAudioEvents", {

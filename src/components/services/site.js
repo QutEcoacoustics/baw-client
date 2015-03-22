@@ -3,19 +3,19 @@ angular
     .factory(
     "Site",
     [
-        '$resource', "bawResource", "$http", 'conf.paths', "lodash", "QueryBuilder",
-        function ($resource, bawResource, $http, paths, _, QueryBuilder) {
+        '$resource', "bawResource", "$http", 'conf.paths', "lodash", "QueryBuilder", "baw.models.Site",
+        function ($resource, bawResource, $http, paths, _, QueryBuilder, SiteModel) {
             var resource = bawResource(paths.api.routes.site.flattenedAbsolute, {siteId: "@siteId"});
 
             var url = paths.api.routes.site.filterAbsolute;
             resource.getSitesByIds = function (siteIds) {
-
-                var siteIdsUnique = _.uniq(siteIds);
                 var query = QueryBuilder.create(function (q) {
-                    return q.in("id", siteIdsUnique)
+                    return q.in("id", siteIds)
                         .project({include: ["id", "name"]});
                 });
-                return $http.post(url, query.toJSON());
+                return $http
+                    .post(url, query.toJSON())
+                    .then( x => SiteModel.makeFromApi(x));
             };
 
             resource.getSitesByProjectIds = function (projectIds) {
@@ -35,12 +35,12 @@ angular
             };
 
             /*resource.getAllSites = function () {
-                var url = paths.api.routes.site.filterAbsolute;
-                var query = QueryBuilder.create(function (q) {
-                    return q.project({"include": ["id", "name"]});
-                });
-                return $http.post(url, query.toJSON());
-            };*/
+             var url = paths.api.routes.site.filterAbsolute;
+             var query = QueryBuilder.create(function (q) {
+             return q.project({"include": ["id", "name"]});
+             });
+             return $http.post(url, query.toJSON());
+             };*/
 
 
             return resource;

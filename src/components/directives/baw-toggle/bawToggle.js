@@ -24,7 +24,7 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
             transclude: true,
             link: function linkFunction($scope, $element, attributes, controller, transcludeFunction) {
 
-                console.debug("link function:", $scope.$id);
+                //console.debug("link function:", $scope.$id);
 
                 var element = $element[0],
                     onDiv = element.querySelector(".toggle-switch-on"),
@@ -32,7 +32,7 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
                     knobDiv = element.querySelector(".toggle-switch-knob");
 
                 transcludeFunction($scope, function (clone) {
-                    console.debug("transclude function:", arguments);
+                    //console.debug("transclude function:", arguments);
 
                     // we could filter for elements that are toggle-switch-state
                     // but it is easier to just detect the attribute - it's really the only
@@ -82,7 +82,7 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
             controller: ["$scope", "$element", "$attrs",
                          function($scope, $element, $attrs) {
 
-                console.debug("controller function", $scope.$id);
+                //console.debug("controller function", $scope.$id);
 
                 $scope.disabled = $scope.disabled || false;
                 $scope.modeNormalized = $scope.mode == "push-toggle" ? "push-toggle" : "slide-toggle";

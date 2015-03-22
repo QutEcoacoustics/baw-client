@@ -90,19 +90,21 @@ module.exports = {
 
             // NOTE: bootstrap css imported in application.tpl.scss
             'vendor/sass-bootstrap/dist/js/bootstrap.js',
-            'vendor/momentjs/moment.js',
-            'vendor/angular-route/angular-route.js',
-            'vendor/angular-resource/angular-resource.js',
             'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+            'vendor/ng-form-group/index.js',
 
-            // Don't know what depended on this - disabled because does not exist on disk or in bower
-            //'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
+            'vendor/momentjs/moment.js',
+            'vendor/humanize-duration/humanize-duration.js',
+            'vendor/round-date/roundDate.js',
+
+            'vendor/angular-route/angular-route.js',
+
+            'vendor/angular-resource/angular-resource.js',
+
             // TODO: the following line is dodgy and bloats the app
-            'vendor/angular-ui-utils/ui-utils.js',
-            'vendor/modernizr/modernizr.js',
+            //'vendor/angular-ui-utils/ui-utils.js',
+
             'vendor/lodash/lodash.js',
-            //'vendor/select2/select2.js',
-            //'vendor/angular-ui-select2/src/select2.js'
 
             // This library is all split up - we are using the boneskull version atm,
             // but we started off using the deciphernic version
@@ -122,10 +124,10 @@ module.exports = {
             'vendor/d3/d3.js',
 
             'vendor/bowser/bowser.js',
+
             'vendor/angular-growl-v2/build/angular-growl.js',
+
             'vendor/angular-local-storage/dist/angular-local-storage.js',
-            'vendor/humanize-duration/humanize-duration.js',
-            'vendor/round-date/roundDate.js',
 
             'vendor/angular-loading-bar/build/loading-bar.js'
         ],
@@ -135,10 +137,9 @@ module.exports = {
             'vendor/hint.css/hint.css',
             // TODO: remove bloat
             'vendor/jquery-ui/themes/redmond/jquery-ui.css',
-            //'vendor/select2/select2-bootstrap.css',
-            //'vendor/select2/select2.css'
 
             'vendor/angular-tags/dist/angular-tags-0.3.1.css',
+
             'vendor/angular-growl-v2/build/angular-growl.css',
 
             'vendor/angular-loading-bar/build/loading-bar.css'

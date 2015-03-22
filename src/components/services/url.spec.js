@@ -102,22 +102,32 @@ describe("The url service", function () {
     describe("Testing url configuration", function () {
 
         beforeEach(function() {
-            provider.renamer(function (key) {
+            provider.registerRenamer("Upper", function (key) {
                 return key.toUpperCase();
             });
         });
 
-        it("can override the default case renamer for tokens", function () {
+        it("cannot override the default case renamer for tokens", function () {
             var uri = "http://google.com/test.html";
             var query = {helloWorld: "are you there?"};
 
             var result = $url.formatUri(uri, query);
+            var expected = "http://google.com/test.html?helloWorld=are%20you%20there%3F";
+
+            expect(result).toBe(expected);
+        });
+
+        it("creates a helper function that uses the specified case renamer for tokens", function () {
+            var uri = "http://google.com/test.html";
+            var query = {helloWorld: "are you there?"};
+
+            var result = $url.formatUriUpper(uri, query);
             var expected = "http://google.com/test.html?HELLOWORLD=are%20you%20there%3F";
 
             expect(result).toBe(expected);
         });
 
-        it("will can be configured with a token renamer", function () {
+        it("can be configured with a token renamer", function () {
             var uri = "http://google.com/test.html";
             var query = {helloWorld: "are you there?"};
 

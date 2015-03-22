@@ -3,7 +3,8 @@ describe("The service suite", function () {
     var audioEventService;
     var pathService;
 
-    beforeEach(module('bawApp.services'));
+    beforeEach(module("bawApp.models", "rails"));
+    beforeEach(module("bawApp.services"));
 
     beforeEach(inject(["AudioEvent", "conf.paths", function (AudioEvent, paths) {
         audioEventService = AudioEvent;

@@ -33,8 +33,8 @@ angular.module('bawApp.configuration', ['url'])
                     audioEvent: {
                         list: "/audio_recordings/{recordingId}/audio_events",
                         show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}",
-                        csv: "/audio_recordings/{recordingId}/audio_events/download.{format}",
-                        library: "/audio_events/library/paged"
+                        filter: "/audio_events/filter",
+                        csv: "/audio_recordings/{recordingId}/audio_events/download.{format}"
                     },
                     tagging: {
                         list: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings",
@@ -42,7 +42,8 @@ angular.module('bawApp.configuration', ['url'])
                     },
                     tag: {
                         list: '/tags/',
-                        show: '/tags/{tagId}'
+                        show: '/tags/{tagId}',
+                        filter: "/tags/filter"
                     },
                     media: {
                         show: "/audio_recordings/{recordingId}/media.{format}"
@@ -54,7 +55,8 @@ angular.module('bawApp.configuration', ['url'])
                     },
                     user: {
                         profile: "/my_account",
-                        settings: "/my_account/prefs"
+                        settings: "/my_account/prefs",
+                        filter: "/user_accounts/filter"
                     },
                     audioEventComment: {
                         show: '/audio_events/{audioEventId}/comments/{audioEventCommentId}'
@@ -217,6 +219,7 @@ angular.module('bawApp.configuration', ['url'])
         },
         localization: {
             dateTimeFormat: "YYYY-MMM-DD HH:mm:ss",
+            dateTimeFormatAngular: "yyyy-MMM-dd HH:mm:ss",
             dateTimeShortFormat: "YYYY-MMM-DD HH:mm",
             dateFormat: "YYYY-MMM-DD"
         },

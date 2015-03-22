@@ -78,13 +78,13 @@ describe("The Media object", function () {
         module("rails");
 
         module("url", function(casingTransformers, $urlProvider) {
-            $urlProvider.renamer(function  (key) { return  casingTransformers.underscore(key);});
+            $urlProvider.registerRenamer("Server", function  (key) { return  casingTransformers.underscore(key);});
         });
 
         module("rails");
         module("http-auth-interceptor");
         module("bawApp.services");
-        module("baw.models");
+        module("bawApp.models");
         module(function ($provide) {
             $provide.value("Authenticator", {authToken:"67tgfyb7i6tgyu"});
         });

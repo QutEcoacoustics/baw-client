@@ -95,22 +95,26 @@ angular
             }
         }
 
+        var exported = {
+            fixedEncodeURIComponent: fixedEncodeURIComponent,
+            encodeUriQuery: encodeUriQuery,
+            toKeyValue: toKeyValue,
+            formatUri: formatUri
+        };
 
-        this.renamer = function(renamerFunc) {
+        this.registerRenamer = function(suffix, renamerFunc) {
             if (renamerFunc) {
-                _renamerFunc = renamerFunc;
+                var key = "formatUri" + suffix;
+                exported[key] = function formatUri(uri, values) {
+                    return exported.formatUri(uri, values, renamerFunc);
+                };
             }
             else {
-                return _renamerFunc;
+                throw new Error("Empty renamer function");
             }
         };
 
         this.$get = function() {
-            return {
-                fixedEncodeURIComponent: fixedEncodeURIComponent,
-                encodeUriQuery: encodeUriQuery,
-                toKeyValue: toKeyValue,
-                formatUri: formatUri
-            };
+            return exported;
         };
     });

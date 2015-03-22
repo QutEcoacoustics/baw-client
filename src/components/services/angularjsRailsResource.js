@@ -6,7 +6,7 @@
 // https://github.com/tpodom/angularjs-rails-resource
 
 angular
-    .module('rails', [])
+    .module("rails", [])
     .constant('casingTransformers', (function () {
 
         function transformObject(data, transform) {
