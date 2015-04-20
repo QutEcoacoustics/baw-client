@@ -25,6 +25,6 @@ module.exports = function(grunt, template, callbackName, includeFiles) {
             externalModulesCount: includeFiles.length
         };
 
-        return _.template(vendorTemplate, data);
+        return _.template(vendorTemplate)(data);
     };
 };

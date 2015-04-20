@@ -71,7 +71,7 @@ module.exports = {
         jsWrapWithModule: [
             'vendor/d3/d3.js',
             'vendor/momentjs/moment.js',
-            'vendor/lodash/dist/lodash.js',
+            'vendor/lodash/lodash.js',
             'vendor/bowser/bowser.js',
             'vendor/humanize-duration/humanize-duration.js',
             'vendor/round-date/roundDate.js'
@@ -98,7 +98,7 @@ module.exports = {
             // TODO: the following line is dodgy and bloats the app
             'vendor/angular-ui-utils/ui-utils.js',
             'vendor/modernizr/modernizr.js',
-            'vendor/lodash/dist/lodash.js',
+            'vendor/lodash/lodash.js',
             //'vendor/select2/select2.js',
             //'vendor/angular-ui-select2/src/select2.js'
 
