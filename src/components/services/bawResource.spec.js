@@ -4,8 +4,9 @@ describe("The bawResource service", function () {
 
     beforeEach(module('bawApp.services'));
 
-    beforeEach(inject(["$injector", "bawResource", "$rootScope", function ($injector, providedBawResource, _$rootScope) {
+    beforeEach(inject(["$injector", "bawResource", "$rootScope", "$http", function ($injector, providedBawResource, _$rootScope, $http) {
         $httpBackend = $injector.get('$httpBackend');
+        $http.defaults.headers.common["Authorization"] = "SOME AUTH TOKEN";
 
         $httpBackend.when("GET", "/test").respond({data:[], meta:{}});
 

@@ -73,7 +73,9 @@ angular.module('bawApp.configuration', ['url'])
                     contactUs: '/contact_us',
                     disclaimers: '/disclaimers',
                     credits: '/credits',
-                    ethicsStatement: '/ethics_statement'
+                    ethicsStatement: '/ethics_statement',
+                    login: "/my_account/sign_in"
+
                 }
             },
             site: {
@@ -207,6 +209,9 @@ angular.module('bawApp.configuration', ['url'])
 )
     .constant("conf.constants", {
         namespace: "baw-client",
+        rails: {
+            loginRedirectQsp: "user_redirect_to"
+        },
         localization: {
             dateTimeFormat: "YYYY-MMM-DD HH:mm:ss",
             dateTimeShortFormat: "YYYY-MMM-DD HH:mm",
@@ -243,7 +248,7 @@ angular.module('bawApp.configuration', ['url'])
             },
             supported: {
                 msie: 10,
-                firefox: 30,
+                firefox: 36,
                 chrome: 30,
                 safari: 5.1,
                 opera: 23,

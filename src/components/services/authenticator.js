@@ -85,30 +85,46 @@ angular
              */
             function checkLogin() {
                 if ($rootScope.loggedIn !== true) {
+                    if ($rootScope.logInPending) {
+                        return false;
+                    }
+
+                    $rootScope.logInPending = true;
+
                     $http.get(paths.api.routes.security.pingAbsolute,
                               {params: {antiCache: (new Date()).getTime()}, cache: false})
-                        .success(function checkLoginSuccess(wrappedData, status, headers, config) {
-                                     // the ping request is different - it only requests data
-                                     var data = wrappedData.data;
-
-
-                                     if (wrappedData.meta.error) {
-                                         console.info("Logged in via ping failed (probably something wrong with cookies or not logged in).");
-                                         loginFailure(wrappedData, status, headers, config);
-                                     } else {
-                                         console.info("Logged in via ping (probably used cookies).");
-                                         loginSuccess(data, status, headers, config);
-                                     }
-
-                                 })
-                        .error(function checkLoginFailure(data, status, headers, config) {
-                                   console.error("Ping login service failure - this should not happen",
-                                                 data,
-                                                 status, headers, config);
-                               });
+                        .success(checkLoginSuccess)
+                        .error(checkLoginFailure)
+                        .finally(function() {
+                            $rootScope.logInPending = false;
+                        });
                 }
 
                 return true;
+            }
+
+            function checkLoginSuccess(wrappedData, status, headers, config) {
+                // the ping request is different - it only requests data
+                var data = wrappedData.data;
+
+                if (wrappedData.meta.error) {
+                    console.warn("Logged in via ping failed (probably something wrong with cookies or not logged in).");
+                    loginFailure(wrappedData, status, headers, config);
+                } else {
+                    console.info("Logged in via ping (probably used cookies).");
+                    loginSuccess(data, status, headers, config);
+                }
+
+            }
+
+            function checkLoginFailure(data, status, headers, config) {
+                console.error(
+                    "Ping login service failure - this should not happen",
+                    data,
+                    status,
+                    headers,
+                    config
+                );
             }
         }])
     .factory(

@@ -4,6 +4,7 @@ describe("The predictiveCache service", function () {
         $httpProvider;
     beforeEach(module("bawApp.services", function (_$httpProvider_) {
         $httpProvider = _$httpProvider_;
+        $httpProvider.defaults.headers.common["Authorization"] = "SOME AUTH TOKEN";
     }));
 
     //beforeEach(module("baw"));

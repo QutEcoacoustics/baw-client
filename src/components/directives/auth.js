@@ -4,7 +4,8 @@ angular.module('angular-auth', ['http-auth-interceptor'])
  * and will remove that class, so CSS will remove loading image and show app content.
  * It is also responsible for showing/hiding login form.
  */
-    .directive('bawAuth', function () {
+    .directive('bawAuth', ["$window", "$location", "$url", "conf.paths", "conf.constants",
+        function ($window, $location, $url, paths, constants) {
         return {
             restrict: 'AC',
             link: function (scope, elem, attrs) {
@@ -35,6 +36,16 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                 };
 
                 scope.$on('event:auth-loginRequired', function () {
+                    // temporary hack - send login requests to rails
+
+                    var url = paths.api.links.loginAbsolute;
+
+                    // get current url to redirect to
+                    var obj ={};
+                    obj[constants.rails.loginRedirectQsp] = $location.absUrl();
+                    url = $url.formatUri(url, obj);
+                    $window.location = url;
+                    /*
                     // TODO: add extra checks to stop multiple animations
 
                     var isOpen = isLoginBoxOpen();
@@ -45,7 +56,7 @@ angular.module('angular-auth', ['http-auth-interceptor'])
 
                             main.hide();
                         });
-                    }
+                    }*/
                 });
 
                 scope.$on('event:auth-loginConfirmed', function () {
@@ -69,9 +80,7 @@ angular.module('angular-auth', ['http-auth-interceptor'])
                 });
             }
         };
-    })
-
-;
+    }]);
 
 
 
