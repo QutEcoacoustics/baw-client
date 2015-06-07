@@ -1,31 +1,31 @@
 module.exports = function (grunt) {
 
-    var modRewrite = require('connect-modrewrite'),
-        gzipStatic = require('connect-gzip-static'),
-        path = require('path'),
+    var modRewrite = require("connect-modrewrite"),
+        gzipStatic = require("connect-gzip-static"),
+        path = require("path"),
         slash = require("slash"),
-        _ = require('lodash');
+        _ = require("lodash");
 
 
     /**
      * Load required Grunt tasks. These are installed based on the versions listed
      * in `package.json` when you do `npm install` in this directory.
      */
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-conventional-changelog');
-    //grunt.loadNpmTasks('grunt-changelog');
-    grunt.loadNpmTasks('grunt-bump');
-    grunt.loadNpmTasks('grunt-sass');
-    grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-ngmin');
-    grunt.loadNpmTasks('grunt-html2js');
-    grunt.loadNpmTasks('grunt-contrib-connect');
-
+    grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-contrib-concat");
+    grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-conventional-changelog");
+    //grunt.loadNpmTasks("grunt-changelog");
+    grunt.loadNpmTasks("grunt-bump");
+    grunt.loadNpmTasks("grunt-sass");
+    grunt.loadNpmTasks("grunt-karma");
+    grunt.loadNpmTasks("grunt-ngmin");
+    grunt.loadNpmTasks("grunt-html2js");
+    grunt.loadNpmTasks("grunt-contrib-connect");
+    grunt.loadNpmTasks("grunt-babel");
 
     /**
      * Load in our build configuration file.
@@ -436,7 +436,9 @@ module.exports = function (grunt) {
              */
             app: {
                 options: {
-                    base: 'src/app'
+                    base: 'src/app',
+                    // produce only one module
+                    singleModule: true
                 },
                 src: ['<%= app_files.atpl %>'],
                 dest: '<%= build_dir %>/templates-app.js'
