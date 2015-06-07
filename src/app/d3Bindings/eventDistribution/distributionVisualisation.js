@@ -241,7 +241,7 @@ angular
                 function updateElements() {
                     var imageAttrs = {
                         height: tilesHeight,
-                        width: tileSizePixels
+                        width: tileSizePixels,
                     };
 
                     function tileGTranslation(d, i) {
@@ -290,9 +290,31 @@ angular
                             "text-anchor": "middle",
                             dy: "1em"
                         });
-                    newTileElements.append("image")
+
+                    newTileElements
+                        .append("image")
                         .attr(imageAttrs)
-                        .attr("xlink:href", getTileImage);
+                        .attr("xlink:href", getTileImage)
+                        .on("error", function (datum, index) {
+                                //console.error("SVG ERROR", arguments);
+                                var target = d3.select(d3.event.target);
+
+                                // remove the href from the image
+                                target.attr("xlink:href", null);
+                            })
+                        .on("load", function () {
+                                //console.info("SVG INFO", arguments);
+
+                                // if successful, remove text (and let bg color through)
+                                var target = d3.event.target;
+                                var siblings = target.parentNode.childNodes;
+                                Array.prototype.forEach.call(siblings, function (node, index) {
+                                    if (!(node instanceof SVGImageElement)) {
+                                        node.remove();
+                                    }
+                                });
+                            });
+
 
                     // remove old tiles
                     tileElements.exit().remove();

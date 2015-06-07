@@ -11,6 +11,8 @@ angular.module(
         "bawApp.services.predictiveCache",
 
         // endpoint specific
+        "bawApp.services.analysisResult",
+        "bawApp.services.analysisResultFile",
         "bawApp.services.bookmark",
         "bawApp.services.project",
         "bawApp.services.site",
