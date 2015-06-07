@@ -79,7 +79,8 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
                     element.classList.add("toggle-switch-animate");
                 }, 0);
             },
-            controller: function($scope, $element, $attrs) {
+            controller: ["$scope", "$element", "$attrs",
+                         function($scope, $element, $attrs) {
 
                 console.debug("controller function", $scope.$id);
 
@@ -91,6 +92,6 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
                         $scope.model = !$scope.model;
                     }
                 };
-            }
+            }]
         };
     }]);
