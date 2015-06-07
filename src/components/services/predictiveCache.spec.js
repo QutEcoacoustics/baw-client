@@ -50,10 +50,10 @@ describe("The predictiveCache service", function () {
     describe("The predictive cache http interceptor", function () {
         var predictiveCacheInterceptor, $httpBackend;
 
-        beforeEach(inject(function (_predictiveCacheInterceptor_, $injector) {
+        beforeEach(inject(["predictiveCacheInterceptor", "$injector", function (_predictiveCacheInterceptor_, $injector) {
             predictiveCacheInterceptor = _predictiveCacheInterceptor_;
             $httpBackend = $injector.get("$httpBackend");
-        }));
+        }]));
 
         it("ensure the interceptor implements the expected methods", function () {
             expect(predictiveCacheInterceptor).toImplement({
@@ -129,7 +129,8 @@ describe("The predictiveCache service", function () {
             $http,
             exampleUrl = "http://www.google.com?page=1&size=10",
             httpEvents = [],
-            predictiveCache;
+            predictiveCache,
+            $httpBackend;
 
         beforeEach(function () {
             module(function ($provide) {
@@ -149,7 +150,7 @@ describe("The predictiveCache service", function () {
                 $httpProvider.interceptors.push("unitTestInterceptor");
             });
 
-            inject(function ($injector) {
+            inject(["$injector", function ($injector) {
                 $httpBackend = $injector.get("$httpBackend");
 
                 // create .when for requests common to all tests
@@ -160,7 +161,7 @@ describe("The predictiveCache service", function () {
                 // set up the cache service (register everything)
                 predictiveCache = $injector.get("predictiveCache");
                 configuredProfile = predictiveCache(testProfile);
-            });
+            }]);
 
             httpEvents = [];
         });
@@ -403,9 +404,9 @@ describe("The predictiveCache service", function () {
 
     describe("Validating the input profile", function () {
         var predictiveCache;
-        beforeEach(inject(function (_predictiveCache_) {
+        beforeEach(inject(["predictiveCache", function (_predictiveCache_) {
             predictiveCache = _predictiveCache_;
-        }));
+        }]));
 
 
         it("requires an object to function", function () {

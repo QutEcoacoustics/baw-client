@@ -66,6 +66,7 @@ npm-debug.log
 node_modules/
 build/
 bin/
+es6/
 vendor/
 src/assets/temp
 .sass-cache
