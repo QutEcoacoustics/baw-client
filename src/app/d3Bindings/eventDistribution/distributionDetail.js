@@ -476,10 +476,14 @@ angular
                 function switchSelectedCategory() {
                     if (yScale) {
                         //console.debug("DistributionDetail:Category switch");
-                        var mouseY = d3.mouse(main[0][0])[1],
-                            inverted = yScale.invert(mouseY),
-                            rounded = Math.floor(inverted),
-                            newCategory = self.lanes[rounded] || self.selectedCategory;
+                        var rounded = 0;
+                        if (!_lockManualZoom) {
+                            var mouseY = d3.mouse(main[0][0])[1];
+                            var inverted = yScale.invert(mouseY);
+                            rounded = Math.floor(inverted);
+                        }
+
+                        var newCategory = self.lanes[rounded] || self.selectedCategory;
 
                         if (newCategory !== self.selectedCategory) {
                             // update public field - this will allow us to switch which
@@ -538,7 +542,7 @@ angular
                 }
 
                 function setZoomTranslate(dateOffset) {
-                    zoom.translate([-xScale(dateOffset), 0])
+                    zoom.translate([-xScale(dateOffset), 0]);
                 }
 
                 function isRectVisible(d) {

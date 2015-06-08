@@ -106,7 +106,7 @@ angular
                     getText: function (d) {
                         return d.id;
                     },
-                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum, index) {
+                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum) {
 
                         var url = AnalysisResultFile.getLongDurationImageTile(datum.source, date, 60);
 
@@ -190,7 +190,7 @@ angular
                     projectFirst: hasProjectId,
                     ids: ids,
                     error: $scope.errorState
-                }
+                };
             }
 
             function sitesRetrieved(result) {
@@ -221,7 +221,7 @@ angular
                 return $q.all([
                     AudioRecording.getRecordingsForVisualization(siteIds),
                     Project.getByIds(projectIds)
-                ])
+                ]);
             }
 
             function processOtherData(results) {
