@@ -3,6 +3,39 @@ angular.module('bawApp.home', [])
     .controller('HomeCtrl', ['$scope', '$resource', '$routeParams', 'Project',
 
         function HomeCtrl($scope, $resource, $routeParams, Project) {
+/*            // testing some es6 features
+
+            var numbers = (new Array(100)).map((x,i) => i);
+            console.log(numbers);
+
+            var evenNumbers = numbers.filter(x => !(x & 1) );
+            console.log("even:", evenNumbers);
+
+            var newObj = {
+                numbers,
+                toString() {
+                    "use strict";
+                    console.warn(this.numbers);
+                    return numbers;
+                },
+                [ "sum_" + evenNumbers.reduce( (a, x) => a + x, 0)]: " test!"
+            };
+            console.info(newObj);
+
+            var [a, b, c] = [1, 2, 3];
+            var {numbers: ns} = newObj;
+            console.log(a, b, c, ns);
+
+            var s = new Set();
+            evenNumbers.forEach( x => s.add(x));
+            numbers.forEach( x => s.add(x));
+            console.log(s.size);
+
+            var w = new WeakSet();
+            w.add(newObj);
+            console.warn(w);*/
+
+
 //// TODO: disabled - authentication required for home page - BAD!
 //// TODO: properly package this mess ... way too much in this controller
 //    // to get projects to display

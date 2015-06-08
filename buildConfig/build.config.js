@@ -8,6 +8,7 @@ module.exports = {
      * development and the `compile_dir` folder is where our app resides once it's
      * completely built.
      */
+    es6_dir: "es6",
     build_dir: 'build',
     compile_dir: 'bin',
 
@@ -77,6 +78,7 @@ module.exports = {
             'vendor/round-date/roundDate.js'
 ],
         js: [
+            "node_modules/babel/node_modules/babel-core/browser-polyfill.js",
             'vendor/jquery/dist/jquery.js',
             'vendor/angular/angular.js',
 

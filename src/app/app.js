@@ -205,7 +205,7 @@ var app = angular.module('baw',
                  // configure angular-growl
                  growlProvider.globalPosition('top-center');
 
-                 // configure local storage provider with our own namepspace
+                 // configure local storage provider with our own namespace
                  localStorageServiceProvider.setPrefix(constants.namespace);
 
                  // for compatibility with rails api

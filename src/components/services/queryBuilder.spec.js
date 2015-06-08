@@ -362,7 +362,7 @@ describe("The QueryBuilder", function () {
         };
 
         // this essentially represents paging with the default options
-        actual = q.page.disable().page({});
+        var actual = q.page.disable().page({});
         expect(actual.toJSON(spaces)).toBe(j(expected));
     });
 
