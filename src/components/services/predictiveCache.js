@@ -57,6 +57,14 @@ angular
 
             var profiles = {};
 
+            function debug(...args) {
+                // disable debug messages for unit tests
+                if (!jasmine) {
+                    console.debug.apply(null, args);
+                }
+
+            }
+
             function validateProfile(settings) {
                 settings = angular.extend({}, defaults, settings);
 
@@ -169,7 +177,7 @@ angular
                 }
 
                 function invokeHttp(url) {
-                    console.debug("predictiveCache:promiseResolution enqueued " + url);
+                    debug("predictiveCache:promiseResolution enqueued " + url);
                     var config = {
                         url: url,
                         method: profile.method
@@ -179,7 +187,7 @@ angular
                         config = cfpLoadingBar.ignore(config);
                     }
                     return $http(config).then(function (value) {
-                        console.debug("predictiveCache:promiseResolution completed " + url);
+                        debug("predictiveCache:promiseResolution completed " + url);
                         return value;
                     });
                 }
@@ -232,7 +240,7 @@ angular
                             var batchCommands = array.slice(index, index + requestsPerProgression);
                             if (batchCommands.length !== 0) {
                                 return promiseChain.then(function () {
-                                    //console.debug("execute next http requests", index / requestsPerProgression, batchCommands);
+                                    //debug("execute next http requests", index / requestsPerProgression, batchCommands);
                                     if (batchCommands === 1) {
                                         return invokeHttp(batchCommands[0]);
                                     }
@@ -255,14 +263,14 @@ angular
                     promises = $q.all(commands.map(invokeHttp));
                 }
 
-                console.debug("predictiveCache:promiseResolution Promises enqueued");
+                debug("predictiveCache:promiseResolution Promises enqueued");
 
                 return promises
                     .catch(function (error) {
                         console.error("predictiveCache:promiseResolution " + error, error);
                     })
                     .finally(function () {
-                        console.debug("predictiveCache:promiseResolution complete");
+                        debug("predictiveCache:promiseResolution complete");
                     });
             }
 
