@@ -1,31 +1,30 @@
 module.exports = function (grunt) {
 
-    var modRewrite = require('connect-modrewrite'),
-        gzipStatic = require('connect-gzip-static'),
-        path = require('path'),
+    var modRewrite = require("connect-modrewrite"),
+        gzipStatic = require("connect-gzip-static"),
+        path = require("path"),
         slash = require("slash"),
-        _ = require('lodash');
+        _ = require("lodash");
 
 
     /**
      * Load required Grunt tasks. These are installed based on the versions listed
      * in `package.json` when you do `npm install` in this directory.
      */
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-conventional-changelog');
-    //grunt.loadNpmTasks('grunt-changelog');
-    grunt.loadNpmTasks('grunt-bump');
-    grunt.loadNpmTasks('grunt-sass');
-    grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-ngmin');
-    grunt.loadNpmTasks('grunt-html2js');
-    grunt.loadNpmTasks('grunt-contrib-connect');
-
+    grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-contrib-concat");
+    grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-conventional-changelog");
+    //grunt.loadNpmTasks("grunt-changelog");
+    grunt.loadNpmTasks("grunt-bump");
+    grunt.loadNpmTasks("grunt-sass");
+    grunt.loadNpmTasks("grunt-karma");
+    grunt.loadNpmTasks("grunt-html2js");
+    grunt.loadNpmTasks("grunt-contrib-connect");
+    grunt.loadNpmTasks("grunt-babel");
 
     /**
      * Load in our build configuration file.
@@ -168,7 +167,8 @@ module.exports = function (grunt) {
             others: {
                 src: [
                     '<%= build_dir %>',
-                    '<%= compile_dir %>'
+                    '<%= compile_dir %>',
+                    '<%= es6_dir %>'
                 ]
             }
         },
@@ -234,7 +234,7 @@ module.exports = function (grunt) {
                         // for now since the angular templates use tpl as well,
                         // we'll cheat and just use a direct file reference
                         var bc = grunt.config('build_configs');
-                        if (srcPath === bc.configFile) {
+                        if (srcPath.indexOf(bc.configFile) >= 0) {
 
                             // then process as template!
                             return grunt.template.process(content, {data: bc});
@@ -245,9 +245,10 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        src: ['<%= app_files.js %>'],
-                        dest: '<%= build_dir %>/',
-                        cwd: '.',
+                        src: ['<%= app_files.js %>', "**/!(*.spec).js.map"],
+                        // copy transpiled es6 JS into dest dir
+                        dest: "<%= build_dir %>/",
+                        cwd: "<%= es6_dir %>",
                         expand: true,
                         nonull: true
                     }
@@ -273,6 +274,24 @@ module.exports = function (grunt) {
                         src: ['**'],
                         dest: '<%= compile_dir %>/assets',
                         cwd: '<%= build_dir %>/assets',
+                        expand: true,
+                        nonull: true
+                    }
+                ]
+            }
+        },
+
+        babel: {
+            options: {
+                sourceMap: true,
+                optional: ["es7.comprehensions"]
+            },
+            transpile_appjs: {
+                files: [
+                    {
+                        src: [ "<%= app_files.js %>", "<%= app_files.jsunit %>"],
+                        dest: "<%= es6_dir %>",
+                        cwd: ".",
                         expand: true,
                         nonull: true
                     }
@@ -321,23 +340,6 @@ module.exports = function (grunt) {
                     'buildConfig/module.suffix'
                 ],
                 dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
-            }
-        },
-
-        /**
-         * `ng-min` annotates the sources before minifying. That is, it allows us
-         * to code without the array syntax.
-         */
-        ngmin: {
-            compile: {
-                files: [
-                    {
-                        src: ['<%= app_files.js %>'],
-                        cwd: '<%= build_dir %>',
-                        dest: '<%= build_dir %>',
-                        expand: true
-                    }
-                ]
             }
         },
 
@@ -413,6 +415,7 @@ module.exports = function (grunt) {
                 sub: true,
                 boss: true,
                 eqnull: true,
+                esnext: true,
 
                 /* HACK: At some point this should be turned off!" */
                 force: true,
@@ -436,7 +439,9 @@ module.exports = function (grunt) {
              */
             app: {
                 options: {
-                    base: 'src/app'
+                    base: 'src/app',
+                    // produce only one module
+                    singleModule: true
                 },
                 src: ['<%= app_files.atpl %>'],
                 dest: '<%= build_dir %>/templates-app.js'
@@ -490,7 +495,6 @@ module.exports = function (grunt) {
                     '<%= html2js.common.dest %>',
                     '<%= html2js.app.dest %>',
                     '<%= vendor_files.css %>',
-                    /*'<%= recess.build.dest %>',*/
                     '<%= build_dir %>/assets/styles/*'
                 ]
             },
@@ -505,7 +509,6 @@ module.exports = function (grunt) {
                 src: [
                     '<%= concat.compile_js.dest %>',
                     '<%= vendor_files.css %>',
-                    /*'<%= recess.compile.dest %>',*/
                     '<%= build_dir %>/assets/styles/*.css'
                 ]
             }
@@ -627,9 +630,8 @@ module.exports = function (grunt) {
                 files: [
                     '<%= app_files.js %>'
                 ],
-                // karma:unit:run is disabled because it breaks watch by stopping it
-                // see https://github.com/karma-runner/grunt-karma/issues/30
-                tasks: ['jshint:src', 'karma:unit:run', 'copy:build_appjs']
+                // recent modification: files are copied before unit tests are run!
+                tasks: ['jshint:src', 'babel:transpile_appjs', 'copy:build_appjs', 'karma:unit:run'  ]
             },
 
             /**
@@ -678,7 +680,7 @@ module.exports = function (grunt) {
                 files: [
                     '<%= app_files.jsunit %>'
                 ],
-                tasks: ['jshint:test', 'karma:unit:run'],
+                tasks: ['babel:transpile_appjs', 'jshint:test', 'karma:unit:run'],
                 options: {
                     livereload: false
                 }
@@ -712,7 +714,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean', 'html2js', 'jshint', 'sass:build',
         'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
-        'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
+        'babel:transpile_appjs', 'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
         'karma:continuous'
     ]);
 
@@ -721,7 +723,7 @@ module.exports = function (grunt) {
      * minifying your code.
      */
     grunt.registerTask('compile', [
-        'sass:compile', 'concat:build_css', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify',
+        'sass:compile', 'concat:build_css', 'copy:compile_assets', 'concat:compile_js', 'uglify',
         'index:compile'
     ]);
 

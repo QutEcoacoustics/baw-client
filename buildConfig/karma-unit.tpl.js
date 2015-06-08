@@ -22,8 +22,8 @@ module.exports = function (config) {
         "vendor/objectdiff/objectDiff.js",
         "vendor/jasmine-expect/dist/jasmine-matchers.js"
     ].concat(JSON.parse(fileJson).concat([
-            'src/**/*.js',
-            'src/**/*.spec.js'
+            'es6/**/*.js',
+            'es6/**/*.spec.js'
         ]));
 
     // HACK!: use vendor files out of the build directory since they undergo a transform on build
@@ -33,7 +33,7 @@ module.exports = function (config) {
     });
 
     configObject.exclude = [
-        'src/assets/**/*.js'
+        'es6/assets/**/*.js'
     ];
 
     configObject.frameworks = [ 'jasmine' ];
@@ -42,12 +42,13 @@ module.exports = function (config) {
         'karma-firefox-launcher',
         /*'karma-chrome-launcher',*/
         require('../node_modules/karma-chrome-launcher'),
-        'karma-phantomjs-launcher'
+        'karma-phantomjs-launcher',
         /*require('../node_modules/karma-phantomjs-launcher'),*/
+        "karma-sourcemap-loader"
     ];
 
     configObject.preprocessors = {
-
+        '**/*.js': ['sourcemap']
     };
 
     /**
@@ -66,7 +67,7 @@ module.exports = function (config) {
 
         configObject.reporters.push('coverage');
         configObject.plugins.push('karma-coverage');
-        configObject.preprocessors['src/**/!(*.spec)+(.js)'] = 'coverage';
+        configObject.preprocessors['es6/**/!(*.spec)+(.js)'] = 'coverage';
     }
 
     /**
