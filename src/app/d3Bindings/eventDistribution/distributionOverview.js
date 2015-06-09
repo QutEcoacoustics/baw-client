@@ -148,7 +148,7 @@ angular
                     miniClipRect.attr({
                         width: miniWidth,
                         height: miniHeight
-                    })
+                    });
                 }
 
                 /**

@@ -14,8 +14,10 @@ angular
         "Project",
         "Site",
         "AudioRecording",
+        "AnalysisResultFile",
         "UserProfile",
-        function ($scope, $routeParams, $http, $q, _, moment, paths, constants, Project, Site, AudioRecording, UserProfile) {
+        function ($scope, $routeParams, $http, $q, _, moment,
+                  paths, constants, Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
 
             var sitesMap = {};
 
@@ -104,15 +106,10 @@ angular
                     getText: function (d) {
                         return d.id;
                     },
-                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum, index) {
-                        var hourOfDay = date.getHours();
+                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum) {
 
-                        if (datum.source.id !== 188238) {
-                            return;
-                        }
+                        var url = AnalysisResultFile.getLongDurationImageTile(datum.source, date, 60);
 
-                        // do not attempt to load dll's for demo
-                        var url = paths.site.root + "/assets/temp/demo/188238_" + hourOfDay + ".png";
                         return url;
                     }
                 }
@@ -193,7 +190,7 @@ angular
                     projectFirst: hasProjectId,
                     ids: ids,
                     error: $scope.errorState
-                }
+                };
             }
 
             function sitesRetrieved(result) {
@@ -224,7 +221,7 @@ angular
                 return $q.all([
                     AudioRecording.getRecordingsForVisualization(siteIds),
                     Project.getByIds(projectIds)
-                ])
+                ]);
             }
 
             function processOtherData(results) {

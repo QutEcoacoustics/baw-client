@@ -61,6 +61,9 @@ angular.module('bawApp.configuration', ['url'])
                     },
                     bookmark: {
                         show: "/bookmarks/{bookmarkId}"
+                    },
+                    analysisResults: {
+                        system: "/audio_recordings/{recordingId}/analysis.{format}"
                     }
                 },
                 links: {

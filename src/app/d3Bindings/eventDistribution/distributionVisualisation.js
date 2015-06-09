@@ -59,7 +59,9 @@ angular
                     },
 
                     visibleExtent = [],
-                    visibleTiles = [];
+                    visibleTiles = [],
+                    failedImages = new Set(),
+                    successfulImages = new Set();
 
                 // exports
                 self.items = [];
@@ -201,13 +203,15 @@ angular
                     return self.items
                         .filter(h)
                         .reduce(function (previous, current) {
-                                    var t = current.tiles.filter(l);
-                                    return previous.concat(t);
-                                }, [])
+                            var t = current.tiles.filter(l);
+                            return previous.concat(t);
+                        }, [])
                         .sort(sortTiles);
                 }
 
                 function createElements() {
+                    //svg.node().addEventListener("SVGLoad", () => console.log("Main SVG Load completed"));
+
                     // this example has an associated html template...
                     // most of the creation is not necessary
 
@@ -248,16 +252,60 @@ angular
                         return [getTileLeft(d, i), 0];
                     }
 
+                    function checkImage(d) {
+                        // check if the image has been successfully downloaded before
+                        // if it has not, do not set
+                        // if it has, then set
+                        // otherwise, set for first time and try!
+                        if (failedImages.has(d.tileImageUrl)) {
+                            return null;
+                        } else {
+                            return d.tileImageUrl;
+                        }
+                    }
+
+                    function imageLoadError(d, index) {
+                        //console.error("SVG image error", arguments);
+                        var target = d3.select(d3.event.target);
+
+                        // remove the href from the image
+                        target.attr("xlink:href", null);
+
+                        // record failure so we don't try and DL image again
+                        failedImages.add(d.tileImageUrl);
+                    }
+
+                    function imageLoadSuccess(d) {
+                        //console.info("SVG image success", arguments);
+                        if (successfulImages.has(d.tileImageUrl)) {
+                            return;
+                        }
+
+                        // if successful, remove text (and let bg color through)
+                        var target = d3.event.target,
+                            siblings = target.parentNode.childNodes;
+                        Array.from(siblings).forEach(function (node, index) {
+                            if (!(node instanceof SVGImageElement)) {
+                                node.remove();
+                            }
+                        });
+
+                        // record success so we can optimise tile creation in the future
+                        successfulImages.add(d.tileImageUrl);
+                    }
+
+                    function tileKey(d) {
+                        return d.key;
+                    }
+
                     // create data join
                     var tileElements = tilesGroup.selectAll(".tile")
-                        .data(visibleTiles, function (d) {
-                                  return d.key;
-                              });
+                        .data(visibleTiles, tileKey);
 
                     // update old tiles
                     tileElements.translate(tileGTranslation)
                         .select("image")
-                        .attr("href", getTileImage);
+                        .attr("xlink:href", checkImage);
 
                     // add new tiles
                     var newTileElements = tileElements.enter()
@@ -266,13 +314,19 @@ angular
                         .classed("tile", true)
                         .append("a")
                         .attr("xlink:href", function (d, i) {
-                                  return d.audioNavigationUrl;
-                              });
+                            return d.audioNavigationUrl;
+                        });
 
-                    newTileElements.append("rect")
+                    // optimize: if we've successfully downloaded a tile before
+                    // then we don't need these placeholder tiles
+                    var failedOrUnknownTileElements =
+                        newTileElements.filter(d => !successfulImages.has(d.tileImageUrl));
+                        //.data(visibleTiles, tileKey)
+                        //.enter();
+                    failedOrUnknownTileElements.append("rect")
                         .attr(imageAttrs);
 
-                    newTileElements.append("text")
+                    failedOrUnknownTileElements.append("text")
                         .text(getOffsetDate)
                         .attr({
                             y: tilesHeight / 2.0,
@@ -281,7 +335,7 @@ angular
                             "text-anchor": "middle",
                             dy: "0em"
                         });
-                    newTileElements.append("text")
+                    failedOrUnknownTileElements.append("text")
                         .text(getOffsetTime)
                         .attr({
                             y: tilesHeight / 2.0,
@@ -290,9 +344,17 @@ angular
                             "text-anchor": "middle",
                             dy: "1em"
                         });
+
+                    // but always add the image element
                     newTileElements.append("image")
                         .attr(imageAttrs)
-                        .attr("xlink:href", getTileImage);
+                        .attr("xlink:href", checkImage)
+                        .on("error", imageLoadError, true)
+                        .on("load", imageLoadSuccess, true)
+                        // the following two handlers are for IE compatibility
+                        .on("SVGError", imageLoadError, true)
+                        // the following hack does not work in IE
+                        .on("SVGLoad", imageLoadSuccess, true);
 
                     // remove old tiles
                     tileElements.exit().remove();
@@ -340,7 +402,7 @@ angular
 
                 function isItemVisible(filterExtent, d) {
                     return dataFunctions.getLow(d) < filterExtent[1] &&
-                           dataFunctions.getHigh(d) >= filterExtent[0];
+                        dataFunctions.getHigh(d) >= filterExtent[0];
                 }
 
                 function and(a, b, d) {
@@ -349,8 +411,8 @@ angular
 
                 function isTileVisible(visibleExtent, d) {
                     return d &&
-                           d.offset < visibleExtent[1] &&
-                           d.offsetEnd >= visibleExtent[0];
+                        d.offset < visibleExtent[1] &&
+                        d.offsetEnd >= visibleExtent[0];
                 }
 
                 function splitIntoTiles(current, i) {
@@ -360,20 +422,24 @@ angular
 
                     // round down to the lower unit of time, determined by `tileSizeSeconds`
                     var niceLow = roundDate.floor(tileSizeSeconds, low),
-                        niceHigh = roundDate.ceil(tileSizeSeconds, high),
+                        // subtract a 'tile' otherwise we generate one too many
+                        niceHigh = roundDate.ceil(tileSizeSeconds, high) - tileSizeSeconds,
                         offset = niceLow;
 
                     // use d3's in built range functionality to generate steps
                     var steps = [];
                     while (offset < niceHigh) {
                         var nextOffset = d3.time.second.offset(offset, tileSizeSeconds);
-                        steps.push({
+                        var item = {
                             offset: offset,
                             offsetEnd: nextOffset,
                             source: current,
                             key: offset.toISOString() + dataFunctions.getId(current),
-                            audioNavigationUrl: getNavigateToAudioUrl(current, offset)
-                        });
+                            audioNavigationUrl: getNavigateToAudioUrl(current, offset),
+                            tileImageUrl: ""
+                        };
+                        item.tileImageUrl = getTileImage(item);
+                        steps.push(item);
                         offset = nextOffset;
                     }
 
@@ -412,13 +478,12 @@ angular
                     return d.offset.toLocaleTimeString();
                 }
 
-                function getTileImage(d, i) {
+                function getTileImage(d) {
                     var url = dataFunctions.getTileUrl(d.offset,
-                                                       self.category,
-                                                       tileSizeSeconds,
-                                                       tileSizePixels,
-                                                       d,
-                                                       i);
+                        self.category,
+                        tileSizeSeconds,
+                        tileSizePixels,
+                        d);
 
                     if (url) {
                         return url;
@@ -437,7 +502,7 @@ angular
                     return tileA.offset - tileB.offset;
                 }
 
-            }
+            };
         }
     ]
 ).directive(
@@ -460,7 +525,7 @@ angular
                         controller.options.functions,
                         $scope.$id);
                 }
-            }
+            };
         }
     ]
 );

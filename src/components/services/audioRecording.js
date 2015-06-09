@@ -27,7 +27,7 @@ angular
                     //  WARNING: potentially very large queries because paging is disabled
                     return q
                         .in("siteId", siteIds)
-                        .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]})
+                        .project({include: ["id", "uuid", "siteId", "durationSeconds", "recordedDate"]})
                         .page.disable()
                         .sort({orderBy: "id"});
                 });
