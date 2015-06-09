@@ -77,7 +77,7 @@ angular.module('bawApp.configuration', ['url'])
                     disclaimers: '/disclaimers',
                     credits: '/credits',
                     ethicsStatement: '/ethics_statement',
-                    login: "/my_account/sign_in"
+                    login: "/errors/unauthorized"
 
                 }
             },
@@ -213,7 +213,7 @@ angular.module('bawApp.configuration', ['url'])
     .constant("conf.constants", {
         namespace: "baw-client",
         rails: {
-            loginRedirectQsp: "user_redirect_to"
+            loginRedirectQsp: "redirect_to"
         },
         localization: {
             dateTimeFormat: "YYYY-MMM-DD HH:mm:ss",
