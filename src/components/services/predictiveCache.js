@@ -59,8 +59,8 @@ angular
 
             function debug(...args) {
                 // disable debug messages for unit tests
-                if (!jasmine) {
-                    console.debug.apply(null, args);
+                if (!window.jasmine) {
+                    console.debug.apply(console, args);
                 }
 
             }
