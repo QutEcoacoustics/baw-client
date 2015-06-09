@@ -348,16 +348,16 @@ angular
                     // but always add the image element
                     newTileElements.append("image")
                         .attr(imageAttrs)
-                        .attr("externalResorucesRequired", "true")
                         .attr("xlink:href", checkImage)
                         .on("error", imageLoadError, true)
                         .on("load", imageLoadSuccess, true)
+                        // the following two handlers are for IE compatibility
                         .on("SVGError", imageLoadError, true)
+                        // the following hack does not work in IE
                         .on("SVGLoad", imageLoadSuccess, true);
 
                     // remove old tiles
                     tileElements.exit().remove();
-                    //failedOrUnknownTileElements.exit().remove();
 
                     // update datasetBounds
                     // effect a manual clip on the range
