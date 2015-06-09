@@ -217,16 +217,10 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     Site.get({siteId: result.audioRecording.siteId}, {}, function getSiteSuccess(value) {
                         var data = value.data;
                         data.links = data.projectIds.map(function(id, index) {
-                            if (angular.isObject(id)) {
-                                // BUG: https://github.com/QutBioacoustics/baw-server/issues/135
-                                data.projectIds[index] = id = id.id;
-                            }
-                            else {
-                                console.warn("It would seem https://github.com/QutBioacoustics/baw-server/issues/135 has been fixed, remove me");
-                            }
-
                             return paths.api.routes.site.nestedAbsolute.format({"siteId": data.id, "projectId": id});
                         });
+
+                        data.visualizeLink = $url.formatUri(paths.site.ngRoutes.visualize, {siteId: data.id}, x => x);
 
                         $scope.model.site = data;
                         result.site = data;
@@ -250,6 +244,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         Project.get({projectId: id}, {}, function getProjectSuccess(value) {
                             var data = value.data;
                             data.link = paths.api.routes.project.showAbsolute.format({"projectId": data.id});
+                            data.visualizeLink = $url.formatUri(paths.site.ngRoutes.visualize, {projectId: data.id}, x => x);
 
                             $scope.model.projects[index] = data;
                             result.projects[index] = data;

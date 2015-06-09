@@ -21,7 +21,9 @@
   margin-top: -10px;
   margin-bottom: 10px;
 
-
+  & span.glyphicon {
+    font-size: $font-size-small;
+  }
 }
 
 #recordingDetails {
