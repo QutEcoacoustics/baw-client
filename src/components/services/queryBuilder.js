@@ -1,10 +1,11 @@
 angular
-    .module("bawApp.services.queryBuilder", ["bawApp.configuration"])
+    .module("bawApp.services.queryBuilder", ["bawApp.configuration", "bawApp.vendorServices"])
     .factory(
     "QueryBuilder",
     [
         "conf.constants",
-        function (constants) {
+        "lodash",
+        function (constants, _) {
 
             var validCombinators = {
                 "and": undefined,
@@ -14,6 +15,97 @@ angular
                         throw "Not combinator only accepts one argument (either combinator or operator)";
                     }
                 }
+            };
+
+            var inCheck = function (field, value) {
+                var unique;
+                if (value instanceof Set) {
+                    unique = Array.from(value);
+                } else if (!angular.isArray(value)) {
+                    throw new Error("The in function must be given as an array");
+                }
+                else {
+                    unique = _.uniq(value);
+                }
+
+                return {value: unique};
+            };
+
+            function nullOrUndefined(value) {
+                if (value === "" || value === null || value === undefined) {
+                    return undefined;
+                }
+
+                return Number(value);
+            }
+
+            var intervalRegex = /^(\[|\()([\w\d\.]*?),(?!\s)([\w\d\.]*?)(\)|\])$/;
+            var inRangeCheck = function (field, value, rangeWrapperHack) {
+                var range = rangeWrapperHack || {};
+
+                if (typeof value === "string") {
+                    var matches = value.match(intervalRegex);
+                    if (!matches) {
+                        throw new Error("The interval string is incorrect");
+                    }
+
+                    range.lowerInclusive = matches[1] === "[";
+                    range.lower = nullOrUndefined(matches[2]);
+                    range.upper = nullOrUndefined(matches[3]);
+                    range.upperInclusive = matches[4] === "]";
+
+                    return checkRange({interval: value});
+                }
+                else if (value instanceof Object) {
+                    range.lower = nullOrUndefined(value.from);
+                    range.upper = nullOrUndefined(value.to);
+                    range.lowerInclusive = true;
+                    range.upperInclusive = false;
+
+                    return checkRange({from: range.lower, to: range.upper});
+                }
+                else {
+                    throw new Error("A value argument must be supplied to a range function");
+                }
+
+                function checkRange(value) {
+                    if (Number.isNaN(range.lower) || Number.isNaN(range.upper)) {
+                        throw new Error("An interval bound was NaN");
+                    }
+
+                    if (range.lower !== undefined && range.upper !== undefined && range.lower > range.upper) {
+                        throw new Error("The lower bound on an interval must be less than or equal to the upper bound");
+                    }
+
+                    if (range.lower === undefined && range.upper === undefined) {
+                        // indicates the operator should not be added
+                        return true;
+                    }
+
+                    return {value};
+                }
+            };
+
+            var smartRange = function (field, value) {
+                var rangeArguments = {};
+                var result = inRangeCheck(field, value, rangeArguments);
+
+                var lowerGiven = rangeArguments.lower !== undefined,
+                    upperGiven = rangeArguments.upper !== undefined;
+                if (lowerGiven && upperGiven) {
+                    return result;
+                }
+
+                if (lowerGiven) {
+                    result.value = rangeArguments.lower;
+                    result.operator = rangeArguments.lowerInclusive ? "gteq" : "gt";
+                }
+                else if (upperGiven) {
+                    result.value = rangeArguments.upper;
+                    result.operator = rangeArguments.upperInclusive ? "lteq" : "lt";
+                }
+
+                return result;
             };
 
             var validOperators = {
@@ -29,15 +121,20 @@ angular
                 "gt": undefined,
                 "greaterThanOrEqual": undefined,
                 "gteq": undefined,
-                "range": undefined,
-                "in": function (field, value) {
-                    if (!angular.isArray(value)) {
-                        throw "The in function must be given as an array";
-                    }
-                },
+                "range": smartRange,
+                "inRange": inRangeCheck,
+                "notInRange": inRangeCheck,
+                "in": inCheck,
+                "notIn": inCheck,
                 "contains": undefined,
+                "notContains": undefined,
                 "startsWith": undefined,
-                "endsWith": undefined
+                "notStartsWith": undefined,
+                "endsWith": undefined,
+                "notEndsWith": undefined,
+                "regex": function (field, value) {
+                    throw new Error("The regex function is not supported");
+                }
             };
 
             function Query(currentFieldKey, rootQuery) {
@@ -160,7 +257,7 @@ angular
                     return this;
                 };
 
-                this.page.disable = function() {
+                this.page.disable = function () {
                     delete self.root.paging.items;
                     delete self.root.paging.page;
 
@@ -235,18 +332,34 @@ angular
 
             Object.keys(validOperators).forEach(function (operatorKey) {
                 Query.prototype[operatorKey] = function (field, value) {
+                    var operator = operatorKey;
+
                     if (arguments.length == 1) {
                         value = field;
                         field = undefined;
                     }
 
-
-                    var validator = validOperators[operatorKey];
+                    var validator = validOperators[operator];
                     if (validator) {
-                        validator(field, value);
+                        var modified = validator.call(this, field, value);
+
+                        if (!modified) {
+                            // no-op
+                        }
+                        else if (modified === true) {
+                            // do no work, cancel the operation
+                            return this;
+                        }
+
+                        if (modified) {
+                            // the validator has updated the operation
+                            operator = modified.operator || operator;
+                            field = modified.field || field;
+                            value = modified.value || value;
+                        }
                     }
 
-                    return this.operator(operatorKey, value, field);
+                    return this.operator(operator, value, field);
                 };
             });
 

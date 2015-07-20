@@ -197,6 +197,14 @@ describe("The unitConverter service", function () {
             expect(top).toBe(23.800453514739218 /*pixels*/);
         });
 
+        it("correctly calculates the top position of a box - if for some reason the annotation high frequency is above the nyquist", function () {
+            var top = converters.toTop(16000 /*hertz*/);
+
+            // remember - inverted y axis
+            expect(top).toBe(-115.51927437641723 /*pixels*/);
+        });
+
+
         it("correctly calculates the width of a box", function () {
             var width = converters.toWidth(32, 16 /*seconds*/);
             expect(width).toBe(689.0625 /*pixels*/);

@@ -2,6 +2,7 @@ describe("The Tag object", function () {
 
     var newTag;
     var existingTag;
+    var TagModel;
     var resource = {
         "createdAt": "2013-11-20T13:19:13Z",
         "creatorId": 7,
@@ -15,22 +16,23 @@ describe("The Tag object", function () {
         "updaterId": 7
     };
 
+    beforeEach(module("bawApp.models", "rails"));
 
-    beforeEach(function () {
-        newTag = new baw.Tag(true);
-        existingTag = new baw.Tag(resource);
+    beforeEach(inject(["baw.models.Tag", function (_TagModel_) {
+        TagModel = _TagModel_;
+        newTag = new TagModel(true);
+        existingTag = new TagModel(resource);
+    }]));
 
-    });
 
-
-    it("should be found globally", function () {
-        var type = typeof baw.Tag;
-        expect(type).toEqual("function");
+    it("should not be found globally", function () {
+        var type = window.TagModel;
+        expect(type).toBeUndefined();
     });
 
     it("should throw if called like a function", function () {
         var func = function () {
-            baw.Tag(true);
+            TagModel(true); // jshint ignore:line
         };
 
         expect(func).toThrowError("Constructor called as a function");
@@ -38,7 +40,7 @@ describe("The Tag object", function () {
 
     it("should throw if not given a bool or object", function () {
         var f = function () {
-            new baw.Tag(3);
+            new TagModel(3);
         };
 
         expect(f).toThrow();

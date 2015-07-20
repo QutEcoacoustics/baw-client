@@ -3,12 +3,12 @@ angular
     .factory(
     "AudioRecording",
     [
-        '$resource', "bawResource", '$http', 'conf.paths', 'QueryBuilder',
-        function ($resource, bawResource, $http, paths, QueryBuilder) {
+        "$resource", "bawResource", "$http", "conf.paths", "QueryBuilder", "baw.models.AudioRecording",
+        function ($resource, bawResource, $http, paths, QueryBuilder, AudioRecordingModel) {
             var resource = bawResource(paths.api.routes.audioRecording.showAbsolute,
-                                       {projectId: "@projectId", siteId: "@siteId", recordingId: '@recordingId'});
+                {projectId: "@projectId", siteId: "@siteId", recordingId: "@recordingId"});
 
-            var filterUrl = paths.api.routes.audioRecording.filterAbsolute;
+            const filterUrl = paths.api.routes.audioRecording.filterAbsolute;
             var query = QueryBuilder.create(function (q) {
                 return q
                     .sort({orderBy: "createdAt", direction: "desc"})
@@ -35,6 +35,15 @@ angular
                 return $http.post(filterUrl, query.toJSON());
             };
 
+            resource.getRecordingsForLibrary = function (audioRecordingIds) {
+                var query = QueryBuilder.create(q => q
+                        .in("id", audioRecordingIds)
+                        .project({include: ["id", "siteId", "durationSeconds"]}));
+
+                return $http
+                    .post(filterUrl, query.toJSON())
+                    .then( x => AudioRecordingModel.makeFromApi(x));
+            };
             return resource;
         }
     ]

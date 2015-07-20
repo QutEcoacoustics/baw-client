@@ -1,4 +1,7 @@
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
+var bawds = bawds || angular.module('bawApp.directives', [
+        'bawApp.configuration',
+        "bawApp.directives.ui.bootstrap"
+    ]);
 
 
 bawds.directive('bawRecordInformation', function () {
@@ -212,10 +215,20 @@ bawds.directive('bawChecked', ['$parse', function ($parse) {
  */
 bawds.directive('bawTranslateX', function () {
 
-    var transformSupport = Modernizr.csstransforms3d;
-    var transformProperty = 'left';
-    if (transformSupport) {
-        transformProperty = Modernizr.prefixed('transform');
+    function getSupportedTransform() {
+        var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+        var div = document.createElement('div');
+        for(var i = 0; i < prefixes.length; i++) {
+            if(div && div.style[prefixes[i]] !== undefined) {
+                return prefixes[i];
+            }
+        }
+        return false;
+    }
+
+    var transformProperty = getSupportedTransform();
+    if (!transformProperty) {
+        transformProperty = "left";
     }
 
     return {
@@ -231,7 +244,7 @@ bawds.directive('bawTranslateX', function () {
                 element.style[transformProperty] = 'translate3d(' + newValue.toFixed(3) + 'px, 0, 0)';
             }
 
-            var watcher = transformSupport ? transformWatcher : leftWatcher;
+            var watcher = getSupportedTransform() ? transformWatcher : leftWatcher;
 
             scope.$watch(attributes.bawTranslateX, watcher);
         }

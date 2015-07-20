@@ -15,6 +15,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         "baw.models.Media",
         'AudioEvent',
         'Tag',
+        "baw.models.Tag",
         'Taggings',
         'Site',
         'Project',
@@ -50,7 +51,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          */
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,
-            AudioRecording, MediaService, Media, AudioEvent, Tag, Taggings, Site, Project, UserProfile,
+            AudioRecording, MediaService, Media, AudioEvent, Tag, TagModel, Taggings, Site, Project, UserProfile,
             UserProfileEvents, Bookmark, moment) {
 
 
@@ -314,7 +315,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 Tag.query({}, {},
                     function success(value) {
                         value.forEach(function (value) {
-                            $scope.tags.push(baw.Tag.make(value));
+                            $scope.tags.push(TagModel.make(value));
                         });
 
                         $scope.model.audioEvents.forEach(function (value) {

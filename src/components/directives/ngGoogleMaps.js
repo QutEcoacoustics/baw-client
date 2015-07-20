@@ -2,7 +2,7 @@
  * NOTE: this was copied from angular-ui. At some point this file should be deleted.
  */
 
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration']);
+var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration', "bawApp.directives.ui.bootstrap"]);
 
 /* Start map directives */
 /** stolen from angular ui

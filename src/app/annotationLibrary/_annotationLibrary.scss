@@ -1,43 +1,59 @@
 //$loadGifPath: $IMAGE_ASSET_PATH + 'assets/img/load.gif';
 @import "../annotationViewer/annotationViewer";
 
+$item-tile-height: 420px;
+
 /* Library list */
 .annotation-paging {
-  margin: 0 !important;
+  display: inline-block;
+  margin: 0;
+}
+
+.annotation-library-results {
+  & h3 {
+    margin-top: 0;
+    margin-bottom: 1em;
+    vertical-align: middle;
+  }
 }
 
 .annotation-library {
-  margin-top: 30px;
+  margin-top: 0px;
 
   & .library-item {
     padding: 10px 10px 0 40px;
     margin: 5px;
     position: relative;
-    max-height:410px;
-    height:410px;
+    max-height: $item-tile-height;
+    height: $item-tile-height;
     min-width: 180px;
 
     & .library-item-info {
       display: block;
       clear: both;
       margin-top: 20px;
+      min-width: 163px;
 
       & audio {
-        width:75%;
-        min-width:110px;
-        max-width:300px;
-        margin:0 auto 0 auto;
-        display:block;
+        width: 100%;
+        min-width: 50px;
+        //max-width:300px;
+        margin: 0 auto 0 auto;
+        //display:block;
         /*@include vendor-prefix(transform, scale(0.8));*/
       }
 
       & .info-entry {
         font-size: small;
-        display:block;
+        display: block;
         margin: 3px 5px;
         overflow-x: hidden;
-        min-width:110px;
-        max-width:300px;
+        min-width: 110px;
+        max-width: 300px;
+
+        & .glyphicon {
+          margin-right: 0.5em;
+        }
       }
     }
   }
@@ -48,10 +64,14 @@
   padding: 10px 0 0 40px;
   position: relative;
   margin: 0 auto 0 auto;
+}
 
+.audio-wrapper {
+  margin: 30px auto 1em auto;
+  text-align: center;
 
-  & audio {
-    margin-top: 30px;
+  audio {
+    min-width: 300px;
   }
 }
 
@@ -66,17 +86,23 @@
   & .reported-comment {
     color: $gray-lighter;
   }
+
+  & .site-name {
+    padding-left: 2em;
+  }
 }
 
 /* Shared spectrogram and grid  */
 .library-spectrogram {
   @include vendor-prefix(user-select, none);
 
-  display: inline-block;
+  // allows centre alignment, but also self-width-reducing
+  // behaviour of inline-block
+  display: table;
   position: relative;
   line-height: 0;
   padding: 0 !important;
-  margin: 0;
+  margin: 0 auto;
   border: 1px dotted #8c8c8c;
   background: $loadGifPath center center no-repeat;
 
@@ -91,6 +117,14 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+  }
+
+  & .marquee-clipper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    overflow: hidden;
   }
 
   & .library-spectrogram-bounds {

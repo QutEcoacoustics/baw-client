@@ -15,7 +15,8 @@ angular
         "conf.constants",
         "UserProfileEvents",
         "lodash",
-        function ($rootScope, $http, paths, constants, UserProfileEvents, _) {
+        "QueryBuilder",
+        function ($rootScope, $http, paths, constants, UserProfileEvents, _, QueryBuilder) {
             var profileUrl = paths.api.routes.user.profileAbsolute,
                 preferencesUrl = paths.api.routes.user.settingsAbsolute;
 
@@ -49,12 +50,13 @@ angular
 
             exports.profile = null;
 
+            // download asap (async)
             exports.get = $http
                 .get(profileUrl)
                 .then(function success(response) {
                           console.log("User profile loaded");
 
-                          exports.profile = (new baw.UserProfile(response.data,
+                          exports.profile = (new baw.UserProfile(response.data.data,
                                                                  constants.defaultProfile));
                           return exports.profile;
                       }, function error(response) {
@@ -75,8 +77,19 @@ angular
                 });
             };
 
-            // download asap (async)
-            //exports.get();
+            exports.getUsersByIdsForLinking = function (userIds) {
+                var url = paths.api.routes.user.filterAbsolute;
+                var query = QueryBuilder.create(function (q) {
+                    return q
+                        .in("id", userIds)
+                        .project({"include": ["id", "userName"]});
+                });
+                return $http.post(url, query.toJSON());
+            };
+
+
+
+
 
             // return api
             return exports;

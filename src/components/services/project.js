@@ -3,8 +3,8 @@ angular
     .factory(
     "Project",
     [
-        "$resource", "bawResource", "$http", "conf.paths", "$url", "lodash", "QueryBuilder",
-        function ($resource, bawResource, $http, paths, $url, _, QueryBuilder) {
+        "$resource", "bawResource", "$http", "conf.paths", "$url", "lodash", "QueryBuilder", "baw.models.Project",
+        function ($resource, bawResource, $http, paths, $url, _, QueryBuilder, ProjectModel) {
             var resource = bawResource(paths.api.routes.project.showAbsolute,
                 {projectId: "@projectId"});
 
@@ -35,10 +35,12 @@ angular
 
 
                 var query = QueryBuilder.create(function (q) {
-                    return q.in("id", projectIds);
+                    return q.in("id", siteIds);
                 });
 
-                return $http.post(gpbiUrl, query.toJSON());
+                return $http
+                    .post(gpbsiUrl, query.toJSON())
+                    .then( x => ProjectModel.makeFromApi(x));
             };
 
 

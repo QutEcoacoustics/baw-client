@@ -149,7 +149,7 @@ angular
                         return Math.abs(conversions.nyquistFrequency - hertz);
                     },
                     invertPixels: function invertPixels(pixels) {
-                        return Math.abs(conversions.enforcedImageHeight - pixels);
+                        return conversions.enforcedImageHeight - pixels;
                     }
                 };
 

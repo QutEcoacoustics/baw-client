@@ -52,11 +52,11 @@ var app = angular.module('baw',
                              'ngRoute',
                              'ngResource',
                              'ngSanitize',
-                             'ui.utils', /* angular-ui project */
                              //'ui.select2',
                              'ui.bootstrap',
                              'ui.bootstrap.typeahead',
                              'ui.bootstrap.tpls',
+                             'ng-form-group', // connects angular form validation with bootstrap classes
                              'decipher.tags',
                              'angular-growl',
                              'LocalStorageModule',
@@ -84,7 +84,7 @@ var app = angular.module('baw',
 
                              'bawApp.services', /* our services.js    */
 
-                             "baw.models",
+                             "bawApp.models",
 
                              'audio-control',
                              'draggabilly',
@@ -209,13 +209,17 @@ var app = angular.module('baw',
                  localStorageServiceProvider.setPrefix(constants.namespace);
 
                  // for compatibility with rails api
-                 $urlProvider.renamer(function(key) {
+                 $urlProvider.registerRenamer("Server", function(key) {
                      return casingTransformers.underscore(key);
+                 });
+                 $urlProvider.registerRenamer("Client", function(key) {
+                     return casingTransformers.camelize(key);
                  });
 
                  // configure the loader bar
                  // only show bar after waiting for 200ms
                  cfpLoadingBarProvider.latencyThreshold = 200;
+
                  // add a standard way to add ignores to http objects
                  $provide.decorator('cfpLoadingBar', ["$delegate", function ($delegate) {
                      $delegate.ignore = function ($httpConfig) {

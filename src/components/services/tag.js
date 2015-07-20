@@ -8,8 +8,8 @@ angular
     .factory(
     "Tag",
     [
-        '$resource', "bawResource", 'conf.paths', "lodash",
-        function ($resource, bawResource, paths, _) {
+        "$resource", "$http", "bawResource", "conf.paths", "lodash", "baw.models.Tag", "QueryBuilder",
+        function ($resource, $http, bawResource, paths, _, TagModel, QueryBuilder) {
 
             function wrap(resource, method, injection) {
                 var wrappedMethod = resource[method];
@@ -31,16 +31,14 @@ angular
 
             var resource = $resource(bawResource.uriConvert(paths.api.routes.tag.showAbsolute), {tagId: '@tagId'}, {});
 
-            var tags = {};
+            var tagsCache = new Map();
 
             function memoize(result) {
                 if (angular.isArray(result)) {
-                    angular.forEach(result, function (value) {
-                        tags[value.id] = value;
-                    });
+                    result.forEach(value => tagsCache.add(value.id, value));
                 }
                 else {
-                    tags[result.id] = result;
+                    tagsCache.add(result.id, result);
                 }
             }
 
@@ -48,7 +46,7 @@ angular
             wrap(resource, "query", memoize);
 
             resource.resolve = function resolveTag(id) {
-                var tag = tags[id];
+                var tag = tagsCache.get(id);
                 return tag;
             };
 
@@ -99,18 +97,20 @@ angular
 
                 // optimise for most common case
                 // also: on load, only incomplete tags will be listed --> the tag resolver then runs for every tag, just below
-                if (first.typeOfTag == baw.Tag.tagTypes.commonName) {
+                if (first && first.typeOfTag == TagModel.tagTypes.commonName) {
                     return first;
                 }
                 else {
                     var commonName, speciesName, firstOther;
                     tags.forEach(function (value) {
+                        if (!value) {
+                            return;
+                        }
 
-
-                        if (value.typeOfTag == baw.Tag.tagTypes.commonName && !commonName) {
+                        if (value.typeOfTag == TagModel.tagTypes.commonName && !commonName) {
                             commonName = value;
                         }
-                        if (value.typeOfTag == baw.Tag.tagTypes.speciesName && !speciesName) {
+                        if (value.typeOfTag == TagModel.tagTypes.speciesName && !speciesName) {
                             speciesName = value;
                         }
                         if (!firstOther) {
@@ -118,8 +118,18 @@ angular
                         }
                     });
 
-                    return commonName || speciesName || firstOther;
+                    return commonName || speciesName || firstOther || emptyTag;
                 }
+            };
+
+
+            resource.getTagsByAudioIds = function (audioEventIds) {
+                var url = paths.api.routes.tag.filterAbsolute;
+                var query = QueryBuilder.create(function (q) {
+                   return q.in("audioEvents.id", audioEventIds);
+                });
+
+                return $http.post(url, query.toJSON()).then( x => TagModel.makeFromApi(x));
             };
 
             return resource;
