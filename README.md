@@ -7,25 +7,17 @@ The AngularJS client for the bioacoustic workbench
 ---
 ## Install instructions
 
-Normally this would work:
-	$ npm -g install grunt-cli karma bower
+`npm` is required.
 
-Specific version of karma due to dependency issues.
-Temporary fix:
-    $ npm install -g karma@0.10.10
-    $ npm -g install grunt-cli karma bower
-	
-cd to your cloned directory and then install `npm` and `bower` modules.
+Run:
 
-	$ npm i -g karma@0.10.10
-
-	$ npm install
-
-	$ bower install
+    $ npm run setup
+    
+This will execute `npm install` and `bower install` to install build and vendor dependencies respectively.
 
 ## To develop:
 
-	$ grunt watch
+	$ npm run watch
 
 and browse to the karma tab first `localhost:<port>` (see output for port number), then `localhost:8080` after the karma unit tests have run.
 
@@ -37,9 +29,9 @@ You'll need to configure `build.config.js` when adding any new grunt packages to
 
 ## To build:
 
-	$ grunt
+	$ npm run build
 
-and copy the artefacts from the `/bin` directory.
+and copy the artifacts from the `/bin` directory.
 
 
 The `grunt` runner will accept three build options that will rewrite important variables.
