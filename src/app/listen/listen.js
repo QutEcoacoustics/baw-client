@@ -9,6 +9,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
         'conf.paths',
         'conf.constants',
         '$url',
+        "lodash",
         'ngAudioEvents',
         'AudioRecording',
         'Media',
@@ -50,7 +51,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
          * @param moment
          */
             function ListenCtrl(
-            $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, ngAudioEvents,
+            $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, _, ngAudioEvents,
             AudioRecording, MediaService, Media, AudioEvent, Tag, TagModel, Taggings, Site, Project, UserProfile,
             UserProfileEvents, Bookmark, moment) {
 
@@ -535,15 +536,43 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     tagTemplateUrl: "/templates/tags.html"
                 };
 
+                var hackIndexOf = function hackIndexOf(event) {
+                    // do hyper hacky hack to fix dodgy ass library
+                    // see: https://github.com/QutBioacoustics/baw-client/issues/227
+                    event.targetScope.srcTags.indexOf = function myOwnHackyIndexOf(item) {
+                        if (item.name) {
+                            return this.findIndex(c => c.text == item.name);
+                        }
+                        else {
+                            // revert back to the standard implementation
+                            return Array.prototype.indexOf.call(this, item);
+                        }
+                    };
+                };
+
+                var hackyCleaningOfFakeTags = function(arr) {
+                    arr.forEach(function(current, index) {
+                        if (!(current instanceof TagModel)) {
+                            var real = $scope.tags.find(c => c.text == current.name);
+                            arr[index] = real;
+                        }
+                    });
+                };
+
                 $scope.$on('decipher.tags.initialized', function (event) {
                     event.stopPropagation();
+
+                    hackIndexOf(event);
+
                     console.debug('decipher.tags.initialized', arguments);
                 });
                 $scope.$on('decipher.tags.keyup', function (event) {
+                    hackIndexOf(event);
                     event.stopPropagation();
                     console.debug('decipher.tags.keyup', arguments);
                 });
                 $scope.$on('decipher.tags.added', function (event, addedTag) {
+                    hackIndexOf(event);
                     event.stopPropagation();
                     console.debug('decipher.tags.added', arguments);
 
@@ -554,12 +583,21 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     var index = $scope.model.selectedAudioEvent.tags.length; //.indexOf(addedTag.tag);
 
+                    // HACK: find a proper tag when the tag is fake tag
+                    if (!addedTag.tag.id) {
+                        var actualTagIndex = $scope.tags.findIndex(c => c.text == addedTag.tag.name);
+                        addedTag.tag = $scope.tags[actualTagIndex];
+                        // MORE HACKS! repair its cache of deleted fake tags as well
+                        hackyCleaningOfFakeTags(event.targetScope._deletedSrcTags);
+                        hackyCleaningOfFakeTags(event.targetScope.tags);
+                    }
 
                     Taggings.save(taggingParameters, {tagId: addedTag.tag.id},
                         function success(value, headers) {
 
                             // possible race condition: may no longer may be selected after async
                             $scope.model.selectedAudioEvent.taggings[index] = new baw.Tagging(value);
+                            $scope.model.selectedAudioEvent.tags[index] = addedTag.tag;
 
                             console.assert(
                                 $scope.model.selectedAudioEvent.tags.length ==
@@ -573,10 +611,12 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         });
                 });
                 $scope.$on('decipher.tags.addfailed', function (event) {
+                    hackIndexOf(event);
                     event.stopPropagation();
                     console.debug('decipher.tags.addfailed', arguments);
                 });
                 $scope.$on('decipher.tags.removed', function (event, removedTag) {
+                    hackIndexOf(event);
                     event.stopPropagation();
                     console.debug('decipher.tags.removed', arguments);
 

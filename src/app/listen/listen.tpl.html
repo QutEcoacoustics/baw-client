@@ -100,7 +100,8 @@
 
         </div>
 
-        <volume-control model="model.audioElement" class="input-group btn-group"></volume-control>
+        <!-- form-group form-group-without-feedback required here due to a bug with ngFormGroup -->
+        <volume-control model="model.audioElement" class="input-group btn-group form-group form-group-without-feedback"></volume-control>
 
         <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle" title="Enable/disable autoplay" >
             <toggle-switch-state switch-state="on">
