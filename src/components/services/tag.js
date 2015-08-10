@@ -35,10 +35,10 @@ angular
 
             function memoize(result) {
                 if (angular.isArray(result)) {
-                    result.forEach(value => tagsCache.add(value.id, value));
+                    result.forEach(value => tagsCache.set(value.id, value));
                 }
                 else {
-                    tagsCache.add(result.id, result);
+                    tagsCache.set(result.id, result);
                 }
             }
 

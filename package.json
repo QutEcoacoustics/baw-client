@@ -48,7 +48,7 @@
     "watch": "grunt watch",
     "build": "grunt",
     "setup": "npm install && bower install",
-    "start": "npm run build",
+    "start": "npm run watch",
     "test": "npm run build"
   },
   "private": true,
