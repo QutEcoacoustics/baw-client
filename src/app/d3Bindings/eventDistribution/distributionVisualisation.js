@@ -11,12 +11,12 @@ angular
     .service(
     "DistributionVisualisation",
     [
+        "$location",
+        "$rootScope",
         "d3",
         "roundDate",
         "TimeAxis",
-        "$url",
-        "conf.paths",
-        function (d3, roundDate, TimeAxis, $url, paths) {
+        function ($location, $rootScope, d3, roundDate, TimeAxis) {
             return function DistributionVisualisation(target, data, dataFunctions, uniqueId) {
                 // variables
                 var self = this,
@@ -27,6 +27,17 @@ angular
                     tilesBackground = main.select(".tilesBackground"),
                     datasetBoundsRect = main.select(".datasetBounds"),
                     tilesGroup = main.select(".tiles"),
+                    focusGroup = main.select(".focusGroup"),
+                    focusTextGroup = focusGroup.select(".focusTextGroup"),
+                    focusLine = focusGroup.select(".focusLine"),
+                    focusStem = focusGroup.select(".focusStem"),
+                    focusAnchor = focusGroup.select(".focusAnchor"),
+                    focusText = focusGroup.select(".focusText"),
+                    focusStemPath = {
+                        width: 100,
+                        stems: 4,
+                        root: 8
+                    },
                     tilesClipRect,
 
                     tileSizePixels = 60,
@@ -38,7 +49,8 @@ angular
                     tilesWidth = 1440,
                 // 86400 seconds
                     oneDay = 60 * 60 * 24,
-
+                // round to nearest 30 seconds for navigation urls
+                    navigationOffsetRounding = 30,
 
                 // seconds per pixel
                     resolution = updateResolution(),
@@ -52,7 +64,7 @@ angular
                     yAxisGroup,
                     yAxisWidth = 52,
                     margin = {
-                        top: 13,
+                        top: 23,
                         right: 0,
                         left: 120 /* yAxisWidth*/,
                         bottom: 0 + xAxisHeight
@@ -62,6 +74,8 @@ angular
                     visibleTiles = [],
                     failedImages = new Set(),
                     successfulImages = new Set();
+
+                const timeFormatter = d3.time.format("%H:%M:%S");
 
                 // exports
                 self.items = [];
@@ -156,6 +170,9 @@ angular
                         tilesClipRect.attr(attrs);
                     }
 
+                    focusLine.attr("height", tilesHeight + focusStemPath.root);
+                    focusTextGroup.translate(() => [0, -(focusStemPath.root + focusStemPath.stems)]);
+
                     // update the controller with the visible tilesWidth
                     dataFunctions.visualisationDurationUpdate(self.visibleDuration);
                 }
@@ -178,7 +195,7 @@ angular
 
                 function generateTiles() {
                     if (self.items && self.items.length > 0) {
-                        // need to generate a series of tiles that can show the data in that.items
+                        // need to generate a series of tiles that can show the data in self.items
                         self.items.forEach(function (current) {
                             // warning: to future self: this is creating cyclic references
                             // as each tile keeps a reference to current
@@ -188,11 +205,11 @@ angular
                 }
 
                 function filterTiles(visibleExtent, category) {
-                    var filterPadding = tileSizeSeconds * 1000;
+                    var filterPaddingMs = tileSizeSeconds * 1000;
                     // item filter
                     // pad the filtering extent with tileSize so that recordings that have
                     // duration < tileSize aren't filtered out prematurely
-                    var fExtent = [(+visibleExtent[0]) - filterPadding, (+visibleExtent[1]) + filterPadding],
+                    var fExtent = [(+visibleExtent[0]) - filterPaddingMs, (+visibleExtent[1]) + filterPaddingMs],
                         f = isItemVisible.bind(null, fExtent),
                         g = isInCategory.bind(null, category),
                         h = and.bind(null, g, f);
@@ -228,6 +245,8 @@ angular
 
                     tilesGroup.clipPath("url(#" + clipId + ")");
 
+                    tilesGroup.on("click", navigateToAudio);
+
                     xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeight], isVisible: false});
                     yAxis = d3.svg.axis()
                         .scale(yScale)
@@ -242,61 +261,78 @@ angular
                     updateElements();
                 }
 
+                //<editor-fold desc="Description">
+                function tileGTranslation(d, i) {
+                    return [getTileLeft(d, i), 0];
+                }
+
+                function checkImage(d) {
+                    // check if the image has been successfully downloaded before
+                    // if it has not, do not set
+                    // if it has, then set
+                    // otherwise, set for first time and try!
+                    if (failedImages.has(d.tileImageUrl)) {
+                        return null;
+                    } else {
+                        return d.tileImageUrl;
+                    }
+                }
+
+                function imageLoadError(d, index) {
+                    //console.error("SVG image error", arguments);
+                    var target = d3.select(d3.event.target);
+
+                    // remove the href from the image
+                    target.attr("xlink:href", null);
+
+                    // record failure so we don't try and DL image again
+                    failedImages.add(d.tileImageUrl);
+                }
+
+                function imageLoadSuccess(d) {
+                    //console.info("SVG image success", arguments);
+                    if (successfulImages.has(d.tileImageUrl)) {
+                        return;
+                    }
+
+                    // if successful, remove text (and let bg color through)
+                    var target = d3.event.target,
+                        siblings = target.parentNode.childNodes;
+
+                    Array.from(siblings).forEach(function (node, index) {
+                        if (!(node instanceof SVGImageElement)) {
+                            node.remove();
+                        }
+                    });
+
+                    // record success so we can optimise tile creation in the future
+                    successfulImages.add(d.tileImageUrl);
+                }
+
+                function tileKey(d) {
+                    return d.key;
+                }
+                //</editor-fold>
+
                 function updateElements() {
                     var imageAttrs = {
                         height: tilesHeight,
                         width: tileSizePixels
                     };
 
-                    function tileGTranslation(d, i) {
-                        return [getTileLeft(d, i), 0];
-                    }
-
-                    function checkImage(d) {
-                        // check if the image has been successfully downloaded before
-                        // if it has not, do not set
-                        // if it has, then set
-                        // otherwise, set for first time and try!
-                        if (failedImages.has(d.tileImageUrl)) {
-                            return null;
-                        } else {
-                            return d.tileImageUrl;
-                        }
-                    }
-
-                    function imageLoadError(d, index) {
-                        //console.error("SVG image error", arguments);
-                        var target = d3.select(d3.event.target);
-
-                        // remove the href from the image
-                        target.attr("xlink:href", null);
-
-                        // record failure so we don't try and DL image again
-                        failedImages.add(d.tileImageUrl);
-                    }
-
-                    function imageLoadSuccess(d) {
-                        //console.info("SVG image success", arguments);
-                        if (successfulImages.has(d.tileImageUrl)) {
-                            return;
+                    // reposition
+                    focusGroup.translate(() => [xScale(self.middle), 0]);
+                    let {url, roundedDate} = isNavigatable(self.middle);
+                    focusText.text(() => {
+                        if (self.middle) {
+                            return "Go to " + timeFormatter(roundedDate);
                         }
 
-                        // if successful, remove text (and let bg color through)
-                        var target = d3.event.target,
-                            siblings = target.parentNode.childNodes;
-                        Array.from(siblings).forEach(function (node, index) {
-                            if (!(node instanceof SVGImageElement)) {
-                                node.remove();
-                            }
-                        });
-
-                        // record success so we can optimise tile creation in the future
-                        successfulImages.add(d.tileImageUrl);
-                    }
-
-                    function tileKey(d) {
-                        return d.key;
-                    }
+                        return "";
+                    });
+                    focusAnchor.attr("xlink:href", url);
+                    focusAnchor.classed("disabled", !url);
+                    focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
 
                     // create data join
                     var tileElements = tilesGroup.selectAll(".tile")
@@ -311,11 +347,7 @@ angular
                     var newTileElements = tileElements.enter()
                         .append("g")
                         .translate(tileGTranslation)
-                        .classed("tile", true)
-                        .append("a")
-                        .attr("xlink:href", function (d, i) {
-                            return d.audioNavigationUrl;
-                        });
+                        .classed("tile", true);
 
                     // optimize: if we've successfully downloaded a tile before
                     // then we don't need these placeholder tiles
@@ -415,6 +447,32 @@ angular
                         d.offsetEnd >= visibleExtent[0];
                 }
 
+                function isNavigatable(clickDate) {
+                    let roundedDate = roundDate.round(navigationOffsetRounding, clickDate),
+                        // plus one to cheat the system
+                        // - the range should be valid, i.e. not zero width
+                        searchRange = [roundedDate, +roundedDate + 1];
+
+                    // reuse filtering method but don't allow for padding
+                    var matchedTiles = visibleTiles.filter((tile) => isTileVisible(searchRange, tile));
+
+                    var url;
+                    if (matchedTiles.length) {
+                        // the source item that owns the tile
+                        let itemFound = matchedTiles.find(tile => {
+                            return isItemVisible(searchRange, tile.source);
+                        });
+
+                        // the tile could still be outside of the item's actual range
+                        // (as tiles are absolutely aligned and pad out items)
+                        if (itemFound) {
+                            url = getNavigateUrl(itemFound.source, roundedDate);
+                        }
+                    }
+
+                    return {url, roundedDate};
+                }
+
                 function splitIntoTiles(current, i) {
                     // coerce just in case (d3 does this internally)
                     var low = new Date(dataFunctions.getLow(current)),
@@ -435,7 +493,7 @@ angular
                             offsetEnd: nextOffset,
                             source: current,
                             key: offset.toISOString() + dataFunctions.getId(current),
-                            audioNavigationUrl: getNavigateToAudioUrl(current, offset),
+                            audioNavigationUrl: getNavigateUrl(current, offset),
                             tileImageUrl: ""
                         };
                         item.tileImageUrl = getTileImage(item);
@@ -446,24 +504,26 @@ angular
                     return steps;
                 }
 
-                function getNavigateToAudioUrl(source, tileStart) {
+                function navigateToAudio() {
+                    var coordinates = d3.mouse(tilesGroup.node()),
+                        clickDate = xScale.invert(coordinates[0]);
 
-                    var ar = source,
-                        id = ar.id,
-                        startOffset = (tileStart - ar.recordedDate) / 1000;
+                    // now see if there is a match for the date!
+                    var {url, roundedDate} = isNavigatable(clickDate);
 
-                    // do not allow negative indexing!
-                    if (startOffset < 0) {
-                        startOffset = 0;
+                    if (url) {
+                        console.warn(
+                            "DistributionVisualisation:TilesGroup:Click: Navigating to ",
+                            url,
+                            new Date(clickDate));
+                        $location.url(url);
+                        $rootScope.$apply();
                     }
-
-                    // intentionally not specifying an end offset - let the listen page decide
-                    return $url.formatUri(paths.site.ngRoutes.listen,
-                        {
-                            recordingId: id,
-                            start: startOffset
-                        });
-
+                    else {
+                        console.error(
+                            "DistributionVisualisation:TilesGroup:Click: Navigation failed",
+                            new Date(clickDate));
+                    }
                 }
 
                 function getTileLeft(d, i) {
@@ -476,6 +536,22 @@ angular
 
                 function getOffsetTime(d) {
                     return d.offset.toLocaleTimeString();
+                }
+
+                function getNavigateUrl(d, offset) {
+                    var url = dataFunctions.getNavigateUrl(
+                        offset,
+                        self.category,
+                        tileSizeSeconds,
+                        tileSizePixels,
+                        d
+                    );
+
+                    if (url) {
+                        return url;
+                    }
+
+                    return;
                 }
 
                 function getTileImage(d) {
@@ -502,6 +578,14 @@ angular
                     return tileA.offset - tileB.offset;
                 }
 
+                function getFocusStemPath(width) {
+                    let w = Math.round(width || focusStemPath.width) + focusStemPath.stems,
+                        hw = w / 2.0,
+                        s = focusStemPath.stems,
+                        r = focusStemPath.root;
+
+                    return `m-${hw} 0 l0 ${s} l${w} 0 l0 -${s} m-${hw} ${s} l0 ${r}`
+                }
             };
         }
     ]

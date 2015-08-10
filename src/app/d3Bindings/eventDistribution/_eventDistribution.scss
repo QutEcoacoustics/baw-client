@@ -178,6 +178,35 @@ event-distribution-visualisation {
       }
 
     }
+
+    .focusGroup {
+      text-anchor: middle;
+      shape-rendering: crispEdges;
+
+      .focusLine {
+        fill: $visualization-brush-stroke;
+      }
+
+      .focusTextGroup {
+
+        & path {
+          fill: none;
+          stroke-width: 1px;
+          stroke: $visualization-brush-stroke;
+        }
+      }
+
+      .focusAnchor.disabled {
+        pointer-events: none;
+      }
+      .focusText {
+        fill: $text-muted;
+      }
+      .focusAnchor[*|href] > .focusText {
+        fill: $link-color;
+      }
+
+    }
   }
 
   dl {

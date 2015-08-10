@@ -49,6 +49,8 @@ module.exports = function (grunt) {
         production = grunt.option('production') === true,
         sumBuildOptions = development + staging + production;
 
+    grunt.log.writeln("FLAGS::\n", grunt.option.flags());
+
     // if none set, set default to prod
     if (sumBuildOptions === 0) {
         if (grunt.cli.tasks && grunt.cli.tasks.length > 0) {

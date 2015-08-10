@@ -9,6 +9,7 @@ angular
         "$q",
         "lodash",
         "moment",
+        "$url",
         "conf.paths",
         "conf.constants",
         "Project",
@@ -16,7 +17,7 @@ angular
         "AudioRecording",
         "AnalysisResultFile",
         "UserProfile",
-        function ($scope, $routeParams, $http, $q, _, moment,
+        function ($scope, $routeParams, $http, $q, _, moment, $url,
                   paths, constants, Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
 
             var sitesMap = {};
@@ -106,11 +107,29 @@ angular
                     getText: function (d) {
                         return d.id;
                     },
-                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum) {
+                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, tileDatum) {
 
-                        var url = AnalysisResultFile.getLongDurationImageTile(datum.source, date, 60);
+                        var url = AnalysisResultFile.getLongDurationImageTile(tileDatum.source, date, 60);
 
                         return url;
+                    },
+                    getNavigateUrl: function(date, category, tileSizeSeconds, tileSizePixels, itemDatum) {
+
+                        var ar = itemDatum,
+                            id = ar.id,
+                            startOffset = (date - ar.recordedDate) / 1000;
+
+                        // do not allow negative indexing!
+                        if (startOffset < 0) {
+                            startOffset = 0;
+                        }
+
+                        // intentionally not specifying an end offset - let the listen page decide
+                        return $url.formatUri(paths.site.ngRoutes.listen,
+                            {
+                                recordingId: id,
+                                start: startOffset
+                            });
                     }
                 }
             };
