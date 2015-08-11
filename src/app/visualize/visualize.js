@@ -66,7 +66,7 @@ angular
             $scope.$watch(function() {
                 return $scope.showOverview;
             }, function (newValue) {
-               if (UserProfile.profile && newValue != UserProfile.profile.preferences.visualize.showTemporalContext) {
+               if (UserProfile.profile && newValue !== UserProfile.profile.preferences.visualize.showTemporalContext) {
                    UserProfile.profile.preferences.visualize.showTemporalContext = newValue;
 
                    UserProfile.updatePreferences();

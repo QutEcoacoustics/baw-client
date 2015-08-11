@@ -1,28 +1,28 @@
-angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
+angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
 
-    .controller('ListenCtrl', ['$scope',
-        '$resource',
-        '$location',
-        '$routeParams',
-        '$route',
-        '$q',
-        'conf.paths',
-        'conf.constants',
-        '$url',
+    .controller("ListenCtrl", ["$scope",
+        "$resource",
+        "$location",
+        "$routeParams",
+        "$route",
+        "$q",
+        "conf.paths",
+        "conf.constants",
+        "$url",
         "lodash",
-        'ngAudioEvents',
-        'AudioRecording',
-        'Media',
+        "ngAudioEvents",
+        "AudioRecording",
+        "Media",
         "baw.models.Media",
-        'AudioEvent',
-        'Tag',
+        "AudioEvent",
+        "Tag",
         "baw.models.Tag",
-        'Taggings',
-        'Site',
-        'Project',
-        'UserProfile',
-        'UserProfileEvents',
-        'Bookmark',
+        "Taggings",
+        "Site",
+        "Project",
+        "UserProfile",
+        "UserProfileEvents",
+        "Bookmark",
         "moment",
         /**
          * The listen controller.
@@ -140,8 +140,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 });
 
                 // update urls on login events
-                $scope.$on('event:auth-loginRequired', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
-                $scope.$on('event:auth-loginConfirmed', function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
+                $scope.$on("event:auth-loginRequired", function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
+                $scope.$on("event:auth-loginConfirmed", function(){ if($scope.model.media) {$scope.model.media.formatPaths();} });
 
                 var media = MediaService
                     .get(
@@ -155,8 +155,8 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         $scope.model.media = new Media(value.data);
 
                         var // moment works by reference - need to parse the date twice - sigh
-                            absoluteStartChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.startOffset), 's'),
-                            absoluteEndChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.endOffset), 's');
+                            absoluteStartChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.startOffset), "s"),
+                            absoluteEndChunk = moment($scope.model.media.recordedDate).add(parseFloat($scope.model.media.endOffset), "s");
 
                         $scope.startOffsetAbsolute = absoluteStartChunk.format("HH:mm:ss");
                         $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
@@ -349,7 +349,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     if (!$scope.model.audioRecording) {
                         return undefined;
                     }
-                    return moment($scope.model.audioRecording.recordedDate).add($scope.model.audioRecording.durationSeconds, 's').format("YYYY-MMM-DD, HH:mm:ss");
+                    return moment($scope.model.audioRecording.recordedDate).add($scope.model.audioRecording.durationSeconds, "s").format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 
@@ -388,7 +388,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     var baseDate = moment($scope.model.media.recordedDate),
                         recordingOffset = parseFloat($scope.model.media.startOffset),
-                        absolute = baseDate.add('s', recordingOffset + chunkOffset);
+                        absolute = baseDate.add("s", recordingOffset + chunkOffset);
 
                     return absolute.format("HH:mm:ss.SSS");
                 };
@@ -408,7 +408,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                         return undefined;
                     }
 
-                    return moment($scope.model.media.recordedDate).add($scope.jumpToMinute, 'm').format("YYYY-MMM-DD, HH:mm:ss");
+                    return moment($scope.model.media.recordedDate).add($scope.jumpToMinute, "m").format("YYYY-MMM-DD, HH:mm:ss");
                 };
 
 
@@ -541,7 +541,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     // see: https://github.com/QutBioacoustics/baw-client/issues/227
                     event.targetScope.srcTags.indexOf = function myOwnHackyIndexOf(item) {
                         if (item.name) {
-                            return this.findIndex(c => c.text == item.name);
+                            return this.findIndex(c => c.text === item.name);
                         }
                         else {
                             // revert back to the standard implementation
@@ -553,28 +553,28 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                 var hackyCleaningOfFakeTags = function(arr) {
                     arr.forEach(function(current, index) {
                         if (!(current instanceof TagModel)) {
-                            var real = $scope.tags.find(c => c.text == current.name);
+                            var real = $scope.tags.find(c => c.text === current.name);
                             arr[index] = real;
                         }
                     });
                 };
 
-                $scope.$on('decipher.tags.initialized', function (event) {
+                $scope.$on("decipher.tags.initialized", function (event) {
                     event.stopPropagation();
 
                     hackIndexOf(event);
 
-                    console.debug('decipher.tags.initialized', arguments);
+                    console.debug("decipher.tags.initialized", arguments);
                 });
-                $scope.$on('decipher.tags.keyup', function (event) {
+                $scope.$on("decipher.tags.keyup", function (event) {
                     hackIndexOf(event);
                     event.stopPropagation();
-                    console.debug('decipher.tags.keyup', arguments);
+                    console.debug("decipher.tags.keyup", arguments);
                 });
-                $scope.$on('decipher.tags.added', function (event, addedTag) {
+                $scope.$on("decipher.tags.added", function (event, addedTag) {
                     hackIndexOf(event);
                     event.stopPropagation();
-                    console.debug('decipher.tags.added', arguments);
+                    console.debug("decipher.tags.added", arguments);
 
                     var taggingParameters = {
                         recordingId: recordingId,
@@ -585,7 +585,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
 
                     // HACK: find a proper tag when the tag is fake tag
                     if (!addedTag.tag.id) {
-                        var actualTagIndex = $scope.tags.findIndex(c => c.text == addedTag.tag.name);
+                        var actualTagIndex = $scope.tags.findIndex(c => c.text === addedTag.tag.name);
                         addedTag.tag = $scope.tags[actualTagIndex];
                         // MORE HACKS! repair its cache of deleted fake tags as well
                         hackyCleaningOfFakeTags(event.targetScope._deletedSrcTags);
@@ -600,7 +600,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                             $scope.model.selectedAudioEvent.tags[index] = addedTag.tag;
 
                             console.assert(
-                                $scope.model.selectedAudioEvent.tags.length ==
+                                $scope.model.selectedAudioEvent.tags.length ===
                                     $scope.model.selectedAudioEvent.taggings.length,
                                 "The taggings array and tags array are out of sync, this is bad");
 
@@ -610,18 +610,18 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                             console.error("Tagging creation failed", response);
                         });
                 });
-                $scope.$on('decipher.tags.addfailed', function (event) {
+                $scope.$on("decipher.tags.addfailed", function (event) {
                     hackIndexOf(event);
                     event.stopPropagation();
-                    console.debug('decipher.tags.addfailed', arguments);
+                    console.debug("decipher.tags.addfailed", arguments);
                 });
-                $scope.$on('decipher.tags.removed', function (event, removedTag) {
+                $scope.$on("decipher.tags.removed", function (event, removedTag) {
                     hackIndexOf(event);
                     event.stopPropagation();
-                    console.debug('decipher.tags.removed', arguments);
+                    console.debug("decipher.tags.removed", arguments);
 
                     var index = _.findIndex($scope.model.selectedAudioEvent.taggings, function (value) {
-                        return value.tagId = removedTag.tag.id;
+                        return value.tagId === removedTag.tag.id;
                     });
                     var oldTagging = $scope.model.selectedAudioEvent.taggings[index];
 
@@ -632,7 +632,7 @@ angular.module('bawApp.listen', ['decipher.tags', 'ui.bootstrap.typeahead'])
                     };
 
                     console.assert(
-                        $scope.model.selectedAudioEvent.tags.length ==
+                        $scope.model.selectedAudioEvent.tags.length ===
                             $scope.model.selectedAudioEvent.taggings.length,
                         "The taggings array and tags array are out of sync, this is bad");
 

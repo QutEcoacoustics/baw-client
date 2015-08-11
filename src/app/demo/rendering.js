@@ -23,7 +23,7 @@ angular.module("bawApp.demo.rendering", [])
             ];
             $scope.render = function () {
                 console.log("loading csv");
-                renderStart = performance.now();
+                renderStart = window.performance.now();
                 var requests = csvFiles.map(function (path) {
                     return $http.get(path);
                 });
@@ -38,7 +38,7 @@ angular.module("bawApp.demo.rendering", [])
             var renderStart, parseStart, paintStart, contentLength;
             function parseCsv(responses) {
                 console.log("parsing csv", renderStart);
-                parseStart = performance.now();
+                parseStart = window.performance.now();
                 contentLength = 0;
                 var data = responses.map(function (response) {
                     contentLength += (+response.headers("content-length"));
@@ -50,7 +50,7 @@ angular.module("bawApp.demo.rendering", [])
 
             function renderCsv(data) {
                 console.log("rendering csv");
-                paintStart = performance.now();
+                paintStart = window.performance.now();
 
                 // ALL OF THIS DIRECT CANVAS MANIPULATION
                 // SHOULD BE REFACTORED INTO A DIRECTIVE!
@@ -68,7 +68,7 @@ angular.module("bawApp.demo.rendering", [])
                 canvas.width = 1440;
                 canvas.height = height;
 
-                var context = canvas.getContext('2d'),
+                var context = canvas.getContext("2d"),
                     imageData = context.getImageData(0, 0, width, height),
                     imgData = imageData.data;
 
@@ -109,8 +109,8 @@ angular.module("bawApp.demo.rendering", [])
                 }
 
                 context.putImageData(imageData, 0, 0);
-                console.debug("Done", performance.now());
-                var end = performance.now();
+                console.debug("Done", window.performance.now());
+                var end = window.performance.now();
                 $scope.transferTime = Math.round(parseStart - renderStart);
                 $scope.parseTime = Math.round(paintStart - parseStart);
                 $scope.paintTime = Math.round(end - paintStart);
@@ -138,7 +138,7 @@ angular.module("bawApp.demo.rendering", [])
             //. "C:\Program Files\ImageMagick-6.9.0-Q16\convert.exe" -crop 1435x1@ .\eabad986-56d9-47b5-bec6-47458ffd3eae_101023-0000.ACI-ENT-EVN-trimmed72.png  tiles/tile_%d.png
             $scope.loadTiles60 = function () {
                 $scope.tiles60 = [];
-                tileStart = performance.now();
+                tileStart = window.performance.now();
                 for (var i = min60; i < max60; i++) {
                     // i == minute of day
                     if (i % 60) {
@@ -150,17 +150,17 @@ angular.module("bawApp.demo.rendering", [])
             $scope.increment = function() {
                 tileCount++;
                 if (tileCount >= 24) {
-                    $scope.tileLoadTime = Math.round(performance.now() - tileStart);
+                    $scope.tileLoadTime = Math.round(window.performance.now() - tileStart);
                 }
             };
 
         }
     ]
-).directive('onLoad', function() {
+).directive("onLoad", function() {
         return {
-            restrict: 'A',
+            restrict: "A",
             link: function(scope, element, attrs) {
-                element.bind('load', function() {
+                element.bind("load", function() {
                     //call the function that was passed
                     scope.$apply(attrs.onLoad);
                 });

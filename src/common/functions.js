@@ -32,7 +32,7 @@ Math.randomInt = function getRandomInt(min, max) {
 
 Math.isInt = function isInt(value) {
     return !isNaN(value) &&
-    parseInt(Number(value)) == value &&
+    parseInt(Number(value)) === value &&
     !isNaN(parseInt(value, 10));
 };
 
@@ -50,39 +50,39 @@ Math.isInt = function isInt(value) {
      */
     function decimalAdjust(type, value, exp) {
         // If the exp is undefined or zero...
-        if (typeof exp === 'undefined' || +exp === 0) {
+        if (typeof exp === "undefined" || +exp === 0) {
             return Math[type](value);
         }
         value = +value;
         exp = +exp;
         // If the value is not a number or the exp is not an integer...
-        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+        if (isNaN(value) || !(typeof exp === "number" && exp % 1 === 0)) {
             return NaN;
         }
         // Shift
-        value = value.toString().split('e');
-        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        value = value.toString().split("e");
+        value = Math[type](+(value[0] + "e" + (value[1] ? (+value[1] - exp) : -exp)));
         // Shift back
-        value = value.toString().split('e');
-        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+        value = value.toString().split("e");
+        return +(value[0] + "e" + (value[1] ? (+value[1] + exp) : exp));
     }
 
     // Decimal round
     if (!Math.round10) {
         Math.round10 = function(value, exp) {
-            return decimalAdjust('round', value, exp);
+            return decimalAdjust("round", value, exp);
         };
     }
     // Decimal floor
     if (!Math.floor10) {
         Math.floor10 = function(value, exp) {
-            return decimalAdjust('floor', value, exp);
+            return decimalAdjust("floor", value, exp);
         };
     }
     // Decimal ceil
     if (!Math.ceil10) {
         Math.ceil10 = function(value, exp) {
-            return decimalAdjust('ceil', value, exp);
+            return decimalAdjust("ceil", value, exp);
         };
     }
 
@@ -93,7 +93,7 @@ Math.isInt = function isInt(value) {
  * IndexOf Shim
  */
 if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (what, i) {
+    Array.prototype.indexOf = function (what, i) { // jshint ignore:line
         i = i || 0;
         var L = this.length;
         while (i < L) {
@@ -112,7 +112,7 @@ if (!Array.prototype.indexOf) {
  */
 
 if (!Array.prototype.filter) {
-    Array.prototype.filter = function (fun /*, thisp */) {
+    Array.prototype.filter = function (fun /*, thisp */) { // jshint ignore:line
         "use strict";
 
         if (this == null) {
@@ -120,8 +120,8 @@ if (!Array.prototype.filter) {
         }
 
         var t = Object(this);
-        var len = t.length >>> 0;
-        if (typeof fun != "function") {
+        var len = t.length >>> 0; // jshint ignore:line
+        if (typeof fun !== "function") {
             throw new TypeError();
         }
 
@@ -156,11 +156,11 @@ if (!Array.prototype.filter) {
 (function requestAnimationFramePolyfill() {
     var
         lastTime = 0,
-        vendors = ['ms', 'moz', 'webkit', 'o'];
+        vendors = ["ms", "moz", "webkit", "o"];
 
     for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+        window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
+        window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || window[vendors[x] + "CancelRequestAnimationFrame"];
     }
 
     if (!window.requestAnimationFrame) {
@@ -198,7 +198,7 @@ if (!Array.prototype.filter) {
         var i, j, t;
         for (i = 1; i < list.length; i++) {
             j = Math.floor(Math.random() * (1 + i));  // choose j in [0..i]
-            if (j != i) {
+            if (j !== i) {
                 t = list[i];                        // swap list[i] and list[j]
                 list[i] = list[j];
                 list[j] = t;
@@ -243,7 +243,7 @@ if (!Array.prototype.filter) {
 
         var output = number.toString();
         if (!paddingCharacter) {
-            paddingCharacter = '0';
+            paddingCharacter = "0";
         }
         while (padLoop < paddingDigits) {
             padLoop++;
@@ -256,8 +256,8 @@ if (!Array.prototype.filter) {
     baw.stringTrunc = function (str, n, useWordBoundary) {
         var toLong = str.length > n,
             s_ = toLong ? str.substr(0, n - 1) : str;
-        s_ = useWordBoundary && toLong ? s_.substr(0, s_.lastIndexOf(' ')) : s_;
-        return  toLong ? s_ + '&hellip;' : s_;
+        s_ = useWordBoundary && toLong ? s_.substr(0, s_.lastIndexOf(" ")) : s_;
+        return  toLong ? s_ + "&hellip;" : s_;
     };
 
     /**
@@ -266,7 +266,7 @@ if (!Array.prototype.filter) {
      * @returns {string}
      */
     baw.secondsToDurationFormat = function secondsToDurationFormat(seconds) {
-        if (typeof seconds != 'number') {
+        if (typeof seconds !== "number") {
             seconds = parseFloat(seconds);
         }
 
@@ -290,7 +290,7 @@ if (!Array.prototype.filter) {
         // default format [+/-d days] HH:mm:ss.fff
         var dayComponent = Math.floor(totalDays);
         if (dayComponent !== 0) {
-            result += dayComponent.toString() + ( dayComponent == 1 ? " day " : " days ");
+            result += dayComponent.toString() + ( dayComponent === 1 ? " day " : " days ");
         }
 
         result += baw.stringPad(Math.floor(totalHours) % 24, 2) + ":";
@@ -316,7 +316,7 @@ if (!Array.prototype.filter) {
     };
 
     baw.isPowerOfTwo = function isPowerOfTwo(x) {
-        return (x & (x - 1)) === 0;
+        return (x & (x - 1)) === 0; // jshint ignore:line
     };
 
     baw.closestPowerOfTwoBelow = function closestPowerOfTwoBelow(x) {
@@ -325,16 +325,16 @@ if (!Array.prototype.filter) {
     };
 
     baw.popUpWindow = function popUpWindow(provider_url, width, height, callback) {
-        var screenX = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft,
-            screenY = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop,
-            outerWidth = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth,
-            outerHeight = typeof window.outerHeight != 'undefined' ? window.outerHeight : (document.body.clientHeight - 22),
+        var screenX = typeof window.screenX !== undefined ? window.screenX : window.screenLeft,
+            screenY = typeof window.screenY !== undefined ? window.screenY : window.screenTop,
+            outerWidth = typeof window.outerWidth !== undefined ? window.outerWidth : document.body.clientWidth,
+            outerHeight = typeof window.outerHeight !== undefined ? window.outerHeight : (document.body.clientHeight - 22),
             left = parseInt(screenX + ((outerWidth - width) / 2), 10),
             top = parseInt(screenY + ((outerHeight - height) / 2.5), 10),
-            features = ('width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
+            features = ("width=" + width + ",height=" + height + ",left=" + left + ",top=" + top);
 
         var returneddata = 0;
-        var newWindow = window.open(provider_url, 'Login', features);
+        var newWindow = window.open(provider_url, "Login", features);
         newWindow.returneddata = returneddata;
 
         function callbackOnClose() {
@@ -362,7 +362,7 @@ if (!Array.prototype.filter) {
 
     function Angular() {
         this.isUndefined = function isUndefined(value) {
-            return typeof value == 'undefined';
+            return typeof value === "undefined";
         };
 
     }
@@ -374,23 +374,23 @@ if (!Array.prototype.filter) {
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if (!Object.keys) {
     Object.keys = (function () {
-        'use strict';
+        "use strict";
         var hasOwnProperty = Object.prototype.hasOwnProperty,
-            hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+            hasDontEnumBug = !({toString: null}).propertyIsEnumerable("toString"),
             dontEnums = [
-                'toString',
-                'toLocaleString',
-                'valueOf',
-                'hasOwnProperty',
-                'isPrototypeOf',
-                'propertyIsEnumerable',
-                'constructor'
+                "toString",
+                "toLocaleString",
+                "valueOf",
+                "hasOwnProperty",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "constructor"
             ],
             dontEnumsLength = dontEnums.length;
 
         return function (obj) {
-            if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
-                throw new TypeError('Object.keys called on non-object');
+            if (typeof obj !== "object" && (typeof obj !== "function" || obj === null)) {
+                throw new TypeError("Object.keys called on non-object");
             }
 
             var result = [], prop, i;

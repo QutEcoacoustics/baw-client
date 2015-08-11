@@ -85,7 +85,7 @@ angular.module("bawApp.directives.toggleSwitch", ["ng"])
                 //console.debug("controller function", $scope.$id);
 
                 $scope.disabled = $scope.disabled || false;
-                $scope.modeNormalized = $scope.mode == "push-toggle" ? "push-toggle" : "slide-toggle";
+                $scope.modeNormalized = $scope.mode === "push-toggle" ? "push-toggle" : "slide-toggle";
 
                 $scope.toggle = function toggle() {
                     if (!$scope.disabled) {

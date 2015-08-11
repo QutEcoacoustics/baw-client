@@ -4,7 +4,7 @@ describe("The predictiveCache service", function () {
         $httpProvider;
     beforeEach(module("bawApp.services", function (_$httpProvider_) {
         $httpProvider = _$httpProvider_;
-        $httpProvider.defaults.headers.common["Authorization"] = "SOME AUTH TOKEN";
+        $httpProvider.defaults.headers.common.Authorization = "SOME AUTH TOKEN";
     }));
 
     //beforeEach(module("baw"));
@@ -541,7 +541,7 @@ describe("The predictiveCache service", function () {
                     testProfile.progression = progressionTest.in;
 
                     expect(function () {
-                        var profile = predictiveCache(testProfile);
+                        predictiveCache(testProfile);
                     }).toThrowError("progression must be an array of numbers/functions");
                 });
             });

@@ -1,4 +1,4 @@
-angular.module('bawApp.tags', [])
+angular.module("bawApp.tags", [])
 
     // these controller names conflicted with the angular-tags component.
     // since we don't use them they have been disabled.

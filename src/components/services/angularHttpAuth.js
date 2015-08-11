@@ -7,8 +7,10 @@
 angular
     .module("http-auth-interceptor", [])
     .provider(
-    'authService',
+    "authService",
     function () {
+        const authHeader = "Authorization";
+
         /**
          * Holds all the requests which failed due to 401 response,
          * so they can be re-requested in future, once login is completed.
@@ -28,10 +30,10 @@ angular
         }
         this.pushToBuffer = pushToBuffer;
 
-        this.$get = ['$rootScope', '$injector', function ($rootScope, $injector) {
+        this.$get = ["$rootScope", "$injector", function ($rootScope, $injector) {
             var $http; // initialized later because of circular dependency problem
             function retryRequest(config, deferred, $http) {
-                config.headers["Authorization"] = $http.defaults.headers.common["Authorization"];
+                config.headers[authHeader] = $http.defaults.headers.common[authHeader];
 
                 deferred.resolve(config);
             }
@@ -63,7 +65,7 @@ angular
             return {
                 loginConfirmed: function () {
                     console.info("authService::event:auth-loginConfirmed - flushing buffer, request count:", buffer.length);
-                    $rootScope.$broadcast('event:auth-loginConfirmed');
+                    $rootScope.$broadcast("event:auth-loginConfirmed");
 
                     retryAll();
                 },
@@ -84,10 +86,12 @@ angular
         "$q",
         "conf.paths",
         function (authService, $rootScope, $q, paths) {
+            const authHeader = "Authorization";
+
             return {
-                'request': function request(config) {
+                request: function request(config) {
                     // if an auth token is present
-                    if (config.headers["Authorization"]) {
+                    if (config.headers[authHeader]) {
                         // don't do anything
                         return config;
                     }
@@ -109,18 +113,18 @@ angular
                     authService.pushRequestToBuffer(config, deferred);
 
                     if (!$rootScope.logInPending) {
-                        $rootScope.$broadcast('event:auth-loginRequired');
+                        $rootScope.$broadcast("event:auth-loginRequired");
                     }
 
                     return deferred.promise;
                 },
-                'responseError': function error(response) {
+                responseError: function error(response) {
                     if (response.status === 401) {
                         var deferred = $q.defer();
                         authService.pushResponseToBuffer(response.config, deferred);
 
                         console.info("authService::event:auth-loginRequired");
-                        $rootScope.$broadcast('event:auth-loginRequired');
+                        $rootScope.$broadcast("event:auth-loginRequired");
                         return deferred.promise;
                     }
                     // otherwise
@@ -128,6 +132,6 @@ angular
                 }
             };
         }])
-    .config(['$httpProvider', function ($httpProvider) {
+    .config(["$httpProvider", function ($httpProvider) {
         $httpProvider.interceptors.push("authHttpInterceptor");
     }]);

@@ -1,10 +1,12 @@
 angular
     .module("bawApp.services.authenticator", [])
     .factory(
-    'Authenticator',
+    "Authenticator",
     [
-        '$rootScope', 'authService', '$http', 'conf.paths',
+        "$rootScope", "authService", "$http", "conf.paths",
         function ($rootScope, authService, $http, paths) {
+            const authHeader = "Authorization";
+
             // As soon as the module is initiated...
             // WARNING: Cookies required for this to work
             checkLogin();
@@ -16,7 +18,7 @@ angular
                     $rootScope.$safeApply($rootScope, function () {
                         that.authToken = null;
                         $rootScope.userData = null;
-                        $http.defaults.headers.common["Authorization"] = null;
+                        $http.defaults.headers.common[authHeader] = null;
 
                         console.log("Logout successful", data);
                     });
@@ -46,9 +48,9 @@ angular
                 }
 
                 that.authToken = data.authToken;
-                $http.defaults.headers.common["Authorization"] = 'Token token="' +
+                $http.defaults.headers.common[authHeader] = "Token token=\"" +
                                                                  that.authToken +
-                                                                 '"';
+                                                                 "\"";
 
                 $rootScope.$safeApply($rootScope, function () {
                     $rootScope.userData = data;
@@ -61,7 +63,7 @@ angular
                 $rootScope.$safeApply($rootScope, function () {
                     that.authToken = null;
                     $rootScope.userData = null;
-                    $http.defaults.headers.common["Authorization"] = null;
+                    $http.defaults.headers.common[authHeader] = null;
 
                     if (config && config.url === paths.api.routes.security.pingAbsolute) {
                         return;
@@ -128,14 +130,14 @@ angular
             }
         }])
     .factory(
-    'AuthenticationProviders',
+    "AuthenticationProviders",
     [
-        '$rootScope', 'authService', '$http', 'Authenticator', '$q', '$url',
+        "$rootScope", "authService", "$http", "Authenticator", "$q", "$url",
         function ($rootScope, authService, $http, Authenticator, $q, $url) {
-            var signOutPath = '/security/sign_out';
+            var signOutPath = "/security/sign_out";
 
             function signOut() {
-                $http({method: 'GET', url: signOutPath})
+                $http({method: "GET", url: signOutPath})
                     .success(Authenticator.logoutSuccess)
                     .error(Authenticator.logoutFailure);
             }
@@ -150,8 +152,8 @@ angular
                                                // 1. Send the assertion to your backend for verification and to create a session.
                                                // 2. Update your UI.
                                                $http({
-                                                         method: 'POST',
-                                                         url: '/security/auth/browser_id/callback',
+                                                         method: "POST",
+                                                         url: "/security/auth/browser_id/callback",
                                                          data: {assertion: assertion}
                                                      })
                                                    .success(Authenticator.loginSuccess)
@@ -216,14 +218,14 @@ angular
                 },
                 "google": {
                     login: function () {
-                        openIdLogin('https://www.google.com/accounts/o8/id');
+                        openIdLogin("https://www.google.com/accounts/o8/id");
                     },
                     logout: signOut,
                     requires: null
                 },
                 "yahoo": {
                     login: function () {
-                        openIdLogin('https://me.yahoo.com');
+                        openIdLogin("https://me.yahoo.com");
                     },
                     logout: signOut,
                     requires: null
@@ -238,28 +240,28 @@ angular
                 },
                 "facebook": {
                     login: function () {
-                        openAuthLogin('facebook');
+                        openAuthLogin("facebook");
                     },
                     logout: signOut,
                     requires: null
                 },
                 "github": {
                     login: function () {
-                        openAuthLogin('github');
+                        openAuthLogin("github");
                     },
                     logout: signOut,
                     requires: null
                 },
                 "twitter": {
                     login: function () {
-                        openAuthLogin('twitter');
+                        openAuthLogin("twitter");
                     },
                     logout: signOut,
                     requires: null
                 },
                 "windowslive": {
                     login: function () {
-                        openAuthLogin('windowslive');
+                        openAuthLogin("windowslive");
                     },
                     logout: signOut,
                     requires: null

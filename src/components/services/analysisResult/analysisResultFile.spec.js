@@ -104,7 +104,7 @@ describe("The analysis result file service", function () {
     it("it uses the same logic to return a long duration image tile", function () {
         spyOn(AnalysisResultFile, "getLongDurationImageTile");
 
-        var actual = AnalysisResultFile.getLongDurationImageTile(audioRecording);
+        AnalysisResultFile.getLongDurationImageTile(audioRecording);
 
         expect(AnalysisResultFile.getLongDurationImageTile).toHaveBeenCalled();
     });

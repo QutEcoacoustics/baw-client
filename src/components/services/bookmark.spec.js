@@ -2,7 +2,7 @@ describe("The bookmark service", function () {
 
     var bawResource;
 
-    beforeEach(module('bawApp.services'));
+    beforeEach(module("bawApp.services"));
 
     beforeEach(inject(["Bookmark", function (providedBawResource) {
         bawResource = providedBawResource;

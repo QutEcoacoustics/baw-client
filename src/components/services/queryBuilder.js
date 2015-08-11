@@ -334,7 +334,7 @@ angular
                 Query.prototype[operatorKey] = function (field, value) {
                     var operator = operatorKey;
 
-                    if (arguments.length == 1) {
+                    if (arguments.length === 1) {
                         value = field;
                         field = undefined;
                     }

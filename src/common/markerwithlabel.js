@@ -33,7 +33,7 @@
  */
 
 /*jslint browser:true */
-/*global document,google */
+/*globals document */
 
 (function (window, google) {
     if (!google) {

@@ -1,8 +1,8 @@
-angular.module('bawApp.photos', [])
+angular.module("bawApp.photos", [])
 
-    .controller('PhotosCtrl', ['$scope', '$resource', 'Photo',
+    .controller("PhotosCtrl", ["$scope", "$resource", "Photo",
         function PhotosCtrl($scope, $resource, Photo) {
-            $scope.photosResource = $resource('/photos', {});
+            $scope.photosResource = $resource("/photos", {});
             $scope.photos = $scope.photosResource.query();
 
             $scope.links = function (key) {
@@ -10,7 +10,7 @@ angular.module('bawApp.photos', [])
             };
         }])
 
-    .controller('PhotoCtrl', ['$scope', '$resource', '$routeParams', 'Photo',
+    .controller("PhotoCtrl", ["$scope", "$resource", "$routeParams", "Photo",
 
         function PhotoCtrl($scope, $resource, $routeParams, Photo) {
 
@@ -20,7 +20,7 @@ angular.module('bawApp.photos', [])
             $scope.editing = $routeParams.editing === "edit";
 
             $scope.photo = photoResource.get(routeArgs, function () {
-                $scope.links = PhotosCtrl.linkList($scope.photo.id);
+                //$scope.links = PhotosCtrl.linkList($scope.photo.id);
 
                 $scope.original = angular.copy($scope.project);
 

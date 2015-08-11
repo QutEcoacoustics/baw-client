@@ -1,6 +1,6 @@
-angular.module('bawApp.recordInformation', [])
+angular.module("bawApp.recordInformation", [])
 
-.controller('RecordInformationCtrl', null);
+.controller("RecordInformationCtrl", null);
 //function RecordInformationCtrl($scope, $element, $attrs, $transclude, $resource) {
 //
 //    console.log($scope);

@@ -1,9 +1,9 @@
-angular.module('bawApp.bookmarks', [])
+angular.module("bawApp.bookmarks", [])
 
-    .controller('BookmarksCtrl',
-        ['$scope', '$resource', 'Bookmark',
+    .controller("BookmarksCtrl",
+        ["$scope", "$resource", "Bookmark",
             function BookmarksCtrl($scope, $resource, Bookmark) {
-                $scope.bookmarksResource = $resource('/bookmarks', {});
+                $scope.bookmarksResource = $resource("/bookmarks", {});
                 $scope.bookmarks = $scope.bookmarksResource.query();
 
                 $scope.links = function (key) {
@@ -14,8 +14,8 @@ angular.module('bawApp.bookmarks', [])
                     alert("deleting bookmark {0}!".format(id));
                 };
             }])
-    .controller('BookmarkCtrl',
-        ['$scope', '$resource', '$routeParams', 'Bookmark',
+    .controller("BookmarkCtrl",
+        ["$scope", "$resource", "$routeParams", "Bookmark",
             function AudioEventCtrl($scope, $resource, $routeParams, Bookmark) {
 
             }]);

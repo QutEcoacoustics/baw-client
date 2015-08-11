@@ -8,9 +8,9 @@ angular.module("bawApp.d3.audioView", ["bawApp.vendorServices.auto"])
         // d3 functions
         // private properties - globals, formatters, magic numbers
 
-        var parseFormat = d3.time.format("%Y-%m-%dT%H:%M:%S%Z"),
-            keyYearFormat = d3.time.format("%Y"),
+        var keyYearFormat = d3.time.format("%Y"),
             keyMonthFormat = d3.time.format("%m");
+        // parseFormat = d3.time.format("%Y-%m-%dT%H:%M:%S%Z")
 
         var updateData = function updateData(json) {
             // change data so it is nested properly
@@ -30,7 +30,7 @@ angular.module("bawApp.d3.audioView", ["bawApp.vendorServices.auto"])
                 .enter()
                 .append("div")
                 .text(function (d) {return d.key; })
-                .attr('class', 'year');
+                .attr("class", "year");
 
             yearsData.exit().remove();
 
@@ -41,9 +41,9 @@ angular.module("bawApp.d3.audioView", ["bawApp.vendorServices.auto"])
 
             monthData
                 .enter()
-                .append('div')
+                .append("div")
                 .text(function (d) {return d.key; })
-                .attr('class', 'month');
+                .attr("class", "month");
 
             // select the first available month so there is something to work with
             var selectedMonthData = [data[0]];
@@ -56,9 +56,9 @@ angular.module("bawApp.d3.audioView", ["bawApp.vendorServices.auto"])
 
             displayedYearData
                 .enter()
-                .append('div')
+                .append("div")
                 .text(function (d) {return d.key; })
-                .attr('class', 'day');
+                .attr("class", "day");
 
 
 
@@ -78,7 +78,7 @@ angular.module("bawApp.d3.audioView", ["bawApp.vendorServices.auto"])
                 // you can use the jQuery / d3 objects here (use the injected d3 instance)
 
                 // where possible avoid jQuery
-                var element = $element[0];
+                //var element = $element[0];
 
                 // watch for changes on scope data
                 $scope.$watch(function () {

@@ -1,12 +1,12 @@
-angular.module('bawApp.search', [])
+angular.module("bawApp.search", [])
 
-.controller('SearchesCtrl', ['$scope', '$resource', 'Search',
+.controller("SearchesCtrl", ["$scope", "$resource", "Search",
 function SearchesCtrl($scope, $resource, Search) {
 //    $scope.sitesResource = $resource('/sites', {}, { get: { method:'GET', params:{}, isArray: true }});
 //    $scope.sites = $scope.sitesResource.get();
 }])
 
-.controller('SearchCtrl', ['$scope', '$resource', 'Search',
+.controller("SearchCtrl", ["$scope", "$resource", "Search",
 
 function SearchCtrl($scope, $resource, Search) {
 //    $scope.sitesResource = $resource('/sites', {}, { get: { method:'GET', params:{}, isArray: true }});

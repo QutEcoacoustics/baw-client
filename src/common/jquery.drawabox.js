@@ -24,28 +24,28 @@
         return { posx: posx - 1, posy: posy - 1 };
     };
 
-    var elementPosition = function (obj) {
+    var elementPosition = function (obj) { // jshint ignore:line
         var curleft = 0;
         var curtop = 0;
         if (obj && obj.offsetParent) {
             do {
                 curleft += obj.offsetLeft;
                 curtop += obj.offsetTop;
-            } while (obj = obj.offsetParent);
+            } while (obj === obj.offsetParent);
         }
         return { posx: curleft, posy: curtop };
     };
 
     var setBoxBoxPosition = function ($box, startPos, currentPos) {
         if (startPos.x > currentPos.x) {
-            $box.css('left', currentPos.x + 'px');
+            $box.css("left", currentPos.x + "px");
         } else {
-            $box.css('left', startPos.x + 'px');
+            $box.css("left", startPos.x + "px");
         }
         if (startPos.y > currentPos.y) {
-            $box.css('top', currentPos.y + 'px');
+            $box.css("top", currentPos.y + "px");
         } else {
-            $box.css('top', startPos.y + 'px');
+            $box.css("top", startPos.y + "px");
         }
     };
 
@@ -60,14 +60,14 @@
 
     var mousedown = function (e) {
         // only want to handle clicks on container, not on existing boxs
-        if (e.target != this || e.which != 1) {
+        if (e.target !== this || e.which !== 1) {
             return;
         }
 
         e.preventDefault();
 
         var $thisMouseDown = $(this);
-        var dataMouseDown = $thisMouseDown.data('drawboxes');
+        var dataMouseDown = $thisMouseDown.data("drawboxes");
 
         // do not execute if no more boxs allowed
         if (dataMouseDown.maxChildrenReached) {
@@ -93,7 +93,7 @@
     var mouseup = function (e) {
 
         var $thisMouseUp = $(this);
-        var dataMouseUp = $thisMouseUp.data('drawboxes');
+        var dataMouseUp = $thisMouseUp.data("drawboxes");
 
         var wasMouseDownSet = dataMouseUp.mousedown;
         var currentBoxId = dataMouseUp.currentMouseDragBoxId;
@@ -103,7 +103,7 @@
             return;
         }
 
-        var $box = $('#' + currentBoxId);
+        var $box = $("#" + currentBoxId);
         // 02-Feb-14, ANT: removed, seems redundant, removal does not seem to affect functionality
         //$box.draggable({ containment: 'parent' })
          //   .resizable({ containment: 'parent', handles: 'all' });
@@ -116,18 +116,18 @@
         dataMouseUp.options.boxResized($box);
     };
 
-    var dataIdKey = 'data-id';
+    var dataIdKey = "data-id";
 
     function createBox($parent, contextData, width, height, top, left, uniqueId, silent) {
 
         if (contextData === undefined) {
             throw "Context data must be given";
         }
-        var closeIconTemplate = '<span class="close-icon glyphicon glyphicon-remove"></span>';
+        var closeIconTemplate = "<span class=\"close-icon glyphicon glyphicon-remove\"></span>";
 
 
         uniqueId = uniqueId || (-1 * Number.Unique());
-        $('.boxItem').attr(SELECTED_ATTRIBUTE, false);
+        $(".boxItem").attr(SELECTED_ATTRIBUTE, false);
         var newId = "boxItem_" + uniqueId;
 
         if (!silent) {
@@ -140,15 +140,15 @@
 
         // removed 'overflow:hidden' from default style... it was messing up a trick i was trying to do
 
-        $parent.append('<div '+ SELECTED_ATTRIBUTE +'="' + (silent ? 'false' : 'true') + '" id="' + newId + '" class="boxItem ui-widget" style="width:' + width + 'px;height:' + height + 'px;">' + closeIconTemplate + '</div>');
+        $parent.append("<div "+ SELECTED_ATTRIBUTE +"=\"" + (silent ? "false" : "true") + "\" id=\"" + newId + "\" class=\"boxItem ui-widget\" style=\"width:" + width + "px;height:" + height + "px;\">" + closeIconTemplate + "</div>");
 
-        var $newBox = $('#' + newId);
+        var $newBox = $("#" + newId);
         $newBox.attr(dataIdKey, uniqueId);
 
         // add selection highlight
         function raiseSelectCallback() {
 
-            $('.boxItem').attr(SELECTED_ATTRIBUTE, false);
+            $(".boxItem").attr(SELECTED_ATTRIBUTE, false);
             var $t = $(this);
             $t.attr(SELECTED_ATTRIBUTE, true);
             contextData.options.boxSelected($t);
@@ -173,12 +173,12 @@
 
         if (contextData.options.showOnly !== true) {
             // add delete click handler
-            $('#' + newId + ' span').click(function () {
+            $("#" + newId + " span").click(function () {
                 var $t = $(this).parent(),
                     $container = $t.parent();
                 $t.remove();
 
-                contextData.maxChildrenReached = maxChildrenCheck($container.data('drawboxes').options.maxBoxes, $container);
+                contextData.maxChildrenReached = maxChildrenCheck($container.data("drawboxes").options.maxBoxes, $container);
 
                 contextData.options.boxDeleted($t);
             });
@@ -192,17 +192,17 @@
             // temporary function used for testing a bug
             // window.hack = function(left, top) {$newBox.css({left:left, top:top}); contextData.options.boxMoved($newBox)};
             $newBox.draggable({
-                containment: 'parent',
+                containment: "parent",
                 drag: function (event, ui) { contextData.options.boxMoving($newBox); },
                 stop: function (event, ui) { contextData.options.boxMoved($newBox); }
             });
         }
 
         if (left) {
-            $newBox.css('left', left + 'px');
+            $newBox.css("left", left + "px");
         }
         if (top) {
-            $newBox.css('top', top + 'px');
+            $newBox.css("top", top + "px");
         }
 
         contextData.maxChildrenReached = maxChildrenCheck(contextData.options.maxBoxes, $newBox);
@@ -219,7 +219,7 @@
     var mousemove = function (e) {
 
         var $thisMouseMove = $(this);
-        var dataMouseMove = $thisMouseMove.data('drawboxes');
+        var dataMouseMove = $thisMouseMove.data("drawboxes");
 
         var wasMouseDownSet = dataMouseMove.mousedown;
 
@@ -262,7 +262,7 @@
                 setBoxBoxPosition($newBox, startClickPos, currentPos);
             }
         } else {
-            var $box = $('#' + currentBoxId);
+            var $box = $("#" + currentBoxId);
             $box.width(xdiff);
             $box.height(ydiff);
             setBoxBoxPosition($box, startClickPos, currentPos);
@@ -277,7 +277,7 @@
             return 0;
         }
         var pos = cssValue.indexOf("px");
-        if (pos == -1) {
+        if (pos === -1) {
             //throw new Error("Non pixel quantity given, cannot convert:" + cssValue);
             return NaN;
         } else {
@@ -304,8 +304,8 @@
             top: removePx($element.css("top")),
             width: removePx($element.css("width")) + BORDER_MODEL_DIFFERANCE,  // box model - border not included in widths
             height: removePx($element.css("height")) + BORDER_MODEL_DIFFERANCE, // box model - border not included in widths
-            selected: (!!selectedAttr) && selectedAttr == "true",
-            hovering: (!!hoveringAttr) && hoveringAttr == "true"
+            selected: (!!selectedAttr) && selectedAttr == "true", // jshint ignore:line
+            hovering: (!!hoveringAttr) && hoveringAttr == "true" // jshint ignore:line
         };
     };
 
@@ -379,13 +379,13 @@
         return this.each(function () {
 
             var $this = $(this);
-            var data = $this.data('drawboxes');
+            var data = $this.data("drawboxes");
 
             if (!data) {
                 // If the plugin hasn't been initialized yet
                 // Do more setup stuff here
 
-                $this.data('drawboxes', {
+                $this.data("drawboxes", {
                     target: $this,
                     mousedown: false,
                     mousedownPos: { posx: 0, posy: 0 },
@@ -424,7 +424,7 @@
 
             // return all the boxes made by this plugin
             var $this = $(this),
-                data = $this.data('drawboxes');
+                data = $this.data("drawboxes");
 
             var boxes = [];
 
@@ -507,7 +507,7 @@
                 throw "An element with that id already exists, cannot insert";
             }
 
-            var newBox = createBox($this, $this.data('drawboxes'),0, 0, 0, 0, id, true);
+            var newBox = createBox($this, $this.data("drawboxes"),0, 0, 0, 0, id, true);
             result.push(newBox);
         });
         return result;
@@ -518,12 +518,12 @@
         return this.each(function () {
 
             var $this = $(this),
-                data = $this.data('drawboxes');
+                data = $this.data("drawboxes"); // jshint ignore:line
 
             // Namespacing FTW
-            $(window).unbind('.drawabox');
+            $(window).unbind(".drawabox");
             //data.tooltip.remove();
-            $this.removeData('drawboxes');
+            $this.removeData("drawboxes");
 
         });
     };
@@ -532,12 +532,12 @@
 
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-        } else if (typeof method === 'object' || !method) {
+        } else if (typeof method === "object" || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' + method + ' does not exist on jQuery.drawabox');
+            $.error("Method " + method + " does not exist on jQuery.drawabox");
         }
 
     };
 
-})(jQuery);
+})(jQuery); // jshint ignore:line

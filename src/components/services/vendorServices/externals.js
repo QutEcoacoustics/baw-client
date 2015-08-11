@@ -70,7 +70,7 @@ angular
 
             d3.selection.prototype.clipPath = function(clipUrl) {
                 var funcIriRegex = /url\(#(.*)\)/;
-                if (arguments.length == 1) {
+                if (arguments.length === 1) {
                     var match = funcIriRegex.exec(clipUrl),
                         newUrl = clipUrl;
                     if (match) {

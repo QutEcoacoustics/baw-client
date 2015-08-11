@@ -1,6 +1,6 @@
-angular.module('bawApp.home', [])
+angular.module("bawApp.home", [])
 
-    .controller('HomeCtrl', ['$scope', '$resource', '$routeParams', 'Project',
+    .controller("HomeCtrl", ["$scope", "$resource", "$routeParams", "Project",
 
         function HomeCtrl($scope, $resource, $routeParams, Project) {
 /*            // testing some es6 features

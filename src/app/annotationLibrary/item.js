@@ -198,7 +198,7 @@ angular
                         });
 
                         $scope.audioEventCommentsEnabled = true;
-                        $scope.createCommentForm.$setPristine(true)
+                        $scope.createCommentForm.$setPristine(true);
                     },
                     function audioEventCommentsFailure(response) {
                         $scope.audioEventCommentsEnabled = false;

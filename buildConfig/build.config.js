@@ -9,8 +9,8 @@ module.exports = {
      * completely built.
      */
     es6_dir: "es6",
-    build_dir: 'build',
-    compile_dir: 'bin',
+    build_dir: "build",
+    compile_dir: "bin",
 
     /**
      * The environment settings are loaded here.
@@ -31,14 +31,14 @@ module.exports = {
      * app's unit tests.
      */
     app_files: {
-        js: ['src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js'],
-        jsunit: ['src/**/*.spec.js'],
+        js: ["src/**/*.js", "!src/**/*.spec.js", "!src/assets/**/*.js"],
+        jsunit: ["src/**/*.spec.js"],
 
-        atpl: ['src/app/**/*.tpl.html'],
-        ctpl: ['src/common/**/*.tpl.html', 'src/components/**/*.tpl.html'],
+        atpl: ["src/app/**/*.tpl.html"],
+        ctpl: ["src/common/**/*.tpl.html", "src/components/**/*.tpl.html"],
 
-        html: ['src/index.html'],
-        sass: ['src/sass/application.tpl.scss']
+        html: ["src/index.html"],
+        sass: ["src/sass/application.tpl.scss"]
     },
 
     /**
@@ -46,7 +46,7 @@ module.exports = {
      */
     test_files: {
         js: [
-            'vendor/angular-mocks/angular-mocks.js'
+            "vendor/angular-mocks/angular-mocks.js"
         ]
     },
 
@@ -70,86 +70,86 @@ module.exports = {
      */
     vendor_files: {
         jsWrapWithModule: [
-            'vendor/d3/d3.js',
-            'vendor/momentjs/moment.js',
-            'vendor/lodash/lodash.js',
-            'vendor/bowser/bowser.js',
-            'vendor/humanize-duration/humanize-duration.js',
-            'vendor/round-date/roundDate.js'
+            "vendor/d3/d3.js",
+            "vendor/momentjs/moment.js",
+            "vendor/lodash/lodash.js",
+            "vendor/bowser/bowser.js",
+            "vendor/humanize-duration/humanize-duration.js",
+            "vendor/round-date/roundDate.js"
 ],
         js: [
             "node_modules/babel/node_modules/babel-core/browser-polyfill.js",
-            'vendor/jquery/dist/jquery.js',
-            'vendor/angular/angular.js',
+            "vendor/jquery/dist/jquery.js",
+            "vendor/angular/angular.js",
 
-            'buildConfig/externalModule.js',
+            "buildConfig/externalModule.js",
 
 
             // TODO: THIS IS TERRIBLE! REMOVE UI ASAP... OR AT LEAST ONLY INCLUDE RELEVANT COMPONENTS
-            'vendor/jquery-ui/jquery-ui.js',
+            "vendor/jquery-ui/jquery-ui.js",
 
             // NOTE: bootstrap css imported in application.tpl.scss
             // NOTE: bootstrap's own JS not needed because angular-bootstrap does the same job
             //  and without the jQuery dependency!
             //~~"/vendor/bootstrap-sass/assets/javascripts/bootstrap.js",~~
-            'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
-            'vendor/ng-form-group/index.js',
+            "vendor/angular-bootstrap/ui-bootstrap-tpls.js",
+            "vendor/ng-form-group/index.js",
 
-            'vendor/momentjs/moment.js',
-            'vendor/humanize-duration/humanize-duration.js',
-            'vendor/round-date/roundDate.js',
+            "vendor/momentjs/moment.js",
+            "vendor/humanize-duration/humanize-duration.js",
+            "vendor/round-date/roundDate.js",
 
-            'vendor/angular-route/angular-route.js',
+            "vendor/angular-route/angular-route.js",
 
-            'vendor/angular-resource/angular-resource.js',
+            "vendor/angular-resource/angular-resource.js",
 
             // TODO: the following line is dodgy and bloats the app
             //'vendor/angular-ui-utils/ui-utils.js',
 
-            'vendor/lodash/lodash.js',
+            "vendor/lodash/lodash.js",
 
             // This library is all split up - we are using the boneskull version atm,
             // but we started off using the deciphernic version
-            'vendor/angular-tags/dist/angular-tags-0.3.1-tpls.js',
+            "vendor/angular-tags/dist/angular-tags-0.3.1-tpls.js",
 
-            'vendor/angular-sanitize/angular-sanitize.js',
+            "vendor/angular-sanitize/angular-sanitize.js",
 
             // draggabilly
-            'vendor/classie/classie.js',
-            'vendor/eventEmitter/EventEmitter.js',
-            'vendor/eventie/eventie.js',
-            'vendor/get-style-property/get-style-property.js',
+            "vendor/classie/classie.js",
+            "vendor/eventEmitter/EventEmitter.js",
+            "vendor/eventie/eventie.js",
+            "vendor/get-style-property/get-style-property.js",
             // get-size depends on get-style-property... it has to come after it
-            'vendor/get-size/get-size.js',
-            'vendor/draggabilly/draggabilly.js',
+            "vendor/get-size/get-size.js",
+            "vendor/draggabilly/draggabilly.js",
 
-            'vendor/d3/d3.js',
+            "vendor/d3/d3.js",
 
-            'vendor/bowser/bowser.js',
+            "vendor/bowser/bowser.js",
 
-            'vendor/angular-growl-v2/build/angular-growl.js',
+            "vendor/angular-growl-v2/build/angular-growl.js",
 
-            'vendor/angular-local-storage/dist/angular-local-storage.js',
+            "vendor/angular-local-storage/dist/angular-local-storage.js",
 
-            'vendor/angular-loading-bar/build/loading-bar.js'
+            "vendor/angular-loading-bar/build/loading-bar.js"
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss
 
-            'vendor/hint.css/hint.css',
+            "vendor/hint.css/hint.css",
             // TODO: remove bloat
-            'vendor/jquery-ui/themes/redmond/jquery-ui.css',
+            "vendor/jquery-ui/themes/redmond/jquery-ui.css",
 
-            'vendor/angular-tags/dist/angular-tags-0.3.1.css',
+            "vendor/angular-tags/dist/angular-tags-0.3.1.css",
 
-            'vendor/angular-growl-v2/build/angular-growl.css',
+            "vendor/angular-growl-v2/build/angular-growl.css",
 
-            'vendor/angular-loading-bar/build/loading-bar.css'
+            "vendor/angular-loading-bar/build/loading-bar.css"
         ],
         assets: [
             // jquery-ui is stoopid, special case
             function (template) {
-                template.src = 'vendor/jquery-ui/themes/redmond/images/**';
+                template.src = "vendor/jquery-ui/themes/redmond/images/**";
                 template.dest += "styles/images/";
 
                 return template;

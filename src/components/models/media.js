@@ -64,8 +64,8 @@ angular
 
                     }, mediaItem.available.audio);
 
-                    var jsonFullUrl = paths.joinFragments(paths.api.root, mediaItem.available.text["json"].url);
-                    mediaItem.available.text["json"].url = url.formatUriServer(jsonFullUrl, {userToken: Authenticator.authToken});
+                    var jsonFullUrl = paths.joinFragments(paths.api.root, mediaItem.available.text.json.url);
+                    mediaItem.available.text.json.url = url.formatUriServer(jsonFullUrl, {userToken: Authenticator.authToken});
                 }
 
 

@@ -17,8 +17,8 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
                 // {"hoursOfDay": [[0,3],[1, 2], [2,6], [5, 1], ... [23, 1]], "year": 2012}
 
                 // get start and end in +10 timezone
-                var start = moment(value.recordedDate).zone('+10:00');
-                var end = moment(value.recordedDate).add(value.durationSeconds, 'seconds').zone('+10:00');
+                var start = moment(value.recordedDate).zone("+10:00");
+                var end = moment(value.recordedDate).add(value.durationSeconds, "seconds").zone("+10:00");
 
                 var startYear = start.year();
                 var startHour = start.hour();
@@ -26,14 +26,16 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
 
                 var minHour = Math.min(startHour, endHour);
                 var maxHour = Math.max(startHour, endHour);
+                var found;
                 for (var i = minHour; i <= maxHour; i++) {
                     var hour = i;
                     var foundYear = false;
-                    angular.forEach(that.items, function (valueItem, keyItem) {
+                    for (var j = 0; j < that.items.length; j++) {
+                        let valueItem = that.items[j];
                         if (valueItem.year === startYear) {
                             foundYear = true;
                             var foundHour = false;
-                            angular.forEach(valueItem.hoursOfDay, function (valueHours, keyHours) {
+                            angular.forEach(valueItem.hoursOfDay, (valueHours, keyHours) => {
                                 var existingHour = valueHours[0];
                                 if (hour === existingHour) {
                                     foundHour = true;
@@ -45,15 +47,15 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
 
                             if (!foundHour) {
                                 // add hour and count if it does not exist
-                                valueItem.hoursOfDay.push([hour, 1])
+                                valueItem.hoursOfDay.push([hour, 1]);
                             }
                         }
-                    });
+                    }
 
                     if (!foundYear) {
                         that.items.push({"year": startYear, "hoursOfDay": [
                             [hour, 1]
-                        ]})
+                        ]});
                     }
                 }
             });
@@ -116,60 +118,60 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
                     .attr("transform", "translate(0," + 0 + ")")
                     .call(xAxis);
 
+                function getFill(d) {
+                    return c(dataIndex);
+                }
+
+                function getX(d, i) {
+                    return xScale(d[0]);
+                }
+
+                function getRadius(d) {
+                    return rScale(d[1]);
+                }
+
                 for (var j = 0; j < data.length; j++) {
                     var dataIndex = j;
                     var g = svg.append("g").attr("class", "journal");
 
                     var circles = g.selectAll("circle")
-                        .data(data[j]['hoursOfDay'])
+                        .data(data[j].hoursOfDay)
                         .enter()
                         .append("circle");
 
                     var text = g.selectAll("text")
-                        .data(data[j]['hoursOfDay'])
+                        .data(data[j].hoursOfDay)
                         .enter()
                         .append("text");
 
                     var rScale = d3.scale.linear()
-                        .domain([0, d3.max(data[j]['hoursOfDay'], function (d) {
+                        .domain([0, d3.max(data[j].hoursOfDay, function (d) {
                             return d[1];
                         })])
                         .range([2, 9]);
 
                     circles
-                        .attr("cx", function (d, i) {
-                            return xScale(d[0]);
-                        })
+                        .attr("cx", getX)
                         .attr("cy", j * 20 + 20)
-                        .attr("r", function (d) {
-                            return rScale(d[1]);
-                        })
-                        .style("fill", function (d) {
-                            return c(dataIndex);
-                        });
+                        .attr("r", getRadius)
+                        .style("fill", getFill);
 
                     text
                         .attr("y", j * 20 + 25)
-                        .attr("x", function (d, i) {
-                            return xScale(d[0]) - 5;
-                        })
+                        .attr("x", (d, i) =>  xScale(d[0]) - 5)
                         .attr("class", "value")
                         .text(function (d) {
                             return d[1];
                         })
-                        .style("fill", function (d) {
-                            return c(dataIndex);
-                        })
+                        .style("fill", (d) => c(dataIndex))
                         .style("display", "none");
 
                     g.append("text")
                         .attr("y", j * 20 + 25)
                         .attr("x", width + 20)
                         .attr("class", "label")
-                        .text(that.truncate(data[j]['year'], 30, "..."))
-                        .style("fill", function (d) {
-                            return c(dataIndex);
-                        })
+                        .text(that.truncate(data[j].year, 30, "..."))
+                        .style("fill",  (d) => c(dataIndex))
                         .on("mouseover", that.mouseover)
                         .on("mouseout", that.mouseout);
                 }
@@ -191,14 +193,14 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
                 // you can use the jQuery / d3 objects here (use the injected d3 instance)
 
                 // where possible avoid jQuery
-                var element = $element[0];
+                //var element = $element[0];
 
                 // watch for changes on scope data
                 $scope.$watch(function () {
                     return $scope.data;
                 }, function (newValue, oldValue) {
                     if (newValue) {
-                        $scope.details = new DotViewDetails('audioRecordingDots', newValue);
+                        $scope.details = new DotViewDetails("audioRecordingDots", newValue);
                     }
                 });
 

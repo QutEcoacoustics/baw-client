@@ -1,9 +1,9 @@
 
 
 module.exports = function(grunt, template, callbackName, includeFiles) {
-    var fs = require('fs'),
+    var fs = require("fs"),
         path = require("path"),
-        _ = require('lodash');
+        _ = require("lodash");
 
     var vendorTemplate = fs.readFileSync(template, "utf-8"),
         includeFiles = includeFiles || [];

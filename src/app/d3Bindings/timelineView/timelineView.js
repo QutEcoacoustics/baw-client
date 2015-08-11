@@ -22,7 +22,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.vendorServices.auto"])
             // build data structure
             angular.forEach(jsonResponse, function (value, key) {
                 // ensure siteId is in lanes
-                if (that.lanes.indexOf(value.siteId) == -1) {
+                if (that.lanes.indexOf(value.siteId) === -1) {
                     that.lanes.push(value.siteId);
                 }
 
@@ -31,7 +31,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.vendorServices.auto"])
                     "lane": that.lanes.indexOf(value.siteId),
                     "id": value.id,
                     "start": moment(value.recordedDate).unix(),
-                    "end": moment(value.recordedDate).add(value.durationSeconds, 'seconds').unix()
+                    "end": moment(value.recordedDate).add(value.durationSeconds, "seconds").unix()
                 });
             });
 
@@ -314,7 +314,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.vendorServices.auto"])
                 // you can use the jQuery / d3 objects here (use the injected d3 instance)
 
                 // where possible avoid jQuery
-                var element = $element[0];
+                //var element = $element[0];
 
                 // watch for changes on scope data
                 $scope.$watch(
@@ -323,7 +323,7 @@ angular.module("bawApp.d3.timelineView", ["bawApp.vendorServices.auto"])
                     },
                     function (newValue, oldValue) {
                         if (newValue) {
-                            $scope.details = new Details('audioRecordingTimeline', newValue);
+                            $scope.details = new Details("audioRecordingTimeline", newValue);
                         }
                     });
 

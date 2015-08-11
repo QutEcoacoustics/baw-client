@@ -47,6 +47,7 @@
   },
   "scripts": {
     "watch": "grunt watch",
+    "watch-force": "grunt watch --force",
     "build": "grunt",
     "setup": "npm install && bower install",
     "start": "npm run watch",

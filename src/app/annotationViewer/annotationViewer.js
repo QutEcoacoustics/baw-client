@@ -1,6 +1,6 @@
-var avModule = angular.module('bawApp.annotationViewer', ['bawApp.annotationViewer.gridLines']);
+var avModule = angular.module("bawApp.annotationViewer", ["bawApp.annotationViewer.gridLines"]);
 
-avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$transclude', 'Tag', "lodash",
+avModule.controller("AnnotationViewerCtrl", ["$scope", "$element", "$attrs", "$transclude", "Tag", "lodash",
 
     // TODO: possible optimisation evaluate these functions once per frame
 
@@ -109,7 +109,7 @@ avModule.controller('AnnotationViewerCtrl', ['$scope', '$element', '$attrs', '$t
         }, 250);
 
         $scope.dragOptions = {
-            axis: 'x',
+            axis: "x",
             containment: true,
             useLeftTop: false,
             dragMove: function dragMoveSetPosition(scope, draggie, event, pointer) {

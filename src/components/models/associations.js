@@ -88,7 +88,7 @@ angular
                 parentManyRelationSuffix = "Id" + pluralitySuffix,
                 id = "id",
                 arityMany = Symbol("many"),
-                arityOne = Symbol("one"),
+                //arityOne = Symbol("one"),
                 unavailable = "This parent resource is unavailable.";
 
             function many(name) {

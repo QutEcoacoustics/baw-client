@@ -61,11 +61,11 @@ describe("The Annotation object", function () {
 
     it("the localId mode to throw if not given a number", function () {
         var func = function () {
-            var annotation = new baw.Annotation();
+            new baw.Annotation();
         };
 
         var func2 = function () {
-            var annotation = new baw.Annotation("30");
+            new baw.Annotation("30");
         };
 
         expect(func).toThrow("Valid input not provided");
@@ -99,11 +99,11 @@ describe("The Annotation object", function () {
 
     it("the localId mode to throw if not given a number", function () {
         var func = function () {
-            var annotation = new baw.Annotation();
+            new baw.Annotation();
         };
 
         var func2 = function () {
-            var annotation = new baw.Annotation("30");
+            new baw.Annotation("30");
         };
 
         expect(func).toThrow("Valid input not provided");
@@ -129,7 +129,6 @@ describe("The Annotation object", function () {
                 expect(expected).toBeDate(actual);
             }
             else if (key === "taggings") {
-                var type = typeof actual;
                 for (var i = 0; i < expected.length; i++) {
                     var tagging = expected[i];
                     var isInstance = tagging instanceof baw.Tagging;

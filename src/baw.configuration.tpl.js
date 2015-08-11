@@ -1,4 +1,4 @@
-angular.module('bawApp.configuration', ['url'])
+angular.module("bawApp.configuration", ["url"])
 
 /**
  * This module contains static paths that are stored centrally for easy configuration.
@@ -41,8 +41,8 @@ angular.module('bawApp.configuration', ['url'])
                         show: "/audio_recordings/{recordingId}/audio_events/{audioEventId}/taggings/{taggingId}"
                     },
                     tag: {
-                        list: '/tags/',
-                        show: '/tags/{tagId}',
+                        list: "/tags/",
+                        show: "/tags/{tagId}",
                         filter: "/tags/filter"
                     },
                     media: {
@@ -59,7 +59,7 @@ angular.module('bawApp.configuration', ['url'])
                         filter: "/user_accounts/filter"
                     },
                     audioEventComment: {
-                        show: '/audio_events/{audioEventId}/comments/{audioEventCommentId}'
+                        show: "/audio_events/{audioEventId}/comments/{audioEventCommentId}"
                     },
                     bookmark: {
                         show: "/bookmarks/{bookmarkId}"
@@ -69,16 +69,16 @@ angular.module('bawApp.configuration', ['url'])
                     }
                 },
                 links: {
-                    projects: '/projects',
-                    home: '/',
-                    project: '/projects/{projectId}',
-                    site: '/projects/{projectId}/sites/{siteId}',
-                    userAccounts: '/user_accounts/{userId}',
-                    websiteStatus: '/website_status',
-                    contactUs: '/contact_us',
-                    disclaimers: '/disclaimers',
-                    credits: '/credits',
-                    ethicsStatement: '/ethics_statement',
+                    projects: "/projects",
+                    home: "/",
+                    project: "/projects/{projectId}",
+                    site: "/projects/{projectId}/sites/{siteId}",
+                    userAccounts: "/user_accounts/{userId}",
+                    websiteStatus: "/website_status",
+                    contactUs: "/contact_us",
+                    disclaimers: "/disclaimers",
+                    credits: "/credits",
+                    ethicsStatement: "/ethics_statement",
                     login: "/errors/unauthorized"
 
                 }
@@ -88,31 +88,31 @@ angular.module('bawApp.configuration', ['url'])
                 // The following intentionally are not prefixed with a '/'
                 // static files
                 files: {
-                    error404: 'error/error_404.tpl.html',
-                    home: 'home/home.tpl.html',
-                    listen: 'listen/listen.tpl.html',
-                    annotationViewer: 'annotationViewer/annotationViewer.tpl.html',
-                    gridLines: 'annotationViewer/gridLines/gridLines.tpl.html',
-                    annotationComments: 'annotationLibrary/comments/comments.tpl.html',
+                    error404: "error/error_404.tpl.html",
+                    home: "home/home.tpl.html",
+                    listen: "listen/listen.tpl.html",
+                    annotationViewer: "annotationViewer/annotationViewer.tpl.html",
+                    gridLines: "annotationViewer/gridLines/gridLines.tpl.html",
+                    annotationComments: "annotationLibrary/comments/comments.tpl.html",
                     library: {
-                        list: 'annotationLibrary/annotationLibrary.tpl.html',
-                        item: 'annotationLibrary/annotationItem.tpl.html'
+                        list: "annotationLibrary/annotationLibrary.tpl.html",
+                        item: "annotationLibrary/annotationItem.tpl.html"
                     },
-                    navigation: 'navigation/navigation.tpl.html',
+                    navigation: "navigation/navigation.tpl.html",
                     birdWalk: {
-                        list: 'birdWalks/birdWalks.tpl.html',
-                        detail: 'birdWalks/birdWalk.tpl.html',
-                        spec: 'assets/bird_walk/bird_walk_spec.json',
-                        stats: 'assets/bird_walk/bird_walk_stats.json',
-                        images: 'assets/bird_walk/images/'
+                        list: "birdWalks/birdWalks.tpl.html",
+                        detail: "birdWalks/birdWalk.tpl.html",
+                        spec: "assets/bird_walk/bird_walk_spec.json",
+                        stats: "assets/bird_walk/bird_walk_stats.json",
+                        images: "assets/bird_walk/images/"
                     },
                     recordings: {
-                        recentRecordings: 'recordings/recentRecordings/recentRecordings.tpl.html'
+                        recentRecordings: "recordings/recentRecordings/recentRecordings.tpl.html"
                     },
                     demo: {
-                        d3: 'demo/d3TestPage.tpl.html',
-                        rendering: 'demo/rendering.tpl.html',
-                        bdCloud2014: 'demo/BDCloud2014Demo.tpl.html'
+                        d3: "demo/d3TestPage.tpl.html",
+                        rendering: "demo/rendering.tpl.html",
+                        bdCloud2014: "demo/BDCloud2014Demo.tpl.html"
                     },
                     d3Bindings: {
                         eventDistribution: {
@@ -197,7 +197,7 @@ angular.module('bawApp.configuration', ['url'])
                     recursivePath(source[key], root);
                 }
                 else {
-                    source[key + 'Absolute'] = joinPathFragments(root, source[key]);
+                    source[key + "Absolute"] = joinPathFragments(root, source[key]);
                 }
             }
         }
@@ -277,6 +277,8 @@ angular.module('bawApp.configuration', ['url'])
 
             profiles: {
                 "Media cache ahead": function bind($location, paths) {
+                    const imageFormat = "png";
+                    const audioFormat = "mp3";
                     // request additional bits of media based the duration of the original request
                     // do not make requests that would exceed the end of the recording
                     function mediaProgressor(previous, data) {
@@ -315,11 +317,11 @@ angular.module('bawApp.configuration', ['url'])
                         request: [
                             // spectrogram
                             function (counters, data) {
-                               return formatMediaUrl(data.responseData.data.available.image["png"].url, counters);
+                               return formatMediaUrl(data.responseData.data.available.image[imageFormat].url, counters);
                             },
                             // mp3
                             function (counters, data) {
-                                return formatMediaUrl(data.responseData.data.available.audio["mp3"].url, counters);
+                                return formatMediaUrl(data.responseData.data.available.audio[audioFormat].url, counters);
                             }
                         ],
                         progression: [

@@ -54,10 +54,10 @@ returns: 'some string with first value and second value injected using {property
 
 	//returns true for null, undefined and empty string
 	function isEmpty(obj) {
-		if (typeof obj == 'undefined' || obj === null || obj === '') {
+		if (typeof obj === "undefined" || obj === null || obj === "") {
             return true;
         }
-		if (typeof obj == 'number' && isNaN(obj)) {
+		if (typeof obj === "number" && isNaN(obj)) {
             return true;
         }
 		return obj instanceof Date && isNaN(Number(obj));
@@ -67,21 +67,21 @@ returns: 'some string with first value and second value injected using {property
 	//		don't expose this method, it isn't safe for use outside this script
 	function getFormatter(obj) {
 		//it's a string, undefined or null, use default toString method
-		if (typeof obj == "string" || typeof obj == "undefined" || obj === null) {
+		if (typeof obj === "string" || typeof obj === "undefined" || obj === null) {
 			return String.prototype.toString;
 		}
 		
 		//it has a format method
-		if (typeof obj.format == "function") {
+		if (typeof obj.format === "function") {
 			return obj.format;
 		}
 		
 		//determine the constructor base & prototype to use
 		var ctor = (function(o) {
-			if (typeof o == 'number') {
+			if (typeof o === "number") {
                 return Number;
             }
-			if (typeof o == 'boolean') {
+			if (typeof o === "boolean") {
                 return Boolean;
             }
 			return o.constructor;
@@ -89,17 +89,17 @@ returns: 'some string with first value and second value injected using {property
 		var proto = ctor.prototype;
 
 		//prototype has a format method use it (why was it overriden/deleted from the instance?)
-		if (proto && typeof proto.format == 'function') {
+		if (proto && typeof proto.format === "function") {
             return ctor.prototype.format;
         }
 		
 		//object has a toString method use it
-		if (typeof obj.toString == 'function') {
+		if (typeof obj.toString === "function") {
             return obj.toString;
         }
 
 		//prototype has a toString method use it
-		if (proto && typeof proto.toString == 'function') {
+		if (proto && typeof proto.toString === "function") {
             return proto.toString;
         }
 
@@ -128,7 +128,7 @@ returns: 'some string with first value and second value injected using {property
 					try {
 						return formatter.call(obj,"");	
 					} catch(err1) {
-						if (typeof console != "undefined") {
+						if (typeof console !== "undefined") {
                             (console.error || console.log)(err1);
                         }
 						return ""; //unable to format
@@ -153,7 +153,7 @@ returns: 'some string with first value and second value injected using {property
         }
 		
 		//it's a string, return it as-is
-		if (typeof source == "string") {
+		if (typeof source === "string") {
 			return String(source);
         }
 		
@@ -179,13 +179,13 @@ returns: 'some string with first value and second value injected using {property
 		var params = args.slice(1);
 		
 		//only one param
-		if (params.length == 1) {
+		if (params.length === 1) {
 			//set the params to the instance of the one param
 			params = params[0];
 
 			//use an empty string for null and undefined valuse
 			if (params === null || params === undef) {
-                return [''];
+                return [""];
             }
 			
 			//reference to the type of params
@@ -240,18 +240,18 @@ returns: 'some string with first value and second value injected using {property
 		var ret = source.replace(
 			/\{\{|\}\}|\{([^}: ]+?)(?::([^}]*?))?\}/g, 
 			function(match, num, format) {
-				if (match == "{{") {
+				if (match === "{{") {
                     //unescape the nested {
                     return "{";
                 }
-				if (match == "}}") {
+				if (match === "}}") {
                     //unescape the nested }
                     return "}";
                 }
-				if (typeof params[num] == "undefined") {
+				if (typeof params[num] === "undefined") {
 					//if there was only one parameter, and the match is "0", and there's no "0" in params, use the params as the binding formatter
 					//should fix "... {0:...}".toFormat(singleItem)
-					if (num === "0" && outerLength == 2) {
+					if (num === "0" && outerLength === 2) {
                         var str2 = stringFromAny(params, format);
                         if (trimObject) {
                             diff = null;
@@ -275,17 +275,17 @@ returns: 'some string with first value and second value injected using {property
 	}
 
 	//main string formatter
-	if (typeof String.format != "function") {
+	if (typeof String.format !== "function") {
 		String.format = stringformat;
 	}
-	if (typeof String.asFormat != "function") {
+	if (typeof String.asFormat !== "function") {
 		String.asFormat = stringformat;
 	}
 
 
 	//create a format method for string instances
-	if (typeof String.prototype.format != "function") {
-        String.prototype.format = function() {
+	if (typeof String.prototype.format !== "function") {
+        String.prototype.format = function() { // jshint ignore:line
             var args = Array.prototype.slice.call(arguments);
             args.unshift(this);
             args.unshift(false);
@@ -293,13 +293,13 @@ returns: 'some string with first value and second value injected using {property
         };
     }
 
-    if (typeof String.prototype.formatReturnUnused != "function") {
+    if (typeof String.prototype.formatReturnUnused !== "function") {
         /**
          * A string formatter that takes in arguments, returns a formatted string, and returns any unused arguments.
          * @param {Object} lookup - The lookup hash
          * @returns {Object.<string, Object>} The formatted string along with any unused arguments
          */
-        String.prototype.formatReturnUnused = function() {
+        String.prototype.formatReturnUnused = function() { // jshint ignore:line
             var args = Array.prototype.slice.call(arguments);
             args.unshift(this);
             args.unshift(true);
@@ -307,8 +307,8 @@ returns: 'some string with first value and second value injected using {property
         };
     }
 
-	if (typeof String.prototype.asFormat != "function") {
-		String.prototype.asFormat = function() {
+	if (typeof String.prototype.asFormat !== "function") {
+		String.prototype.asFormat = function() { // jshint ignore:line
 			var args = Array.prototype.slice.call(arguments);
             args.unshift(this);
 			args.unshift(false);

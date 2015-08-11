@@ -36,7 +36,8 @@ ngDragabilly.directive("draggie",
                 dragEnd: angular.noop
             };
 
-            var transformProperty = getStyleProperty('transform');
+            // TODO: make getStyleProperty a module
+            var transformProperty = getStyleProperty("transform"); // jshint ignore:line
 
             return {
                 restrict: "A",
@@ -69,7 +70,7 @@ ngDragabilly.directive("draggie",
                     var reposition = function useTransformPositioning(element, position) {
                         element.style.left = 0;
                         element.style.left = 0;
-                        element.style[transformProperty] = 'translate3d( ' + position.x + 'px, ' + position.y + 'px, 0)';
+                        element.style[transformProperty] = "translate3d( " + position.x + "px, " + position.y + "px, 0)";
                     };
 
                     draggie.on("dragEnd", function (draggie, event, pointer) {
@@ -90,7 +91,7 @@ ngDragabilly.directive("draggie",
                     scope.$watch(function () {
                         return scope.options.enabled;
                     }, function (newValue, oldValue) {
-                        if (newValue == oldValue) {
+                        if (newValue === oldValue) {
                             return;
                         }
 

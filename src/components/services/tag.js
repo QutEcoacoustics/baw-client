@@ -15,7 +15,7 @@ angular
                 var wrappedMethod = resource[method];
 
                 resource[method] = function (params, data, success, error) {
-                    if (arguments.length != 4) {
+                    if (arguments.length !== 4) {
                         throw "we are doing some funky stuff on this resource method... expecting exactly 4 arguments [params, data, success, error]";
                     }
 
@@ -29,7 +29,7 @@ angular
             }
 
 
-            var resource = $resource(bawResource.uriConvert(paths.api.routes.tag.showAbsolute), {tagId: '@tagId'}, {});
+            var resource = $resource(bawResource.uriConvert(paths.api.routes.tag.showAbsolute), {tagId: "@tagId"}, {});
 
             var tagsCache = new Map();
 
@@ -97,7 +97,7 @@ angular
 
                 // optimise for most common case
                 // also: on load, only incomplete tags will be listed --> the tag resolver then runs for every tag, just below
-                if (first && first.typeOfTag == TagModel.tagTypes.commonName) {
+                if (first && first.typeOfTag === TagModel.tagTypes.commonName) {
                     return first;
                 }
                 else {
@@ -107,10 +107,10 @@ angular
                             return;
                         }
 
-                        if (value.typeOfTag == TagModel.tagTypes.commonName && !commonName) {
+                        if (value.typeOfTag === TagModel.tagTypes.commonName && !commonName) {
                             commonName = value;
                         }
-                        if (value.typeOfTag == TagModel.tagTypes.speciesName && !speciesName) {
+                        if (value.typeOfTag === TagModel.tagTypes.speciesName && !speciesName) {
                             speciesName = value;
                         }
                         if (!firstOther) {

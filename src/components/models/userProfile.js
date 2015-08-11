@@ -38,11 +38,9 @@ baw.UserProfile = (function () {
         // now create persistence settings logic
         var merged = angular.extend(defaultProfile.preferences, this.preferences);
         for (var key in merged) {
-            if (!merged.hasOwnProperty(key)) {
-                return;
+            if (merged.hasOwnProperty(key)) {
+                this.preferences[key] = merged[key];
             }
-      
-            this.preferences[key] = merged[key];
         }
     }
 

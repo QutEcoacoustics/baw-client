@@ -63,13 +63,13 @@ angular
                 var humanDuration = difference === 0 ? "" : moment.duration(difference).humanize();
                 var selectedLane = self.detail.selectedCategory || self.data.lanes[0] || "";
 
-                if (source != "DistributionOverview") {
+                if (source !== "DistributionOverview") {
                     tryUpdateExtent("overview", newExtent);
                 }
-                if (source != "DistributionDetail") {
+                if (source !== "DistributionDetail") {
                     self.detail.updateExtent(newExtent);
                 }
-                if (source != "DistributionVisualisation") {
+                if (source !== "DistributionVisualisation") {
                     self.visualisation.updateMiddle(middlePointBetweenDates(newExtent), selectedLane);
                     var visualizationMiddle = self.visualisation.visibleDuration;
                     var humanized = visualizationMiddle && moment.duration(visualizationMiddle, "seconds").humanize() || "";

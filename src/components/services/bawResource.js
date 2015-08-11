@@ -29,7 +29,7 @@ angular
                 var convertedPath = uriConvert(path);
 
                 var a = actions || {};
-                a.update = a.update || {method: 'PUT'};
+                a.update = a.update || {method: "PUT"};
                 a.query = a.query || {method: "GET", isArray: false};
                 var resource = $resource(convertedPath, paramDefaults, a);
 

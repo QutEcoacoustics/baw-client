@@ -1,10 +1,10 @@
-var accountsModule = angular.module('bawApp.accounts', []);
+var accountsModule = angular.module("bawApp.accounts", []);
 
 accountsModule.config(function config( ) {
 
 });
 
-accountsModule.controller('AccountsCtrl', ['$scope', '$resource', '$routeParams',
+accountsModule.controller("AccountsCtrl", ["$scope", "$resource", "$routeParams",
 
 
     /**
