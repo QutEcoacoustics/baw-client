@@ -400,6 +400,9 @@ module.exports = function (grunt) {
          * nonetheless inside `src/`.
          */
         jshint: {
+            options: {
+                jshintrc: ".jshintrc"
+            },
             src: [
                 '<%= app_files.js %>'
             ],
@@ -408,25 +411,7 @@ module.exports = function (grunt) {
             ],
             gruntfile: [
                 'Gruntfile.js'
-            ],
-            options: {
-                curly: true,
-                immed: true,
-                newcap: true,
-                noarg: true,
-                sub: true,
-                boss: true,
-                eqnull: true,
-                esnext: true,
-
-                /* HACK: At some point this should be turned off!" */
-                force: true,
-                globals: {
-                    "angular": false,
-                    "baw": true
-                }
-            }
-
+            ]
         },
 
         /**

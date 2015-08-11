@@ -89,7 +89,9 @@ module.exports = {
             'vendor/jquery-ui/jquery-ui.js',
 
             // NOTE: bootstrap css imported in application.tpl.scss
-            'vendor/sass-bootstrap/dist/js/bootstrap.js',
+            // NOTE: bootstrap's own JS not needed because angular-bootstrap does the same job
+            //  and without the jQuery dependency!
+            //~~"/vendor/bootstrap-sass/assets/javascripts/bootstrap.js",~~
             'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
             'vendor/ng-form-group/index.js',
 
@@ -151,7 +153,8 @@ module.exports = {
                 template.dest += "styles/images/";
 
                 return template;
-            }
+            },
+            "vendor/bootstrap-sass/assets/fonts/bootstrap/**"
         ]
     }
 };
