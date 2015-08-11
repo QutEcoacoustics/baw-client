@@ -154,7 +154,13 @@ module.exports = {
 
                 return template;
             },
-            "vendor/bootstrap-sass/assets/fonts/bootstrap/**"
+            function (template) {
+                template.src = "vendor/bootstrap-sass/assets/fonts/bootstrap/**";
+                template.dest += "fonts/bootstrap/";
+
+
+                return template;
+            }
         ]
     }
 };

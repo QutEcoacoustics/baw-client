@@ -18,7 +18,7 @@ angular.module("angular-auth", ["http-auth-interceptor"])
                 login.hide();
 
                 var isLoginBoxOpen = function(){
-                    throw new Error("Dependent on jQuery!");
+                    return false;
                     /*var loginHolderElm = $("#login-holder");
                     var mainElm = $("#content");
 

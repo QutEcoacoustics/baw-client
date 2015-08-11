@@ -5,7 +5,8 @@ module.exports = function (grunt) {
         gzipStatic = require("connect-gzip-static"),
         path = require("path"),
         slash = require("slash"),
-        _ = require("lodash");
+        _ = require("lodash"),
+        sass = require("./node_modules/grunt-sass/node_modules/node-sass");
 
 
     /**
@@ -370,10 +371,21 @@ module.exports = function (grunt) {
          * This task is run after the sass file template has been processed.
          */
         sassReal: {
-            options: {},
+            options: {
+                //functions: {
+                //    "image-url($img)": function(img, done) {
+                //        var imgPath = img.getValue(),
+                //            // equivalent to "<%= build_configs.current.siteDir %>assets/img"
+                //            fullPath = path.join(userConfig.build_configs.current.siteDir, imgPath);
+                //
+                //        var newPath = new sass.types.String(fullPath);
+                //
+                //        return newPath;
+                //    }
+                //}
+            },
             build: {
                 options: {
-                    imagePath: "<%= build_configs.current.siteDir %>assets/img",
                     outputStyle: "expanded",
                     sourceComments: "normal" /*'map',
                      sourceMap: '<%= sassDestName %>.map'*/
@@ -383,7 +395,6 @@ module.exports = function (grunt) {
             },
             compile: {
                 options: {
-                    imagePath: "<%= build_configs.current.siteDir %>assets/img",
                     outputStyle: "compressed",
                     sourceComments: "none"
                 },
