@@ -372,17 +372,25 @@ module.exports = function (grunt) {
          */
         sassReal: {
             options: {
-                //functions: {
-                //    "image-url($img)": function(img, done) {
-                //        var imgPath = img.getValue(),
-                //            // equivalent to "<%= build_configs.current.siteDir %>assets/img"
-                //            fullPath = path.join(userConfig.build_configs.current.siteDir, imgPath);
-                //
-                //        var newPath = new sass.types.String(fullPath);
-                //
-                //        return newPath;
-                //    }
-                //}
+                functions: {
+                    "image-url($img)": function(img, done) {
+                        var cwd = process.cwd(),
+                            bd = userConfig.build_dir,
+                            imgPath = path.join(cwd, bd, "assets/img", img.getValue()),
+                            // equivalent to "<%= build_configs.current.siteDir %>assets/img"
+                            sassPath = path.join(cwd, bd, "assets/styles"),
+                            fullPath = path.join(
+                                //userConfig.build_configs.current.siteDir,
+                                path.relative(sassPath, imgPath)
+                            );
+
+                        fullPath = "url('" + slash(fullPath) + "')";
+
+                        var newPath = new sass.types.String(fullPath);
+
+                        return newPath;
+                    }
+                }
             },
             build: {
                 options: {
