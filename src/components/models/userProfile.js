@@ -1,48 +1,46 @@
-var baw = window.baw = window.baw || {};
+angular
+    .module("bawApp.models.userProfile", [])
+    .factory(
+    "baw.models.UserProfile",
+    [
+        "baw.models.associations",
+        "baw.models.ApiBase",
+        "conf.paths",
+        "$url",
+        function (associations, ApiBase, paths, $url) {
 
+            class UserProfile extends ApiBase {
+                constructor(resource, defaultProfile) {
+                    if (!defaultProfile) {
+                        throw new Error("A default profile must be supplied");
+                    }
 
-baw.UserProfile = (function () {
+                    if (!resource) {
+                        resource = defaultProfile;
+                    }
 
-    function UserProfile(profile, defaultProfile) {
+                    super(resource);
 
-        if (!(this instanceof UserProfile)) {
-            throw new Error("Constructor called as a function");
-        }
+                    this.preferences = this.preferences || {};
 
+                    // ensure preferences are always updated
+                    this.preferences = Object.assign({}, defaultProfile.preferences, this.preferences);
 
-        if (!profile) {
-            profile = defaultProfile;
-        }
+                    this.imageUrls = this.imageUrls.reduce((s, c) => {
+                        c.url = paths.api.root + c.url;
+                        s[c.size] = c;
+                        return s;
+                    }, {});
+                }
 
-        if (!defaultProfile) {
-            throw new Error("A default profile must be supplied");
-        }
-        
-        
-        profile.preferences = profile.preferences || {};
-        
-        
-        // make read only properties for all profile props returned
-        var props = Object.keys(profile)
-            .reduce(function (state, current, index, array) {
-                state[current] = {
-                    value: profile[current],
-                    writeable: false,
-                    enumerable: true,
-                    configurable: false
-                };
-                return state;
-            }, {});
-        Object.defineProperties(this, props);
-
-        // now create persistence settings logic
-        var merged = angular.extend(defaultProfile.preferences, this.preferences);
-        for (var key in merged) {
-            if (merged.hasOwnProperty(key)) {
-                this.preferences[key] = merged[key];
+                get url() {
+                    // user profile url
+                    return $url.formatUri(
+                        paths.api.links.userAccountsAbsolute,
+                        {userId: this.id}
+                    );
+                }
             }
-        }
-    }
 
-    return UserProfile;
-})();
+            return UserProfile;
+        }]);

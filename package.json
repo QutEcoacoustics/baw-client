@@ -32,6 +32,7 @@
     "grunt-conventional-changelog": "^3.0",
     "grunt-html2js": "~0.3.2",
     "grunt-karma": "^0.12",
+    "grunt-ng-constant": "^1.1.0",
     "grunt-sass": "^1.0.0",
     "karma": "^0.13",
     "karma-chrome-launcher": "~0.2",

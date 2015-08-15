@@ -2,6 +2,16 @@
  * This file contains our site's customizations to bootstrap.
  */
 
+// allow full (and flexible/fluid) width displays
+// http://www.helloerik.com/bootstrap-3-grid-introduction#fluid
+.container-liquid {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
 .clickable
 {
   cursor: pointer;
@@ -11,7 +21,7 @@
 {
   background: rgba(0, 0, 0, 0.15);
   display: inline-block;
-  padding: 6px 21px 6px 6px;
+  padding: 6px 7px 6px 6px;
   border-radius: $border-radius-base;
 }
 
@@ -20,4 +30,24 @@
   margin-top: -0.35em;
   font-size: 15px;
   margin-right: -0.6em;
+}
+
+a.disabled {
+  @extend .btn.disabled;
+  @extend .text-muted;
+  // allow the title to still show
+  pointer-events: auto;
+  cursor: default;
+  text-decoration: none;
+
+}
+
+
+// display nav-pills wihtout making them links
+// i.e. for text
+.nav-text {
+  @extend .text-muted;
+  @extend .navbar-text;
+  padding: $nav-link-padding;
+  margin: 0;
 }

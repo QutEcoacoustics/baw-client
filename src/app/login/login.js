@@ -1,5 +1,6 @@
-angular.module("bawApp.login", [])
-
+angular.module("bawApp.login", [
+    "bawApp.login.loginWidget"
+])
     .controller("LoginCtrl",
         ["$scope", "$http", "$location", "authService", "AuthenticationProviders", "Authenticator",
             function LoginCtrl($scope, $http, $location, authService, AuthenticationProviders, Authenticator) {

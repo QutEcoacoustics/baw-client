@@ -1,30 +1,45 @@
 {
-  "keys": {
-    "googleMaps": ""
-  },
-  "configFile": "src/baw.configuration.tpl.js",
-  "development": {
-    "apiRoot": "http://staging.ecosounds.org",
-    "siteRoot": "http://localhost:8080",
-    "siteDir": "/",
-    "ga": {
-      "trackingId": ""
+  "environments" : {
+    "development": {
+      "apiRoot": "http://staging.ecosounds.org",
+      "siteRoot": "http://localhost:8080",
+      "siteDir": "/",
+      "ga": {
+        "trackingId": ""
+      }
+    },
+    "staging": {
+      "apiRoot": "http://staging.EXAMPLE.org",
+      "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
+      "siteDir": "/system/listen_to/",
+      "ga": {
+        "trackingId": "<<PLACEHOLDER>>"
+      }
+    },
+    "production": {
+      "apiRoot": "http://production.EXAMPLE.org",
+      "siteRoot": "http://production.EXAMPLE.org/system/listen_to",
+      "siteDir": "/system/listen_to/",
+      "ga": {
+        "trackingId": "<<PLACEHOLDER>>"
+      }
     }
   },
-  "staging": {
-    "apiRoot": "http://staging.EXAMPLE.org",
-    "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
-    "siteDir": "/system/listen_to/",
-    "ga": {
-      "trackingId": "<<PLACEHOLDER>>"
-    }
-  },
-  "production": {
-    "apiRoot": "http://production.EXAMPLE.org",
-    "siteRoot": "http://production.EXAMPLE.org/system/listen_to",
-    "siteDir": "/system/listen_to/",
-    "ga": {
-      "trackingId": "<<PLACEHOLDER>>"
+  "values": {
+    "keys": {
+      "googleMaps": ""
+    },
+    "brand": {
+      "name": "<<brand name here>>",
+      "title": "<<brand name here>> | Bioacoustic Workbench"
+    },
+    "content": {
+      "research": [
+        {
+          "innerText": "Example",
+          "url": "http://www.EXAMPLE.org/awebpage"
+        }
+      ]
     }
   }
 }

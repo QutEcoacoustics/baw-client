@@ -8,6 +8,14 @@ module.exports = function (grunt) {
         _ = require("lodash"),
         sass = require("./node_modules/grunt-sass/node_modules/node-sass");
 
+    var _invalidateRequireCacheForFile = function(filePath){
+        delete require.cache[path.resolve(filePath)];
+    };
+
+    var requireNoCache =  function(filePath){
+        _invalidateRequireCacheForFile(filePath);
+        return require(filePath);
+    };
 
     /**
      * Load required Grunt tasks. These are installed based on the versions listed
@@ -27,6 +35,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-html2js");
     grunt.loadNpmTasks("grunt-contrib-connect");
     grunt.loadNpmTasks("grunt-babel");
+    grunt.loadNpmTasks("grunt-ng-constant");
 
     /**
      * Load in our build configuration file.
@@ -73,18 +82,18 @@ module.exports = function (grunt) {
 
     if (development) {
         grunt.log.ok("Development build selected");
-        userConfig.build_configs.current = userConfig.build_configs.development;
+        userConfig.build_configs.current = userConfig.build_configs.environments.development;
         userConfig.build_configs.current.key = "development";
     }
     if (staging) {
         grunt.log.ok("Staging build selected");
-        userConfig.build_configs.current = userConfig.build_configs.staging;
+        userConfig.build_configs.current = userConfig.build_configs.environments.staging;
         userConfig.build_configs.current.key = "staging";
         userConfig.usePhantomJs = true;
     }
     if (production) {
         grunt.log.ok("Production build selected");
-        userConfig.build_configs.current = userConfig.build_configs.production;
+        userConfig.build_configs.current = userConfig.build_configs.environments.production;
         userConfig.build_configs.current.key = "production";
         userConfig.usePhantomJs = true;
     }
@@ -178,6 +187,41 @@ module.exports = function (grunt) {
         },
 
         /**
+         * The `ngconstant` task allows us to embed environment settings as
+         * angular constant/value modules. We thus can avoid the need for templating
+         * javascript files.
+         */
+        ngconstant: {
+            options: {
+                name: "bawApp.configuration",
+                serializerOptions: {
+                    indent: "  ",
+                    quote: "\"",
+                    no_trailing_comma: true
+                },
+                constants: function () {
+                    var bc = grunt.config("build_configs"),
+                        constantsFiles = grunt.config("constants_files"),
+                        appEnvironment = _.merge({}, bc.current, bc.values);
+
+                    var result = {
+                        "conf.environment": appEnvironment
+                    };
+
+                    Object.keys(constantsFiles).forEach(function(key) {
+                        var constantsModule = requireNoCache(constantsFiles[key]);
+
+                        result[key] = constantsModule(appEnvironment);
+                    });
+
+                    return result;
+                },
+                dest: "src/baw.environment.generated.js"
+            },
+            build: {}
+        },
+
+        /**
          * The `copy` task just copies files from A to B. We use it here to copy
          * our project assets (images, fonts, etc.) and javascripts into
          * `build_dir`, and then to copy the assets to `compile_dir`.
@@ -233,19 +277,19 @@ module.exports = function (grunt) {
             },
             build_appjs: {
                 options: {
-                    process: function (content, srcPath) {
-                        // if srcPath contain .tpl.js
-                        // for now since the angular templates use tpl as well,
-                        // we'll cheat and just use a direct file reference
-                        var bc = grunt.config("build_configs");
-                        if (srcPath.indexOf(bc.configFile) >= 0) {
-
-                            // then process as template!
-                            return grunt.template.process(content, {data: bc});
-                        }
-
-                        return content;
-                    }
+                    //process: function (content, srcPath) {
+                    //    // if srcPath contain .tpl.js
+                    //    // for now since the angular templates use tpl as well,
+                    //    // we'll cheat and just use a direct file reference
+                    //    var bc = grunt.config("build_configs");
+                    //    if (srcPath.indexOf(bc.configFile) >= 0) {
+                    //
+                    //        // then process as template!
+                    //        return grunt.template.process(content, {data: bc});
+                    //    }
+                    //
+                    //    return content;
+                    //}
                 },
                 files: [
                     {
@@ -293,7 +337,7 @@ module.exports = function (grunt) {
             transpile_appjs: {
                 files: [
                     {
-                        src: [ "<%= app_files.js %>", "<%= app_files.jsunit %>"],
+                        src: ["<%= app_files.js %>", "<%= app_files.jsunit %>"],
                         dest: "<%= es6_dir %>",
                         cwd: ".",
                         expand: true,
@@ -338,6 +382,7 @@ module.exports = function (grunt) {
                         });
                     }()),
                     "buildConfig/module.prefix",
+//                    "<%= build_dir %>/src/**/*generated.js",
                     "<%= build_dir %>/src/**/*.js",
                     "<%= html2js.app.dest %>",
                     "<%= html2js.common.dest %>",
@@ -373,11 +418,11 @@ module.exports = function (grunt) {
         sassReal: {
             options: {
                 functions: {
-                    "image-url($img)": function(img, done) {
+                    "image-url($img)": function (img, done) {
                         var cwd = process.cwd(),
                             bd = userConfig.build_dir,
                             imgPath = path.join(cwd, bd, "assets/img", img.getValue()),
-                            // equivalent to "<%= build_configs.current.siteDir %>assets/img"
+                        // equivalent to "<%= build_configs.current.siteDir %>assets/img"
                             sassPath = path.join(cwd, bd, "assets/styles"),
                             fullPath = path.join(
                                 //userConfig.build_configs.current.siteDir,
@@ -414,7 +459,7 @@ module.exports = function (grunt) {
         /**
          * `jshint` defines the rules of our linter as well as which files we
          * should check. This file, all javascript sources, and all our unit tests
-         * are linted based on the policies listed in `options`. But we can also
+         * are linted based on the policies listed in `.jshintrc`. But we can also
          * specify exclusionary patterns by prefixing them with an exclamation
          * point (!); this is useful when code comes from a third party but is
          * nonetheless inside `src/`.
@@ -424,7 +469,8 @@ module.exports = function (grunt) {
                 jshintrc: ".jshintrc"
             },
             src: [
-                "<%= app_files.js %>"
+                "<%= app_files.js %>",
+                "!src/**/*.generated.js"
             ],
             test: [
                 "<%= app_files.jsunit %>"
@@ -498,6 +544,7 @@ module.exports = function (grunt) {
                 dir: "<%= build_dir %>",
                 src: [
                     "<%= vendor_files.js %>",
+                    //"<%= build_dir %>/src/**/*generated.js",
                     "<%= build_dir %>/src/**/*.js",
                     "<%= html2js.common.dest %>",
                     "<%= html2js.app.dest %>",
@@ -532,6 +579,7 @@ module.exports = function (grunt) {
                     "<%= vendor_files.js %>",
                     "<%= html2js.app.dest %>",
                     "<%= html2js.common.dest %>",
+                    //"<%= build_dir %>/src/**/*generated.js",
                     "<%= test_files.js %>"
                 ]
             }
@@ -635,11 +683,21 @@ module.exports = function (grunt) {
              */
             jssrc: {
                 files: [
+                    "!src/**/*.generated.js",
                     "<%= app_files.js %>"
                 ],
                 // recent modification: files are copied before unit tests are run!
-                tasks: ["jshint:src", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"  ]
+                tasks: ["jshint:src", "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
             },
+
+            jssrc2: {
+                files: [
+                    "<%= app_files.specialjs %>",
+                ],
+                // recent modification: files are copied before unit tests are run!
+                tasks: ["jshint:src", "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
+            },
+
 
             /**
              * When assets are changed, copy them. Note that this will *not* copy new
@@ -721,7 +779,8 @@ module.exports = function (grunt) {
     grunt.registerTask("build", [
         "clean", "html2js", "jshint", "sass:build",
         "concat:build_css", "copy:build_app_assets", "copy:build_vendor_assets",
-        "babel:transpile_appjs", "copy:build_appjs", "copy:build_vendorjs", "index:build", "karmaconfig",
+        "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs",
+        "copy:build_vendorjs", "index:build", "karmaconfig",
         "karma:continuous"
     ]);
 
@@ -777,7 +836,8 @@ module.exports = function (grunt) {
                         scripts: jsFiles,
                         styles: cssFiles,
                         mainStyle: mainCss,
-                        version: grunt.config("pkg.version")
+                        version: grunt.config("pkg.version"),
+                        year: (new Date()).getFullYear()
                     }
                 });
             }
@@ -814,8 +874,7 @@ module.exports = function (grunt) {
                 }
 
 
-
-            } else if(isSlashedA) {
+            } else if (isSlashedA) {
                 return 1;
             } else if (isSlashedB) {
                 return -1;

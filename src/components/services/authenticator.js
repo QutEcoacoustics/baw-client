@@ -17,7 +17,9 @@ angular
                 logoutSuccess: function logoutSuccess(data, status, headers, config) {
                     $rootScope.$safeApply($rootScope, function () {
                         that.authToken = null;
+                        that.authenticated = false;
                         $rootScope.userData = null;
+                        $rootScope.loggedIn = true;
                         $http.defaults.headers.common[authHeader] = null;
 
                         console.log("Logout successful", data);
@@ -27,7 +29,8 @@ angular
                     console.error("Logout failure: ", data, status, headers, config);
                 },
                 checkLogin: checkLogin,
-                authToken: null
+                authToken: null,
+                authenticated: false
             };
 
             return that;
@@ -47,6 +50,7 @@ angular
                     throw "The authorisation token can not be undefined at this point";
                 }
 
+                that.authenticated = true;
                 that.authToken = data.authToken;
                 $http.defaults.headers.common[authHeader] = "Token token=\"" +
                                                                  that.authToken +
@@ -54,6 +58,7 @@ angular
 
                 $rootScope.$safeApply($rootScope, function () {
                     $rootScope.userData = data;
+                    $rootScope.loggedIn = true;
                     console.log("Login successful", data);
                     authService.loginConfirmed();
                 });
@@ -62,7 +67,9 @@ angular
             function loginFailure(data, status, headers, config) {
                 $rootScope.$safeApply($rootScope, function () {
                     that.authToken = null;
+                    that.authenticated = false;
                     $rootScope.userData = null;
+                    $rootScope.loggedIn = false;
                     $http.defaults.headers.common[authHeader] = null;
 
                     if (config && config.url === paths.api.routes.security.pingAbsolute) {

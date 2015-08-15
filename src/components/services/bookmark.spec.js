@@ -2,6 +2,7 @@ describe("The bookmark service", function () {
 
     var bawResource;
 
+    beforeEach(module("bawApp.models", "rails"));
     beforeEach(module("bawApp.services"));
 
     beforeEach(inject(["Bookmark", function (providedBawResource) {

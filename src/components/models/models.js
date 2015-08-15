@@ -2,6 +2,7 @@ angular.module(
     "bawApp.models",
     [
         "bawApp.configuration",
+        "rails",
         "bawApp.services",
         "bawApp.models.associations",
 //
@@ -14,10 +15,10 @@ angular.module(
         "bawApp.models.audioEvent",
         //"bawApp.models.taggings",
         "bawApp.models.tag",
-        "bawApp.models.media"
+        "bawApp.models.media",
         //"bawApp.models.birdWalkService",
         //"bawApp.models.breadcrumbs",
-        //"bawApp.models.userProfile",
+        "bawApp.models.userProfile",
         //"bawApp.models.authenticator"
 
     ]);

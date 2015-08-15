@@ -21,6 +21,10 @@ module.exports = {
      */
     build_configs: require("./environmentSettings.json"),
 
+    constants_files: {
+        "conf.paths": "./src/baw.paths.nobuild.js",
+        "conf.constants": "./src/baw.constants.nobuild.js"
+    },
     /**
      * This is a collection of file patterns that refer to our app code (the
      * stuff in `src/`). These file paths are used in the configuration of
@@ -31,8 +35,12 @@ module.exports = {
      * app's unit tests.
      */
     app_files: {
-        js: ["src/**/*.js", "!src/**/*.spec.js", "!src/assets/**/*.js"],
+        js: ["src/**/*.js",
+            "!src/**/*.spec.js",
+            "!src/assets/**/*.js",
+            "!src/**/*.nobuild.js"],
         jsunit: ["src/**/*.spec.js"],
+        specialjs: ["src/**/*.nobuild.js"],
 
         atpl: ["src/app/**/*.tpl.html"],
         ctpl: ["src/common/**/*.tpl.html", "src/components/**/*.tpl.html"],

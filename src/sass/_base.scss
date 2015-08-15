@@ -55,7 +55,10 @@ $standard-line-height: 1em;
  *  Specific styles
  *
  */
-$footer-height: 40px;
+
+// http://getbootstrap.com/components/#navbar-fixed-top
+$header-padding: 70px;
+$footer-padding: $header-padding;
 
 /*
  *

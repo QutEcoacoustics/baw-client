@@ -67,6 +67,7 @@ angular.module("baw",
                              "url", /* a custom uri formatter */
                              "bawApp.configuration", /* a mapping of all static path configurations
                                                         and a module that contains all app configuration */
+                             "bawApp.predictiveCacheDefaultProfiles",
 
                              "http-auth-interceptor", /* the auth module    */
                              "angular-auth", /* the auth module    */
@@ -230,11 +231,8 @@ angular.module("baw",
              }])
 
 
-    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants",
-          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constants) {
-
-              // embed configuration for easy site-wide binding
-              $rootScope.paths = paths;
+    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "predictiveCacheDefaultProfiles",
+          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, predictiveCacheDefaultProfiles) {
 
               // user profile - update user preferences when they change
               var eventCallbacks = {};
@@ -259,7 +257,7 @@ angular.module("baw",
               UserProfile.listen(eventCallbacks);
 
               // helper function for printing scope objects
-              baw.exports.print = $rootScope.print = function () {
+              /*baw.exports.print = $rootScope.print = function () {
                   var seen = [];
                   var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling",
                                  "$$prevSibling", "$root", "this", "$parent"];
@@ -277,8 +275,7 @@ angular.module("baw",
                                                return val;
                                            }, 4);
                   return str;
-              };
-              $rootScope.showOrHideDebugInfo = false;
+              };*/
 
 
               // http://www.yearofmoo.com/2012/10/more-angularjs-magic-to-supercharge-your-webapp.html#apply-digest-and-phase
@@ -358,24 +355,23 @@ angular.module("baw",
 
 
               $rootScope.loggedIn = false;
-
-              $rootScope.$watch("userData", function () {
-                  var token = $rootScope.authorisationToken,
-                      userData = $rootScope.userData;
-                  $rootScope.loggedIn = (token && userData) ? true : false;
-
-              });    /* /deprecated */
+              $rootScope.userData = {};
 
               $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
 
               // set up predictive cache service
-              predictiveCache(constants.predictiveCache.profiles["Media cache ahead"]($location, paths));
+              predictiveCache(predictiveCacheDefaultProfiles["Media cache ahead"]($location, paths));
 
           }])
 
     .controller("AppCtrl",
-                ["$scope", "$location", "conf.constants", "growl", "$timeout", "localStorageService", "bowser",
-                 function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService, bowser) {
+                ["$scope", "$location", "conf.constants", "growl", "$timeout", "localStorageService", "bowser", "conf.paths", "conf.environment",
+                 function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService, bowser, paths, appEnvironment) {
+
+                     // embed configuration for easy site-wide binding
+                     $scope.paths = paths;
+                     $scope.brand = constants.brand;
+                     $scope.researchPages = appEnvironment.content.research;
 
                      $scope.showDebugUi = function () {
                          var r = window.cssRules.getCssRule(".debug-UI");
