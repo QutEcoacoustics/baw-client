@@ -1,16 +1,16 @@
-angular.module('bawApp.navigation', [])
+angular.module("bawApp.navigation", [])
 
-    .directive('navigation', ['conf.paths', function (paths) {
+    .directive("navigation", ["conf.paths", function (paths) {
 
         return {
-            restrict: 'E',
+            restrict: "E",
             templateUrl: paths.site.files.navigation
         };
     }])
 
     .controller(
-        'NavigationCtrl',
-        ['$scope', '$resource', '$route', '$routeParams', '$location', 'breadcrumbs',
+        "NavigationCtrl",
+        ["$scope", "$resource", "$route", "$routeParams", "$location", "breadcrumbs",
             function NavigationCtrl($scope, $resource, $route, $routeParams, $location, breadcrumbs) {
                 $scope.$location = $location;
                 $scope.$route = $route;

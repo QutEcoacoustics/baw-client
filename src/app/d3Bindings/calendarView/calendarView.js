@@ -21,13 +21,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.vendorServices.auto"])
              minYear = 2007,
              firstYear = null, //new Date().getFullYear(),
              lastYear = null, //2007
-             colourDomain = [0, 100],//domain is input values, usually x
-             colourRangeStart = 0, // range is output values, usually y
-             colourRangeStop = 10,
-             colourRangeStep = 1,
-             defaultSelection = [
-                 {name: '-- Everything --', id: null}
-             ];
+             colourRangeStop = 10;
 
          var color = d3.scale.quantize()
              .domain([0, 25])
@@ -41,13 +35,13 @@ angular.module("bawApp.d3.calendarView", ["bawApp.vendorServices.auto"])
              for (var i = 0; i < json.length; i++) {
                  var item = json[i];
                  var recordedDate = moment(item.recordedDate);
-                 var key = recordedDate.format('YYYY-MM-DD');
+                 var key = recordedDate.format("YYYY-MM-DD");
 
                  var itemYear = parseInt(recordedDate.year());
-                 if (firstYear == null || itemYear > firstYear) {
+                 if (firstYear === null || itemYear > firstYear) {
                      firstYear = itemYear;
                  }
-                 if (lastYear == null || itemYear < lastYear) {
+                 if (lastYear === null || itemYear < lastYear) {
                      lastYear = itemYear;
                  }
 
@@ -59,7 +53,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.vendorServices.auto"])
                  }
 
                  // get the max number of recordings in a day
-                 if (colourRangeStop == null || data[key] > colourRangeStop) {
+                 if (colourRangeStop === null || data[key] > colourRangeStop) {
                      colourRangeStop = data[key];
                  }
              }
@@ -197,7 +191,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.vendorServices.auto"])
                  // you can use the jQuery / d3 objects here (use the injected d3 instance)
 
                  // where possible avoid jQuery
-                 var element = $element[0];
+                 //var element = $element[0];
 
                  // TODO: merge options with defaults
 
@@ -219,7 +213,7 @@ angular.module("bawApp.d3.calendarView", ["bawApp.vendorServices.auto"])
                  $scope.$watch(function () {
                      return $scope.options.singleColor;
                  }, function (n, o) {
-                     if (n != o && $scope.data) {
+                     if (n !== o && $scope.data) {
                          updateFunction($scope.options);
                      }
                  });

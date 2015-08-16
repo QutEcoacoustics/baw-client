@@ -119,16 +119,16 @@ angular.module("bawApp.d3.terrainView", ["bawApp.vendorServices.auto"])
                 // {"datetime": "2014-09-10 15:00:00", "value": 5}
 
                 // get start and end in +10 timezone
-                var start = moment(value.recordedDate).zone('+10:00');
-                var end = moment(value.recordedDate).add(value.durationSeconds, 'seconds').zone('+10:00');
+                var start = moment(value.recordedDate).zone("+10:00");
+                var end = moment(value.recordedDate).add(value.durationSeconds, "seconds").zone("+10:00");
 
-                var momentFormatString = 'YYYY-MM-DDTHH:00:00ZZ';
+                var momentFormatString = "YYYY-MM-DDTHH:00:00ZZ";
 
                 // loop from start to end of recording, adding a minute each time.
-                var diff = end.diff(start.clone().startOf('hour'), 'hours');
+                var diff = end.diff(start.clone().startOf("hour"), "hours");
                 for (var step = 0; step <= diff; step++) {
 
-                    var current = start.clone().startOf('hour').add(step, 'hour');
+                    var current = start.clone().startOf("hour").add(step, "hour");
                     var currentFormatted = current.format(momentFormatString);
                     if (!dataStructure[currentFormatted]) {
                         dataStructure[currentFormatted] = 1;
@@ -204,13 +204,13 @@ angular.module("bawApp.d3.terrainView", ["bawApp.vendorServices.auto"])
                 // you can use the jQuery / d3 objects here (use the injected d3 instance)
 
                 // where possible avoid jQuery
-                var element = $element[0];
+                //var element = $element[0];
 
                 // watch for changes on scope data
                 $scope.$watch(function () {
                     return $scope.data;
                 }, function (newValue, oldValue) {
-                    if (newValue && newValue != oldValue) {
+                    if (newValue && newValue !== oldValue) {
                         getData(newValue);
                     }
                 });

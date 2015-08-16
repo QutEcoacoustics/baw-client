@@ -1,4 +1,4 @@
-var ngAudio = ngAudio || angular.module('bawApp.directives.ngAudio', ['bawApp.configuration', "bawApp.directives.ui.bootstrap"]);
+var ngAudio = ngAudio || angular.module("bawApp.directives.ngAudio", ["bawApp.configuration", "bawApp.directives.ui.bootstrap"]);
 
 
 ngAudio.constant("ngAudioEvents", {
@@ -156,7 +156,7 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                         }
                     }
                     else {
-                        scope.currentState = event && event.type || 'unknown';
+                        scope.currentState = event && event.type || "unknown";
                         updateObject(element, scope);
                     }
 
@@ -220,7 +220,7 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                     var target = scope.$eval(attributes.ngAudio);
                     if (target) {
                         var position = element.currentTime;
-                        if (target.position != position) {
+                        if (target.position !== position) {
                             //scope.$safeApply2(function () {
                             target.position = position;
                             //});

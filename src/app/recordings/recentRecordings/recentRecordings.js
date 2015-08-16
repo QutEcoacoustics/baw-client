@@ -49,7 +49,7 @@ angular.module("bawApp.recordings.recentRecordings", [])
                 });
 
             $scope.navigate = function navigate($event, link) {
-                if ($event.target.nodeName.toLowerCase() == "a") {
+                if ($event.target.nodeName.toLowerCase() === "a") {
                     return;
                 }
 

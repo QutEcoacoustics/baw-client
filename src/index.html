@@ -1,23 +1,18 @@
 <!DOCTYPE html>
-<!-- TODO: add ng-strict-di attribute to html element. Currently blocked by batarang https://github.com/angular/angularjs-batarang/issues/138 -->
 <html ng-app="baw" ng-controller="AppCtrl" ng-strict-di>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bioacoustics Workbench</title>
-    <meta name="description" content=""/>
+    <title><%= build_configs.values.brand.title %></title>
 
     <base href="/">
 
-    <!-- todo add back in assets -->
     <!-- compiled CSS -->
-    <% styles.forEach( function ( file ) { %>
-    <!--<link rel="stylesheet" type="text/css" href="<%= file %>" />-->
-    <% }); %>
     <link rel="stylesheet" type="text/css" href="<%= build_configs.current.siteDir %><%= mainStyle %>"/>
 
     <!-- Google Maps -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= build_configs.keys.googleMaps %>&sensor=false"></script>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=<%= build_configs.values.keys.googleMaps %>&sensor=false"></script>
 
     <!-- compiled JavaScript -->
     <% scripts.forEach( function ( file ) { %>
@@ -26,170 +21,175 @@
 </head>
 <body baw-auth class="waiting-for-angular">
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-
-            <button type="button" class="navbar-toggle" data-toggle="collapse">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" ng-init="isCollapsed = true"
+                    ng-click="isCollapsed = !isCollapsed">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand"
+               ng-href="{{::paths.api.links.homeAbsolute}}" target="_self">
+                {{::brand.name}}
+                <!-- TODO: logo goes here -->
+                <!--<img alt="Brand" src="">-->
+            </a>
+        </div>
 
-            <a class="navbar-brand" ng-href="{{paths.api.links.homeAbsolute}}" target="_self">Bioacoustics Workbench</a>
-
-
-        <div class="collapse navbar-collapse">
+        <div class="collapse navbar-collapse" collapse="isCollapsed">
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: activePath('/projects') }"><a ng-href="{{paths.api.links.projectsAbsolute}}" target="_self">Projects</a></li>
-                <li ng-class="{ active: activePath('/listen') }"><a ng-href="{{paths.site.ngRoutes.recentRecordings}}">Listen</a></li>
-                <li ng-class="{ active: activePath('/library') }"><a ng-href="{{paths.site.ngRoutes.library}}">Library</a></li>
-                <!--<li ng-class="{ active: activePath('/bird') }"><a href="/birdWalks">Bird Walks</a></li>-->
-
-                <li style="display: none" ng-controller="LoginCtrl">
-                  <span ng-show="loggedIn">
-                    Welcome
-                      <a href="/users/{{userData.userId}}" title="{{friendlyName}}">{{friendlyName}}</a>
-                      &nbsp;&nbsp;
-                      <a href ng-click="logout()">Sign Out</a>
-                  </span>
-                  <span ng-hide="loggedIn">
-                    Welcome! <a href ng-click="login()">Sign In</a>
-                  </span>
+                <li ng-class="{ active: activePath('/projects') }">
+                    <a ng-href="{{paths.api.links.projectsAbsolute}}"
+                       target="_self">Projects</a>
                 </li>
+                <li ng-class="{ active: activePath('/listen') }">
+                    <a ng-href="{{paths.site.ngRoutes.recentRecordings}}">Listen</a>
+                </li>
+                <li ng-class="{ active: activePath('/library') }">
+                    <a ng-href="{{paths.site.ngRoutes.library}}">Library</a>
+                </li>
+                <li class="dropdown"
+                    dropdown>
+                    <a href=""
+                       dropdown-toggle>
+                        Research <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="item in ::researchPages">
+                            <a ng-href="{{::item.url}}"
+                               target="_self">{{::item.innerText}}</a>
+                        </li>
 
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <!-- Hide text at small screen size to prevent double row navbar -->
-                <p class="navbar-text hidden-sm">
-                    Bio-Acoustic Workbench, an open source eScience initiative (v<%= version %>).
-                </p>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Debugging <b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><button class="btn btn-default btn-block" ng-click="showDebugUi()">Show hidden features</button></li>
-                        <li><button class="btn btn-default btn-block" ng-click="hideDebugUi()">Hide hidden features</button></li>
-                        <li class="divider"></li>
-                        <li><a href="/listen/234234">Easy Link</a></li>
-                        <li><a ng-href="{{paths.site.ngRoutes.demo.d3}}">D3 tests</a></li>
-                        <li><a ng-href="{{paths.site.ngRoutes.visualize}}">ADV tests</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a ng-href="{{paths.api.links.contactUsAbsolute}}"
+                       target="_self">Contact us</a>
+                </li>
             </ul>
+            <login-widget></login-widget>
         </div>
-
-        </div>
-        </div>
-
-    </nav>
-
-    <div growl>
 
     </div>
-    <!--<div id="login-holder">-->
-        <!--<div id="loginbox">-->
-            <!--<div id="login-inner" ng-controller="LoginCtrl">-->
-                <!--<a href="/" id="loginboxclose" title="Cancel login and return to home page" ng-click="cancelLogin()"><i-->
-                        <!--class="icon-remove"></i></a>-->
-                <!--<p>-->
-                    <!--Go back to <a ng-href="{{paths.api.routes.security.signInAbsolute}}" target="_blank" >the parent website</a> and sign in again please.-->
-                <!--</p>-->
-                <!--&lt;!&ndash;<form method="POST" autocomplete>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<h2>Sign In</h2>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<ul>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a ng-click="submit('google')" class="btn-auth btn-google">Sign in with Google</a></li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a ng-click="submit('facebook')" class="btn-auth btn-facebook">Sign in with Facebook</a>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+</nav>
 
-                        <!--&lt;!&ndash;<li><a ng-click="submit('twitter')" class="btn-auth btn-twitter">Sign in with Twitter</a></li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a ng-click="submit('windowslive')" class="btn-auth btn-windows">Sign in with Live ID</a>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+<div growl>
+</div>
 
-                        <!--&lt;!&ndash;&lt;!&ndash;&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a ng-click="submit('persona')" class="persona-button"><span>Sign in with Persona</span></a> </li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a ng-click="submit('github')" class="btn-auth btn-github"  >Sign in with GitHub</a></li>&ndash;&gt;-->
+<!--<div id="login-holder">-->
+<!--<div id="loginbox">-->
+<!--<div id="login-inner" ng-controller="LoginCtrl">-->
+<!--<a href="/" id="loginboxclose" title="Cancel login and return to home page" ng-click="cancelLogin()"><i-->
+<!--class="icon-remove"></i></a>-->
+<!--<p>-->
+<!--Go back to <a ng-href="{{paths.api.routes.security.signInAbsolute}}" target="_blank" >the parent website</a> and sign in again please.-->
+<!--</p>-->
+<!--&lt;!&ndash;<form method="POST" autocomplete>&ndash;&gt;-->
+<!--&lt;!&ndash;<h2>Sign In</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;<ul>&ndash;&gt;-->
+<!--&lt;!&ndash;<li><a ng-click="submit('google')" class="btn-auth btn-google">Sign in with Google</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;<li><a ng-click="submit('facebook')" class="btn-auth btn-facebook">Sign in with Facebook</a>&ndash;&gt;-->
+<!--&lt;!&ndash;</li>&ndash;&gt;-->
 
-                        <!--&lt;!&ndash;<li><a ng-click="submit('yahoo')" href="#" class="btn-auth btn-yahoo">Sign in with Yahoo ID</a> </li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li><a ng-click="submit('open_id')" class="btn-auth btn-openid">Sign in with OpenID</a> </li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+<!--&lt;!&ndash;<li><a ng-click="submit('twitter')" class="btn-auth btn-twitter">Sign in with Twitter</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;<li><a ng-click="submit('windowslive')" class="btn-auth btn-windows">Sign in with Live ID</a>&ndash;&gt;-->
+<!--&lt;!&ndash;</li>&ndash;&gt;-->
 
-                    <!--&lt;!&ndash;<div ng-show="requireMoreInformation">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<h3>Additional information is required</h3>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<label><span ng-bind="requireMoreInformation.text"></span>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<input&ndash;&gt;-->
-                                    <!--&lt;!&ndash;name="login_url" id="login_url" placeholder="enter a valid url"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;type="url" autocomplete="on"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-show='requireMoreInformation.type == "url"'&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "url"'&ndash;&gt;-->
-                                    <!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;class="login"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<input&ndash;&gt;-->
-                                    <!--&lt;!&ndash;name="login_text" id="login_text" placeholder="enter required text"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;type="text" autocomplete="on"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "text"'&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-show='requireMoreInformation.type == "text"'&ndash;&gt;-->
-                                    <!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;class="login"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<input&ndash;&gt;-->
-                                    <!--&lt;!&ndash;name="email" id="email" placeholder="enter a valid email"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;type="email" autocomplete="on"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "email"'&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-show='requireMoreInformation.type == "email"'&ndash;&gt;-->
-                                    <!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;class="login"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</label>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<button ng-click="submit(requireMoreInformation.providerId)" type="submit">Sign In</button>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                <!--&lt;!&ndash;</form>&ndash;&gt;-->
-            <!--</div>-->
-            <!--<div class="clear"></div>-->
-        <!--</div>-->
-    <!--</div>-->
+<!--&lt;!&ndash;&lt;!&ndash;&ndash;&gt;-->
+<!--&lt;!&ndash;<li><a ng-click="submit('persona')" class="persona-button"><span>Sign in with Persona</span></a> </li>&ndash;&gt;-->
+<!--&lt;!&ndash;<li><a ng-click="submit('github')" class="btn-auth btn-github"  >Sign in with GitHub</a></li>&ndash;&gt;-->
 
-    <div ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
-        <div class="row-fluid">
-            <navigation ng-controller="NavigationCtrl"></navigation>
-        </div>
+<!--&lt;!&ndash;<li><a ng-click="submit('yahoo')" href="#" class="btn-auth btn-yahoo">Sign in with Yahoo ID</a> </li>&ndash;&gt;-->
+<!--&lt;!&ndash;<li><a ng-click="submit('open_id')" class="btn-auth btn-openid">Sign in with OpenID</a> </li>&ndash;&gt;-->
+<!--&lt;!&ndash;&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;</ul>&ndash;&gt;-->
 
-        <div class="row-fluid">
-            <!-- each view must specify the controller they use -->
-            <div id="content-wrapper" class="container-liquid" ng-view></div>
-        </div>
+<!--&lt;!&ndash;<div ng-show="requireMoreInformation">&ndash;&gt;-->
+<!--&lt;!&ndash;<h3>Additional information is required</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;<label><span ng-bind="requireMoreInformation.text"></span>&ndash;&gt;-->
+<!--&lt;!&ndash;<input&ndash;&gt;-->
+<!--&lt;!&ndash;name="login_url" id="login_url" placeholder="enter a valid url"&ndash;&gt;-->
+<!--&lt;!&ndash;type="url" autocomplete="on"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-show='requireMoreInformation.type == "url"'&ndash;&gt;-->
+<!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "url"'&ndash;&gt;-->
+<!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
+<!--&lt;!&ndash;class="login"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
+<!--&lt;!&ndash;<input&ndash;&gt;-->
+<!--&lt;!&ndash;name="login_text" id="login_text" placeholder="enter required text"&ndash;&gt;-->
+<!--&lt;!&ndash;type="text" autocomplete="on"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "text"'&ndash;&gt;-->
+<!--&lt;!&ndash;ng-show='requireMoreInformation.type == "text"'&ndash;&gt;-->
+<!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
+<!--&lt;!&ndash;class="login"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
+<!--&lt;!&ndash;<input&ndash;&gt;-->
+<!--&lt;!&ndash;name="email" id="email" placeholder="enter a valid email"&ndash;&gt;-->
+<!--&lt;!&ndash;type="email" autocomplete="on"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "email"'&ndash;&gt;-->
+<!--&lt;!&ndash;ng-show='requireMoreInformation.type == "email"'&ndash;&gt;-->
+<!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
+<!--&lt;!&ndash;class="login"&ndash;&gt;-->
+<!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
+<!--&lt;!&ndash;</label>&ndash;&gt;-->
+<!--&lt;!&ndash;<button ng-click="submit(requireMoreInformation.providerId)" type="submit">Sign In</button>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--&lt;!&ndash;</form>&ndash;&gt;-->
+<!--</div>-->
+<!--<div class="clear"></div>-->
+<!--</div>-->
+<!--</div>-->
+
+<div ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
+
+    <div class="row-fluid">
+        <!-- each view must specify the controller they use -->
+        <div id="content-wrapper" class="container-liquid" ng-view></div>
     </div>
+</div>
 
-    <footer class="clearfix text-center" ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
-        <ul class="nav nav-pills">
-            <li >
-                <p class="nav-text">&copy; QUT 2014
+<footer class="clearfix">
+    <div class="row-fluid container">
+        <ul class="nav nav-pills col-md-8 col-md-offset-2">
+            <li>
+                <p class="nav-text">&copy; QUT <%= year %>
                 </p>
             </li>
-            <li >
+            <li>
                 <p class="nav-text">
+                    <%= build_configs.current.key %>
                     v<%= version %>
                 </p>
             </li>
-            <li><a  ng-href="{{paths.api.links.websiteStatusAbsolute}}" target="_self">Statistics</a></li>
-            <li><a  ng-href="{{paths.api.links.contactUsAbsolute}}" target="_self">Contact Us</a></li>
-            <li><a  ng-href="{{paths.api.links.disclaimersAbsolute}}" target="_self">Disclaimers</a></li>
-            <li><a  ng-href="{{paths.api.links.creditsAbsolute}}" target="_self">Credits</a></li>
-            <li><a  ng-href="{{paths.api.links.ethicsStatementAbsolute}}" target="_self">Ethics Statement</a></li>
+            <li><a ng-href="{{paths.api.links.websiteStatusAbsolute}}" target="_self">Statistics</a></li>
+            <li><a ng-href="{{paths.api.links.disclaimersAbsolute}}" target="_self">Disclaimers</a></li>
+            <li><a ng-href="{{paths.api.links.creditsAbsolute}}" target="_self">Credits</a></li>
+            <li><a ng-href="{{paths.api.links.ethicsStatementAbsolute}}" target="_self">Ethics</a></li>
+            <li><a ng-href="{{paths.api.links.contactUsAbsolute}}" target="_self">Contact Us</a></li>
         </ul>
-    </footer>
-    <script type="application/javascript">
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    </div>
+</footer>
+<!-- Google analytics -->
+<script type="application/javascript">
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-        ga('create', '<%= build_configs.current.ga.trackingId %>', 'auto');
-    </script>
+    ga('create', '<%= build_configs.current.ga.trackingId %>', 'auto');
+</script>
 </body>
 </html>

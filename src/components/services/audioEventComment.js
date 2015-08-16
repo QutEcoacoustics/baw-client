@@ -3,11 +3,11 @@ angular
     .factory(
     "AudioEventComment",
     [
-        "bawResource", 'conf.paths',
+        "bawResource", "conf.paths",
         function (bawResource, paths) {
             return bawResource(
                 paths.api.routes.audioEventComment.showAbsolute,
-                {audioEventId: "@audioEventId", audioEventCommentId: '@audioEventCommentId'});
+                {audioEventId: "@audioEventId", audioEventCommentId: "@audioEventCommentId"});
         }
     ]
 );

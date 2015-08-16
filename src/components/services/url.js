@@ -8,12 +8,12 @@ angular
         function fixedEncodeURIComponent(str) {
             str = str || "";
             return encodeURIComponent(str)
-                .replace(/!/g, '%21')
-                .replace(/'/g, '%27')
-                .replace(/\(/g, '%28')
-                .replace(/\)/g, '%29')
-                .replace(/\*/g, '%2A')
-                .replace(/%20/g, '+');
+                .replace(/!/g, "%21")
+                .replace(/'/g, "%27")
+                .replace(/\(/g, "%28")
+                .replace(/\)/g, "%29")
+                .replace(/\*/g, "%2A")
+                .replace(/%20/g, "+");
         }
 
         /**
@@ -29,14 +29,14 @@ angular
          */
         function encodeUriQuery(val, pctEncodeSpaces) {
             if (angular.isUndefined(val) || val === null) {
-                return '';
+                return "";
             }
             return encodeURIComponent(val).
-                replace(/%40/gi, '@').
-                replace(/%3A/gi, ':').
-                replace(/%24/g, '$').
-                replace(/%2C/gi, ',').
-                replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+                replace(/%40/gi, "@").
+                replace(/%3A/gi, ":").
+                replace(/%24/g, "$").
+                replace(/%2C/gi, ",").
+                replace(/%20/g, (pctEncodeSpaces ? "%20" : "+"));
         }
 
         function toKeyValue(obj, validateKeys, _tokenRenamer) {
@@ -46,7 +46,7 @@ angular
                 if (validateKeys) {
                     // only add key value pair if value is not undefined, not null, and is not an empty string
                     var valueIsEmptyString = angular.isString(value) && value.length < 1;
-                    if (angular.isUndefined(value) || value == null || valueIsEmptyString || value === false) {
+                    if (angular.isUndefined(value) || value === null || valueIsEmptyString || value === false) {
                         return;
                     }
                 }
@@ -54,11 +54,11 @@ angular
                 var encodedKey = encodeUriQuery(tokenRenamer(key), /* encode spaces */ true);
 
                 // Angular does this: if value is true, just include the key without a value
-                var encodedValue = value === true ? '' : '=' + encodeUriQuery(value, /* encode spaces */ true);
+                var encodedValue = value === true ? "" : "=" + encodeUriQuery(value, /* encode spaces */ true);
 
                 parts.push(encodedKey + encodedValue);
             });
-            return parts.length ? parts.join('&') : '';
+            return parts.length ? parts.join("&") : "";
         }
 
         function formatUri(uri, values, tokenRenamer) {

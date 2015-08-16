@@ -3,7 +3,7 @@ angular
     .factory(
     "Site",
     [
-        '$resource', "bawResource", "$http", 'conf.paths', "lodash", "QueryBuilder", "baw.models.Site",
+        "$resource", "bawResource", "$http", "conf.paths", "lodash", "QueryBuilder", "baw.models.Site",
         function ($resource, bawResource, $http, paths, _, QueryBuilder, SiteModel) {
             var resource = bawResource(paths.api.routes.site.flattenedAbsolute, {siteId: "@siteId"});
 

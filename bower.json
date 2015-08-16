@@ -25,10 +25,10 @@
     "round-date": "^1.1",
     "sass-bootstrap": "3.0.2",
     "angular-loading-bar": "~0.7.1",
-    "ng-form-group": "~1.2.11"
+    "ng-form-group": "~1.2.11",
+    "bootstrap-sass": "3.3-stable"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "private": true,
   "resolutions": {
     "angular": "1.3.x"

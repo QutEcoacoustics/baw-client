@@ -120,7 +120,7 @@ angular
                     throw new Error("count must be a positive integer");
                 }
 
-                if (acceptableVerbs.indexOf(settings.method) == -1) {
+                if (acceptableVerbs.indexOf(settings.method) === -1) {
                     throw new Error("A valid http method is required");
                 }
 
@@ -349,6 +349,6 @@ angular
                 return settings;
             };
         }])
-    .config(['$httpProvider', function ($httpProvider) {
+    .config(["$httpProvider", function ($httpProvider) {
         $httpProvider.interceptors.push("predictiveCacheInterceptor");
     }]);

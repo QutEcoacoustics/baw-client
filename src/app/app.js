@@ -47,78 +47,79 @@ function whenDefaults(resourceName, singularResourceName, id, controllerMany, co
         ;
 }
 
-var app = angular.module('baw',
+angular.module("baw",
                          [
-                             'ngRoute',
-                             'ngResource',
-                             'ngSanitize',
+                             "ngRoute",
+                             "ngResource",
+                             "ngSanitize",
                              //'ui.select2',
-                             'ui.bootstrap',
-                             'ui.bootstrap.typeahead',
-                             'ui.bootstrap.tpls',
-                             'ng-form-group', // connects angular form validation with bootstrap classes
-                             'decipher.tags',
-                             'angular-growl',
-                             'LocalStorageModule',
-                             'angular-loading-bar',
+                             "ui.bootstrap",
+                             "ui.bootstrap.typeahead",
+                             "ui.bootstrap.tpls",
+                             "ng-form-group", // connects angular form validation with bootstrap classes
+                             "decipher.tags",
+                             "angular-growl",
+                             "LocalStorageModule",
+                             "angular-loading-bar",
                              "bawApp.vendorServices", /* Loads all vendor libraries that are automatically wrapped in a module */
 
 
                              "url", /* a custom uri formatter */
-                             'bawApp.configuration', /* a mapping of all static path configurations
+                             "bawApp.configuration", /* a mapping of all static path configurations
                                                         and a module that contains all app configuration */
+                             "bawApp.predictiveCacheDefaultProfiles",
 
-                             'http-auth-interceptor', /* the auth module    */
-                             'angular-auth', /* the auth module    */
-                             'rails', /* a module designed to rewrite object keys on JSON objects */
+                             "http-auth-interceptor", /* the auth module    */
+                             "angular-auth", /* the auth module    */
+                             "rails", /* a module designed to rewrite object keys on JSON objects */
 
-                             'templates-app', /* these are the precompiled templates */
-                             'templates-common',
+                             "templates-app", /* these are the precompiled templates */
+                             "templates-common",
 
-                             'bawApp.services.resource', // a custom wrapped around ngResource
-                             'bawApp.directives', /* our directives.js  */
-                             'bawApp.directives.ngAudio', /* our directives.js  */
-                             'bawApp.directives.toggleSwitch',
+                             "bawApp.services.resource", // a custom wrapped around ngResource
+                             "bawApp.directives", /* our directives.js  */
+                             "bawApp.directives.ngAudio", /* our directives.js  */
+                             "bawApp.directives.toggleSwitch",
 
-                             'bawApp.filters', /* our filters.js     */
+                             "bawApp.filters", /* our filters.js     */
 
-                             'bawApp.services', /* our services.js    */
+                             "bawApp.services", /* our services.js    */
 
                              "bawApp.models",
 
-                             'audio-control',
-                             'draggabilly',
+                             "audio-control",
+                             "draggabilly",
 
-                             'bawApp.d3',                /* our d3 controls */
+                             "bawApp.d3",                /* our d3 controls */
 
-                             'bawApp.accounts',
-                             'bawApp.annotationViewer',
-                             'bawApp.audioEvents',
-                             'bawApp.annotationLibrary',
-                             'bawApp.bookmarks',
+                             "bawApp.accounts",
+                             "bawApp.annotationViewer",
+                             "bawApp.audioEvents",
+                             "bawApp.annotationLibrary",
+                             "bawApp.bookmarks",
                              "bawApp.demo",
-                             'bawApp.error',
-                             'bawApp.home',
-                             'bawApp.listen',
-                             'bawApp.login',
-                             'bawApp.navigation',
-                             'bawApp.photos',
-                             'bawApp.projects',
-                             'bawApp.recordInformation',
-                             'bawApp.recordings',
-                             'bawApp.recordings.recentRecordings',
-                             'bawApp.search',
-                             'bawApp.tags',
-                             'bawApp.users',
-                             'bawApp.birdWalks',
+                             "bawApp.error",
+                             "bawApp.home",
+                             "bawApp.listen",
+                             "bawApp.login",
+                             "bawApp.navigation",
+                             "bawApp.photos",
+                             "bawApp.projects",
+                             "bawApp.recordInformation",
+                             "bawApp.recordings",
+                             "bawApp.recordings.recentRecordings",
+                             "bawApp.search",
+                             "bawApp.tags",
+                             "bawApp.users",
+                             "bawApp.birdWalks",
                              "bawApp.visualize"
                          ])
 
-    .config(["$provide", '$routeProvider', '$locationProvider', '$httpProvider', 'conf.paths', 'conf.constants', '$sceDelegateProvider', 'growlProvider', 'localStorageServiceProvider', "cfpLoadingBarProvider", "$urlProvider", "casingTransformers",
+    .config(["$provide", "$routeProvider", "$locationProvider", "$httpProvider", "conf.paths", "conf.constants", "$sceDelegateProvider", "growlProvider", "localStorageServiceProvider", "cfpLoadingBarProvider", "$urlProvider", "casingTransformers",
              function ($provide, $routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, cfpLoadingBarProvider, $urlProvider, casingTransformers) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
-                 currentWhitelist.push(paths.api.root+'/**');
+                 currentWhitelist.push(paths.api.root+"/**");
                  $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
 
 
@@ -127,7 +128,7 @@ var app = angular.module('baw',
 
                  // routes
                  $routeProvider.
-                     when('/home', {templateUrl: '/assets/home.html', controller: 'HomeCtrl'}).
+                     when("/home", {templateUrl: "/assets/home.html", controller: "HomeCtrl"}).
 
                      //whenDefaults("projects", "project", ":projectId", 'ProjectsCtrl', 'ProjectCtrl').
                      //whenDefaults("sites", "site", ":siteId", 'SitesCtrl', 'SiteCtrl').
@@ -138,41 +139,41 @@ var app = angular.module('baw',
                      //whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
                      //whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
 
-                     when('/recordings', {templateUrl: '/assets/recordings.html', controller: 'RecordingsCtrl' }).
-                     when('/recordings/:recordingId',
-                          {templateUrl: '/assets/recording.html', controller: 'RecordingCtrl' }).
+                     when("/recordings", {templateUrl: "/assets/recordings.html", controller: "RecordingsCtrl" }).
+                     when("/recordings/:recordingId",
+                          {templateUrl: "/assets/recording.html", controller: "RecordingCtrl" }).
 
-                     when('/listen', {templateUrl: paths.site.files.recordings.recentRecordings, controller: 'RecentRecordingsCtrl', title: 'Listen'}).
-                     when('/listen/:recordingId', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl', title: ':recordingId',  fullWidth: true}).
+                     when("/listen", {templateUrl: paths.site.files.recordings.recentRecordings, controller: "RecentRecordingsCtrl", title: "Listen"}).
+                     when("/listen/:recordingId", {templateUrl: paths.site.files.listen, controller: "ListenCtrl", title: ":recordingId",  fullWidth: true}).
 
                      //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
 
-                     when('/accounts', {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
-                     when('/accounts/:action',
-                          {templateUrl: '/assets/accounts_sign_in.html', controller: 'AccountsCtrl'}).
+                     when("/accounts", {templateUrl: "/assets/accounts_sign_in.html", controller: "AccountsCtrl"}).
+                     when("/accounts/:action",
+                          {templateUrl: "/assets/accounts_sign_in.html", controller: "AccountsCtrl"}).
 
-                     when('/attribution', {templateUrl: '/assets/attributions.html'}).
+                     when("/attribution", {templateUrl: "/assets/attributions.html"}).
 
-                     when('/birdWalks', {templateUrl: paths.site.files.birdWalk.list, controller: 'BirdWalksCtrl', title: 'Bird Walks'}).
-                     when('/birdWalks/:birdWalkId', {templateUrl: paths.site.files.birdWalk.detail, controller: 'BirdWalkCtrl', title: ':birdWalkId'}).
+                     when("/birdWalks", {templateUrl: paths.site.files.birdWalk.list, controller: "BirdWalksCtrl", title: "Bird Walks"}).
+                     when("/birdWalks/:birdWalkId", {templateUrl: paths.site.files.birdWalk.detail, controller: "BirdWalkCtrl", title: ":birdWalkId"}).
 
                      // experiments
-                     when('/experiments/:experiment',
-                          {templateUrl: '/assets/experiment_base.html', controller: 'ExperimentsCtrl'}).
+                     when("/experiments/:experiment",
+                          {templateUrl: "/assets/experiment_base.html", controller: "ExperimentsCtrl"}).
 
-                     when('/library', {templateUrl: paths.site.files.library.list, controller: 'AnnotationLibraryCtrl', title: 'Annotation Library' , fullWidth: true}).
-                     when('/library/:recordingId', {
+                     when("/library", {templateUrl: paths.site.files.library.list, controller: "AnnotationLibraryCtrl", title: "Annotation Library" , fullWidth: true}).
+                     when("/library/:recordingId", {
                          redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
                          templateUrl: paths.site.files.library.list,
                          title: ":recordingId" , fullWidth: true}).
-                     when('/library/:recordingId/audio_events', {
+                     when("/library/:recordingId/audio_events", {
                          redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
-                         title: 'Audio Events' }).
-                     when('/library/:recordingId/audio_events/:audioEventId', {templateUrl: paths.site.files.library.item, controller: 'AnnotationItemCtrl', title: 'Annotation :audioEventId'}).
+                         title: "Audio Events" }).
+                     when("/library/:recordingId/audio_events/:audioEventId", {templateUrl: paths.site.files.library.item, controller: "AnnotationItemCtrl", title: "Annotation :audioEventId"}).
 
-                     when(paths.site.ngRoutes.demo.d3, {templateUrl: paths.site.files.demo.d3, controller: 'D3TestPageCtrl', title: 'D3 Test Page' }).
-                     when(paths.site.ngRoutes.demo.rendering, {templateUrl: paths.site.files.demo.rendering, controller: 'RenderingCtrl', title: 'Rendering' , fullWidth: true }).
-                     when(paths.site.ngRoutes.demo.bdCloud, {templateUrl: paths.site.files.demo.bdCloud2014, controller: 'BdCloud2014Ctrl', title: 'BDCloud2014 demo' , fullWidth: true }).
+                     when(paths.site.ngRoutes.demo.d3, {templateUrl: paths.site.files.demo.d3, controller: "D3TestPageCtrl", title: "D3 Test Page" }).
+                     when(paths.site.ngRoutes.demo.rendering, {templateUrl: paths.site.files.demo.rendering, controller: "RenderingCtrl", title: "Rendering" , fullWidth: true }).
+                     when(paths.site.ngRoutes.demo.bdCloud, {templateUrl: paths.site.files.demo.bdCloud2014, controller: "BdCloud2014Ctrl", title: "BDCloud2014 demo" , fullWidth: true }).
 
                      when(paths.site.ngRoutes.visualize, {
                          templateUrl: paths.site.files.visualize,
@@ -182,12 +183,12 @@ var app = angular.module('baw',
                      }).
 
                      // missing route page
-                     when('/', {templateUrl: paths.site.files.home, controller: 'HomeCtrl'}).
-                     when('/404', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
-                     when('/404?path=:errorPath', {templateUrl: paths.site.files.error404, controller: 'ErrorCtrl'}).
+                     when("/", {templateUrl: paths.site.files.home, controller: "HomeCtrl"}).
+                     when("/404", {templateUrl: paths.site.files.error404, controller: "ErrorCtrl"}).
+                     when("/404?path=:errorPath", {templateUrl: paths.site.files.error404, controller: "ErrorCtrl"}).
                      otherwise({
                                    redirectTo: function (params, location, search) {
-                                       return '/404?path=' + location;
+                                       return "/404?path=" + location;
                                    }
                                });
 
@@ -200,10 +201,10 @@ var app = angular.module('baw',
                  // the default accept type is ` "application/json, text/plain, */*" `
                  // for angular. This causes rails to do stupid shit for things like 403s... with old header it gives a 302
                  // and redirects to HTML page. WTF.
-                 $httpProvider.defaults.headers['common']['Accept'] = 'application/json';
+                 $httpProvider.defaults.headers.common.Accept = "application/json";
 
                  // configure angular-growl
-                 growlProvider.globalPosition('top-center');
+                 growlProvider.globalPosition("top-center");
 
                  // configure local storage provider with our own namespace
                  localStorageServiceProvider.setPrefix(constants.namespace);
@@ -221,7 +222,7 @@ var app = angular.module('baw',
                  cfpLoadingBarProvider.latencyThreshold = 200;
 
                  // add a standard way to add ignores to http objects
-                 $provide.decorator('cfpLoadingBar', ["$delegate", function ($delegate) {
+                 $provide.decorator("cfpLoadingBar", ["$delegate", function ($delegate) {
                      $delegate.ignore = function ($httpConfig) {
                          return $httpConfig && ($httpConfig.ignoreLoadingBar = true, $httpConfig) || $httpConfig;
                      };
@@ -230,11 +231,8 @@ var app = angular.module('baw',
              }])
 
 
-    .run(['$rootScope', '$location', '$route', '$http', 'Authenticator', 'AudioEvent', 'conf.paths', 'UserProfile', 'ngAudioEvents', '$url', "predictiveCache", "conf.constants",
-          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constants) {
-
-              // embed configuration for easy site-wide binding
-              $rootScope.paths = paths;
+    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "predictiveCacheDefaultProfiles",
+          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, predictiveCacheDefaultProfiles) {
 
               // user profile - update user preferences when they change
               var eventCallbacks = {};
@@ -250,7 +248,7 @@ var app = angular.module('baw',
                       api.updatePreferences();
                   }
               };
-              eventCallbacks["autoPlay"] = function(event, api, value) {
+              eventCallbacks.autoPlay = function(event, api, value) {
                   if(api.profile.preferences.autoPlay !== value) {
                       api.profile.preferences.autoPlay = value;
                       api.updatePreferences();
@@ -259,7 +257,7 @@ var app = angular.module('baw',
               UserProfile.listen(eventCallbacks);
 
               // helper function for printing scope objects
-              baw.exports.print = $rootScope.print = function () {
+              /*baw.exports.print = $rootScope.print = function () {
                   var seen = [];
                   var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling",
                                  "$$prevSibling", "$root", "this", "$parent"];
@@ -268,7 +266,7 @@ var app = angular.module('baw',
                                                if (badKeys.indexOf(key) >= 0) {
                                                    return "[Can't do that]";
                                                }
-                                               if (typeof val == "object") {
+                                               if (typeof val === "object") {
                                                    if (seen.indexOf(val) >= 0) {
                                                        return "";
                                                    }
@@ -277,8 +275,7 @@ var app = angular.module('baw',
                                                return val;
                                            }, 4);
                   return str;
-              };
-              $rootScope.showOrHideDebugInfo = false;
+              };*/
 
 
               // http://www.yearofmoo.com/2012/10/more-angularjs-magic-to-supercharge-your-webapp.html#apply-digest-and-phase
@@ -316,7 +313,7 @@ var app = angular.module('baw',
 //            $scope.alertType = "alert-error";
 //            $scope.alertMessage = "Failed to change routes :(";
 //            $scope.active = "";
-                  $location.path('/404?path=');
+                  $location.path("/404?path=");
               });
 
               //https://docs.angularjs.org/api/ngRoute/service/$route
@@ -358,24 +355,23 @@ var app = angular.module('baw',
 
 
               $rootScope.loggedIn = false;
-
-              $rootScope.$watch('userData', function () {
-                  var token = $rootScope.authorisationToken,
-                      userData = $rootScope.userData;
-                  $rootScope.loggedIn = (token && userData) ? true : false;
-
-              });    /* /deprecated */
+              $rootScope.userData = {};
 
               $rootScope.downloadAnnotationLink = AudioEvent.csvLink();
 
               // set up predictive cache service
-              predictiveCache(constants.predictiveCache.profiles["Media cache ahead"]($location, paths));
+              predictiveCache(predictiveCacheDefaultProfiles["Media cache ahead"]($location, paths));
 
           }])
 
-    .controller('AppCtrl',
-                ['$scope', '$location', 'conf.constants', 'growl', '$timeout', 'localStorageService', "bowser",
-                 function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService, bowser) {
+    .controller("AppCtrl",
+                ["$scope", "$location", "conf.constants", "growl", "$timeout", "localStorageService", "bowser", "conf.paths", "conf.environment",
+                 function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService, bowser, paths, appEnvironment) {
+
+                     // embed configuration for easy site-wide binding
+                     $scope.paths = paths;
+                     $scope.brand = constants.brand;
+                     $scope.researchPages = appEnvironment.content.research;
 
                      $scope.showDebugUi = function () {
                          var r = window.cssRules.getCssRule(".debug-UI");
@@ -387,7 +383,7 @@ var app = angular.module('baw',
                      };
 
                      $scope.activePath = function activePath(pathFragment) {
-                         return $location.path().indexOf(pathFragment) != -1;
+                         return $location.path().indexOf(pathFragment) !== -1;
                      };
                      /*$scope.getWidth = function () {
                          return ($scope.$parent.fullWidth ? 'container-liquid' : 'container');

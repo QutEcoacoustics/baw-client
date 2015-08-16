@@ -70,3 +70,4 @@ es6/
 vendor/
 src/assets/temp
 .sass-cache
+*.generated*

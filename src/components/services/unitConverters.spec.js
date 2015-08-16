@@ -3,7 +3,7 @@ describe("The unitConverter service", function () {
     var unitConverter;
     var inputArgs = {};
 
-    beforeEach(module('bawApp.services.unitConverter'));
+    beforeEach(module("bawApp.services.unitConverter"));
 
     beforeEach(inject(["bawApp.unitConverter", function (providedUnitConverted) {
         unitConverter = providedUnitConverted;

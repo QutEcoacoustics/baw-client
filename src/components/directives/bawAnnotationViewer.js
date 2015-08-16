@@ -1,10 +1,10 @@
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration', "bawApp.directives.ui.bootstrap"]);
+var bawds = bawds || angular.module("bawApp.directives", ["bawApp.configuration", "bawApp.directives.ui.bootstrap"]);
 
-bawds.directive('bawAnnotationViewer',
-    [   'conf.paths',
-        'bawApp.unitConverter',
-        'AudioEvent',
-        'Tag',
+bawds.directive("bawAnnotationViewer",
+    [   "conf.paths",
+        "bawApp.unitConverter",
+        "AudioEvent",
+        "Tag",
         "lodash",
         function (paths, unitConverter, AudioEvent, Tag, _) {
 
@@ -40,7 +40,7 @@ bawds.directive('bawAnnotationViewer',
 
                 // note the last argument sets up the watcher for compare equality (not reference).
                 // this may cause memory / performance issues if the model gets too big later on
-                var deregisterer = scope.$watch(watcherFunc, modelUpdated, true);
+                var deregisterer = scope.$watch(watcherFunc, modelUpdated, true); // jshint ignore:line
 
             }
 
@@ -50,7 +50,7 @@ bawds.directive('bawAnnotationViewer',
              */
             function watchAudioEventCollection(scope) {
 
-                var deregisterCollection = scope.$watchCollection(function () {
+                var deregisterCollection = scope.$watchCollection(function () { // jshint ignore:line
                     return scope.model.audioEvents;
                 }, modelCollectionUpdated);
             }
@@ -82,8 +82,8 @@ bawds.directive('bawAnnotationViewer',
                     });
                 }
 
-                scope.$watch('model.media.spectrogram.url', updateUnitConverters);
-                scope.$image[0].addEventListener('load', function () {
+                scope.$watch("model.media.spectrogram.url", updateUnitConverters);
+                scope.$image[0].addEventListener("load", function () {
                     // dom event, not in $digest cycle, thus apply
                     scope.$apply(function () {
                         updateUnitConverters();
@@ -171,7 +171,7 @@ bawds.directive('bawAnnotationViewer',
 
                 // post assertion
                 if (action === DRAWABOX_ACTION_SELECT) {
-                    console.assert(annotation.isDirty == wasDirty,
+                    console.assert(annotation.isDirty === wasDirty,
                         "AnnotationEditor:drawaboxUpdatesModel: Post condition failed for selection triggering a isDirty state");
                 }
                 else {
@@ -197,7 +197,7 @@ bawds.directive('bawAnnotationViewer',
                     width = scope.model.converters.toWidth(annotation.endTimeSeconds, annotation.startTimeSeconds),
                     height = scope.model.converters.toHeight(annotation.highFrequencyHertz, annotation.lowFrequencyHertz);
 
-                drawaboxInstance.drawabox('setBox', annotation.__localId__, top, left, height, width,
+                drawaboxInstance.drawabox("setBox", annotation.__localId__, top, left, height, width,
                     annotation.selected);
             }
 
@@ -346,7 +346,7 @@ bawds.directive('bawAnnotationViewer',
                 else {
                     // should clean up resources for delete
                     console.assert(action === serverAction.remove, "The remaining case must be a delete server action");
-                    console.assert(count == 1, "There should be no more actions enqueued after a delete");
+                    console.assert(count === 1, "There should be no more actions enqueued after a delete");
 
                     // we could integrate the updated value from the server here but
                     // a) there's no point, its just being removed from the model anyway
@@ -358,7 +358,7 @@ bawds.directive('bawAnnotationViewer',
 
                     // this, by reference, gets rid of the element.
                     _.remove(scope.model.audioEvents, function (value) {
-                        return value.__localId__ == oldValue.__localId__;
+                        return value.__localId__ === oldValue.__localId__;
                     });
 
                     // FYI - this will result in
@@ -441,10 +441,10 @@ bawds.directive('bawAnnotationViewer',
                     var element;
 
                     // does the annotation's box exist in the DOM?
-                    var exists = drawaboxInstance.drawabox('exists', value.__localId__);
+                    var exists = drawaboxInstance.drawabox("exists", value.__localId__);
                     if (exists[0] === false) {
                         // if not, add the annotation into the DOM
-                        element = drawaboxInstance.drawabox('insert', value.__localId__)[0][0];
+                        element = drawaboxInstance.drawabox("insert", value.__localId__)[0][0];
                     }
                     else {
                         // the element already exists
@@ -474,12 +474,12 @@ bawds.directive('bawAnnotationViewer',
             /****/
 
             return {
-                restrict: 'AE',
+                restrict: "AE",
                 scope: {
-                    model: '=model'
+                    model: "=model"
                 },
-                controller: 'AnnotationViewerCtrl',
-                require: '', // ngModel?
+                controller: "AnnotationViewerCtrl",
+                require: "", // ngModel?
                 templateUrl: paths.site.files.annotationViewer,
                 //            compile: function(element, attributes, transclude)  {
                 //                // transform DOM

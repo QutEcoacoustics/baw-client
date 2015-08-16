@@ -1,11 +1,9 @@
-angular.module('bawApp.users', [])
+angular.module("bawApp.users", [])
 
-    .controller('UsersCtrl', ['$scope', '$location', '$resource', '$routeParams',  'User',
+    .controller("UsersCtrl", ["$scope", "$location", "$resource", "$routeParams", "moment",  "User",
 
 
-        function UsersCtrl($scope, $location, $resource, $routeParams, User) {
-
-            var self = this;
+        function UsersCtrl($scope, $location, $resource, $routeParams, moment, User) {
             var userResource = User;
             var routeArgs = {userId: $routeParams.userId};
 
@@ -18,11 +16,11 @@ angular.module('bawApp.users', [])
 
     ])
 
-    .controller('UserCtrl', ['$scope', '$resource', '$routeParams', 'User',
+    .controller("UserCtrl", ["$scope", "$resource", "$routeParams", "User",
 
 
         function UsersCtrl($scope, $resource, $routeParams, User) {
-            $scope.usersResource = $resource('/users', {});
+            $scope.usersResource = $resource("/users", {});
             $scope.users = $scope.usersResource.query();
         }
 

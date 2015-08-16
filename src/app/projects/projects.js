@@ -1,8 +1,8 @@
-angular.module('bawApp.projects', [])
+angular.module("bawApp.projects", [])
 
-    .controller('ProjectsCtrl', ['$scope', '$resource', 'Project',
+    .controller("ProjectsCtrl", ["$scope", "$resource", "Project",
         function ProjectsCtrl($scope, $resource, Project) {
-            $scope.projectsResource = $resource('/projects', {});
+            $scope.projectsResource = $resource("/projects", {});
             $scope.projects = $scope.projectsResource.query();
 
             $scope.links = function (key) {
@@ -10,7 +10,7 @@ angular.module('bawApp.projects', [])
             };
         }])
 
-    .controller('ProjectCtrl', ['$scope', '$location', '$resource', '$routeParams', 'Project', 'Site', 'Photo', 'AudioEvent',
+    .controller("ProjectCtrl", ["$scope", "$location", "$resource", "$routeParams", "Project", "Site", "Photo", "AudioEvent",
         function ProjectCtrl($scope, $location, $resource, $routeParams, Project, Site, Photo, AudioEvent) {
 
             var self = this;
@@ -46,7 +46,7 @@ angular.module('bawApp.projects', [])
 
             $scope.isEditing = $routeParams.editing === "edit";
 
-            $scope.isCreating = $routeParams.projectId === 'new';
+            $scope.isCreating = $routeParams.projectId === "new";
 
             $scope.isCreatingOrEditing = $scope.isEditing || $scope.isCreating;
 
@@ -62,7 +62,7 @@ angular.module('bawApp.projects', [])
 //    };
 
             $scope.project = projectResource.get(routeArgs, function () {
-                $scope.links = ProjectsCtrl.linkList($scope.project.id);
+                //$scope.links = ProjectsCtrl.linkList($scope.project.id);
 
                 $scope.original = angular.copy($scope.project);
 
@@ -98,19 +98,19 @@ angular.module('bawApp.projects', [])
             };
 
             $scope.deletePhoto = function (photoToDelete) {
-                console.log('deletePhoto', photoToDelete);
+                console.log("deletePhoto", photoToDelete);
                 var doit = confirm("Are you sure you want to delete this photo from uri {0} ?".format(photoToDelete.uri));
 
                 if (doit) {
                     var index = $scope.project.photos.indexOf(photoToDelete);
                     if (index > -1) {
-                        var removedPhoto = $scope.project.photos.splice(index, 1);
+                        $scope.project.photos.splice(index, 1);
                     }
                 }
             };
 
             $scope.addPhoto = function addPhoto(newPhoto) {
-                console.log('addPhoto', newPhoto);
+                console.log("addPhoto", newPhoto);
                 if (newPhoto) {
                     $scope.project.photos.push(newPhoto);
                 }

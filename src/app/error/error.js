@@ -7,8 +7,8 @@
 //    //$httpProvider.defaults.headers.
 //      //  common['X-CSRF-Token'] = $['meta[name=csrf-token]'].attr('content');
 //});
-angular.module('bawApp.error', [])
-    .controller('ErrorCtrl', ['$scope',
+angular.module("bawApp.error", [])
+    .controller("ErrorCtrl", ["$scope",
 
 
         function ErrorCtrl($scope) {

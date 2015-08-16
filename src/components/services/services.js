@@ -1,6 +1,8 @@
 angular.module(
     "bawApp.services",
     [
+        "url",
+
         // general helpers
         "http-auth-interceptor",
         "bawApp.configuration",

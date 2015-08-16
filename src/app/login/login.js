@@ -1,7 +1,8 @@
-angular.module('bawApp.login', [])
-
-    .controller('LoginCtrl',
-        ['$scope', '$http', '$location', 'authService', 'AuthenticationProviders', 'Authenticator',
+angular.module("bawApp.login", [
+    "bawApp.login.loginWidget"
+])
+    .controller("LoginCtrl",
+        ["$scope", "$http", "$location", "authService", "AuthenticationProviders", "Authenticator",
             function LoginCtrl($scope, $http, $location, authService, AuthenticationProviders, Authenticator) {
 
                 $scope.submit = function (provider) {
@@ -9,7 +10,7 @@ angular.module('bawApp.login', [])
                     var authProvider = AuthenticationProviders[provider];
 
                     if (!authProvider) {
-                        console.error('Unknown provider', authProvider, provider);
+                        console.error("Unknown provider", authProvider, provider);
                         throw "LoginCtrl:submit: Unknown Provider!";
                     }
 
@@ -36,7 +37,7 @@ angular.module('bawApp.login', [])
                 $scope.requireMoreInformation = null;
                 $scope.additionalInformation = null;
                 $scope.login = function () {
-                    $scope.$emit('event:auth-loginRequired');
+                    $scope.$emit("event:auth-loginRequired");
                 };
 
                 $scope.logout = function () {
@@ -47,7 +48,7 @@ angular.module('bawApp.login', [])
                         provider = $scope.$root.userData.providerId;
                     }
                     catch (e) {
-                        console.error('Error getting provider id', e);
+                        console.error("Error getting provider id", e);
                     }
 
                     if (provider) {
@@ -60,8 +61,8 @@ angular.module('bawApp.login', [])
                 };
 
                 $scope.cancelLogin = function () {
-                    $location.path('/');
-                    $scope.$emit('event:auth-loginCancelled');
+                    $location.path("/");
+                    $scope.$emit("event:auth-loginCancelled");
                 };
 
 

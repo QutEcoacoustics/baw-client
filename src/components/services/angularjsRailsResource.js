@@ -7,7 +7,7 @@
 
 angular
     .module("rails", [])
-    .constant('casingTransformers', (function () {
+    .constant("casingTransformers", (function () {
 
         function transformObject(data, transform) {
             if (data && angular.isObject(data)) {
@@ -72,7 +72,7 @@ angular
             }
 
             return key.replace(/[A-Z]/g, function (match, index) {
-                return index === 0 ? match : '_' + match.toLowerCase();
+                return index === 0 ? match : "_" + match.toLowerCase();
             });
         }
 
@@ -85,14 +85,14 @@ angular
             transformObject: transformObject
         };
     }()))
-    .factory('railsFieldRenamingTransformer', ['casingTransformers', function (casingTransformers) {
+    .factory("railsFieldRenamingTransformer", ["casingTransformers", function (casingTransformers) {
         return {
             "request": function railsFieldRenamingTransformerRequest(data, headers) {
                 // TODO: add conditions
                 // probs only want to do this if headers contains app/json
                 // and only if object has a __railsJsonRenamer__
                 // or if request is going to our server?
-                if ((headers()["Accept"] || "").indexOf("application/json") >= 0) {
+                if ((headers().Accept || "").indexOf("application/json") >= 0) {
 
                     if (data === undefined || data === null) {
                         return;
@@ -136,13 +136,13 @@ angular
  * Configure the default $httpRequest
  */
     .config([
-        '$httpProvider',
+        "$httpProvider",
         /* We are in the config phase - traditional services are not available yet
          * Thus we must make a reference to the factory's provider.
          * This is also why the $gets are necessary below!
          */
-        'casingTransformers',
-        'railsFieldRenamingTransformerProvider',
+        "casingTransformers",
+        "railsFieldRenamingTransformerProvider",
         function ($httpProvider,
                   casingTransformers,
                   railsFieldRenamingTransformerProvider) {

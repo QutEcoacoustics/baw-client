@@ -24,10 +24,10 @@
                 if (cssRules && cssRules.length > 0) {
                     for (var j = 0; j < cssRules.length; j++) {
                         var rule = cssRules[j];
-                        var selector = rule.hasOwnProperty('selectorText') ? rule.selectorText.toLowerCase().trim() : '';
+                        var selector = rule.hasOwnProperty("selectorText") ? rule.selectorText.toLowerCase().trim() : "";
                         //console.log(selector);
-                        if (selector == ruleName) {
-                            if (deleteFlag == 'delete') {
+                        if (selector === ruleName) {
+                            if (deleteFlag === "delete") {
                                 if (styleSheet.cssRules) {
                                     styleSheet.deleteRule(j);
                                 } else {
@@ -47,7 +47,7 @@
     }
 
     function killCSSRule(ruleName) {
-        return getCSSRule(ruleName, 'delete');
+        return getCSSRule(ruleName, "delete");
     }
 
     function addCSSRule(ruleName) {
@@ -56,7 +56,7 @@
                 if (document.styleSheets[0].addRule) {
                     document.styleSheets[0].addRule(ruleName, null, 0);
                 } else {
-                    document.styleSheets[0].insertRule(ruleName, ' { }', 0);
+                    document.styleSheets[0].insertRule(ruleName, " { }", 0);
                 }
             }
         }

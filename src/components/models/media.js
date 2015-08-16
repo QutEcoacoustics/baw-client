@@ -46,7 +46,7 @@ angular
 
                     var imageKey = imgKeys[0];
                     var imageFormat = mediaItem.available.image[imageKey];
-                    var fullUrl = paths.joinFragments(paths.api.root, imageFormat.url);
+                    var fullUrl = paths.api.root + imageFormat.url;
                     mediaItem.available.image[imageKey].url = url.formatUriServer(fullUrl, {userToken: Authenticator.authToken});
 
                     mediaItem.spectrogram = imageFormat;
@@ -55,7 +55,7 @@ angular
                     mediaItem.available.audioOrder = [];
                     angular.forEach(mediaItem.available.audio, function (value, key) {
                         // just update the url so it is an absolute uri
-                        var fullUrl = paths.joinFragments(paths.api.root, value.url);
+                        var fullUrl = paths.api.root + value.url;
 
                         // also add auth token
                         this[key].url = url.formatUriServer(fullUrl, {userToken: Authenticator.authToken});
@@ -64,10 +64,9 @@ angular
 
                     }, mediaItem.available.audio);
 
-                    var jsonFullUrl = paths.joinFragments(paths.api.root, mediaItem.available.text["json"].url);
-                    mediaItem.available.text["json"].url = url.formatUriServer(jsonFullUrl, {userToken: Authenticator.authToken});
+                    var jsonFullUrl = paths.api.root + mediaItem.available.text.json.url;
+                    mediaItem.available.text.json.url = url.formatUriServer(jsonFullUrl, {userToken: Authenticator.authToken});
                 }
-
 
             }
 

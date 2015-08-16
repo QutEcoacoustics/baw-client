@@ -81,7 +81,7 @@ angular
                 }
 
                 function updateExtent(extent) {
-                    if (extent.length != 2) {
+                    if (extent.length !== 2) {
                         throw new Error("Can't handle this many dimensions");
                     }
 
@@ -514,15 +514,15 @@ angular
                         currentScale = fullDifference / visibleDifference,
                         tx = vl;
 
-                    if (scaleUpper == -Infinity) {
+                    if (scaleUpper === -Infinity) {
                         scaleUpper = Infinity;
                     }
 
-                    if (tx == Infinity || isNaN(tx)) {
+                    if (tx === Infinity || isNaN(tx)) {
                         tx = 0;
                     }
 
-                    if (currentScale == Infinity || currentScale == -Infinity || isNaN(currentScale)) {
+                    if (currentScale === Infinity || currentScale === -Infinity || isNaN(currentScale)) {
                         currentScale = 1;
                     }
 

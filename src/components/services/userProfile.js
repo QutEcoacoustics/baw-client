@@ -14,9 +14,10 @@ angular
         "conf.paths",
         "conf.constants",
         "UserProfileEvents",
+        "baw.models.UserProfile",
         "lodash",
         "QueryBuilder",
-        function ($rootScope, $http, paths, constants, UserProfileEvents, _, QueryBuilder) {
+        function ($rootScope, $http, paths, constants, UserProfileEvents, UserProfileModel, _, QueryBuilder) {
             var profileUrl = paths.api.routes.user.profileAbsolute,
                 preferencesUrl = paths.api.routes.user.settingsAbsolute;
 
@@ -56,13 +57,13 @@ angular
                 .then(function success(response) {
                           console.log("User profile loaded");
 
-                          exports.profile = (new baw.UserProfile(response.data.data,
+                          exports.profile = (new UserProfileModel(response.data.data,
                                                                  constants.defaultProfile));
                           return exports.profile;
                       }, function error(response) {
                           console.error("User profile load failed, default profile loaded", response);
 
-                          exports.profile = (new baw.UserProfile(null, constants.defaultProfile));
+                          exports.profile = (new UserProfileModel(null, constants.defaultProfile));
                       }
             ).finally(function () {
                           $rootScope.$broadcast(UserProfileEvents.loaded, exports);

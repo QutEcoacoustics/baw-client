@@ -1,9 +1,9 @@
-angular.module('sites', [])
+angular.module("sites", [])
 
-.controller('SitesCtrl', ['$scope', '$resource', 'Site',
+.controller("SitesCtrl", ["$scope", "$resource", "Site",
 
 function SitesCtrl($scope, $resource, Site) {
-    $scope.sitesResource = $resource('/sites', {});
+    $scope.sitesResource = $resource("/sites", {});
     $scope.sites = $scope.sitesResource.query();
 
     $scope.links = function(key) {
@@ -11,8 +11,8 @@ function SitesCtrl($scope, $resource, Site) {
     };
 }])
 
-.controller('SiteCtrl',
-        ['$scope', '$resource', '$routeParams', 'Project', 'Site', 'AudioRecording', 'AudioEvent',
+.controller("SiteCtrl",
+        ["$scope", "$resource", "$routeParams", "Project", "Site", "AudioRecording", "AudioEvent",
 function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording, AudioEvent) {
     var siteResource = Site;
     var routeArgs = {siteId: $routeParams.siteId};
@@ -26,7 +26,7 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
     $scope.editing = $routeParams.editing === "edit";
 
     $scope.site = siteResource.get(routeArgs, function () {
-        $scope.links = SitesCtrl.linkList($scope.site.id);
+        //$scope.links = SitesCtrl.linkList($scope.site.id);
 
         $scope.site.latitude = +($scope.site.latitude);
         $scope.site.longitude = +($scope.site.longitude);
@@ -39,7 +39,7 @@ function SiteCtrl($scope, $resource, $routeParams, Project, Site, AudioRecording
     $scope["delete"] = function() {
         var doit = confirm("Are you sure you want to delete this site (id {0})?".format(this.site.id));
         if (doit) {
-            siteResource.remove(this.site.id, function(){ console.log('success');}, function(){ console.log('error');});
+            siteResource.remove(this.site.id, function(){ console.log("success");}, function(){ console.log("error");});
         }
     };
 

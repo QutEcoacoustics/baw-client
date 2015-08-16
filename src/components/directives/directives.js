@@ -1,13 +1,13 @@
-var bawds = bawds || angular.module('bawApp.directives', [
-        'bawApp.configuration',
+var bawds = bawds || angular.module("bawApp.directives", [
+        "bawApp.configuration",
         "bawApp.directives.ui.bootstrap"
     ]);
 
 
-bawds.directive('bawRecordInformation', function () {
+bawds.directive("bawRecordInformation", function () {
 
     return {
-        restrict: 'AE',
+        restrict: "AE",
         scope: false,
         /* priority: ???  */
 //            controller: 'RecordInformationCtrl',
@@ -27,24 +27,10 @@ bawds.directive('bawRecordInformation', function () {
     };
 });
 
-bawds.directive('bawDebugInfo', function () {
+bawds.directive("bawJsonBinding", function () {
     return {
-        restrict: 'AE',
-        replace: true,
-        template: '<div><a href ng-click="showOrHideDebugInfo= !showOrHideDebugInfo">Debug info {{showOrHideDebugInfo}}</a><pre ui-toggle="showOrHideDebugInfo" class="ui-hide"  ng-bind="print()"></pre></div>',
-        link: function (scope, element, attrs) {
-            if (!scope.print) {
-                //console.warn("baw-debug-info missing parent scope, no print function");
-                scope.print = bawApp.print;
-            }
-        }
-    };
-});
-
-bawds.directive('bawJsonBinding', function () {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
+        restrict: "A",
+        require: "ngModel",
         link: function (scope, element, attr, ngModel) {
 
             function catchParseErrors(viewValue) {
@@ -52,10 +38,10 @@ bawds.directive('bawJsonBinding', function () {
                 try {
                     result = angular.fromJson(viewValue);
                 } catch (e) {
-                    ngModel.$setValidity('bawJsonBinding', false);
-                    return '';
+                    ngModel.$setValidity("bawJsonBinding", false);
+                    return "";
                 }
-                ngModel.$setValidity('bawJsonBinding', true);
+                ngModel.$setValidity("bawJsonBinding", true);
                 return result;
             }
 
@@ -66,14 +52,14 @@ bawds.directive('bawJsonBinding', function () {
 });
 
 // ensures formatters are run on input blur
-bawds.directive('renderOnBlur', function () {
+bawds.directive("renderOnBlur", function () {
     return {
-        require: 'ngModel',
-        restrict: 'A',
+        require: "ngModel",
+        restrict: "A",
         link: function (scope, elm, attrs, ctrl) {
-            elm.bind('blur', function () {
+            elm.bind("blur", function () {
                 var viewValue = ctrl.$modelValue;
-                for (var i in ctrl.$formatters) {
+                for (var i in ctrl.$formatters) { // jshint ignore:line
                     viewValue = ctrl.$formatters[i](viewValue);
                 }
                 ctrl.$viewValue = viewValue;
@@ -84,10 +70,10 @@ bawds.directive('renderOnBlur', function () {
 });
 
 
-bawds.directive('isGuid', function () {
+bawds.directive("isGuid", function () {
     return {
 
-        require: 'ngModel',
+        require: "ngModel",
         link: function (scope, elm, attrs, ctrl) {
             var isList = typeof attrs.ngList !== "undefined";
 
@@ -105,11 +91,11 @@ bawds.directive('isGuid', function () {
 
                 if (valid) {
                     // it is valid
-                    ctrl.$setValidity('isGuid', true);
+                    ctrl.$setValidity("isGuid", true);
                     return viewValue;
                 } else {
                     // it is invalid, return undefined (no model update)
-                    ctrl.$setValidity('isGuid', false);
+                    ctrl.$setValidity("isGuid", false);
                     return undefined;
                 }
             });
@@ -119,12 +105,12 @@ bawds.directive('isGuid', function () {
 
 // implements infinite scrolling
 // http://jsfiddle.net/vojtajina/U7Bz9/
-bawds.directive('whenScrolled', function () {
+bawds.directive("whenScrolled", function () {
     return function (scope, elm, attr) {
         var raw = elm[0];
 
-        elm.bind('scroll', function () {
-            console.log('scrolled');
+        elm.bind("scroll", function () {
+            console.log("scrolled");
             if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
                 scope.$apply(attr.whenScrolled);
             }
@@ -136,18 +122,18 @@ bawds.directive('whenScrolled', function () {
 /**
  * A cross record element checker
  */
-bawds.directive('bawChecked', ['$parse', function ($parse) {
+bawds.directive("bawChecked", ["$parse", function ($parse) {
 
     // a cache of elements for each radio group
     var library = {};
 
 
     return {
-        restrict: 'A',
+        restrict: "A",
         link: function radioInputType(scope, element, attr) {
             // make the name unique, if not defined
             if (baw.angularCopies.isUndefined(attr.name)) {
-                element.attr('name', Number.Unique());
+                element.attr("name", Number.Unique());
             }
 
             var getter = $parse(attr.bawChecked);
@@ -193,14 +179,14 @@ bawds.directive('bawChecked', ['$parse', function ($parse) {
                 scope.$apply(function () {
                     assigner(scope, isChecked);
 
-                    if (newest.e[0] != event.target) {
+                    if (newest.e[0] !== event.target) {
                         newest.a(newest.s, !isChecked);
                     }
                 });
 
             }
 
-            element.bind('click', updateModel);
+            element.bind("click", updateModel);
 
         }
     };
@@ -213,11 +199,11 @@ bawds.directive('bawChecked', ['$parse', function ($parse) {
  *
  * ONLY one way binding supported at the moment
  */
-bawds.directive('bawTranslateX', function () {
+bawds.directive("bawTranslateX", function () {
 
     function getSupportedTransform() {
-        var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
-        var div = document.createElement('div');
+        var prefixes = "transform WebkitTransform MozTransform OTransform msTransform".split(" ");
+        var div = document.createElement("div");
         for(var i = 0; i < prefixes.length; i++) {
             if(div && div.style[prefixes[i]] !== undefined) {
                 return prefixes[i];
@@ -232,16 +218,16 @@ bawds.directive('bawTranslateX', function () {
     }
 
     return {
-        restrict: 'A',
+        restrict: "A",
         link: function (scope, elements, attributes, controller) {
             var element = elements[0];
 
             function leftWatcher(newValue, oldValue) {
-                element.style[transformProperty] = '' + newValue.toFixed(3) + 'px';
+                element.style[transformProperty] = "" + newValue.toFixed(3) + "px";
             }
 
             function transformWatcher(newValue, oldValue) {
-                element.style[transformProperty] = 'translate3d(' + newValue.toFixed(3) + 'px, 0, 0)';
+                element.style[transformProperty] = "translate3d(" + newValue.toFixed(3) + "px, 0, 0)";
             }
 
             var watcher = getSupportedTransform() ? transformWatcher : leftWatcher;
@@ -251,13 +237,13 @@ bawds.directive('bawTranslateX', function () {
     };
 });
 
-bawds.directive('bawImageLoaded', ['$timeout', '$parse', function ($timeout, $parse) {
+bawds.directive("bawImageLoaded", ["$timeout", "$parse", function ($timeout, $parse) {
     return {
-        restrict: 'A',
+        restrict: "A",
         link: function (scope, elements, attr) {
             var element = elements[0];
             if (element.nodeName !== "IMG") {
-                throw 'Cannot put bawImageLoaded element on an element that is not a <image />';
+                throw "Cannot put bawImageLoaded element on an element that is not a <image />";
             }
 
             var getter = $parse(attr.bawImageLoaded);
@@ -268,7 +254,7 @@ bawds.directive('bawImageLoaded', ['$timeout', '$parse', function ($timeout, $pa
             element.onload = function () {
                 assigner(scope, element.complete);
             };
-
+/*
             function checkLater() {
                 $timeout(function () {
                     assigner(scope, element.complete);
@@ -277,16 +263,16 @@ bawds.directive('bawImageLoaded', ['$timeout', '$parse', function ($timeout, $pa
                     checkLater();
                     //}
                 }, 1000);
-            }
+            }*/
 
         }
     };
 }]);
 
-bawds.directive('bawInjectTransformers', function () {
+bawds.directive("bawInjectTransformers", function () {
     return {
-        restrict: 'A',
-        require: 'ngModel',
+        restrict: "A",
+        require: "ngModel",
         priority: -1,
         link: function (scope, element, attr, ngModel) {
             var local = scope.$eval(attr.bawInjectTransformers);

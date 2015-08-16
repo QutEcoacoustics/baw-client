@@ -95,7 +95,7 @@ angular
                 }
 
                 function updateExtent(extent) {
-                    if (extent.length != 2) {
+                    if (extent.length !== 2) {
                         throw new Error("Can't handle this many dimensions");
                     }
 

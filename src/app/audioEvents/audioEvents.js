@@ -1,8 +1,8 @@
-angular.module('bawApp.audioEvents', [])
+angular.module("bawApp.audioEvents", [])
 
-    .controller('AudioEventsCtrl', ['$scope', '$resource', 'AudioEvent',
+    .controller("AudioEventsCtrl", ["$scope", "$resource", "AudioEvent",
         function AudioEventsCtrl($scope, $resource, Project) {
-            $scope.audioEventsResource = $resource('/audioEvents', {});
+            $scope.audioEventsResource = $resource("/audioEvents", {});
             $scope.audioEvents = $scope.audioEventsResource.query();
 
             $scope.links = function (key) {
@@ -14,8 +14,8 @@ angular.module('bawApp.audioEvents', [])
             };
         }])
 
-    .controller('AudioEventCtrl',
-        ['$scope', '$resource', '$routeParams', 'AudioEvent',
+    .controller("AudioEventCtrl",
+        ["$scope", "$resource", "$routeParams", "AudioEvent",
             function AudioEventCtrl($scope, $resource, $routeParams, AudioEvent) {
 
             }]);

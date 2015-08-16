@@ -2,7 +2,9 @@
  * NOTE: this was copied from angular-ui. At some point this file should be deleted.
  */
 
-var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration', "bawApp.directives.ui.bootstrap"]);
+/* globals google*/
+
+var bawds = bawds || angular.module("bawApp.directives", ["bawApp.configuration", "bawApp.directives.ui.bootstrap"]);
 
 /* Start map directives */
 /** stolen from angular ui
@@ -11,12 +13,12 @@ var bawds = bawds || angular.module('bawApp.directives', ['bawApp.configuration'
     //Setup map events from a google map object to trigger on a given element too,
     //then we just use ui-event to catch events from an element
 function bindMapEvents(scope, eventsStr, googleObject, element) {
-    angular.forEach(eventsStr.split(' '), function (eventName) {
+    angular.forEach(eventsStr.split(" "), function (eventName) {
         //Prefix all googlemap events with 'map-', so eg 'click'
         //for the googlemap doesn't interfere with a normal 'click' event
 
         var $event = {
-            type: 'map-' + eventName
+            type: "map-" + eventName
         };
         google.maps.event.addListener(googleObject, eventName, function (evt) {
             element.triggerHandler(angular.extend({}, $event, evt));
@@ -29,11 +31,11 @@ function bindMapEvents(scope, eventsStr, googleObject, element) {
         });
 
         var $eventOnce = {
-            type: 'map-once-' + eventName
+            type: "map-once-" + eventName
         };
         google.maps.event.addListenerOnce(googleObject, eventName, function (evt) {
             element.triggerHandler(angular.extend({}, $eventOnce, evt));
-            console.log('addListenerOnce', $eventOnce);
+            console.log("addListenerOnce", $eventOnce);
             //We create an $apply if it isn't happening. we need better support for this
             //We don't want to use timeout because tons of these events fire at once,
             //and we only need one $apply
@@ -45,16 +47,16 @@ function bindMapEvents(scope, eventsStr, googleObject, element) {
     });
 }
 
-bawds.directive('bawMap', ['ui.config', '$parse', function (uiConfig, $parse) {
+bawds.directive("bawMap", ["ui.config", "$parse", function (uiConfig, $parse) {
 
-    var mapEvents = 'bounds_changed center_changed click dblclick drag dragend ' +
-        'dragstart heading_changed idle maptypeid_changed mousemove mouseout ' +
-        'mouseover projection_changed resize rightclick tilesloaded tilt_changed ' +
-        'zoom_changed';
+    var mapEvents = "bounds_changed center_changed click dblclick drag dragend " +
+        "dragstart heading_changed idle maptypeid_changed mousemove mouseout " +
+        "mouseover projection_changed resize rightclick tilesloaded tilt_changed " +
+        "zoom_changed";
     var options = uiConfig.map || {};
 
     return {
-        restrict: 'A',
+        restrict: "A",
         //doesn't work as E for unknown reason
         link: function (scope, elm, attrs) {
             var opts = angular.extend({}, options, scope.$eval(attrs.uiOptions));
@@ -69,10 +71,10 @@ bawds.directive('bawMap', ['ui.config', '$parse', function (uiConfig, $parse) {
     };
 }]);
 
-bawds.directive('bawMapInfoWindow', ['ui.config', '$parse', '$compile', function (uiConfig, $parse, $compile) {
+bawds.directive("bawMapInfoWindow", ["ui.config", "$parse", "$compile", function (uiConfig, $parse, $compile) {
 
-    var infoWindowEvents = 'closeclick content_change domready ' +
-        'position_changed zindex_changed';
+    var infoWindowEvents = "closeclick content_change domready " +
+        "position_changed zindex_changed";
     var options = uiConfig.mapInfoWindow || {};
 
     return {
@@ -93,7 +95,7 @@ bawds.directive('bawMapInfoWindow', ['ui.config', '$parse', '$compile', function
              google maps has them stored. So we just replace the infowindow element
              with an empty div. (we don't just straight remove it from the dom because
              straight removing things from the dom can mess up angular) */
-            elm.replaceWith('<div></div>');
+            elm.replaceWith("<div></div>");
 
             //Decorate infoWindow.open to $compile contents before opening
             var _open = infoWindow.open;
@@ -114,7 +116,7 @@ bawds.directive('bawMapInfoWindow', ['ui.config', '$parse', '$compile', function
 function mapOverlayDirective(directiveName, events) {
     bawds.directive(directiveName, [function () {
         return {
-            restrict: 'A',
+            restrict: "A",
             link: function (scope, elm, attrs) {
                 scope.$watch(attrs[directiveName], function (newObject) {
                     bindMapEvents(scope, events, newObject, elm);
@@ -124,16 +126,16 @@ function mapOverlayDirective(directiveName, events) {
     }]);
 }
 
-mapOverlayDirective('bawMapMarker', 'animation_changed click clickable_changed cursor_changed ' + 'dblclick drag dragend draggable_changed dragstart flat_changed icon_changed ' + 'mousedown mouseout mouseover mouseup position_changed rightclick ' + 'shadow_changed shape_changed title_changed visible_changed zindex_changed');
+mapOverlayDirective("bawMapMarker", "animation_changed click clickable_changed cursor_changed " + "dblclick drag dragend draggable_changed dragstart flat_changed icon_changed " + "mousedown mouseout mouseover mouseup position_changed rightclick " + "shadow_changed shape_changed title_changed visible_changed zindex_changed");
 
-mapOverlayDirective('bawMapPolyline', 'click dblclick mousedown mousemove mouseout mouseover mouseup rightclick');
+mapOverlayDirective("bawMapPolyline", "click dblclick mousedown mousemove mouseout mouseover mouseup rightclick");
 
-mapOverlayDirective('bawMapPolygon', 'click dblclick mousedown mousemove mouseout mouseover mouseup rightclick');
+mapOverlayDirective("bawMapPolygon", "click dblclick mousedown mousemove mouseout mouseover mouseup rightclick");
 
-mapOverlayDirective('bawMapRectangle', 'bounds_changed click dblclick mousedown mousemove mouseout mouseover ' + 'mouseup rightclick');
+mapOverlayDirective("bawMapRectangle", "bounds_changed click dblclick mousedown mousemove mouseout mouseover " + "mouseup rightclick");
 
-mapOverlayDirective('bawMapCircle', 'center_changed click dblclick mousedown mousemove ' + 'mouseout mouseover mouseup radius_changed rightclick');
+mapOverlayDirective("bawMapCircle", "center_changed click dblclick mousedown mousemove " + "mouseout mouseover mouseup radius_changed rightclick");
 
-mapOverlayDirective('bawMapGroundOverlay', 'click dblclick');
+mapOverlayDirective("bawMapGroundOverlay", "click dblclick");
 
 /* End map directives */

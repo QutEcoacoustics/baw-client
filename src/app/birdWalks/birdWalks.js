@@ -1,5 +1,5 @@
-angular.module('bawApp.birdWalks', [])
-    .controller('BirdWalksCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'BirdWalkService', 'conf.paths',
+angular.module("bawApp.birdWalks", [])
+    .controller("BirdWalksCtrl", ["$scope", "$resource", "$routeParams", "$route", "$http", "BirdWalkService", "conf.paths",
         function BirdWalksCtrl($scope, $resource, $routeParams, $route, $http, BirdWalkService, paths) {
             // set up results
             $scope.results = {
@@ -12,29 +12,30 @@ angular.module('bawApp.birdWalks', [])
             $scope.imagesPath = paths.site.files.birdWalk.imagesAbsolute;
 
             // download bird walk specification
-            BirdWalkService.getUrl(paths.site.files.birdWalk.specAbsolute, 'birdWalkSpec', $scope, null);
-            BirdWalkService.getUrl(paths.site.files.birdWalk.statsAbsolute, 'birdWalkStats', $scope, null);
+            BirdWalkService.getUrl(paths.site.files.birdWalk.specAbsolute, "birdWalkSpec", $scope, null);
+            BirdWalkService.getUrl(paths.site.files.birdWalk.statsAbsolute, "birdWalkStats", $scope, null);
         }])
-    .controller('BirdWalkCtrl', ['$scope', '$resource', '$routeParams', '$route', '$http', 'BirdWalkService', 'conf.paths',
+    .controller("BirdWalkCtrl", ["$scope", "$resource", "$routeParams", "$route", "$http", "BirdWalkService", "conf.paths",
         function BirdWalkCtrl($scope, $resource, $routeParams, $route, $http, BirdWalkService, paths) {
 
             // constants
-            var CURRENT_LOCATION_ZOOM = 8;
+            //var CURRENT_LOCATION_ZOOM = 8;
 
             // initialise
             $scope.imagesPath = paths.site.files.birdWalk.imagesAbsolute;
             $scope.params = $routeParams;
-            BirdWalkService.getUrl(paths.site.files.birdWalk.statsAbsolute, 'birdWalkStats', $scope, null);
-            BirdWalkService.getUrl(paths.site.files.birdWalk.specAbsolute, 'birdWalkSpec', $scope, function () {
+            BirdWalkService.getUrl(paths.site.files.birdWalk.statsAbsolute, "birdWalkStats", $scope, null);
+            BirdWalkService.getUrl(paths.site.files.birdWalk.specAbsolute, "birdWalkSpec", $scope, function () {
                 // set up page display
                 $scope.walkDetails = $scope.spec.birdWalkSpec.walks[$scope.params.birdWalkId];
                 $scope.locationDetails = $scope.spec.birdWalkSpec.locations[$scope.walkDetails.locationName];
 
-                var overviewLocation = new google.maps.LatLng(
+                throw new Error ("google not defined");/*
+                var overviewLocation;= new google.maps.LatLng( // jshint ignore:line
                     $scope.walkDetails.overviewLocation.latitude,
                     $scope.walkDetails.overviewLocation.longitude);
 
-                $scope.locationMap = $scope.createMap('locationMap', overviewLocation, CURRENT_LOCATION_ZOOM);
+                $scope.locationMap = $scope.createMap("locationMap", overviewLocation, CURRENT_LOCATION_ZOOM);
 
                 var bounds = new google.maps.LatLngBounds();
                 $scope.walkDetails.waypoints.forEach(function(waypoint){
@@ -51,13 +52,15 @@ angular.module('bawApp.birdWalks', [])
                     bounds.extend(overviewLocation);
                 }
 
-                $scope.locationMap.fitBounds(bounds);
+                $scope.locationMap.fitBounds(bounds);*/
             });
 
 
             //$scope.spec.birdWalkSpec.walks
-
+/*
             $scope.createMap = function (elementId, LatLng, zoom) {
+                throw new Error("google is not defined");
+                
                 return new google.maps.Map(
                     document.getElementById(elementId),
                     {
@@ -67,10 +70,10 @@ angular.module('bawApp.birdWalks', [])
                     }
                 );
             };
-
+*/
             $scope.createMarker = function (map, LatLng, title) {
-
-                var marker = new MarkerWithLabel({
+                throw new Error("MarkerWithLabel is not defined");
+                /*var marker = new MarkerWithLabel({
                     position: LatLng,
                     draggable: true,
                     raiseOnDrag: true,
@@ -86,6 +89,7 @@ angular.module('bawApp.birdWalks', [])
 //                    map: map,
 //                    title: title
 //                });
+*/
             };
 
 

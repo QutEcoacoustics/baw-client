@@ -2,11 +2,11 @@ describe("The bawResource service", function () {
 
     var $httpBackend, bawResource, $rootScope;
 
-    beforeEach(module('bawApp.services'));
+    beforeEach(module("bawApp.services"));
 
     beforeEach(inject(["$injector", "bawResource", "$rootScope", "$http", function ($injector, providedBawResource, _$rootScope, $http) {
-        $httpBackend = $injector.get('$httpBackend');
-        $http.defaults.headers.common["Authorization"] = "SOME AUTH TOKEN";
+        $httpBackend = $injector.get("$httpBackend");
+        $http.defaults.headers.common.Authorization = "SOME AUTH TOKEN";
 
         $httpBackend.when("GET", "/test").respond({data:[], meta:{}});
 
@@ -43,6 +43,7 @@ describe("The bawResource service", function () {
             });
         $httpBackend.flush();
 
+        expect(result).toBeDefined();
         expect(pass).toBeTrue();
 
         done();

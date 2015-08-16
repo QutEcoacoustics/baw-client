@@ -1,9 +1,9 @@
 angular
     .module("bawApp.services.birdWalkService", [])
     .factory(
-    'BirdWalkService',
+    "BirdWalkService",
     [
-        "$rootScope", '$location', '$route', '$routeParams', '$http',
+        "$rootScope", "$location", "$route", "$routeParams", "$http",
         function ($rootScope, $location, $route, $routeParams, $http) {
 
             var birdWalkService = {};
@@ -14,8 +14,8 @@ angular
                 })
                     .success(function (data, status, headers, config) {
                                  console.info("Downloading resource " + downloadUrl + " succeeded.", data);
-                                 if (!theScope['spec']) {
-                                     theScope['spec'] = {};
+                                 if (!theScope.spec) {
+                                     theScope.spec = {};
                                  }
                                  theScope.spec[storeProperty] = data;
 

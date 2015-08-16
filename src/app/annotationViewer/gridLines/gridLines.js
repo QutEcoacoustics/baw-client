@@ -1,7 +1,7 @@
-var bawGLs = angular.module('bawApp.annotationViewer.gridLines', ['bawApp.configuration']);
+var bawGLs = angular.module("bawApp.annotationViewer.gridLines", ["bawApp.configuration"]);
 
-bawGLs.directive('gridLines',
-    [   'conf.paths',
+bawGLs.directive("gridLines",
+    [   "conf.paths",
         function (paths) {
 
             var defaultAxis = {
@@ -109,11 +109,11 @@ bawGLs.directive('gridLines',
 
                     var position = steps[j].position;
 
-                    if (xOrY === 'y') {
-                        element.style.top = (size - position) + 'px';
+                    if (xOrY === "y") {
+                        element.style.top = (size - position) + "px";
                     }
-                    else if (xOrY === 'x') {
-                        element.style.left = position + 'px';
+                    else if (xOrY === "x") {
+                        element.style.left = position + "px";
                     }
                 }
 
@@ -122,21 +122,21 @@ bawGLs.directive('gridLines',
 
             function drawLines(lineContainer, elementSize, xOrY, steps, formatter) {
                 if (!steps) {
-                    lineContainer.style.display = 'none';
+                    lineContainer.style.display = "none";
                     return;
                 }
 
                 diffElementsChildren(lineContainer, steps.length - 2, "div");
-                var biggest = render(lineContainer, xOrY, elementSize, steps, false, true, formatter);
+                var biggest = render(lineContainer, xOrY, elementSize, steps, false, true, formatter); // jshint ignore:line
 
                 // ensure grid lines are visible
-                lineContainer.style.display = '';
+                lineContainer.style.display = "";
             }
 
             function drawScales(scaleContainer, elementSize, xOrY, steps, formatter, titleElement, showTitle) {
                 if (!steps) {
-                    scaleContainer.style.display = 'none';
-                    titleElement.style.display = 'none';
+                    scaleContainer.style.display = "none";
+                    titleElement.style.display = "none";
                     return;
                 }
 
@@ -144,8 +144,8 @@ bawGLs.directive('gridLines',
                 var biggest = render(scaleContainer, xOrY, elementSize, steps, true, false, formatter);
 
                 if (showTitle) {
-                    titleElement.style.display = '';
-                    if (xOrY == "x") {
+                    titleElement.style.display = "";
+                    if (xOrY === "x") {
                         titleElement.style.bottom = "-" + biggest + "em";
                     }
                     else {
@@ -153,18 +153,18 @@ bawGLs.directive('gridLines',
                     }
                 }
                 else {
-                    titleElement.style.display = 'none';
+                    titleElement.style.display = "none";
                 }
 
                 // ensure scales are visible
-                scaleContainer.style.display = '';
+                scaleContainer.style.display = "";
             }
 
             return {
                 scope: {
                     configuration: "=configuration"
                 },
-                restrict: 'E',
+                restrict: "E",
                 templateUrl: paths.site.files.gridLines,
                 link: function linker(scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
@@ -196,8 +196,8 @@ bawGLs.directive('gridLines',
                                 newValue.step, newValue.numberOfLines);
                         }
 
-                        drawLines(xLineContainer, newValue.width, 'x', newValue.showGrid ? steps : undefined);
-                        drawScales(xScaleContainer, newValue.width, 'x', newValue.showScale ? steps : undefined, newValue.labelFormatter, xTitle, newValue.showTitle);
+                        drawLines(xLineContainer, newValue.width, "x", newValue.showGrid ? steps : undefined);
+                        drawScales(xScaleContainer, newValue.width, "x", newValue.showScale ? steps : undefined, newValue.labelFormatter, xTitle, newValue.showTitle);
                     }, true);
 
                     scope.$watch(function () {
@@ -213,8 +213,8 @@ bawGLs.directive('gridLines',
                                 newValue.step, newValue.numberOfLines);
                         }
 
-                        drawLines(yLineContainer, newValue.height, 'y', newValue.showGrid ? steps : undefined);
-                        drawScales(yScaleContainer, newValue.height, 'y', newValue.showScale ? steps : undefined, newValue.labelFormatter, yTitle, newValue.showTitle);
+                        drawLines(yLineContainer, newValue.height, "y", newValue.showGrid ? steps : undefined);
+                        drawScales(yScaleContainer, newValue.height, "y", newValue.showScale ? steps : undefined, newValue.labelFormatter, yTitle, newValue.showTitle);
                     }, true);
                 }
             };

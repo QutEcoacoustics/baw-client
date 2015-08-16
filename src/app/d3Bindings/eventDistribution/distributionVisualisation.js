@@ -66,7 +66,7 @@ angular
                     margin = {
                         top: 23,
                         right: 0,
-                        left: 120 /* yAxisWidth*/,
+                        left: 68 + yAxisWidth,
                         bottom: 0 + xAxisHeight
                     },
 
@@ -509,7 +509,7 @@ angular
                         clickDate = xScale.invert(coordinates[0]);
 
                     // now see if there is a match for the date!
-                    var {url, roundedDate} = isNavigatable(clickDate);
+                    var {url} = isNavigatable(clickDate);
 
                     if (url) {
                         console.warn(
@@ -584,7 +584,7 @@ angular
                         s = focusStemPath.stems,
                         r = focusStemPath.root;
 
-                    return `m-${hw} 0 l0 ${s} l${w} 0 l0 -${s} m-${hw} ${s} l0 ${r}`
+                    return `m-${hw} 0 l0 ${s} l${w} 0 l0 -${s} m-${hw} ${s} l0 ${r}`;
                 }
             };
         }

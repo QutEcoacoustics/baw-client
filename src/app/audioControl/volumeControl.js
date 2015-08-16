@@ -35,7 +35,7 @@ acds.directive("volumeControl", ["$parse", function ($parse) {
             });
 
             // bind from the inputs to the model
-            muteButton.addEventListener('click', function() {
+            muteButton.addEventListener("click", function() {
                 scope.$apply(function() {
                     scope.model.muted = !scope.model.muted;
                 });
@@ -46,7 +46,7 @@ acds.directive("volumeControl", ["$parse", function ($parse) {
                     scope.model.volume = parseFloat(slider.value) / 100;
                 });
             }
-            slider.addEventListener('input', sliderChanged);
+            slider.addEventListener("input", sliderChanged);
             //slider.click();
         }
     };

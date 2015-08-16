@@ -2,27 +2,24 @@
 
 // http://getbootstrap.com/components/#navbar-fixed-top
 body {
-  padding-top: 51px;
+  padding-top: $header-padding;
 }
 
-// http://www.helloerik.com/bootstrap-3-grid-introduction#fluid
-.container-liquid {
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-left: auto;
-  margin-right: auto;
+//taken from: https://github.com/QutBioacoustics/baw-server/blob/develop/app/assets/stylesheets/common.scss#L86
+footer {
+  text-align: center;
+  padding: $padding-large-vertical $padding-large-horizontal;
+  margin-top: $footer-padding;
+  border-top: 1px solid $legend-border-color;
+  background-color: $panel-footer-bg;
+
+  // the nav layout was achieved using grid classes
+  .nav {
+  }
 }
 
-.nav-text {
-  @extend .text-muted;
-  @extend .navbar-text;
-  padding: $nav-link-padding;
-  margin: 0;
-}
 
-footer .nav {
-  display: inline-block;
-}
+
 
 @if $DEBUG {
   .debug-ui {
@@ -34,23 +31,6 @@ footer .nav {
     display: none;
   }
 }
-
-
-
-a.disabled {
-  @extend .btn.disabled;
-  @extend .text-muted;
-  // allow the title to still show
-  pointer-events: auto;
-  cursor: default;
-  text-decoration: none;
-
-}
-
-baw-debug-info {
-  margin-top: 2em;
-}
-
 
 
 

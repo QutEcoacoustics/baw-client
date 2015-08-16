@@ -15,25 +15,25 @@ describe("The url service", function () {
     });
 
     var myQuery = {
-        blah: '1',
+        blah: "1",
         tornado: "attack",
         something: null,
         hello: true,
         bye: false,
-        'chocolate-chips': 'ring-ring',
-        monkeys: 'dancing dancing',
+        "chocolate-chips": "ring-ring",
+        monkeys: "dancing dancing",
         imNotHere: undefined,
-        imEmpty: ''
+        imEmpty: ""
     };
 
     it("encodes a querystring", function () {
         var result = $url.toKeyValue(myQuery);
-        expect(result).toBe('blah=1&tornado=attack&something=&hello&bye=false&chocolate-chips=ring-ring&monkeys=dancing%20dancing&imNotHere=&imEmpty=');
+        expect(result).toBe("blah=1&tornado=attack&something=&hello&bye=false&chocolate-chips=ring-ring&monkeys=dancing%20dancing&imNotHere=&imEmpty=");
     });
 
     it("encodes a querystring without empty values", function () {
         var result = $url.toKeyValue(myQuery, true);
-        expect(result).toBe('blah=1&tornado=attack&hello&chocolate-chips=ring-ring&monkeys=dancing%20dancing');
+        expect(result).toBe("blah=1&tornado=attack&hello&chocolate-chips=ring-ring&monkeys=dancing%20dancing");
     });
 
 
