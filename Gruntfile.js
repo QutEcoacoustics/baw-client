@@ -154,6 +154,8 @@ module.exports = function (grunt) {
                     // conventional-changelog-writer options go here
                     // adapted from https://github.com/ajoslin/conventional-changelog/blob/master/presets/angular.js
                     transform: function(commit) {
+                        var ignored =["chore", "style", "refactor", "test"];
+
                         if (commit.type === "feat") {
                             commit.type = "Features";
                         } else if (commit.type === "fix") {
@@ -162,6 +164,8 @@ module.exports = function (grunt) {
                             commit.type = "Performance Improvements";
                         } else if (commit.type === "revert") {
                             commit.type = "Reverts";
+                        } else if (ignored.indexOf(commit.type) !== -1) {
+                            return;
                         } else {
                             if (!commit.subject) {
                                 return;
