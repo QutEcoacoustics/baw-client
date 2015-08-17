@@ -61,13 +61,13 @@ You'll need write permissions to this repository to make a release.
 1. Ensure your current branch is `master`
 1. Ensure your working directory is clean
 1. Ensure you've updated, do a `git pull`
-1. Then finally run `grunt bump`
+1. Then finally run `grunt release`
     - Where arguments are defined by https://github.com/vojtajina/grunt-bump
     - Examples
-        - `grunt bump:patch`
-        - `grunt bump:minor`
-        - `grunt bump:major`
-        - `grunt bump --setversion=1.0.0`
+        - `grunt release:patch`
+        - `grunt release:minor`
+        - `grunt release:major`
+        - `grunt release --setversion=1.0.0`
 
 To bump the version, without changing anything other than the version (no changelog, not commits, no tags), run:
 
