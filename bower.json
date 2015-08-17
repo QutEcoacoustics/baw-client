@@ -1,6 +1,6 @@
 {
   "name": "baw-client",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "devDependencies": {
     "angular": "1.3.x",
     "angular-bootstrap": "~0.12.0",
