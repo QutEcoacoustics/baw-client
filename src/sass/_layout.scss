@@ -13,6 +13,11 @@ footer {
   border-top: 1px solid $legend-border-color;
   background-color: $panel-footer-bg;
 
+  // sticky footer
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
   // the nav layout was achieved using grid classes
   .nav {
   }

@@ -1,4 +1,12 @@
 <ul class="nav navbar-nav navbar-right">
+    <li class="" ng-show="loggedIn && profile.isAdmin">
+        <a href=""
+           ng-href="{{adminLink}}"
+           class="loginWidgetLink"
+           target="_self">
+            <span class="glyphicon glyphicon-cog"></span>
+        </a>
+    </li>
     <li class="">
         <a ng-show="loggedIn"
             href=""
@@ -30,12 +38,3 @@
         </a>
     </li>
 </ul>
-
-<!--<span ng-show="loggedIn">-->
-<!--<a href="/users/{{userData.userId}}" title="{{friendlyName}}">{{friendlyName}}</a>-->
-<!--&nbsp;&nbsp;-->
-<!--<a href >Sign Out</a>-->
-<!--</span>-->
-<!--<span ng-hide="loggedIn">-->
-<!--Welcome! <a href >Sign In</a>-->
-<!--</span>

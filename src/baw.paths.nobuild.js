@@ -73,7 +73,8 @@ module.exports = function (environment) {
                 "login": "/errors/unauthorized",
                 "loginActual": "/my_account/sign_in",
                 "logout": "/my_account/sign_out",
-                "register": "/my_account/sign_up"
+                "register": "/my_account/sign_up",
+                "admin": "/admin"
             }
         },
         "site": {
@@ -184,7 +185,7 @@ module.exports = function (environment) {
 
     function isObject(x) {
         return typeof x === 'object' && x !== null;
-    };
+    }
 
     // add helper paths
     function recursivePath(source, root) {
@@ -208,4 +209,4 @@ module.exports = function (environment) {
     recursivePath(paths.site.ngRoutes, paths.api.root);
 
     return paths;
-}
+};

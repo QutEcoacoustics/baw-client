@@ -40,6 +40,13 @@ angular
                         {userId: this.id}
                     );
                 }
+
+                get isAdmin() {
+                    // HACK: `rolesMask` is not available in current version of API but
+                    // currently only the `admin` user can be an admin, so...
+                    // Related to: https://github.com/QutBioacoustics/baw-server/issues/235
+                    return this.rolesMask === 1 || /^admin$/i.test(this.userName);
+                }
             }
 
             return UserProfile;

@@ -25,6 +25,7 @@ angular.module("bawApp.login.loginWidget", [])
                         $scope.logoutLink = paths.api.links.logoutAbsolute;
                         $scope.loginLink = paths.api.links.loginActualAbsolute;
                         $scope.registerLink = paths.api.links.registerAbsolute;
+                        $scope.adminLink = paths.api.links.adminAbsolute;
                     }]
             };
         }

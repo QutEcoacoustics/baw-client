@@ -67,7 +67,7 @@
                 </li>
                 <li>
                     <a ng-href="{{paths.api.links.contactUsAbsolute}}"
-                       target="_self">Contact us</a>
+                       target="_self">Contact Us</a>
                 </li>
             </ul>
             <login-widget></login-widget>
@@ -155,24 +155,26 @@
 </div>
 
 <footer class="clearfix">
-    <div class="row-fluid container">
-        <ul class="nav nav-pills col-md-8 col-md-offset-2">
-            <li>
-                <p class="nav-text">&copy; QUT <%= year %>
-                </p>
-            </li>
-            <li>
-                <p class="nav-text">
-                    <%= build_configs.current.key %>
-                    v<%= version %>
-                </p>
-            </li>
-            <li><a ng-href="{{paths.api.links.websiteStatusAbsolute}}" target="_self">Statistics</a></li>
-            <li><a ng-href="{{paths.api.links.disclaimersAbsolute}}" target="_self">Disclaimers</a></li>
-            <li><a ng-href="{{paths.api.links.creditsAbsolute}}" target="_self">Credits</a></li>
-            <li><a ng-href="{{paths.api.links.ethicsStatementAbsolute}}" target="_self">Ethics</a></li>
-            <li><a ng-href="{{paths.api.links.contactUsAbsolute}}" target="_self">Contact Us</a></li>
-        </ul>
+    <div class="container">
+        <div class="row-fluid">
+            <ul class="nav nav-pills col-md-8 col-md-offset-2">
+                <li>
+                    <p class="nav-text">&copy; QUT <%= year %>
+                    </p>
+                </li>
+                <li>
+                    <p class="nav-text">
+                        <%= build_configs.current.key %>
+                        v<%= version %>
+                    </p>
+                </li>
+                <li><a ng-href="{{paths.api.links.websiteStatusAbsolute}}" target="_self">Statistics</a></li>
+                <li><a ng-href="{{paths.api.links.disclaimersAbsolute}}" target="_self">Disclaimers</a></li>
+                <li><a ng-href="{{paths.api.links.creditsAbsolute}}" target="_self">Credits</a></li>
+                <li><a ng-href="{{paths.api.links.ethicsStatementAbsolute}}" target="_self">Ethics</a></li>
+                <li><a ng-href="{{paths.api.links.contactUsAbsolute}}" target="_self">Contact Us</a></li>
+            </ul>
+        </div>
     </div>
 </footer>
 <!-- Google analytics -->
