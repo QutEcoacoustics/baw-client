@@ -1,3 +1,19 @@
+<a name="0.17.2"></a>
+## [0.17.2](https://github.com/QutBioacoustics/baw-client/compare/v0.17.1...v0.17.2) (2015-08-17)
+
+Build related fixes.
+
+
+<a name="0.17.1"></a>
+## [0.17.1](https://github.com/QutBioacoustics/baw-client/compare/v0.17.0...v0.17.1) (2015-08-17)
+
+
+### Bug Fixes
+
+* **styling:** Updated styling in footer, header, and tags input ([a381b5e](https://github.com/QutBioacoustics/baw-client/commit/a381b5e)), closes [#35](https://github.com/QutBioacoustics/baw-client/issues/35)
+
+
+
 <a name="0.17.0"></a>
 # [0.17.0](https://github.com/QutBioacoustics/baw-client/compare/v0.16.0...v0.17.0) (2015-08-17)
 
@@ -956,6 +972,8 @@
 * Worked on Virtual Bird Tour. ([bed0e47](https://github.com/QutBioacoustics/baw-client/commit/bed0e47))
 * working on media controller and tests ([f396088](https://github.com/QutBioacoustics/baw-client/commit/f396088))
 * Wrote *a lot* of unit tests. ([829d366](https://github.com/QutBioacoustics/baw-client/commit/829d366))
+
+
 
 
 
