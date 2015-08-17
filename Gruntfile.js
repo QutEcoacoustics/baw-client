@@ -36,6 +36,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-connect");
     grunt.loadNpmTasks("grunt-babel");
     grunt.loadNpmTasks("grunt-ng-constant");
+    grunt.loadNpmTasks("grunt-editor");
 
     /**
      * Load in our build configuration file.
@@ -132,14 +133,88 @@ module.exports = function (grunt) {
         /**
          * Creates a changelog on a new version.
          */
-        changelog: {
-            main: {
-                options: {
-                    from: "6dec81ca099cf2cc7840b02d2f27ff8bffbce954",
-                    //to: "HEAD"
-                    dest: "CHANGELOG.md",
-                    template: "buildConfig/changelog.tpl"
+        conventionalChangelog: {
+            options: {
+                changelogOpts: {
+                    preset: "angular",
+                    //releaseCount: 0
+                },
+                //context: {
+                //    // context goes here
+                //},
+                //gitRawCommitsOpts: {
+                //    // git-raw-commits options go here
+                //},
+                parserOpts: {
+                    // conventional-commits-parser options go here
+                    // https://github.com/ajoslin/conventional-changelog/blob/master/presets/angular.js#L11
+                    headerPattern: /^(\w*)(?:\((.*)\))?\:? (.*)$/
+                },
+                writerOpts: {
+                    // conventional-changelog-writer options go here
+                    // adapted from https://github.com/ajoslin/conventional-changelog/blob/master/presets/angular.js
+                    transform: function(commit) {
+                        if (commit.type === "feat") {
+                            commit.type = "Features";
+                        } else if (commit.type === "fix") {
+                            commit.type = "Bug Fixes";
+                        } else if (commit.type === "perf") {
+                            commit.type = "Performance Improvements";
+                        } else if (commit.type === "revert") {
+                            commit.type = "Reverts";
+                        } else {
+                            if (!commit.subject) {
+                                return;
+                            }
+
+                            // don't match version commits
+                            if (/v(\d+\.)?(\d+\.)?(\*|\d+)/.test(commit.subject)) {
+                                return;
+                            }
+
+
+                            commit.subject = commit.type + " " + (commit.scope && (commit.scope + " ") || "") + commit.subject;
+
+                            // If a commit starts with a hash, escape to prevent md turning into header
+                            if (commit.subject.substring(0, 1) === "#") {
+                                commit.subject = "\\" + commit.subject;
+                            }
+
+                            if (commit.subject.indexOf("Merge") === 0) {
+                                return;
+                            }
+
+                            if (/^resolved/i.test(commit.subject)) {
+                                return;
+                            }
+
+                            // customise angular template!
+                            commit.type = "Other Notes";
+                            commit.scope = "";
+                        }
+
+                        if (typeof commit.hash === "string") {
+                            commit.hash = commit.hash.substring(0, 7);
+                        }
+
+                        if (typeof commit.subject === "string") {
+                            commit.subject = commit.subject.substring(0, 80);
+                        }
+
+                        _.map(commit.notes, function(note) {
+                            if (note.title === "BREAKING CHANGE") {
+                                note.title = "BREAKING CHANGES";
+                            }
+
+                            return note;
+                        });
+
+                        return commit;
+                    }
                 }
+            },
+            main: {
+                src: "CHANGELOG.md"
             }
         },
 
@@ -152,17 +227,28 @@ module.exports = function (grunt) {
                     "package.json",
                     "bower.json"
                 ],
-                commit: false,
+                updateConfigs: [
+                  "pkg"
+                ],
+                commit: true,
                 commitMessage: "chore(release): v%VERSION%",
                 commitFiles: [
                     "package.json",
-                    "client/bower.json"
+                    "bower.json",
+                    "CHANGELOG.md"
                 ],
-                createTag: false,
+                createTag: true,
                 tagName: "v%VERSION%",
                 tagMessage: "Version %VERSION%",
-                push: false,
+                push: true,
                 pushTo: "origin"
+                //prereleaseName: "rc" // default is "rc"
+            }
+        },
+
+        editor: {
+            changelog: {
+                src: ["CHANGELOG.md"]
             }
         },
 
@@ -277,19 +363,6 @@ module.exports = function (grunt) {
             },
             build_appjs: {
                 options: {
-                    //process: function (content, srcPath) {
-                    //    // if srcPath contain .tpl.js
-                    //    // for now since the angular templates use tpl as well,
-                    //    // we'll cheat and just use a direct file reference
-                    //    var bc = grunt.config("build_configs");
-                    //    if (srcPath.indexOf(bc.configFile) >= 0) {
-                    //
-                    //        // then process as template!
-                    //        return grunt.template.process(content, {data: bc});
-                    //    }
-                    //
-                    //    return content;
-                    //}
                 },
                 files: [
                     {
@@ -792,6 +865,20 @@ module.exports = function (grunt) {
         "sass:compile", "concat:build_css", "copy:compile_assets", "concat:compile_js", "uglify",
         "index:compile"
     ]);
+
+    grunt.registerTask("release", "bump, changelog, commit, and publish to Github", function(type) {
+
+        if (!type) {
+            grunt.fatal(new Error("release task must have a type supplied"));
+        }
+
+        grunt.task.run([
+            "bump-only:" + type,
+            "conventionalChangelog",
+            "editor:changelog",
+            "bump-commit"
+        ]);
+    });
 
     /**
      * A utility function to get all app JavaScript sources.
