@@ -62,5 +62,5 @@ module.exports = function (environment) {
             "lastPlaybackPositionName": "Last playback position",
             "appCategory": "<<application>>"
         }
-    }
-}
+    };
+};

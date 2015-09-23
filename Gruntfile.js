@@ -56,7 +56,8 @@ module.exports = function (grunt) {
      */
     userConfig.usePhantomJs = grunt.option("use-phantomjs") === true;
 
-    var development = grunt.option("development") === true,
+    var debugOutput = grunt.option("debugOutput") === true,
+        development = grunt.option("development") === true,
         staging = grunt.option("staging") === true,
         production = grunt.option("production") === true,
         sumBuildOptions = development + staging + production;
@@ -85,6 +86,7 @@ module.exports = function (grunt) {
         grunt.log.ok("Development build selected");
         userConfig.build_configs.current = userConfig.build_configs.environments.development;
         userConfig.build_configs.current.key = "development";
+        debugOutput = true;
     }
     if (staging) {
         grunt.log.ok("Staging build selected");
@@ -475,7 +477,10 @@ module.exports = function (grunt) {
         uglify: {
             compile: {
                 options: {
-                    banner: "<%= meta.banner %>"
+                    banner: "<%= meta.banner %>",
+                    mangle: debugOutput ? false : {},
+                    compress: debugOutput ? false : {},
+                    preserveComments: debugOutput ? false : undefined,
                 },
                 files: {
                     "<%= concat.compile_js.dest %>": "<%= concat.compile_js.dest %>"

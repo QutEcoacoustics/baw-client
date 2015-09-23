@@ -184,7 +184,7 @@ module.exports = function (environment) {
     }
 
     function isObject(x) {
-        return typeof x === 'object' && x !== null;
+        return typeof x === "object" && x !== null;
     }
 
     // add helper paths
