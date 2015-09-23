@@ -103,6 +103,10 @@ module.exports = function (grunt) {
 
     grunt.log.writeln("Test runner should use " + (userConfig.usePhantomJs ? "PhantomJS" : "Chrome"));
 
+    if (debugOutput) {
+        grunt.log.warn("Not minifying code because --debugOutput specified");
+    }
+
     /**
      * This is the configuration object Grunt uses to give each plugin its
      * instructions.
@@ -475,12 +479,15 @@ module.exports = function (grunt) {
          * Minify the sources!
          */
         uglify: {
+            options: {
+                mangle: debugOutput ? false : {},
+                compress: debugOutput ? false : {},
+                preserveComments: debugOutput ? false : undefined,
+                beautify: !!debugOutput
+            },
             compile: {
                 options: {
-                    banner: "<%= meta.banner %>",
-                    mangle: debugOutput ? false : {},
-                    compress: debugOutput ? false : {},
-                    preserveComments: debugOutput ? false : undefined,
+                    banner: "<%= meta.banner %>"
                 },
                 files: {
                     "<%= concat.compile_js.dest %>": "<%= concat.compile_js.dest %>"
