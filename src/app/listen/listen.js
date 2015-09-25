@@ -56,7 +56,8 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
             UserProfileEvents, Bookmark, moment) {
 
 
-            var CHUNK_DURATION_SECONDS = constants.listen.chunkDurationSeconds;
+            const ChunkDurationSettings = constants.listen.chunkDurationSeconds;
+            const HideAnnotationsKey = "hideAnnotations";
 
             $scope.errorState = !(baw.isNumber($routeParams.recordingId) &&
                 baw.parseInt($routeParams.recordingId) >= 0);
@@ -72,18 +73,22 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
                 // parse the start and end offsets
                 $routeParams.start = parseFloat($routeParams.start) || 0.0;
                 // warn: this converts 0 to chunk duration
-                $routeParams.end = parseFloat($routeParams.end) || ($routeParams.start + CHUNK_DURATION_SECONDS);
+                $routeParams.end = parseFloat($routeParams.end) || ($routeParams.start + ChunkDurationSettings);
                 var chunkDuration = ($routeParams.end - $routeParams.start);
                 if (chunkDuration < 0) {
 
                     $routeParams.start = 0.0;
                     console.warn("invalid start offsets specified, reverting to safe value: start=" + $routeParams.start);
                 }
-                if (chunkDuration > CHUNK_DURATION_SECONDS) {
-                    $routeParams.end = $routeParams.start + CHUNK_DURATION_SECONDS;
+                if (chunkDuration > ChunkDurationSettings) {
+                    $routeParams.end = $routeParams.start + ChunkDurationSettings;
                     console.warn("invalid end offsets specified, reverting to safe value: end=" + $routeParams.end);
                 }
+                var hideAnnotations = $routeParams[HideAnnotationsKey] === true;
 
+                if (hideAnnotations) {
+                    console.warn("Existing annotations will be not be shown.");
+                }
 
                 // set up some dummy objects for use later
                 $scope.jumpToHide = true;
@@ -124,7 +129,13 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
                     if ($scope.nextEnabled && $scope.model.audioElement.autoPlay) {
                         console.info("Changing page to next segment...");
                         $scope.$apply(function() {
-                            $location.search({autoPlay: true, start: nextStart, end: nextEnd});
+                            var search = {autoPlay: true, start: nextStart, end: nextEnd};
+
+                            if (hideAnnotations) {
+                                search[HideAnnotationsKey] = true;
+                            }
+
+                            $location.search(search);
                         });
                     }
                     else {
@@ -300,11 +311,17 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
                         end_offset: $routeParams.end
                     },
                     function audioEventsQuerySuccess(value, responseHeaders) {
-                        $scope.model.audioEvents = value.map(baw.Annotation.make);
 
-                        $scope.model.audioEvents.forEach(function (value) {
-                            Tag.resolveAll(value.tags, $scope.tags);
-                        });
+                        if (hideAnnotations) {
+                            console.warn("Audio events loaded but not included in model because hideAnnotations==true, count:", value.length);
+                        }
+                        else {
+                            $scope.model.audioEvents = value.map(baw.Annotation.make);
+
+                            $scope.model.audioEvents.forEach(function (value) {
+                                Tag.resolveAll(value.tags, $scope.tags);
+                            });
+                        }
                     },
                     function audioEventQueryFailure() {
                         console.error("retrieval of audio events failed");
@@ -423,10 +440,14 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
                     }
 
                     if (!angular.isNumber(stepBy)) {
-                        stepBy = CHUNK_DURATION_SECONDS;
+                        stepBy = ChunkDurationSettings;
                     }
 
                     var baseLink = {recordingId: recordingId};
+
+                    if (hideAnnotations) {
+                        baseLink[HideAnnotationsKey] = true;
+                    }
 
                     if (linkType === "previous") {
                         var lowerBound = ($routeParams.start - stepBy);
@@ -454,17 +475,14 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
 
                         var maxEnd = Math.floor($scope.model.audioRecording.durationSeconds);
 
-                        var start = ($routeParams.start + stepBy),
-                            end = (($routeParams.end + stepBy < maxEnd) ? $routeParams.end + stepBy : maxEnd);
-                        nextStart = start;
-                        nextEnd = end;
+                        baseLink.start = ($routeParams.start + stepBy);
+                        baseLink.end = (($routeParams.end + stepBy < maxEnd) ? $routeParams.end + stepBy : maxEnd);
+                        nextStart = baseLink.start;
+                        nextEnd = baseLink.end;
                         var uriNext = $url.formatUri(
                             paths.site.ngRoutes.listen,
-                            {
-                                recordingId: recordingId,
-                                start: start,
-                                end: end
-                            });
+                            baseLink
+                        );
 
                         $scope.nextEnabled = $routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds;
 
@@ -480,17 +498,23 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
                     if (seconds < 0) {
                         seconds = 0;
                     }
-                    if (seconds > (maxEnd - CHUNK_DURATION_SECONDS)) {
-                        seconds = (maxEnd - CHUNK_DURATION_SECONDS);
+                    if (seconds > (maxEnd - ChunkDurationSettings)) {
+                        seconds = (maxEnd - ChunkDurationSettings);
+                    }
+                    var params = {
+                        recordingId: recordingId,
+                        start: seconds,
+                        end: seconds + ChunkDurationSettings
+                    };
+
+                    if (hideAnnotations) {
+                        params[HideAnnotationsKey] = true;
                     }
 
                     var url = $url.formatUri(
                         paths.site.ngRoutes.listen,
-                        {
-                            recordingId: recordingId,
-                            start: seconds,
-                            end: seconds + CHUNK_DURATION_SECONDS
-                        });
+                        params
+                        );
 
                     $location.url(url);
                 };
