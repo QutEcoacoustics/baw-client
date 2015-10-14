@@ -55,10 +55,10 @@
                     dropdown>
                     <a href=""
                        dropdown-toggle>
-                        Research <span class="caret"></span>
+                        {{:: researchPages.header_title }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li ng-repeat="item in ::researchPages">
+                        <li ng-repeat="item in ::researchPages.items">
                             <a ng-href="{{::item.url}}"
                                target="_self">{{::item.innerText}}</a>
                         </li>
