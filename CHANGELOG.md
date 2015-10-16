@@ -1,3 +1,20 @@
+<a name="0.17.4"></a>
+## [0.17.4](https://github.com/QutBioacoustics/baw-client/compare/v0.17.3...v0.17.4) (2015-10-16)
+
+
+### Bug Fixes
+
+* **css:** Absolute positioning on footer ([5158547](https://github.com/QutBioacoustics/baw-client/commit/5158547)), closes [#234](https://github.com/QutBioacoustics/baw-client/issues/234)
+* **library:** Fixed invalid link causing bad routing. Fixes #243 ([5d2ec8d](https://github.com/QutBioacoustics/baw-client/commit/5d2ec8d)), closes [#243](https://github.com/QutBioacoustics/baw-client/issues/243)
+* **listen:** Fixed bug with unit converter. Closes #239 ([824a3f4](https://github.com/QutBioacoustics/baw-client/commit/824a3f4)), closes [#239](https://github.com/QutBioacoustics/baw-client/issues/239)
+* **nav:** Fixes custom menu rendering. Closes #236 ([8c3c15d](https://github.com/QutBioacoustics/baw-client/commit/8c3c15d)), closes [#236](https://github.com/QutBioacoustics/baw-client/issues/236)
+
+### Features
+
+* **listen:** Added user visible error messages for API failures ([ce1f435](https://github.com/QutBioacoustics/baw-client/commit/ce1f435)), closes [#241](https://github.com/QutBioacoustics/baw-client/issues/241)
+
+
+
 <a name="0.17.3"></a>
 ## [0.17.3](https://github.com/QutBioacoustics/baw-client/compare/v0.17.2...v0.17.3) (2015-09-25)
 
@@ -982,6 +999,8 @@ Build related fixes.
 * Worked on Virtual Bird Tour. ([bed0e47](https://github.com/QutBioacoustics/baw-client/commit/bed0e47))
 * working on media controller and tests ([f396088](https://github.com/QutBioacoustics/baw-client/commit/f396088))
 * Wrote *a lot* of unit tests. ([829d366](https://github.com/QutBioacoustics/baw-client/commit/829d366))
+
+
 
 
 
