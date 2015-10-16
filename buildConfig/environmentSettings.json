@@ -34,12 +34,15 @@
       "title": "<<brand name here>> | Bioacoustic Workbench"
     },
     "content": {
-      "research": [
-        {
-          "innerText": "Example",
-          "url": "http://www.EXAMPLE.org/awebpage"
-        }
-      ]
+      "research": {
+        "header_title": "Custom Menu",
+        "items": [
+          {
+            "innerText": "Example",
+            "url": "http://www.EXAMPLE.org/awebpage"
+          }
+        ]
+      }
     }
   }
 }

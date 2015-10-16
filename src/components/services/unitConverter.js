@@ -172,10 +172,11 @@ angular
                     return functions.input.startOffset + functions.pixelsToSeconds((left || 0.0) + (width || 0.0));
                 };
                 functions.toLow = function toLow(top, height) {
-                    return functions.pixelsToHertz(
+                    var low =  functions.pixelsToHertz(
                         functions.invertPixels(top || 0.0) - (height || 0.0)
                     );
 
+                    return low >= 0 ? low : 0;
                 };
                 functions.toHigh = function toHigh(top) {
                     return functions.pixelsToHertz(functions.invertPixels(top || 0.0));

@@ -166,7 +166,7 @@ describe("The unitConverter service", function () {
         });
 
         it("correctly sets width and height given a stretched image", function () {
-            inputArgs.imageElement = {src: "boobies", naturalWidth: 1200, naturalHeight: 250 };
+            inputArgs.imageElement = {src: "test-image", naturalWidth: 1200, naturalHeight: 250 };
 
             converters = unitConverter.getConversions(inputArgs);
 
@@ -242,6 +242,11 @@ describe("The unitConverter service", function () {
         it("correctly calculates the lowFrequency for an audioEvent from the top position of a box and its width", function () {
             var low = converters.toLow(20, 50 /*pixels*/);
             expect(low).toBe(8010.351563 /*hertz (unrounded = 8010.3515625)*/);
+        });
+
+        it("toLow corrects for heights that are too tall", () => {
+            var low = converters.toLow(245, 18); // pixels
+            expect(low).toBe(0 /* hertz */);
         });
 
         it("correctly calculates the highFrequency for an audioEvent from the top position of a box", function () {

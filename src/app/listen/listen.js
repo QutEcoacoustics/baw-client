@@ -24,6 +24,7 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
         "UserProfileEvents",
         "Bookmark",
         "moment",
+        "growl",
         /**
          * The listen controller.
          * @param $scope
@@ -53,7 +54,7 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
             function ListenCtrl(
             $scope, $resource, $location, $routeParams, $route, $q, paths, constants, $url, _, ngAudioEvents,
             AudioRecording, MediaService, Media, AudioEvent, Tag, TagModel, Taggings, Site, Project, UserProfile,
-            UserProfileEvents, Bookmark, moment) {
+            UserProfileEvents, Bookmark, moment, growl) {
 
 
             const ChunkDurationSettings = constants.listen.chunkDurationSeconds;
@@ -632,6 +633,7 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
                         },
                         function error(response) {
                             console.error("Tagging creation failed", response);
+                            growl.error("Adding a tag to an annotation has failed. Please refresh the page. If you see this message often please let us know.");
                         });
                 });
                 $scope.$on("decipher.tags.addfailed", function (event) {
@@ -672,6 +674,7 @@ angular.module("bawApp.listen", ["decipher.tags", "ui.bootstrap.typeahead"])
                         },
                         function error(response) {
                             console.error("Tagging creation failed", response);
+                            growl.error("Removing a tag from an annotation has failed. Please refresh the page. If you see this message often please let us know.");
                         }
                     )
                     ;

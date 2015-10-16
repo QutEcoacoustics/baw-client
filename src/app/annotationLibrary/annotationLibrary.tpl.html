@@ -217,7 +217,7 @@
             <span class="info-entry" ng-switch="!!item.audioRecording.site.url">
                 <span class="glyphicon glyphicon-map-marker"></span>
                 <small ng-switch-when="false" class="text-muted">site name not available</small>
-                <a ng-switch-when="true" ng-href="{{item.audioRecording.site.url[0]}}">
+                <a ng-switch-when="true" ng-href="{{item.audioRecording.site.url[0]}}" target="_self">
                     {{item.audioRecording.site.name}}
                 </a>
             </span>

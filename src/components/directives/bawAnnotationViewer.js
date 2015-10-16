@@ -6,7 +6,8 @@ bawds.directive("bawAnnotationViewer",
         "AudioEvent",
         "Tag",
         "lodash",
-        function (paths, unitConverter, AudioEvent, Tag, _) {
+        "growl",
+        function (paths, unitConverter, AudioEvent, Tag, _, growl) {
 
             /**
              * Create an watcher for an audio event model.
@@ -261,6 +262,15 @@ bawds.directive("bawAnnotationViewer",
                             },
                             function error(response) {
                                 console.error("AnnotationEditor:modelUpdatesServer: " + action + " FAILURE", response);
+
+
+
+                                if (method === "update" && response.status === 404) {
+                                    growl.warning("The last annotation delete may not have worked. Try refreshing this page. If you see this message often please let us know.", {ttl: 5000});
+                                }
+                                else {
+                                    growl.error("The last annotation save/update has failed. Please refresh the page. If you see this message often please let us know.");
+                                }
                             });
                     };
                 };
