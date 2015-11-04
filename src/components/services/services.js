@@ -15,6 +15,7 @@ angular.module(
         "bawApp.services.resultPager",
 
         // endpoint specific
+        "bawApp.services.analysisJob",
         "bawApp.services.analysisResult",
         "bawApp.services.analysisResultFile",
         "bawApp.services.bookmark",

@@ -99,6 +99,7 @@ angular.module("baw",
                              "bawApp.bookmarks",
                              "bawApp.demo",
                              "bawApp.error",
+        "bawApp.jobs",
                              "bawApp.home",
                              "bawApp.listen",
                              "bawApp.login",
@@ -119,7 +120,7 @@ angular.module("baw",
              function ($provide, $routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, cfpLoadingBarProvider, $urlProvider, casingTransformers) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
-                 currentWhitelist.push(paths.api.root+"/**");
+            currentWhitelist.push(paths.api.root + "/**");
                  $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
 
 
@@ -139,12 +140,41 @@ angular.module("baw",
                      //whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
                      //whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
 
-                     when("/recordings", {templateUrl: "/assets/recordings.html", controller: "RecordingsCtrl" }).
-                     when("/recordings/:recordingId",
-                          {templateUrl: "/assets/recording.html", controller: "RecordingCtrl" }).
+            when(paths.site.ngRoutes.analysisJobs.list, {
+                templateUrl: paths.site.files.jobs.list,
+                controller: "JobsListController",
+                title: "Analysis Jobs",
+                fullWidth: false
+            }).
+            when(paths.site.ngRoutes.analysisJobs.new, {
+                templateUrl: paths.site.files.jobs.details,
+                controller: "JobDetailsController",
+                title: "New Analysis Job",
+                fullWidth: false
+            }).
+            when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
+                templateUrl: paths.site.files.jobs.details,
+                controller: "JobDetailsController",
+                title: "Analysis Job Details",
+                fullWidth: false
+            }).
+            //when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title: "Jobs", fullWidth: false}).
 
-                     when("/listen", {templateUrl: paths.site.files.recordings.recentRecordings, controller: "RecentRecordingsCtrl", title: "Listen"}).
-                     when("/listen/:recordingId", {templateUrl: paths.site.files.listen, controller: "ListenCtrl", title: ":recordingId",  fullWidth: true}).
+            when("/recordings", {templateUrl: "/assets/recordings.html", controller: "RecordingsCtrl"}).
+                     when("/recordings/:recordingId",
+                {templateUrl: "/assets/recording.html", controller: "RecordingCtrl"}).
+
+            when("/listen", {
+                templateUrl: paths.site.files.recordings.recentRecordings,
+                controller: "RecentRecordingsCtrl",
+                title: "Listen"
+            }).
+            when("/listen/:recordingId", {
+                templateUrl: paths.site.files.listen,
+                controller: "ListenCtrl",
+                title: ":recordingId",
+                fullWidth: true
+            }).
 
                      //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenController'}).
 
@@ -154,26 +184,63 @@ angular.module("baw",
 
                      when("/attribution", {templateUrl: "/assets/attributions.html"}).
 
-                     when("/birdWalks", {templateUrl: paths.site.files.birdWalk.list, controller: "BirdWalksCtrl", title: "Bird Walks"}).
-                     when("/birdWalks/:birdWalkId", {templateUrl: paths.site.files.birdWalk.detail, controller: "BirdWalkCtrl", title: ":birdWalkId"}).
+            when("/birdWalks", {
+                templateUrl: paths.site.files.birdWalk.list,
+                controller: "BirdWalksCtrl",
+                title: "Bird Walks"
+            }).
+            when("/birdWalks/:birdWalkId", {
+                templateUrl: paths.site.files.birdWalk.detail,
+                controller: "BirdWalkCtrl",
+                title: ":birdWalkId"
+            }).
 
                      // experiments
                      when("/experiments/:experiment",
                           {templateUrl: "/assets/experiment_base.html", controller: "ExperimentsCtrl"}).
 
-                     when("/library", {templateUrl: paths.site.files.library.list, controller: "AnnotationLibraryCtrl", title: "Annotation Library" , fullWidth: true}).
+            when("/library", {
+                templateUrl: paths.site.files.library.list,
+                controller: "AnnotationLibraryCtrl",
+                title: "Annotation Library",
+                fullWidth: true
+            }).
                      when("/library/:recordingId", {
-                         redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
+                redirectTo: function (routeParams, path, search) {
+                    return "/library?audioRecordingId=" + routeParams.recordingId;
+                },
                          templateUrl: paths.site.files.library.list,
-                         title: ":recordingId" , fullWidth: true}).
+                title: ":recordingId", fullWidth: true
+            }).
                      when("/library/:recordingId/audio_events", {
-                         redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
-                         title: "Audio Events" }).
-                     when("/library/:recordingId/audio_events/:audioEventId", {templateUrl: paths.site.files.library.item, controller: "AnnotationItemCtrl", title: "Annotation :audioEventId"}).
+                redirectTo: function (routeParams, path, search) {
+                    return "/library?audioRecordingId=" + routeParams.recordingId;
+                },
+                title: "Audio Events"
+            }).
+            when("/library/:recordingId/audio_events/:audioEventId", {
+                templateUrl: paths.site.files.library.item,
+                controller: "AnnotationItemCtrl",
+                title: "Annotation :audioEventId"
+            }).
 
-                     when(paths.site.ngRoutes.demo.d3, {templateUrl: paths.site.files.demo.d3, controller: "D3TestPageCtrl", title: "D3 Test Page" }).
-                     when(paths.site.ngRoutes.demo.rendering, {templateUrl: paths.site.files.demo.rendering, controller: "RenderingCtrl", title: "Rendering" , fullWidth: true }).
-                     when(paths.site.ngRoutes.demo.bdCloud, {templateUrl: paths.site.files.demo.bdCloud2014, controller: "BdCloud2014Ctrl", title: "BDCloud2014 demo" , fullWidth: true }).
+            when(paths.site.ngRoutes.demo.d3, {
+                templateUrl: paths.site.files.demo.d3,
+                controller: "D3TestPageCtrl",
+                title: "D3 Test Page"
+            }).
+            when(paths.site.ngRoutes.demo.rendering, {
+                templateUrl: paths.site.files.demo.rendering,
+                controller: "RenderingCtrl",
+                title: "Rendering",
+                fullWidth: true
+            }).
+            when(paths.site.ngRoutes.demo.bdCloud, {
+                templateUrl: paths.site.files.demo.bdCloud2014,
+                controller: "BdCloud2014Ctrl",
+                title: "BDCloud2014 demo",
+                fullWidth: true
+            }).
 
                      when(paths.site.ngRoutes.visualize, {
                          templateUrl: paths.site.files.visualize,
@@ -213,10 +280,10 @@ angular.module("baw",
                  localStorageServiceProvider.setPrefix(constants.namespace);
 
                  // for compatibility with rails api
-                 $urlProvider.registerRenamer("Server", function(key) {
+            $urlProvider.registerRenamer("Server", function (key) {
                      return casingTransformers.underscore(key);
                  });
-                 $urlProvider.registerRenamer("Client", function(key) {
+            $urlProvider.registerRenamer("Client", function (key) {
                      return casingTransformers.camelize(key);
                  });
 
@@ -234,25 +301,25 @@ angular.module("baw",
              }])
 
 
-    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "predictiveCacheDefaultProfiles",
-          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, predictiveCacheDefaultProfiles) {
+    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "conf.environment", "predictiveCacheDefaultProfiles",
+        function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, appEnvironment, predictiveCacheDefaultProfiles) {
 
               // user profile - update user preferences when they change
               var eventCallbacks = {};
-              eventCallbacks[ngAudioEvents.volumeChanged] = function(event, api, value) {
+            eventCallbacks[ngAudioEvents.volumeChanged] = function (event, api, value) {
                   if (api.profile.preferences.volume !== value) {
                       api.profile.preferences.volume = value;
                       api.updatePreferences();
                   }
               };
-              eventCallbacks[ngAudioEvents.muteChanged] = function(event, api, value) {
+            eventCallbacks[ngAudioEvents.muteChanged] = function (event, api, value) {
                   if (api.profile.preferences.muted !== value) {
                       api.profile.preferences.muted = value;
                       api.updatePreferences();
                   }
               };
-              eventCallbacks.autoPlay = function(event, api, value) {
-                  if(api.profile.preferences.autoPlay !== value) {
+            eventCallbacks.autoPlay = function (event, api, value) {
+                if (api.profile.preferences.autoPlay !== value) {
                       api.profile.preferences.autoPlay = value;
                       api.updatePreferences();
                   }
@@ -319,8 +386,9 @@ angular.module("baw",
                   $location.path("/404?path=");
               });
 
-              //https://docs.angularjs.org/api/ngRoute/service/$route
+            // https://docs.angularjs.org/api/ngRoute/service/$route
               $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
+                document.title = appEnvironment.brand.title + " | " + $route.current.title;
                   $rootScope.fullWidth = $route.current.$$route.fullWidth;
               });
 

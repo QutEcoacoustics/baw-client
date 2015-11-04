@@ -7,6 +7,7 @@ angular.module(
         "bawApp.models.associations",
 //
         // endpoint specific
+        "bawApp.models.analysisJob",
         //"bawApp.models.bookmark",
         "bawApp.models.project",
         "bawApp.models.site",

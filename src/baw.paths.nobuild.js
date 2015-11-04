@@ -118,7 +118,11 @@ module.exports = function (environment) {
                         "distributionVisualisation": "d3Bindings/eventDistribution/distributionVisualisation.tpl.html"
                     }
                 },
-                "visualize": "visualize/visualize.tpl.html"
+                "visualize": "visualize/visualize.tpl.html",
+                "jobs": {
+                    details: "jobs/details/jobDetails.tpl.html",
+                    list: "jobs/list/jobsList.tpl.html"
+                }
             },
             // routes used by angular
             "ngRoutes": {
@@ -132,6 +136,11 @@ module.exports = function (environment) {
                     "d3": "/demo/d3",
                     "rendering": "/demo/rendering",
                     "bdCloud": "/demo/BDCloud2014"
+                },
+                analysisJobs: {
+                    list: "/analysis_jobs",
+                    "new": "/analysis_jobs/new",
+                    details: "/analysis_jobs/{analysisJobId}"
                 }
             },
             // general links for use in <a />'s

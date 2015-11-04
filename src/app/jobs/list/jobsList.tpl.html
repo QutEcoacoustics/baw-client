@@ -1,0 +1,35 @@
+<div id="content">
+    <h1>Analysis Jobs</h1>
+
+    <p>
+        This is a list of analysis jobs you have access to.
+    </p>
+
+    <h2>Jobs</h2>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="analysisJob in analysisJobs" >
+                <a href="{{ analysisJob.viewUrl }}">
+                    <h4 class="list-group-item-heading">{{ analysisJob.name }}</h4>
+                </a>
+                <div  class="list-group-item-text">
+                    <div class="stats">
+                        <span>Size: 100 000 audio recordings</span>
+                        <span>Size: 16TB</span>
+                        <span>Duration: 13 years</span>
+                        <span>Progress</span>
+                    </div>
+                    <div class="progress">
+                        <progress value="80" max="100"></progress>
+                    </div>
+                    <div class="actions">
+                        <a ng-href="{{}}" class="btn btn-primary btn-small">
+                            <span class="glyphicon glyphicon-info-sign"></span> Details
+                        </a>
+                    </div>
+                </div>
+
+        </li>
+    </ul>
+
+</div>
