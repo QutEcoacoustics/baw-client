@@ -117,7 +117,11 @@ module.exports = function (environment) {
                         "distributionVisualisation": "d3Bindings/eventDistribution/distributionVisualisation.tpl.html"
                     }
                 },
-                "visualize": "visualize/visualize.tpl.html"
+                "visualize": "visualize/visualize.tpl.html",
+                "jobs": {
+                    details: "jobs/details/jobDetails.tpl.html",
+                    list: "jobs/list/jobsList.tpl.html"
+                }
             },
             // routes used by angular
             "ngRoutes": {

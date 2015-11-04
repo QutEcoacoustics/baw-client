@@ -79,78 +79,13 @@
 <div growl>
 </div>
 
-<!--<div id="login-holder">-->
-<!--<div id="loginbox">-->
-<!--<div id="login-inner" ng-controller="LoginCtrl">-->
-<!--<a href="/" id="loginboxclose" title="Cancel login and return to home page" ng-click="cancelLogin()"><i-->
-<!--class="icon-remove"></i></a>-->
-<!--<p>-->
-<!--Go back to <a ng-href="{{paths.api.routes.security.signInAbsolute}}" target="_blank" >the parent website</a> and sign in again please.-->
-<!--</p>-->
-<!--&lt;!&ndash;<form method="POST" autocomplete>&ndash;&gt;-->
-<!--&lt;!&ndash;<h2>Sign In</h2>&ndash;&gt;-->
-<!--&lt;!&ndash;<ul>&ndash;&gt;-->
-<!--&lt;!&ndash;<li><a ng-click="submit('google')" class="btn-auth btn-google">Sign in with Google</a></li>&ndash;&gt;-->
-<!--&lt;!&ndash;<li><a ng-click="submit('facebook')" class="btn-auth btn-facebook">Sign in with Facebook</a>&ndash;&gt;-->
-<!--&lt;!&ndash;</li>&ndash;&gt;-->
-
-<!--&lt;!&ndash;<li><a ng-click="submit('twitter')" class="btn-auth btn-twitter">Sign in with Twitter</a></li>&ndash;&gt;-->
-<!--&lt;!&ndash;<li><a ng-click="submit('windowslive')" class="btn-auth btn-windows">Sign in with Live ID</a>&ndash;&gt;-->
-<!--&lt;!&ndash;</li>&ndash;&gt;-->
-
-<!--&lt;!&ndash;&lt;!&ndash;&ndash;&gt;-->
-<!--&lt;!&ndash;<li><a ng-click="submit('persona')" class="persona-button"><span>Sign in with Persona</span></a> </li>&ndash;&gt;-->
-<!--&lt;!&ndash;<li><a ng-click="submit('github')" class="btn-auth btn-github"  >Sign in with GitHub</a></li>&ndash;&gt;-->
-
-<!--&lt;!&ndash;<li><a ng-click="submit('yahoo')" href="#" class="btn-auth btn-yahoo">Sign in with Yahoo ID</a> </li>&ndash;&gt;-->
-<!--&lt;!&ndash;<li><a ng-click="submit('open_id')" class="btn-auth btn-openid">Sign in with OpenID</a> </li>&ndash;&gt;-->
-<!--&lt;!&ndash;&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;</ul>&ndash;&gt;-->
-
-<!--&lt;!&ndash;<div ng-show="requireMoreInformation">&ndash;&gt;-->
-<!--&lt;!&ndash;<h3>Additional information is required</h3>&ndash;&gt;-->
-<!--&lt;!&ndash;<label><span ng-bind="requireMoreInformation.text"></span>&ndash;&gt;-->
-<!--&lt;!&ndash;<input&ndash;&gt;-->
-<!--&lt;!&ndash;name="login_url" id="login_url" placeholder="enter a valid url"&ndash;&gt;-->
-<!--&lt;!&ndash;type="url" autocomplete="on"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-show='requireMoreInformation.type == "url"'&ndash;&gt;-->
-<!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "url"'&ndash;&gt;-->
-<!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
-<!--&lt;!&ndash;class="login"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
-<!--&lt;!&ndash;<input&ndash;&gt;-->
-<!--&lt;!&ndash;name="login_text" id="login_text" placeholder="enter required text"&ndash;&gt;-->
-<!--&lt;!&ndash;type="text" autocomplete="on"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "text"'&ndash;&gt;-->
-<!--&lt;!&ndash;ng-show='requireMoreInformation.type == "text"'&ndash;&gt;-->
-<!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
-<!--&lt;!&ndash;class="login"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
-<!--&lt;!&ndash;<input&ndash;&gt;-->
-<!--&lt;!&ndash;name="email" id="email" placeholder="enter a valid email"&ndash;&gt;-->
-<!--&lt;!&ndash;type="email" autocomplete="on"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-disabled='requireMoreInformation.type != "email"'&ndash;&gt;-->
-<!--&lt;!&ndash;ng-show='requireMoreInformation.type == "email"'&ndash;&gt;-->
-<!--&lt;!&ndash;required="This field is required"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-required="{{requireMoreInformation}}"&ndash;&gt;-->
-<!--&lt;!&ndash;class="login"&ndash;&gt;-->
-<!--&lt;!&ndash;ng-model="additionalInformation"/>&ndash;&gt;-->
-<!--&lt;!&ndash;</label>&ndash;&gt;-->
-<!--&lt;!&ndash;<button ng-click="submit(requireMoreInformation.providerId)" type="submit">Sign In</button>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</form>&ndash;&gt;-->
-<!--</div>-->
-<!--<div class="clear"></div>-->
-<!--</div>-->
-<!--</div>-->
-
 <div ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
 
-    <div class="row-fluid">
+    <div class="row">
+        <div class="leftMenu col-md-2" ></div>
         <!-- each view must specify the controller they use -->
-        <div id="content-wrapper" class="container-liquid" ng-view></div>
+        <div id="content-wrapper" ng-class="{ 'container-liquid': fullWidth, 'col-md-8': !fullWidth }" ng-view></div>
+        <div class="leftMenu col-md-2" ></div>
     </div>
 </div>
 
