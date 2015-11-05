@@ -8,9 +8,9 @@
     <h2>Jobs</h2>
 
     <ul class="list-group">
-        <li class="list-group-item" >
+        <li class="list-group-item" ng-repeat="analysisJob in analysisJobs" >
                 <a>
-                    <h4 class="list-group-item-heading">Untitled job</h4>
+                    <h4 class="list-group-item-heading">{{ analysisJob.name }}</h4>
                 </a>
                 <div  class="list-group-item-text">
                     <div class="stats">
