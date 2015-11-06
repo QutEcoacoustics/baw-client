@@ -9,7 +9,7 @@
 
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="analysisJob in analysisJobs" >
-                <a>
+                <a href="{{ analysisJob.viewUrl }}">
                     <h4 class="list-group-item-heading">{{ analysisJob.name }}</h4>
                 </a>
                 <div  class="list-group-item-text">
@@ -24,10 +24,7 @@
                     </div>
                     <div class="actions">
                         <a ng-href="{{}}" class="btn btn-primary btn-small">
-                            <span class="glyphicon glyphicon-play"></span> Details
-                        </a>
-                        <a ng-href="{{r.site.siteLink}}" class="btn btn-default btn-small" target="_self">
-                            <span class="glyphicon glyphicon-map-marker"></span> Delete
+                            <span class="glyphicon glyphicon-info-sign"></span> Details
                         </a>
                     </div>
                 </div>

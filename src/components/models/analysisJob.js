@@ -14,6 +14,17 @@ angular
                         super(resource);
                     }
 
+                    get viewUrl() {
+                        return $url.formatUri(
+                            paths.site.ngRoutes.analysisJobs.details,
+                            {analysisJobId: this.id}
+                        );
+                    }
+
+                    static get viewListUrl() {
+                        return $url.formatUri(paths.site.ngRoutes.analysisJobs.list);
+                    }
+
                 }
 
                 return AnalysisJob;

@@ -140,19 +140,19 @@ angular.module("baw",
             //whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
             //whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
 
-            when("/analysis_jobs", {
+            when(paths.site.ngRoutes.analysisJobs.list, {
                 templateUrl: paths.site.files.jobs.list,
                 controller: "JobsListController",
                 title: "Analysis Jobs",
                 fullWidth: false
             }).
-            when("/analysis_jobs/new", {
+            when(paths.site.ngRoutes.analysisJobs.new, {
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
                 title: "New Analysis Job",
                 fullWidth: false
             }).
-            when("/analysis_jobs/:analysisJobsId", {
+            when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
                 title: "Analysis Job Details",
@@ -298,8 +298,8 @@ angular.module("baw",
         }])
 
 
-    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "predictiveCacheDefaultProfiles",
-        function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, predictiveCacheDefaultProfiles) {
+    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "conf.environment", "predictiveCacheDefaultProfiles",
+        function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, appEnvironment, predictiveCacheDefaultProfiles) {
 
             // user profile - update user preferences when they change
             var eventCallbacks = {};
@@ -383,8 +383,9 @@ angular.module("baw",
                 $location.path("/404?path=");
             });
 
-            //https://docs.angularjs.org/api/ngRoute/service/$route
+            // https://docs.angularjs.org/api/ngRoute/service/$route
             $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
+                document.title = appEnvironment.brand.title + " | " + $route.current.title;
                 $rootScope.fullWidth = $route.current.$$route.fullWidth;
             });
 

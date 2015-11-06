@@ -134,6 +134,11 @@ module.exports = function (environment) {
                     "d3": "/demo/d3",
                     "rendering": "/demo/rendering",
                     "bdCloud": "/demo/BDCloud2014"
+                },
+                analysisJobs: {
+                    list: "/analysis_jobs",
+                    "new": "/analysis_jobs/new",
+                    details: "/analysis_jobs/{analysisJobId}"
                 }
             },
             // general links for use in <a />'s
