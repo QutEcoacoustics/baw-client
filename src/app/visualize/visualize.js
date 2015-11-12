@@ -12,15 +12,21 @@ angular
         "$url",
         "conf.paths",
         "conf.constants",
+        "baw.models.associations",
         "Project",
         "Site",
         "AudioRecording",
         "AnalysisResultFile",
         "UserProfile",
         function ($scope, $routeParams, $http, $q, _, moment, $url,
-                  paths, constants, Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
+                  paths, constants, modelAssociations,
+                  Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
+
+            var projectToSiteLinker = modelAssociations.generateLinker("Project", "Site");
+            var siteToProjectLinker = modelAssociations.generateLinker("Site", "Project");
 
             var sitesMap = {};
+            var projectsMap = {};
 
             $scope.recordingData = [];
             $scope.errorState = undefined;
@@ -80,38 +86,27 @@ angular
                     getId: function (d) {
                         return d.id;
                     },
-                    getCategory: function (d) {
-                        return sitesMap[d.siteId].name;
+                    getCategory: d => d.siteId,
+                    getCategoryName: function (d) {
+                        return d && sitesMap.get(d).name;
                     },
                     getLow: function (d) {
-                        if ((typeof d.recordedDate) === "string") {
-                            d.recordedDate = new Date(d.recordedDate);
-                        }
-
-                        if (d.minimumMilliseconds === undefined) {
-                            d.minimumMilliseconds = d.recordedDate.getTime();
-                        }
-
-                        return d.minimumMilliseconds;
+                        return d.recordedDateMilliseconds;
                     },
                     getHigh: function (d) {
-                        if ((typeof d.durationSeconds) === "string") {
-                            d.durationSeconds = Number(d.durationSeconds);
-                        }
-
-                        if (d.durationMilliseconds === undefined) {
-                            d.durationMilliseconds = d.durationSeconds * 1000;
-                        }
-                        return this.getLow(d) + d.durationMilliseconds;
+                        return d.recordedEndDateMilliSeconds;
                     },
                     getText: function (d) {
                         return d.id;
                     },
                     getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, tileDatum) {
 
+                        // temporarily disable images for debugging
+                        return;
+                        /*
                         var url = AnalysisResultFile.getLongDurationImageTile(tileDatum.source, date, 60);
 
-                        return url;
+                        return url;*/
                     },
                     getNavigateUrl: function(date, category, tileSizeSeconds, tileSizePixels, itemDatum) {
 
@@ -134,23 +129,6 @@ angular
                 }
             };
 
-            $scope.getProjectLink = function(project) {
-                if (project) {
-                    return paths.api.routes.project.showAbsolute.format({projectId: project.id});
-                }
-            };
-
-            $scope.getSiteLink = function(project, site) {
-                if (project && site) {
-                    return paths.api.routes.site.nestedAbsolute.format({siteId: site.id, projectId: project.id});
-                }
-            };
-
-            $scope.getSitesForProject = function(project) {
-                return $scope.sites.filter(function(site) {
-                   return site.projectIds.indexOf(project.id) >= 0;
-                });
-            };
 
             $scope.formatDate = function(d) {
                 return moment(d).format(constants.localization.dateTimeShortFormat);
@@ -220,10 +198,7 @@ angular
                     return $q.reject(new Error("Empty sites returned"));
                 }
 
-                sitesMap = sites.reduce(function (previous, current) {
-                    previous[current.id] = current;
-                    return previous;
-                }, {});
+                sitesMap = modelAssociations.arrayToMap(sites);
 
                 $scope.sites = sites;
 
@@ -251,10 +226,22 @@ angular
                 var projects = results[1].data.data;
                 $scope.projects = projects;
 
+                projectsMap = modelAssociations.arrayToMap(projects);
+
+                projects.forEach( project => {
+                   projectToSiteLinker(project, {
+                       Site: sitesMap
+                   });
+                });
+
+                sitesMap.forEach(site => {
+                    siteToProjectLinker(site, {
+                        Project: projectsMap
+                    });
+                });
+
                 var audioRecordings = results[0].data.data;
                 $scope.recordingData = audioRecordings;
-
-
             }
 
         }

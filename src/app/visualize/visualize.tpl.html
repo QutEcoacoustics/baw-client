@@ -24,10 +24,10 @@
                     <span class="projectSiteList">
                         <!--{{ $first && "" || ", "}}-->
 
-                        <a ng-href="{{::getProjectLink(p)}}" target="_self">{{p.name}}</a>
+                        <a ng-href="{{::p.url}}" target="_self">{{p.name}}</a>
                            &nbsp;&#47;&nbsp;
-                        <span ng-repeat="s in getSitesForProject(p)">
-                            <a ng-href="{{::getSiteLink(p, s)}}" target="_self">{{s.name}}</a>
+                        <span ng-repeat="s in p.sites | modelAvailable track by s.id">
+                            <a ng-href="{{::s.urlWithProject(p)}}" target="_self">{{s.name}}</a>
                             {{ $last && " " || ", "}}
                         </span>
 
@@ -51,8 +51,14 @@
         </section>
 
         <section class="row">
-            <h3>False colour visualisation for {{distributionOptions.visualizationDuration}} in
-                {{distributionOptions.selectedLane}}</h3>
+            <h3>Zooming False colour visualisation for {{ distributionOptions.visualizationDuration[0] }} in
+                {{ distributionOptions.functions.getCategoryName(distributionOptions.selectedLane) }}</h3>
+            <event-distribution-visualisation-multi-scale></event-distribution-visualisation-multi-scale>
+        </section>
+
+        <section class="row">
+            <h3>False colour visualisation for {{ distributionOptions.visualizationDuration[1] }} in
+                {{ distributionOptions.functions.getCategoryName(distributionOptions.selectedLane) }}</h3>
             <event-distribution-visualisation></event-distribution-visualisation>
         </section>
     </div>

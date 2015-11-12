@@ -15,8 +15,11 @@ angular
                     getId: function (d) {
                         return d.id;
                     },
-                    getCategory: function (d) {
-                        return d.lane;
+                    getCategory: function (category) {
+                        return category;
+                    },
+                    getCategoryName: function (d) {
+                        return d;
                     },
                     getLow: function (d) {
                         return d.min;
@@ -70,9 +73,12 @@ angular
                     self.detail.updateExtent(newExtent);
                 }
                 if (source !== "DistributionVisualisation") {
-                    self.visualisation.updateMiddle(middlePointBetweenDates(newExtent), selectedLane);
-                    var visualizationMiddle = self.visualisation.visibleDuration;
-                    var humanized = visualizationMiddle && moment.duration(visualizationMiddle, "seconds").humanize() || "";
+                    self.visualisation.forEach( x => {
+                        x.updateMiddle(middlePointBetweenDates(newExtent), selectedLane, self.detail.zoomScale);
+                    });
+                    var visualizationMiddles = self.visualisation.map(x => x.visibleDuration);
+                    var humanized = visualizationMiddles &&
+                        visualizationMiddles.map(x => moment.duration(x, "seconds").humanize()) || "";
                 }
 
                 function update() {
@@ -105,10 +111,13 @@ angular
 
             this.detail = null;                //$scope.controls.detail        =
             this.overview = null;              //$scope.controls.overview      =
-            this.visualisation = null;         //$scope.controls.visualisation =
+            this.visualisation = [];         //$scope.controls.visualisation =
 
             function tryUpdateData(name, data) {
-                if (self[name]) {
+                if (angular.isArray(self[name])) {
+                    self[name].forEach( x => x.updateData(data));
+                }
+                else if (self[name]) {
                     self[name].updateData(data);
                 }
             }
@@ -143,7 +152,8 @@ angular
                 }
                 else {
                     data.items = newValue || [];
-                    data.lanes = d3.set(data.items.map(functions.getCategory)).values();
+                    let unique = new Set(data.items.map(functions.getCategory));
+                    data.lanes = Array.from(unique);
                     if (data.items.length > 0) {
                         data.maximum = Math.max.apply(null, data.items.map(functions.getHigh, functions));
                         data.minimum = Math.min.apply(null, data.items.map(functions.getLow, functions));

@@ -23,7 +23,9 @@ angular
                 var query = QueryBuilder.create(function (q) {
                     return q.in("projects.id", projectIdsUnique);
                 });
-                return $http.post(url, query.toJSON());
+                return $http
+                    .post(url, query.toJSON())
+                    .then( x => SiteModel.makeFromApi(x));
             };
 
             resource.getAllSites = function () {
@@ -31,7 +33,9 @@ angular
                 var query = QueryBuilder.create(function (q) {
                     return q.project({"include": ["id", "name"]});
                 });
-                return $http.post(url, query.toJSON());
+                return $http
+                    .post(url, query.toJSON())
+                    .then( x => SiteModel.makeFromApi(x));
             };
 
             /*resource.getAllSites = function () {

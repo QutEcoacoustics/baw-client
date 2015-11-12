@@ -7,9 +7,9 @@
  *
  */
 angular
-    .module("bawApp.d3.eventDistribution.distributionVisualisation", [])
+    .module("bawApp.d3.eventDistribution.distributionVisualisationMultiScale", [])
     .service(
-    "DistributionVisualisation",
+    "DistributionVisualisationMultiScale",
     [
         "$location",
         "$rootScope",
@@ -40,22 +40,20 @@ angular
                     },
                     tilesClipRect,
 
-                    tileSizePixels = 60,
-                    tileSizeSeconds = 60 * 60,
-
+                    tileSizePixels = 180,
+                    tileCount = 0,
                 // default value, overridden almost straight away
                     tilesHeight = 256,
                 // default value, overridden almost straight away
                     tilesWidth = 1440,
                 // 86400 seconds
-                    oneDay = 60 * 60 * 24,
+                    //oneDay = 60 * 60 * 24,
                 // round to nearest 30 seconds for navigation urls
                     navigationOffsetRounding = 30,
 
-                // seconds per pixel
-                    resolution = updateResolution(),
 
-                    clipId = "distributionVisualization_" + uniqueId,
+
+                    clipId = "distributionVisualizationMultiScale_" + uniqueId,
                     xScale,
                     yScale,
                     xAxis,
@@ -81,11 +79,15 @@ angular
                 self.items = [];
                 self.nyquist = 11025;
                 self.spectrogramWindowSize = 512;
-                self.visibleDuration = oneDay;
+                self.visibleDuration = null;
                 self.middle = null;
                 self.category = null;
                 self.updateData = updateData;
                 self.updateMiddle = updateMiddle;
+                self.tileSizeSeconds = null;
+                // seconds per pixel
+                self.resolution = null;
+                self.zoomScale = 1;
 
                 // init
                 create();
@@ -111,9 +113,10 @@ angular
                     yAxisGroup.call(yAxis);
                 }
 
-                function updateMiddle(newMiddle, category) {
+                function updateMiddle(newMiddle, category, zoomScale) {
                     self.middle = newMiddle;
                     self.category = category;
+                    self.zoomScale = zoomScale;
 
                     updateScales();
 
@@ -144,12 +147,14 @@ angular
                     self.nyquistFrequency = data.nyquistFrequency;
                     self.spectrogramWindowSize = data.spectrogramWindowSize;
                     self.middle = null;
+                    self.zoomScale = 1;
                 }
 
                 function setDimensions() {
-                    var widths = getWidth();
+                    let widths =  getWidth();
                     tilesWidth = widths.width;
-                    self.visibleDuration = widths.duration;
+                    tileCount = widths.tileCount;
+
 
                     // want tilesHeight to be a function of nyquistRate and window
                     var newHeight = getTilesGroupHeight();
@@ -172,12 +177,11 @@ angular
 
                     focusLine.attr("height", tilesHeight + focusStemPath.root);
                     focusTextGroup.translate(() => [0, -(focusStemPath.root + focusStemPath.stems)]);
-
-                    // update the controller with the visible tilesWidth
-                    dataFunctions.visualisationDurationUpdate(self.visibleDuration);
                 }
 
                 function updateScales() {
+                    updateVisibleDurationAndTileResolution();
+
                     // calculate then end date for the domain
                     var halfVisibleDuration = self.visibleDuration / 2.0;
                     visibleExtent[0] = d3.time.second.offset(self.middle, -halfVisibleDuration);
@@ -193,6 +197,33 @@ angular
                         .range([0, tilesHeight]);
                 }
 
+                /**
+                 * Calculate the amount of the true extent that can be shown at
+                 * a certain scale.
+                 * @param dataExtents - date time objects in an array
+                 * @param zoomScale
+                 */
+                function updateVisibleDurationAndTileResolution() {
+                    let min = +self.minimum || 0,
+                        max = +self.maximum || 0,
+                        delta = max -  min,
+                        visibleFraction = delta / self.zoomScale;
+
+                    // finally, convert to seconds
+                    self.visibleDuration = visibleFraction / 1000;
+
+                    // TODO: snap tile domain to zoom levels that are available
+                    self.tileSizeSeconds = self.visibleDuration / tileCount;
+
+                    self.resolution = self.tileSizeSeconds / tileSizePixels;
+
+                    // update the controller with the visible tilesWidth
+                    // NOTE: this control does not need to do this because it uses the same width as the detail control!
+                    //dataFunctions.visualisationDurationUpdate(self.visibleDuration);
+
+                }
+
+
                 function generateTiles() {
                     if (self.items && self.items.length > 0) {
                         // need to generate a series of tiles that can show the data in self.items
@@ -205,7 +236,7 @@ angular
                 }
 
                 function filterTiles(visibleExtent, category) {
-                    var filterPaddingMs = tileSizeSeconds * 1000;
+                    var filterPaddingMs = self.tileSizeSeconds * 1000;
                     // item filter
                     // pad the filtering extent with tileSize so that recordings that have
                     // duration < tileSize aren't filtered out prematurely
@@ -245,7 +276,7 @@ angular
 
                     tilesGroup.clipPath("url(#" + clipId + ")");
 
-                    tilesGroup.on("click", navigateToAudio);
+                    tilesGroup.on("click", navigateTo);
 
                     xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeight], isVisible: false});
                     yAxis = d3.svg.axis()
@@ -343,6 +374,10 @@ angular
                         .select("image")
                         .attr("xlink:href", checkImage);
 
+                    tileElements
+                        .select("text.resolution")
+                        .text(d => `Duration: ${ self.tileSizeSeconds.toLocaleString() }`);
+
                     // add new tiles
                     var newTileElements = tileElements.enter()
                         .append("g")
@@ -375,6 +410,16 @@ angular
                             width: tileSizePixels,
                             "text-anchor": "middle",
                             dy: "1em"
+                        });
+                    failedOrUnknownTileElements.append("text")
+                        .text(d => `Duration: ${ self.tileSizeSeconds.toLocaleString() }`)
+                        .attr({
+                            y: tilesHeight / 2.0,
+                            x: tileSizePixels / 2.0,
+                            width: tileSizePixels,
+                            "text-anchor": "middle",
+                            "class": "resolution",
+                            dy: "2em"
                         });
 
                     // but always add the image element
@@ -411,17 +456,14 @@ angular
 
                 /* helper functions */
 
-                function updateResolution() {
-                    resolution = tileSizeSeconds / tileSizePixels;
-                    return resolution;
-                }
+
 
                 function getWidth() {
                     // want tilesWidth to be a factor of tile size
                     var containerWidth = svg.node().parentNode.getBoundingClientRect().width;
                     var availableWidth = containerWidth - (margin.left + margin.right);
                     var tileCount = Math.floor(availableWidth / tileSizePixels);
-                    return {width: tileCount * tileSizePixels, duration: tileCount * tileSizeSeconds};
+                    return {width: tileCount * tileSizePixels, tileCount};
                 }
 
                 function getTilesGroupHeight() {
@@ -479,15 +521,15 @@ angular
                         high = new Date(dataFunctions.getHigh(current));
 
                     // round down to the lower unit of time, determined by `tileSizeSeconds`
-                    var niceLow = roundDate.floor(tileSizeSeconds, low),
+                    var niceLow = roundDate.floor(self.tileSizeSeconds, low),
                         // subtract a 'tile' otherwise we generate one too many
-                        niceHigh = roundDate.ceil(tileSizeSeconds, high) - tileSizeSeconds,
+                        niceHigh = roundDate.ceil(self.tileSizeSeconds, high) - self.tileSizeSeconds,
                         offset = niceLow;
 
                     // use d3's in built range functionality to generate steps
                     var steps = [];
                     while (offset < niceHigh) {
-                        var nextOffset = d3.time.second.offset(offset, tileSizeSeconds);
+                        var nextOffset = d3.time.second.offset(offset, self.tileSizeSeconds);
                         var item = {
                             offset: offset,
                             offsetEnd: nextOffset,
@@ -504,7 +546,7 @@ angular
                     return steps;
                 }
 
-                function navigateToAudio() {
+                function navigateTo() {
                     var coordinates = d3.mouse(tilesGroup.node()),
                         clickDate = xScale.invert(coordinates[0]);
 
@@ -542,7 +584,7 @@ angular
                     var url = dataFunctions.getNavigateUrl(
                         offset,
                         self.category,
-                        tileSizeSeconds,
+                        self.tileSizeSeconds,
                         tileSizePixels,
                         d
                     );
@@ -557,7 +599,7 @@ angular
                 function getTileImage(d) {
                     var url = dataFunctions.getTileUrl(d.offset,
                         self.category,
-                        tileSizeSeconds,
+                        self.tileSizeSeconds,
                         tileSizePixels,
                         d);
 
@@ -590,11 +632,11 @@ angular
         }
     ]
 ).directive(
-    "eventDistributionVisualisation",
+    "eventDistributionVisualisationMultiScale",
     [
         "conf.paths",
-        "DistributionVisualisation",
-        function (paths, DistributionVisualisation) {
+        "DistributionVisualisationMultiScale",
+        function (paths, DistributionVisualisationMultiScale) {
             // directive definition object
             return {
                 restrict: "EA",
@@ -603,7 +645,7 @@ angular
                 templateUrl: paths.site.files.d3Bindings.eventDistribution.distributionVisualisation,
                 link: function ($scope, $element, attributes, controller, transcludeFunction) {
                     var element = $element[0];
-                    controller.visualisation.push(new DistributionVisualisation(
+                    controller.visualisation.push(new DistributionVisualisationMultiScale(
                         element,
                         controller.data,
                         controller.options.functions,

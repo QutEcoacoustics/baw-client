@@ -27,6 +27,7 @@ angular
                     zoom,
                     zoomSurface,
                 // 6 hours - from edge to edge of the graph.
+                    // TODO: refactor so that zoom limit is dynamic
                     zoomLimitSeconds = 6 * 60 * 60,
                     visualizationDuration = null,
                 // HACK: a "lock" placed around the invocation of manual zoom events. Assumes synchronicity.
@@ -64,6 +65,7 @@ angular
                 self.maximum = null;
                 self.visibleExtent = null;
                 self.selectedCategory = null;
+                self.zoomScale = 1;
 
                 // init
                 create();
@@ -264,6 +266,8 @@ angular
                     zoom.scale(zf.currentScale);
                     setZoomTranslate(zf.dateTranslate);
 
+                    updatePublicZoomScale();
+
                     // falsely trigger zoom events to force d3 to re-render with new scale
                     zoomUpdate();
 
@@ -297,7 +301,7 @@ angular
                         .data(self.lanes)
                         .enter()
                         .append("text")
-                        .text(id)
+                        .text(dataFunctions.getCategoryName)
                         .attr({
                             x: -laneLabelMarginRight,
                             y: function (d, i) {
@@ -417,6 +421,8 @@ angular
                         domain = xScale.domain();
                     }
 
+                    updatePublicZoomScale();
+
                     //console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, zoom.translate(), isManual);
 
                     // don't propagate cyclical events
@@ -441,6 +447,8 @@ angular
                     //console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
 
                     if (isItemsToRender) {
+                        updatePublicZoomScale();
+
                         dataFunctions.extentUpdate(self.visibleExtent, "DistributionDetail");
                     }
                 }
@@ -541,6 +549,12 @@ angular
                     _lockManualZoom = false;
                 }
 
+                function updatePublicZoomScale() {
+                    let z = zoom.scale();
+
+                    self.zoomScale = z === undefined ? 1 : z;
+                }
+
                 function setZoomTranslate(dateOffset) {
                     zoom.translate([-xScale(dateOffset), 0]);
                 }
@@ -564,10 +578,6 @@ angular
 
                 function svgHeight() {
                     return mainHeight + margin.top + margin.bottom;
-                }
-
-                function id(a) {
-                    return a;
                 }
             };
         }

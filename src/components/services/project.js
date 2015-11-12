@@ -1,50 +1,72 @@
 angular
     .module("bawApp.services.project", [])
     .factory(
-    "Project",
-    [
-        "$resource", "bawResource", "$http", "conf.paths", "$url", "lodash", "QueryBuilder", "baw.models.Project",
-        function ($resource, bawResource, $http, paths, $url, _, QueryBuilder, ProjectModel) {
-            var resource = bawResource(paths.api.routes.project.showAbsolute,
-                {projectId: "@projectId"});
+        "Project",
+        [
+            "$resource",
+            "bawResource",
+            "$http",
+            "conf.paths",
+            "$url",
+            "lodash",
+            "QueryBuilder",
+            "baw.models.Project",
+            function (
+                $resource,
+                bawResource,
+                $http,
+                paths,
+                $url,
+                _,
+                QueryBuilder,
+                ProjectModel) {
 
-            var gapUrl = paths.api.routes.project.filterAbsolute;
-            var gapQuery = QueryBuilder.create(function (q) {
-                return q.project({"include": ["id", "name"]});
-            });
-            resource.getAllProjects = function () {
-                return $http.post(gapUrl, gapQuery.toJSON());
-            };
+                var resource = bawResource(
+                    paths.api.routes.project.showAbsolute,
+                    {projectId: "@projectId"}
+                );
 
-            resource.getByIds = function (projectIds) {
-                var gpbiUrl;
-                var projectIdsUnique = _.uniq(projectIds);
-
-                gpbiUrl = paths.api.routes.project.filterAbsolute;
-
-                var query = QueryBuilder.create(function (q) {
-                    return q.in("id", projectIdsUnique);
+                var gapUrl = paths.api.routes.project.filterAbsolute;
+                var gapQuery = QueryBuilder.create(function (q) {
+                    return q.project({"include": ["id", "name"]});
                 });
+                resource.getAllProjects = function () {
+                    return $http
+                        .post(gapUrl, gapQuery.toJSON())
+                        .then(x => ProjectModel.makeFromApi(x));
+                };
 
-                return $http.post(gpbiUrl, query.toJSON());
+                resource.getByIds = function (projectIds) {
+                    var gpbiUrl;
+                    var projectIdsUnique = _.uniq(projectIds);
 
-            };
+                    gpbiUrl = paths.api.routes.project.filterAbsolute;
 
-            resource.getProjectsBySiteIds = function (siteIds) {
-                var gpbsiUrl = paths.api.routes.project.filterAbsolute;
+                    var query = QueryBuilder.create(function (q) {
+                        return q.in("id", projectIdsUnique);
+                    });
+
+                    return $http
+                        .post(gpbiUrl, query.toJSON())
+                        .then(x => ProjectModel.makeFromApi(x));
+
+                };
+
+                resource.getProjectsBySiteIds = function (siteIds) {
+                    var gpbsiUrl = paths.api.routes.project.filterAbsolute;
 
 
-                var query = QueryBuilder.create(function (q) {
-                    return q.in("id", siteIds);
-                });
+                    var query = QueryBuilder.create(function (q) {
+                        return q.in("id", siteIds);
+                    });
 
-                return $http
-                    .post(gpbsiUrl, query.toJSON())
-                    .then( x => ProjectModel.makeFromApi(x));
-            };
+                    return $http
+                        .post(gpbsiUrl, query.toJSON())
+                        .then(x => ProjectModel.makeFromApi(x));
+                };
 
 
-            return resource;
-        }
-    ]
-);
+                return resource;
+            }
+        ]
+    );

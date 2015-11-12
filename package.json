@@ -19,6 +19,7 @@
     "connect-modrewrite": "0.7.x",
     "grunt": "~0.4.1",
     "grunt-babel": "^5.0.1",
+    "grunt-beep": "^0.3.2",
     "grunt-bump": "^0.3",
     "grunt-changelog": "^0.3",
     "grunt-cli": "^0.1.13",
