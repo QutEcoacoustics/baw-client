@@ -26,9 +26,10 @@ angular
                     yScale,
                     zoom,
                     zoomSurface,
-                // 6 hours - from edge to edge of the graph.
+                    // 30 seconds - from edge to edge of the graph.
                     // TODO: refactor so that zoom limit is dynamic
-                    zoomLimitSeconds = 6 * 60 * 60,
+                    // it should be based off `availableResolutions`
+                    zoomLimitSeconds = 30,
                     visualizationDuration = null,
                 // HACK: a "lock" placed around the invocation of manual zoom events. Assumes synchronicity.
                     _lockManualZoom = false,
@@ -65,7 +66,7 @@ angular
                 self.maximum = null;
                 self.visibleExtent = null;
                 self.selectedCategory = null;
-                self.zoomScale = 1;
+                self.currentZoomValue = 1;
 
                 // init
                 create();
@@ -552,7 +553,7 @@ angular
                 function updatePublicZoomScale() {
                     let z = zoom.scale();
 
-                    self.zoomScale = z === undefined ? 1 : z;
+                    self.currentZoomValue = z === undefined ? 1 : z;
                 }
 
                 function setZoomTranslate(dateOffset) {

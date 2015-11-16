@@ -38,17 +38,11 @@ angular
 
 
             self.data = {};
-            //this.visualisationData = {
-            //    items: [],
-            //    nyquistFreuency: 11025,
-            //    spectrogramWindowSize: 512,
-            //    middle: new Date()
-            //};
 
             // object reference!
             self.options = $scope.options = angular.extend({
-                nyquistFrequency: 11025,
-                spectrogramWindowSize: 512
+                visualizationYMax: 1000,
+                visualizationTileHeight: 100
             }, $scope.options);
 
             $scope.options.functions = angular.extend(defaultFunctions, $scope.options.functions || {});
@@ -74,7 +68,7 @@ angular
                 }
                 if (source !== "DistributionVisualisation") {
                     self.visualisation.forEach( x => {
-                        x.updateMiddle(middlePointBetweenDates(newExtent), selectedLane, self.detail.zoomScale);
+                        x.updateMiddle(middlePointBetweenDates(newExtent), selectedLane, self.detail.currentZoomValue);
                     });
                     var visualizationMiddles = self.visualisation.map(x => x.visibleDuration);
                     var humanized = visualizationMiddles &&
@@ -146,8 +140,8 @@ angular
                     data.lanes = [];
                     data.maximum = null;
                     data.minimum = null;
-                    data.nyquistFrequency = null;
-                    data.spectrogramWindowSize = null;
+                    data.visualizationYMax = null;
+                    data.visualizationTileHeight = null;
                     return false;
                 }
                 else {
@@ -162,8 +156,9 @@ angular
                         data.maximum = 0;
                         data.minimum = 0;
                     }
-                    data.nyquistFrequency = options.nyquistFrequency;
-                    data.spectrogramWindowSize = options.spectrogramWindowSize;
+                    data.visualizationYMax = options.visualizationYMax;
+                    data.visualizationTileHeight = options.visualizationTileHeight;
+                    data.availableResolutions = options.availableResolutions;
                     return true;
                 }
             }

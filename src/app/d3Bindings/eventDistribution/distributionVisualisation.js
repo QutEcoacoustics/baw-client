@@ -16,7 +16,8 @@ angular
         "d3",
         "roundDate",
         "TimeAxis",
-        function ($location, $rootScope, d3, roundDate, TimeAxis) {
+        "distributionCommon",
+        function ($location, $rootScope, d3, roundDate, TimeAxis, common) {
             return function DistributionVisualisation(target, data, dataFunctions, uniqueId) {
                 // variables
                 var self = this,
@@ -34,7 +35,7 @@ angular
                     focusAnchor = focusGroup.select(".focusAnchor"),
                     focusText = focusGroup.select(".focusText"),
                     focusStemPath = {
-                        width: 100,
+                        width: 91,
                         stems: 4,
                         root: 8
                     },
@@ -79,8 +80,8 @@ angular
 
                 // exports
                 self.items = [];
-                self.nyquist = 11025;
-                self.spectrogramWindowSize = 512;
+                self.visualizationYMax = 11025;
+                self.visualizationTileHeight = 512;
                 self.visibleDuration = oneDay;
                 self.middle = null;
                 self.category = null;
@@ -107,7 +108,7 @@ angular
 
                     // pulling our y-axis update because yScale never changes for updateMiddle
                     // and thus only changes from update data
-                    yAxis.scale(yScale).tickValues(yScale.ticks(10).slice(0, -1).concat([self.nyquist]));
+                    yAxis.scale(yScale).tickValues(yScale.ticks(10).slice(0, -1).concat([self.visualizationYMax]));
                     yAxisGroup.call(yAxis);
                 }
 
@@ -141,8 +142,8 @@ angular
                     self.items = data.items;
                     self.maximum = data.maximum;
                     self.minimum = data.minimum;
-                    self.nyquistFrequency = data.nyquistFrequency;
-                    self.spectrogramWindowSize = data.spectrogramWindowSize;
+                    self.visualizationYMax = data.visualizationYMax;
+                    self.visualizationTileHeight = data.visualizationTileHeight;
                     self.middle = null;
                 }
 
@@ -189,10 +190,14 @@ angular
 
                     yScale = d3.scale.linear()
                         // inverted y-axis
-                        .domain([self.nyquistFrequency, 0])
+                        .domain([self.visualizationYMax, 0])
                         .range([0, tilesHeight]);
                 }
 
+                /**
+                 * Generate the tiles and cache them by storing them on
+                 * the current item.
+                 */
                 function generateTiles() {
                     if (self.items && self.items.length > 0) {
                         // need to generate a series of tiles that can show the data in self.items
@@ -210,20 +215,21 @@ angular
                     // pad the filtering extent with tileSize so that recordings that have
                     // duration < tileSize aren't filtered out prematurely
                     var fExtent = [(+visibleExtent[0]) - filterPaddingMs, (+visibleExtent[1]) + filterPaddingMs],
-                        f = isItemVisible.bind(null, fExtent),
-                        g = isInCategory.bind(null, category),
-                        h = and.bind(null, g, f);
+                        f = common.isItemVisible.bind(null, dataFunctions.getLow, dataFunctions.getHigh, fExtent),
+                        g = common.isInCategory.bind(null, dataFunctions.getCategory, category),
+                        h = common.and.bind(null, g, f);
 
                     // tile filter
-                    var l = isTileVisible.bind(null, visibleExtent);
+                    var l = common.isTileVisible.bind(null, visibleExtent);
 
                     return self.items
                         .filter(h)
                         .reduce(function (previous, current) {
-                            var t = current.tiles.filter(l);
+                            var tiles = current.tiles,
+                                t = tiles.filter(l);
                             return previous.concat(t);
                         }, [])
-                        .sort(sortTiles);
+                        .sort(common.sortTiles);
                 }
 
                 function createElements() {
@@ -332,7 +338,9 @@ angular
                     });
                     focusAnchor.attr("xlink:href", url);
                     focusAnchor.classed("disabled", !url);
-                    focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
+                    // this IS MEGA bad for performance- forcing a layout
+                    //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
+                    focusStem.attr("d", getFocusStemPath());
 
                     // create data join
                     var tileElements = tilesGroup.selectAll(".tile")
@@ -425,26 +433,7 @@ angular
                 }
 
                 function getTilesGroupHeight() {
-                    return (self.spectrogramWindowSize / 2);
-                }
-
-                function isInCategory(category, d) {
-                    return dataFunctions.getCategory(d) === category;
-                }
-
-                function isItemVisible(filterExtent, d) {
-                    return dataFunctions.getLow(d) < filterExtent[1] &&
-                        dataFunctions.getHigh(d) >= filterExtent[0];
-                }
-
-                function and(a, b, d) {
-                    return a(d) && b(d);
-                }
-
-                function isTileVisible(visibleExtent, d) {
-                    return d &&
-                        d.offset < visibleExtent[1] &&
-                        d.offsetEnd >= visibleExtent[0];
+                    return self.visualizationTileHeight;
                 }
 
                 function isNavigatable(clickDate) {
@@ -454,13 +443,13 @@ angular
                         searchRange = [roundedDate, +roundedDate + 1];
 
                     // reuse filtering method but don't allow for padding
-                    var matchedTiles = visibleTiles.filter((tile) => isTileVisible(searchRange, tile));
+                    var matchedTiles = visibleTiles.filter((tile) => common.isTileVisible(searchRange, tile));
 
                     var url;
                     if (matchedTiles.length) {
                         // the source item that owns the tile
                         let itemFound = matchedTiles.find(tile => {
-                            return isItemVisible(searchRange, tile.source);
+                            return common.isItemVisible(dataFunctions.getLow, dataFunctions.getHigh, searchRange, tile.source);
                         });
 
                         // the tile could still be outside of the item's actual range
@@ -473,6 +462,12 @@ angular
                     return {url, roundedDate};
                 }
 
+                /**
+                 * Cache the tiles to show
+                 * @param current
+                 * @param i
+                 * @returns {Array}
+                 */
                 function splitIntoTiles(current, i) {
                     // coerce just in case (d3 does this internally)
                     var low = new Date(dataFunctions.getLow(current)),
@@ -568,15 +563,7 @@ angular
                     return "";
                 }
 
-                /**
-                 * Order tiles based on their date. This allows elements to be painted in the
-                 * DOM in the right order
-                 * @param tileA
-                 * @param tileB
-                 */
-                function sortTiles(tileA, tileB) {
-                    return tileA.offset - tileB.offset;
-                }
+
 
                 function getFocusStemPath(width) {
                     let w = Math.round(width || focusStemPath.width) + focusStemPath.stems,

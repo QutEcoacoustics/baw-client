@@ -126,7 +126,11 @@ angular
                                 start: startOffset
                             });
                     }
-                }
+                },
+                // TODO: do not hard code
+                availableResolutions: [0.02, 0.04, 0.08, 0.16, 0.2, 0.4, 0.6, 1, 2, 4, 6, 12, 24, 60],
+                visualizationTileHeight: 256,
+                visualizationYMax: 11025
             };
 
 
