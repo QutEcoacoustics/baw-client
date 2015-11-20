@@ -44,7 +44,8 @@ module.exports = function (config) {
         require("../node_modules/karma-chrome-launcher"),
         "karma-phantomjs-launcher",
         /*require('../node_modules/karma-phantomjs-launcher'),*/
-        "karma-sourcemap-loader"
+        "karma-sourcemap-loader",
+        require("../node_modules/karma-jasmine-diff-reporter")
     ];
 
     configObject.preprocessors = {
@@ -54,7 +55,7 @@ module.exports = function (config) {
     /**
      * How to report, by default. 'dots', 'progress'
      */
-    configObject.reporters = ["dots"];
+    configObject.reporters = ["jasmine-diff", "dots"];
 
     /**
      * Set up the coverage reporter
@@ -98,6 +99,7 @@ module.exports = function (config) {
      */
     configObject.browsers = [ browserToUse ];
 
+    config.colors = true;
 
     config.set(configObject);
 };

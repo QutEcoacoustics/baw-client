@@ -56,7 +56,8 @@ module.exports = function (environment) {
                     "show": "/bookmarks/{bookmarkId}"
                 },
                 "analysisResults": {
-                    "system": "/audio_recordings/{recordingId}/analysis.{format}"
+                    "system": "/analysis_jobs/system/audio_recordings/{recordingId}",
+                    "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}",
                 }
             },
             "links": {

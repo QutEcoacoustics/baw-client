@@ -100,16 +100,17 @@ angular
                         return d.id;
                     },
                     getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, tileDatum) {
+                        var url = AnalysisResultFile.getLongDurationImageTile(
+                            tileDatum.source,
+                            date,
+                            tileDatum.resolution,
+                            null,
+                            tileDatum.zoomStyleImage === true
+                        );
 
-                        // temporarily disable images for debugging
-                        return;
-                        /*
-                        var url = AnalysisResultFile.getLongDurationImageTile(tileDatum.source, date, 60);
-
-                        return url;*/
+                        return url;
                     },
                     getNavigateUrl: function(date, category, tileSizeSeconds, tileSizePixels, itemDatum) {
-
                         var ar = itemDatum,
                             id = ar.id,
                             startOffset = (date - ar.recordedDate) / 1000;

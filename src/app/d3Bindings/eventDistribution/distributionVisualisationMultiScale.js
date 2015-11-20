@@ -79,7 +79,8 @@ angular
                      */
                         tileCache = new WeakMap();
 
-                    const timeFormatter = d3.time.format("%H:%M:%S");
+                    const timeFormatter = d3.time.format("%H:%M:%S"),
+                        msInS = 1e3;
 
                     // exports
                     self.items = [];
@@ -152,7 +153,7 @@ angular
                         self.middle = null;
                         self.currentZoomValue = 1;
                         self.availableResolutions = data.availableResolutions || [];
-                        self.availableResolutions.sort((a,b) => a - b);
+                        self.availableResolutions.sort((a, b) => a - b);
                     }
 
                     function setDimensions() {
@@ -190,7 +191,7 @@ angular
                             delta = max - min,
                             visibleFraction = delta / self.currentZoomValue;
                         // finally, convert to seconds
-                        self.visibleDuration = visibleFraction / 1000;
+                        self.visibleDuration = visibleFraction / msInS;
                         // TODO: snap tile domain to zoom levels that are available
                         self.tileSizeSeconds = self.visibleDuration / tileCount;
                         self.resolution = self.tileSizeSeconds / tileWidthPixels;
@@ -221,11 +222,11 @@ angular
                                 //self.availableResolutions[0] || 0,
                                 ...self.availableResolutions
                                 //(self.availableResolutions.slice(-1) || [1])[0]
-                                ]);
+                            ]);
                     }
 
                     function filterTiles(visibleExtent, category) {
-                        var filterPaddingMs = self.tileSizeSeconds * 1000;
+                        var filterPaddingMs = self.tileSizeSeconds * msInS;
                         // item filter
                         // pad the filtering extent with tileSize so that recordings that have
                         // duration < tileSize aren't filtered out prematurely
@@ -371,22 +372,39 @@ angular
                     //</editor-fold>
 
                     function updateElements() {
-                        var imageAttrs = {
-                            height: tilesHeightPixels,
-                            /**
-                             * Disable automatic aspect ratio setting
-                             */
-                            preserveAspectRatio: "none",
-                            /**
-                             * The relative width of the image is a function of the
-                             * the zoom panel's current scale vs the ideal scale of the tile.
-                             */
-                            width (d) {
-                                var imageScale = d.resolution / self.resolution;
-                                console.debug("DistributionVisualisation:updateElements:width: current image ratio:", imageScale, d.resolution, self.resolution);
-                                return tileWidthPixels * (imageScale);
-                            }
-                        };
+                        var rectAttrs = {
+                                height: tilesHeightPixels,
+
+                                /**
+                                 * The relative width of the image is a function of the
+                                 * the zoom panel's current scale vs the ideal scale of the tile.
+                                 */
+                                width: d => {
+                                    var imageScale = d.resolution / self.resolution;
+                                    //console.debug("DistributionVisualisation:updateElements:width: current image ratio:", imageScale, d.resolution, self.resolution);
+                                    return tileWidthPixels * (imageScale);
+                                }
+                            },
+                            imageAttrs = {
+                                height: rectAttrs.height,
+                                /**
+                                 * Disable automatic aspect ratio setting
+                                 */
+                                preserveAspectRatio: "none",
+                                width: rectAttrs.width
+                            };
+
+
+                        const debugAttrs = {
+                                date: getOffsetDate,
+                                time: getOffsetTime,
+                                tileResolution: d => d.resolution,
+                                tileResolutionRatio: d => (d.resolution / self.resolution).toFixed(4)
+                            },
+                            debugGroupAttrs = {
+                                actualResolution: self.resolution.toFixed(4),
+                                tileSize: self.tileSizeSeconds.toLocaleString()
+                            };
 
                         // reposition
                         focusGroup.translate(() => [xScale(self.middle), 0]);
@@ -400,10 +418,12 @@ angular
                         });
                         focusAnchor.attr("xlink:href", url);
                         focusAnchor.classed("disabled", !url);
-                        // this IS MEGA bad for performance- forcing a layout
+                        // this IS MEGA bad for performance - forcing a layout
                         //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
                         focusStem.attr("d", getFocusStemPath());
 
+                        // debug only
+                        tilesGroup.attr(debugGroupAttrs);
 
                         // create data join
                         var tileElements = tilesGroup.selectAll(".tile")
@@ -411,20 +431,21 @@ angular
 
                         // update old tiles
                         tileElements.translate(tileGTranslation)
+                            .attr(debugAttrs)
                             .select("image")
                             .attr({
                                 "xlink:href": checkImage,
                                 width: imageAttrs.width
                             });
 
-                        tileElements
-                            .select("text.resolution")
-                            .html(d => `<tspan dx="0" dy="20">${ self.tileSizeSeconds.toLocaleString() }</tspan>
-                            <tspan dx="-80" dy="10">${self.resolution.toFixed(4)} / ${d.resolution}</tspan>`);
+                        // update dimensions for tile rects
+                        tileElements.select("rect")
+                            .attr({width: rectAttrs.width});
 
                         // add new tiles
                         var newTileElements = tileElements.enter()
                             .append("g")
+                            .attr(debugAttrs)
                             .translate(tileGTranslation)
                             .classed("tile", true);
 
@@ -435,36 +456,7 @@ angular
                         //.data(visibleTiles, tileKey)
                         //.enter();
                         failedOrUnknownTileElements.append("rect")
-                            .attr(imageAttrs);
-
-                        failedOrUnknownTileElements.append("text")
-                            .text(getOffsetDate)
-                            .attr({
-                                y: tilesHeightPixels / 2.0,
-                                x: tileWidthPixels / 2.0,
-                                width: tilesTotalWidthPixels,
-                                "text-anchor": "middle",
-                                dy: "0em"
-                            });
-                        failedOrUnknownTileElements.append("text")
-                            .text(getOffsetTime)
-                            .attr({
-                                y: tilesHeightPixels / 2.0,
-                                x: tileWidthPixels / 2.0,
-                                width: tileWidthPixels,
-                                "text-anchor": "middle",
-                                dy: "1em"
-                            });
-                        failedOrUnknownTileElements.append("text")
-                            .text(d => `${ self.tileSizeSeconds.toLocaleString() }`)
-                            .attr({
-                                y: tilesHeightPixels / 2.0,
-                                x: tileWidthPixels / 2.0,
-                                width: tileWidthPixels,
-                                "text-anchor": "middle",
-                                "class": "resolution",
-                                dy: "2em"
-                            });
+                            .attr(rectAttrs);
 
                         // but always add the image element
                         newTileElements.append("image")
@@ -563,7 +555,9 @@ angular
                         // use d3's in built range functionality to generate steps
                         var tiles = [];
                         while (offset < niceHigh) {
-                            var nextOffset = d3.time.second.offset(offset, idealTileSizeSeconds);
+                            // d3's offset floor's the input! FFS!
+                            //var nextOffset = d3.time.second.offset(offset, idealTileSizeSeconds);
+                            var nextOffset = new Date(+offset + (idealTileSizeSeconds * msInS));
                             var item = {
                                 audioNavigationUrl: getNavigateUrl(source, offset),
                                 key: offset.toISOString() + dataFunctions.getId(source),
@@ -572,7 +566,7 @@ angular
                                 resolution,
                                 source,
                                 tileImageUrl: "",
-
+                                zoomStyleImage: true
                             };
                             item.tileImageUrl = getTileImage(item);
                             tiles.push(item);
@@ -608,6 +602,12 @@ angular
                         return xScale(d.offset);
                     }
 
+                    //function getComment() {
+                    //    return
+                    //
+                    //    //return `Data:: Date: ${ getOffsetDate(d) }, Time: ${ getOffsetTime(d) }, TileSize: ${ self.tileSizeSeconds.toLocaleString() }, Actual Resolution: ${ self.resolution.toFixed(4) }, Tile Resolution: ${ d.resolution }`;
+                    //}
+
                     function getOffsetDate(d) {
                         return d.offset.toLocaleDateString();
                     }
@@ -634,22 +634,13 @@ angular
 
 
                     function getTileImage(d) {
-                        //if (Math.floor(d.offset / 3600000) % 2 === 1) {
-                            return "/assets/temp/test_tile_180px.png";
-                        //}
-/*
                         var url = dataFunctions.getTileUrl(d.offset,
                             self.category,
                             self.tileSizeSeconds,
                             tileWidthPixels,
                             d);
 
-                        if (url) {
-                            return url;
-                        }
-
-                        return "";
-                        */
+                        return url || "";
                     }
 
                     function getFocusStemPath(width) {
