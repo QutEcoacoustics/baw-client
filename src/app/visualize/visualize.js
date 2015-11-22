@@ -108,6 +108,8 @@ angular
                             tileDatum.zoomStyleImage === true
                         );
 
+                        // disabled for debugging
+                        url = undefined;
                         return url;
                     },
                     getNavigateUrl: function(date, category, tileSizeSeconds, tileSizePixels, itemDatum) {
