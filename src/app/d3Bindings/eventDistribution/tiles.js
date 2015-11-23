@@ -51,12 +51,12 @@ angular
                         // pad the filtering extent with tileSize so that recordings that have
                         // duration < tileSize aren't filtered out prematurely
                         var fExtent = [(+visibleExtent[0]) - filterPaddingMs, (+visibleExtent[1]) + filterPaddingMs],
-                            f = this.isItemVisible.bind(null, this.dataFunctions.getLow, this.dataFunctions.getHigh, fExtent),
-                            g = this.isInCategory.bind(null, this.dataFunctions.getCategory, category),
-                            h = TilingFunctions.and.bind(null, g, f);
+                            f = this.isItemVisible.bind(this, this.dataFunctions.getLow, this.dataFunctions.getHigh, fExtent),
+                            g = this.isInCategory.bind(this, this.dataFunctions.getCategory, category),
+                            h = TilingFunctions.and.bind(this, g, f);
 
                         // tile filter
-                        var l = this.isTileVisible.bind(null, visibleExtent);
+                        var l = this.isTileVisible.bind(this, visibleExtent);
 
                         return items
                             .filter(h)
@@ -134,9 +134,9 @@ angular
                         return getCategory(d) === category;
                     }
 
-                    isItemVisible(dataFunctions, filterExtent, item) {
-                        return dataFunctions.getLow(item) < filterExtent[1] &&
-                            dataFunctions.getHigh(item) >= filterExtent[0];
+                    isItemVisible(filterExtent, item) {
+                        return this.dataFunctions.getLow(item) < filterExtent[1] &&
+                            this.dataFunctions.getHigh(item) >= filterExtent[0];
                     }
 
                     /**

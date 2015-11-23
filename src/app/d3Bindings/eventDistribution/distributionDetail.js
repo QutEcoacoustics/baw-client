@@ -220,6 +220,9 @@ angular
                         if (visualizationBrushArea) {
                             visualizationBrushArea.attr("height", dims.height);
                         }
+                        if (visualizationBrushLaneOverlay) {
+                            visualizationBrushLaneOverlay.attr("height", getFocusedLaneHeight());
+                        }
                         if (outOfBoundsRect) {
                             outOfBoundsRect.attr(dims);
                         }
@@ -375,18 +378,15 @@ angular
 
                     function updateScales() {
                         // if there is no visible extent set, zoom out to full data set
-                        self.visibleExtent = self.visibleExtent || [self.minimum, self.maximum];
+                        // warning this resets the zoom level
+                        // though it should only take effect when visible extent === 0
+                        if (!self.visibleExtent || +self.visibleExtent[1] - +self.visibleExtent[0] === 0) {
+                            self.visibleExtent = [self.minimum, self.maximum];
+                        }
 
-                        let min = +self.minimum || 0,
-                            max = +self.maximum || 0,
-                            delta = max - min,
-                            visibleFraction = delta / self.currentZoomValue;
                         // finally, convert to seconds
-
                         self.visibleDuration = (+self.visibleExtent[1] - +self.visibleExtent[0]) / common.msInS;
-                        console.assert(
-                            visibleFraction / common.msInS === self.visibleExtent[1] - self.visibleExtent[0],
-                            "My math should be correct!");
+
 
                         // TODO: snap tile domain to zoom levels that are available
                         self.tileSizeSeconds = self.visibleDuration / tileCount;
@@ -406,6 +406,15 @@ angular
 
                         // falsely trigger zoom events to force d3 to re-render with new scale
                         zoomUpdate();
+
+                        // by this point the two methods for calculating visible duration should be equivalent
+                        let min = +self.minimum || 0,
+                            max = +self.maximum || 0,
+                            delta = max - min,
+                            visibleFraction = (delta / self.currentZoomValue) / common.msInS;
+                        console.assert(
+                            Math.abs(visibleFraction - self.visibleDuration) < 0.0001,
+                            "My math should be correct!");
 
                         updateYScales();
 
@@ -433,8 +442,8 @@ angular
                         // we draw the tiles within the bounds of
                         // one lane within the main yScale
                         let start = yScale(self.lanes.indexOf(self.selectedCategory));
-                        yScaleForTiles // inverted y-axis
-                            .domain([self.visualizationYMax, 0])
+                        // inverted y-axis
+                        yScaleForTiles.domain([self.visualizationYMax, 0])
                             .range([start, start + getTilesGroupHeight()]);
                     }
 

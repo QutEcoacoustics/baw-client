@@ -17,7 +17,8 @@ angular
             "roundDate",
             "TimeAxis",
             "distributionCommon",
-            function ($location, $rootScope, d3, roundDate, TimeAxis, common) {
+            "distributionTilingFunctions",
+            function ($location, $rootScope, d3, roundDate, TimeAxis, common, TilingFunctions) {
                 return function DistributionVisualisation(target, data, dataFunctions, uniqueId) {
                     // variables
                     var self = this,
@@ -34,11 +35,7 @@ angular
                         focusStem = focusGroup.select(".focusStem"),
                         focusAnchor = focusGroup.select(".focusAnchor"),
                         focusText = focusGroup.select(".focusText"),
-                        focusStemPath = {
-                            width: 91,
-                            stems: 4,
-                            root: 8
-                        },
+
                         tilesClipRect,
 
                         tileWidthPixels = 180,
@@ -47,17 +44,15 @@ angular
                         tilesHeightPixels = 256,
                     // default value, overridden almost straight away
                         tilesTotalWidthPixels = 1440,
-                    // 86400 seconds
-                    //oneDay = 60 * 60 * 24,
-                    // round to nearest 30 seconds for navigation urls
-                        navigationOffsetRounding = 30,
 
 
                         clipId = "distributionVisualizationMultiScale_" + uniqueId,
-                        xScale,
-                        yScale,
-                    // used to map actual zoom scale values to tiles of the appropriate resolution
-                        resolutionScale,
+                        xScale = d3.time.scale(),
+                        yScale = d3.scale.linear(),
+                        /**
+                         *  used to map actual zoom scale values to tiles of the appropriate resolution
+                         */
+                        resolutionScale = d3.scale.threshold(),
                         xAxis,
                         xAxisHeight = 30,
                         yAxis,
@@ -72,15 +67,13 @@ angular
 
                         visibleExtent = [],
                         visibleTiles = [],
-                        failedImages = new Set(),
-                        successfulImages = new Set(),
+                        tilingFunctions,
                     /*
                      * WeakMap<item, Map<resolution, tiles>>
                      */
                         tileCache = new WeakMap();
 
-                    const timeFormatter = d3.time.format("%H:%M:%S"),
-                        msInS = 1e3;
+                    const timeFormatter = d3.time.format("%H:%M:%S");
 
                     // exports
                     self.items = [];
@@ -109,7 +102,8 @@ angular
 
                         updateScales();
 
-                        visibleTiles = filterTiles(visibleExtent, self.category);
+                        // recalculate what tiles are visible
+                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, visibleExtent, self.category);
 
                         updateElements();
 
@@ -126,7 +120,8 @@ angular
 
                         updateScales();
 
-                        visibleTiles = filterTiles(visibleExtent, self.category);
+                        // recalculate what tiles are visible
+                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, visibleExtent, self.category);
 
                         updateElements();
                     }
@@ -134,6 +129,11 @@ angular
                     /* internal functions*/
 
                     function create() {
+
+                        // note this depends on the inputs being updated by reference
+                        // or remaining constant
+                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels);
+
                         updateDataVariables(data);
 
                         setDimensions();
@@ -157,9 +157,8 @@ angular
                     }
 
                     function setDimensions() {
-                        let widths = getWidth();
-                        tilesTotalWidthPixels = widths.width;
-                        tileCount = widths.tileCount;
+                        tilesTotalWidthPixels = common.getWidth(container, margin);
+                        tileCount = common.getTileCountForWidth(tilesTotalWidthPixels, tileWidthPixels);
 
 
                         // want tilesHeightPixels to be a function of visualizationYMax and window
@@ -181,8 +180,8 @@ angular
                             tilesClipRect.attr(attrs);
                         }
 
-                        focusLine.attr("height", tilesHeightPixels + focusStemPath.root);
-                        focusTextGroup.translate(() => [0, -(focusStemPath.root + focusStemPath.stems)]);
+                        focusLine.attr("height", tilesHeightPixels + common.focusStemPathDefaults.root);
+                        focusTextGroup.translate(() => [0, -(common.focusStemPathDefaults.root + common.focusStemPathDefaults.stems)]);
                     }
 
                     function updateScales() {
@@ -191,7 +190,7 @@ angular
                             delta = max - min,
                             visibleFraction = delta / self.currentZoomValue;
                         // finally, convert to seconds
-                        self.visibleDuration = visibleFraction / msInS;
+                        self.visibleDuration = visibleFraction / common.msInS;
                         // TODO: snap tile domain to zoom levels that are available
                         self.tileSizeSeconds = self.visibleDuration / tileCount;
                         self.resolution = self.tileSizeSeconds / tileWidthPixels;
@@ -205,18 +204,15 @@ angular
                         visibleExtent[0] = d3.time.second.offset(self.middle, -halfVisibleDuration);
                         visibleExtent[1] = d3.time.second.offset(self.middle, halfVisibleDuration);
 
-                        xScale = d3.time.scale()
-                            .domain(visibleExtent)
+                        xScale.domain(visibleExtent)
                             .range([0, tilesTotalWidthPixels]);
 
-                        yScale = d3.scale.linear()
-                            // inverted y-axis
-                            .domain([self.visualizationYMax, 0])
+                        // inverted y-axis
+                        yScale.domain([self.visualizationYMax, 0])
                             .range([0, tilesHeightPixels]);
 
 
-                        resolutionScale = d3.scale.threshold()
-                            .domain(self.availableResolutions)
+                        resolutionScale.domain(self.availableResolutions)
                             .range([
                                 0,
                                 //self.availableResolutions[0] || 0,
@@ -225,62 +221,7 @@ angular
                             ]);
                     }
 
-                    function filterTiles(visibleExtent, category) {
-                        var filterPaddingMs = self.tileSizeSeconds * msInS;
-                        // item filter
-                        // pad the filtering extent with tileSize so that recordings that have
-                        // duration < tileSize aren't filtered out prematurely
-                        var fExtent = [(+visibleExtent[0]) - filterPaddingMs, (+visibleExtent[1]) + filterPaddingMs],
-                            f = common.isItemVisible.bind(null, dataFunctions.getLow, dataFunctions.getHigh, fExtent),
-                            g = common.isInCategory.bind(null, dataFunctions.getCategory, category),
-                            h = common.and.bind(null, g, f);
 
-                        // tile filter
-                        var l = common.isTileVisible.bind(null, visibleExtent);
-
-                        return self.items
-                            .filter(h)
-                            .reduce(function (previous, current) {
-                                let selectedResolution = resolutionScale(self.resolution),
-                                    tiles = generateTiles(current, selectedResolution);
-
-                                let filteredTiles = tiles.filter(l);
-                                return previous.concat(filteredTiles);
-                            }, [])
-                            .sort(common.sortTiles);
-                    }
-
-                    /**
-                     * Generate the tiles - but do not eagerly cache!
-                     * Also do not store tiles on item.
-                     * Too many tiles.
-                     */
-                    function generateTiles(item, resolution) {
-                        // the tile cache is a WeakMap of Maps
-                        // tileCache: WeakMap<item, Map<resolution, tiles>>
-
-                        // get resolution map
-                        let resolutionCache = tileCache.get(item);
-
-                        if (resolutionCache) {
-                            // get tiles
-                            let cachedTiles = resolutionCache.get(resolution);
-
-                            if (cachedTiles) {
-                                return cachedTiles;
-                            }
-                        }
-                        else {
-                            // create a new holder
-                            resolutionCache = new Map();
-                            tileCache.set(item, resolutionCache);
-                        }
-
-                        let tiles = splitIntoTiles(item, resolution);
-                        resolutionCache.set(resolution, tiles);
-
-                        return tiles;
-                    }
 
                     function createElements() {
                         //svg.node().addEventListener("SVGLoad", () => console.log("Main SVG Load completed"));
@@ -301,7 +242,7 @@ angular
 
                         tilesGroup.clipPath("url(#" + clipId + ")");
 
-                        tilesGroup.on("click", navigateTo);
+                        tilesGroup.on("click", (source) => common.navigateTo(dataFunctions, visibleTiles, xScale, source));
 
                         xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeightPixels], isVisible: false});
                         yAxis = d3.svg.axis()
@@ -317,59 +258,7 @@ angular
                         updateElements();
                     }
 
-                    //<editor-fold desc="Description">
-                    function tileGTranslation(d, i) {
-                        return [getTileLeft(d, i), 0];
-                    }
 
-                    function checkImage(d) {
-                        // check if the image has been successfully downloaded before
-                        // if it has not, do not set
-                        // if it has, then set
-                        // otherwise, set for first time and try!
-                        if (failedImages.has(d.tileImageUrl)) {
-                            return null;
-                        } else {
-                            return d.tileImageUrl;
-                        }
-                    }
-
-                    function imageLoadError(d, index) {
-                        //console.error("SVG image error", arguments);
-                        var target = d3.select(d3.event.target);
-
-                        // remove the href from the image
-                        target.attr("xlink:href", null);
-
-                        // record failure so we don't try and DL image again
-                        failedImages.add(d.tileImageUrl);
-                    }
-
-                    function imageLoadSuccess(d) {
-                        //console.info("SVG image success", arguments);
-                        if (successfulImages.has(d.tileImageUrl)) {
-                            return;
-                        }
-
-                        // if successful, remove text (and let bg color through)
-                        var target = d3.event.target,
-                            siblings = target.parentNode.childNodes;
-
-                        Array.from(siblings).forEach(function (node, index) {
-                            if (!(node instanceof SVGImageElement)) {
-                                node.remove();
-                            }
-                        });
-
-                        // record success so we can optimise tile creation in the future
-                        successfulImages.add(d.tileImageUrl);
-                    }
-
-                    function tileKey(d) {
-                        return d.key;
-                    }
-
-                    //</editor-fold>
 
                     function updateElements() {
                         var rectAttrs = {
@@ -381,7 +270,6 @@ angular
                                  */
                                 width: d => {
                                     var imageScale = d.resolution / self.resolution;
-                                    //console.debug("DistributionVisualisation:updateElements:width: current image ratio:", imageScale, d.resolution, self.resolution);
                                     return tileWidthPixels * (imageScale);
                                 }
                             },
@@ -396,8 +284,7 @@ angular
 
 
                         const debugAttrs = {
-                                date: getOffsetDate,
-                                time: getOffsetTime,
+                                date: d => d.offset.toString(),
                                 tileResolution: d => d.resolution,
                                 tileResolutionRatio: d => (d.resolution / self.resolution).toFixed(4)
                             },
@@ -408,7 +295,7 @@ angular
 
                         // reposition
                         focusGroup.translate(() => [xScale(self.middle), 0]);
-                        let {url, roundedDate} = isNavigatable(self.middle);
+                        let {url, roundedDate} = common.isNavigatable(dataFunctions, visibleTiles, self.middle);
                         focusText.text(() => {
                             if (self.middle) {
                                 return "Go to " + timeFormatter(roundedDate);
@@ -420,21 +307,21 @@ angular
                         focusAnchor.classed("disabled", !url);
                         // this IS MEGA bad for performance - forcing a layout
                         //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
-                        focusStem.attr("d", getFocusStemPath());
+                        focusStem.attr("d", common.getFocusStemPath());
 
                         // debug only
                         tilesGroup.attr(debugGroupAttrs);
 
                         // create data join
                         var tileElements = tilesGroup.selectAll(".tile")
-                            .data(visibleTiles, tileKey);
+                            .data(visibleTiles, TilingFunctions.tileKey);
 
                         // update old tiles
-                        tileElements.translate(tileGTranslation)
+                        tileElements.translate(tilingFunctions.getTileGTranslation)
                             .attr(debugAttrs)
                             .select("image")
                             .attr({
-                                "xlink:href": checkImage,
+                                "xlink:href": common.imageCheck,
                                 width: imageAttrs.width
                             });
 
@@ -446,13 +333,12 @@ angular
                         var newTileElements = tileElements.enter()
                             .append("g")
                             .attr(debugAttrs)
-                            .translate(tileGTranslation)
+                            .translate(tilingFunctions.getTileGTranslation)
                             .classed("tile", true);
 
                         // optimize: if we've successfully downloaded a tile before
                         // then we don't need these placeholder tiles
-                        var failedOrUnknownTileElements =
-                            newTileElements.filter(d => !successfulImages.has(d.tileImageUrl));
+                        var failedOrUnknownTileElements = newTileElements.filter(common.isImageSuccessful);
                         //.data(visibleTiles, tileKey)
                         //.enter();
                         failedOrUnknownTileElements.append("rect")
@@ -461,13 +347,13 @@ angular
                         // but always add the image element
                         newTileElements.append("image")
                             .attr(imageAttrs)
-                            .attr("xlink:href", checkImage)
-                            .on("error", imageLoadError, true)
-                            .on("load", imageLoadSuccess, true)
+                            .attr("xlink:href", common.imageCheck)
+                            .on("error", common.imageLoadError, true)
+                            .on("load", common.imageLoadSuccess, true)
                             // the following two handlers are for IE compatibility
-                            .on("SVGError", imageLoadError, true)
+                            .on("SVGError", common.imageLoadError, true)
                             // the following hack does not work in IE
-                            .on("SVGLoad", imageLoadSuccess, true);
+                            .on("SVGLoad", common.imageLoadSuccess, true);
 
                         // remove old tiles
                         tileElements.exit().remove();
@@ -493,164 +379,19 @@ angular
                     /* helper functions */
 
 
-                    function getWidth() {
-                        // want tilesTotalWidthPixels to be a factor of tile size
-                        var containerWidth = svg.node().parentNode.getBoundingClientRect().width;
-                        var availableWidth = containerWidth - (margin.left + margin.right);
-                        var tileCount = Math.floor(availableWidth / tileWidthPixels);
-                        return {width: tileCount * tileWidthPixels, tileCount};
-                    }
-
                     function getTilesGroupHeight() {
                         return self.visualizationTileHeight;
                     }
 
 
-                    function isNavigatable(clickDate) {
-                        let roundedDate = roundDate.round(navigationOffsetRounding, clickDate),
-                        // plus one to cheat the system
-                        // - the range should be valid, i.e. not zero width
-                            searchRange = [roundedDate, +roundedDate + 1];
-
-                        // reuse filtering method but don't allow for padding
-                        var matchedTiles = visibleTiles.filter((tile) => common.isTileVisible(searchRange, self.tileSizeSeconds, tile));
-
-                        var url;
-                        if (matchedTiles.length) {
-                            // the source item that owns the tile
-                            let itemFound = matchedTiles.find(tile => {
-                                return common.isItemVisible(dataFunctions.getLow, dataFunctions.getHigh, searchRange, tile.source);
-                            });
-
-                            // the tile could still be outside of the item's actual range
-                            // (as tiles are absolutely aligned and pad out items)
-                            if (itemFound) {
-                                url = getNavigateUrl(itemFound.source, roundedDate);
-                            }
-                        }
-
-                        return {url, roundedDate};
-                    }
-
-                    /**
-                     * Generate the tiles to show on the fly.
-                     * These tiles should NOT contain references to other objects.
-                     * @param source
-                     * @param i
-                     * @returns {Array}
-                     */
-                    function splitIntoTiles(source, resolution) {
-                        let idealTileSizeSeconds = resolution * tileWidthPixels;
-
-                        // coerce just in case (d3 does this internally)
-                        let low = new Date(dataFunctions.getLow(source)),
-                            high = new Date(dataFunctions.getHigh(source));
-
-                        // round down to the lower unit of time, determined by `tileSizeSeconds`
-                        var niceLow = roundDate.floor(idealTileSizeSeconds, low),
-                        // subtract a 'tile' otherwise we generate one too many
-                            niceHigh = new Date(+roundDate.ceil(idealTileSizeSeconds, high) - idealTileSizeSeconds),
-                            offset = niceLow;
-
-                        // use d3's in built range functionality to generate steps
-                        var tiles = [];
-                        while (offset < niceHigh) {
-                            // d3's offset floor's the input! FFS!
-                            //var nextOffset = d3.time.second.offset(offset, idealTileSizeSeconds);
-                            var nextOffset = new Date(+offset + (idealTileSizeSeconds * msInS));
-                            var item = {
-                                audioNavigationUrl: getNavigateUrl(source, offset),
-                                key: offset.toISOString() + dataFunctions.getId(source),
-                                offset: offset,
-                                offsetEnd: nextOffset,
-                                resolution,
-                                source,
-                                tileImageUrl: "",
-                                zoomStyleImage: true
-                            };
-                            item.tileImageUrl = getTileImage(item);
-                            tiles.push(item);
-                            offset = nextOffset;
-                        }
-
-                        return tiles;
-                    }
-
-                    function navigateTo() {
-                        var coordinates = d3.mouse(tilesGroup.node()),
-                            clickDate = xScale.invert(coordinates[0]);
-
-                        // now see if there is a match for the date!
-                        var {url} = isNavigatable(clickDate);
-
-                        if (url) {
-                            console.warn(
-                                "DistributionVisualisation:TilesGroup:Click: Navigating to ",
-                                url,
-                                new Date(clickDate));
-                            $location.url(url);
-                            $rootScope.$apply();
-                        }
-                        else {
-                            console.error(
-                                "DistributionVisualisation:TilesGroup:Click: Navigation failed",
-                                new Date(clickDate));
-                        }
-                    }
-
-                    function getTileLeft(d, i) {
-                        return xScale(d.offset);
-                    }
-
-                    //function getComment() {
-                    //    return
-                    //
-                    //    //return `Data:: Date: ${ getOffsetDate(d) }, Time: ${ getOffsetTime(d) }, TileSize: ${ self.tileSizeSeconds.toLocaleString() }, Actual Resolution: ${ self.resolution.toFixed(4) }, Tile Resolution: ${ d.resolution }`;
-                    //}
-
-                    function getOffsetDate(d) {
-                        return d.offset.toLocaleDateString();
-                    }
-
-                    function getOffsetTime(d) {
-                        return d.offset.toLocaleTimeString();
-                    }
-
-                    function getNavigateUrl(d, offset) {
-                        var url = dataFunctions.getNavigateUrl(
-                            offset,
-                            self.category,
-                            self.tileSizeSeconds,
-                            tileWidthPixels,
-                            d
-                        );
-
-                        if (url) {
-                            return url;
-                        }
-
-                        return;
-                    }
 
 
-                    function getTileImage(d) {
-                        var url = dataFunctions.getTileUrl(d.offset,
-                            self.category,
-                            self.tileSizeSeconds,
-                            tileWidthPixels,
-                            d);
 
-                        return url || "";
-                    }
 
-                    function getFocusStemPath(width) {
-                        let w = Math.round(width || focusStemPath.width) + focusStemPath.stems,
-                            hw = w / 2.0,
-                            s = focusStemPath.stems,
-                            r = focusStemPath.root;
 
-                        return `m-${hw} 0 l0 ${s} l${w} 0 l0 -${s} m-${hw} ${s} l0 ${r}`;
-                    }
+
+
+
                 };
             }
         ]

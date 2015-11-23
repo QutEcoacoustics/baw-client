@@ -21,14 +21,14 @@ angular
                     successfulImages = new Set();
 
                 return {
+                    focusStemPathDefaults: {
+                        width: 91,
+                        stems: 4,
+                        root: 8
+                    },
                     getFocusStemPath(width) {
-                        const focusStemPath = {
-                            width: 91,
-                            stems: 4,
-                            root: 8
-                        };
-
-                        let w = Math.round(width || focusStemPath.width) + focusStemPath.stems,
+                        let focusStemPath = this.focusStemPathDefaults,
+                            w = Math.round(width || focusStemPath.width) + focusStemPath.stems,
                             hw = w / 2.0,
                             s = focusStemPath.stems,
                             r = focusStemPath.root;

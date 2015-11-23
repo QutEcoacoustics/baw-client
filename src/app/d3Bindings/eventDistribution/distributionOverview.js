@@ -87,7 +87,9 @@ angular
                             updateExtent(extent);
                         }
                         else {
+                            _lockManualBrush = true;
                             display();
+                            _lockManualBrush = false;
                         }
 
                         xAxis.update(xScale, [0, miniHeight], true);
