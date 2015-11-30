@@ -50,7 +50,7 @@ $legend-size: 2em;
 
 $standard-brush-fill: rgba(30, 144, 255, 0.2);
 $visualization-brush-fill: rgba(mix($standard-brush-fill, white), 0.7);
-$visualization-brush-lane-overlay-fill: rgba(255,255,255, 0.0);
+$visualization-brush-lane-overlay-fill: rgba(255, 255, 255, 0.0);
 $visualization-brush-stroke: $gray-light;
 
 event-distribution-overview, event-distribution-detail {
@@ -132,6 +132,20 @@ event-distribution-detail {
     stroke: $visualization-brush-stroke;
     fill: $visualization-brush-lane-overlay-fill;
   }
+
+  .tiles {
+    cursor: pointer;
+
+    .tile rect {
+      //stroke: rgba(0, 0, 0, 0.5);
+      //stroke-width: 1px;
+      //border-left: rgba(255, 0, 0, 0.5) solid 1px;
+      //border-right: rgba(0, 255, 0, 0.5) solid 1px;
+
+      fill: rgba(255, 255, 255, 0.5);
+    }
+
+  }
 }
 
 event-distribution-visualisation, event-distribution-visualisation-multi-scale {
@@ -167,6 +181,13 @@ event-distribution-visualisation, event-distribution-visualisation-multi-scale {
         //border-left: deeppink solid 1px;
         //border-right: blue solid 1px;
         fill: $tile-background-color;
+
+        //stroke: rgba(0, 0, 0, 0.5);
+        //stroke-width: 1px;
+        //
+        //border-left: rgba(255, 0, 0, 0.5) solid 1px;
+        //border-right: rgba(0, 255, 0, 0.5) solid 1px;
+        //fill: rgba(0, 0, 255, 0.2);
       }
 
       .tile text {

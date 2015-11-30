@@ -55,6 +55,11 @@ angular
                         mainItemsGroup,
                         tilesGroup,
                         /**
+                         * A clip for the tiles group
+                         */
+                        tilesClipRect,
+                        tilesGroupClipId = "distributionDetailTilesGroup_" + uniqueId,
+                        /**
                          * color shown when outside of dataset
                          *  this surface is fixed (not animated)
                          */
@@ -65,14 +70,7 @@ angular
                          * this surface is animated (at the edges of the dataset)
                          */
                         datasetBoundsRect,
-                        laneLabelMarginRight = -50,
-                        xAxisHeight = 30,
-                        margin = {
-                            top: 5,
-                            right: 20,
-                            bottom: 5 + xAxisHeight,
-                            left: 120
-                        },
+
                     // these are initial values only
                     // this is the width and height of the main group
                         mainWidthPixels = 1200,
@@ -89,8 +87,21 @@ angular
                         visibleTiles = []
                         ;
 
-                    const lanePadding = 20,
+                    const
+                        axisPadding = 14,
+                        lanePaddingTop = 5,
+                        lanePaddingBottom = 5,
+                        lanePadding = lanePaddingTop + lanePaddingBottom,
                         laneHeight = 30,
+                        xAxisHeight = 26,
+                        yAxisWidth = 55,
+                        margin = {
+                            top: 5,
+                            right: 5,
+                            bottom: 5 + xAxisHeight,
+                            left: yAxisWidth + 5
+                        },
+                        laneLabelMarginRight = margin.left,
 
                         /**
                          * A cache of tiles generated from items.
@@ -126,7 +137,7 @@ angular
 
                         updateScales();
 
-                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.category);
+                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.selectedCategory);
 
                         updateMain();
                     }
@@ -149,7 +160,7 @@ angular
                         updateScales();
 
                         // recalculate what tiles are visible
-                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.category);
+                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.selectedCategory);
 
                         extentUpdateMain();
 
@@ -173,7 +184,7 @@ angular
 
                         // note this depends on the inputs being updated by reference
                         // or remaining constant
-                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels);
+                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels, true);
 
                         createChart();
 
@@ -196,11 +207,20 @@ angular
                                 width: mainWidthPixels,
                                 height: mainHeight
                             });
+
+                        tilesClipRect = chart.select("defs")
+                            .append("clipPath")
+                            .attr("id", tilesGroupClipId)
+                            .append("rect")
+                            .attr({
+                                width: mainWidthPixels,
+                                height: mainHeight
+                            });
                     }
 
                     function updateDimensions() {
                         mainWidthPixels = common.getWidth(container, margin);
-                        tileCount = common.getTileCountForWidth(mainWidthPixels, tileWidthPixels);
+                        tileCount = tilingFunctions.getTileCountForWidthRounded(mainWidthPixels, tileWidthPixels);
 
                         mainHeight = Math.max(getLaneLength() - 1, 0) * getLaneHeight() + getFocusedLaneHeight();
 
@@ -233,14 +253,15 @@ angular
                             zoom.size([mainWidthPixels, mainHeight]);
                         }
 
+                        if (tilesClipRect) {
+                            tilesClipRect.attr(dims);
+                        }
+
                         /* other tiles stuff:
 
                          tilesGroup.attr(attrs);
                          tilesBackground.attr(attrs);
                          datasetBoundsRect.attr("height", tilesHeightPixels);
-                         if (tilesClipRect) {
-                         tilesClipRect.attr(attrs);
-                         }
 
                          focusLine.attr("height", tilesHeightPixels + focusStemPath.root);
                          focusTextGroup.translate(() => [0, -(focusStemPath.root + focusStemPath.stems)]);
@@ -303,7 +324,6 @@ angular
                         laneLinesGroup = main.append("g").classed("laneLinesGroup", true);
 
 
-
                         // group for rects painted in lanes
                         mainItemsGroup = main.append("g")
                             .clipPath("url(#" + outerClipId + ")")
@@ -316,26 +336,18 @@ angular
                         tilesGroup = main.append("g")
                             .classed("tiles", true);
 
-                        /** other stuff from tiles createElements... should not be needed */
-                            //tilesGroup.clipPath("url(#" + clipId + ")");
-                            //tilesClipRect = svg.append("defs")
-                            //    .append("clipPath")
-                            //    .attr("id", clipId)
-                            //    .append("rect")
-                            //    .attr({
-                            //        width: tilesTotalWidthPixels,
-                            //        height: tilesHeightPixels
-                            //    });
+                        tilesGroup.clipPath("url(#" + tilesGroupClipId + ")");
 
 
-                        tilesGroup.on("click", (source) => common.navigateTo(dataFunctions, visibleTiles, xScale, source));
+
+                        tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source));
 
                         // group for textual labels, left of the lanes
                         laneLabelsGroup = main.append("g").classed("laneLabelsGroup", true);
 
                         xAxisSelected = new TimeAxis(
                             main, xScale, {
-                                position: [0, getSelectedAxisY()],
+                                position: [0, getFocusedAxisY()],
                                 isVisible: false,
                                 orient: "top"
                             });
@@ -391,7 +403,7 @@ angular
 
 
                         // TODO: snap tile domain to zoom levels that are available
-                        self.tileSizeSeconds = self.visibleDuration / tileCount;
+                        self.tileSizeSeconds = self.visibleDuration / tilingFunctions.getTileCountForWidth(mainWidthPixels, tileWidthPixels);
                         self.resolution = self.tileSizeSeconds / tileWidthPixels;
 
                         xScale.domain([self.minimum, self.maximum])
@@ -420,11 +432,8 @@ angular
 
                         updateYScales();
 
-                        resolutionScale.domain(self.availableResolutions)
-                            .range([
-                                0,
-                                ...self.availableResolutions
-                            ]);
+                        TilingFunctions.updateResolutionScaleCeiling(self.availableResolutions, resolutionScale);
+
                     }
 
                     function updateYScales() {
@@ -446,7 +455,7 @@ angular
                         // one lane within the main yScale
                         // also need to leave space for the padding and the top (focused) x-axis
                         let lane = self.lanes.indexOf(self.selectedCategory),
-                            start = yScale(lane === -1 ? 0 : lane) + lanePadding + xAxisHeight;
+                            start = yScale(lane === -1 ? 0 : lane) + lanePaddingTop + xAxisHeight;
                         // inverted y-axis
                         yScaleForTiles.domain([self.visualizationYMax, 0])
                             .range([start, start + getTilesGroupHeight()]);
@@ -486,11 +495,10 @@ angular
                         var labelAttrs = {
                             x: -laneLabelMarginRight,
                             y: function (d, i) {
-                                // 0.5 shifts it halfway into lane
-                                return yScale(i + 0.5);
+                                return yScale(i) + xAxisHeight + lanePaddingTop - axisPadding;
                             },
-                            dy: ".5ex",
-                            "text-anchor": "end",
+                            dy: "0",
+                            "text-anchor": "start",
                             class: "laneText"
                         };
 
@@ -498,11 +506,17 @@ angular
                         let labels = laneLabelsGroup.selectAll("text")
                             .data(self.lanes)
                             .attr(labelAttrs);
+                        labels.selectAll("title")
+                            .text(dataFunctions.getCategoryName);
+                        labels.selectAll("rect")
+                            .text(dataFunctions.getCategoryName);
 
                         labels.enter()
                             .append("text")
                             .text(dataFunctions.getCategoryName)
-                            .attr(labelAttrs);
+                            .attr(labelAttrs)
+                            .append("title")
+                            .text(dataFunctions.getCategoryName);
 
                         labels.exit().remove();
 
@@ -598,13 +612,14 @@ angular
                             // intentionally falsey
                                 showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
 
-                            xAxisSelected.update(xScale, [0, getSelectedAxisY()], showAxis);
+                            xAxisSelected.update(xScale, [0, getFocusedAxisY()], showAxis);
                             xAxis.update(xScale, [0, mainHeight], showAxis);
                         }
                     }
 
                     function updateTileElements() {
                         var rectAttrs = {
+
                                 height: self.visualizationTileHeight,
 
                                 /**
@@ -655,7 +670,8 @@ angular
                          focusStem.attr("d", getFocusStemPath());*/
 
                         // debug only
-                        tilesGroup.attr(debugGroupAttrs);
+                        tilesGroup.attr(debugGroupAttrs)
+                            .translate(getTileGroupTranslation());
 
                         // create data join
                         var tileElements = tilesGroup.selectAll(".tile")
@@ -751,6 +767,9 @@ angular
                         // HACK: check whether this event was triggered manually
                         var isManual = _lockManualZoom;
 
+                        // debugging, fixed zoom scale at specified resolutoin
+                        //zoom.scale([ getZoomFactorForResolution([self.minimum, self.maximum], self.visibleExtent, 60) ]);
+
                         // prevent translating off the edge of our data (i.e. clamp the zoom/pan)
                         var domain = null;
                         if (xScale) {
@@ -775,8 +794,6 @@ angular
 
                         // updates the controller - bind back
                         dataFunctions.extentUpdate(self.visibleExtent, "DistributionDetail");
-
-
                     }
 
                     function onZoomEnd() {
@@ -839,6 +856,24 @@ angular
                             }
                         }
                     }
+
+                    /*
+                    function getZoomFactorForResolution(fullExtent, visibleExtent, resolution) {
+                        var //vl = +visibleExtent[0],
+                            //vh = +visibleExtent[1],
+                            fullDifference = (+fullExtent[1]) - (+fullExtent[0]);
+                            //visibleDifference = vh - vl
+
+                        //var [scaleLower, scaleUpper] = zoom.scaleExtent();
+
+                        var [width] = zoom.size();
+
+                        let desiredDuration = (width * resolution) * common.msInS,
+                            scale = fullDifference / desiredDuration;
+
+                        return scale;
+
+                    }*/
 
                     function getZoomFactors(fullExtent, visibleExtent, limitSeconds) {
                         var vl = +visibleExtent[0],
@@ -932,11 +967,11 @@ angular
                     }
 
                     function getFocusedLaneHeight() {
-                        return getTilesGroupHeight() + xAxisHeight + 2 * lanePadding;
+                        return getTilesGroupHeight() + xAxisHeight + lanePadding;
                     }
 
                     function getLaneHeight() {
-                        return laneHeight + 2 * lanePadding;
+                        return laneHeight + lanePadding;
                     }
 
                     /**
@@ -952,11 +987,16 @@ angular
                         var i = getCategoryIndex(item),
                             isSelected = isIndexSelectedLane(i);
 
-                        return yScale(i) + lanePadding + (isSelected ? xAxisHeight : 0);
+                        return yScale(i) + lanePaddingTop + (isSelected ? xAxisHeight : 0);
                     }
 
-                    function getSelectedAxisY() {
-                        return yScale(self.lanes.indexOf(self.selectedCategory)) + xAxisHeight + lanePadding;
+                    function getTileGroupTranslation() {
+                        var selectedIndex = self.lanes.indexOf(self.selectedCategory);
+                        return [0, yScale(selectedIndex) + lanePaddingTop + xAxisHeight];
+                    }
+
+                    function getFocusedAxisY() {
+                        return yScale(self.lanes.indexOf(self.selectedCategory)) + xAxisHeight + lanePaddingTop;
                     }
 
                 };

@@ -127,7 +127,7 @@ angular
 
                         // note this depends on the inputs being updated by reference
                         // or remaining constant
-                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache, null, tileSizePixels);
+                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache,  d3.scale.identity(), tileSizePixels, false);
 
                         updateDataVariables(data);
 
@@ -150,7 +150,7 @@ angular
 
                     function setDimensions() {
                         tilesWidth = common.getWidth(container, margin);
-                        var tileCount = common.getTileCountForWidth(tilesWidth, tileSizePixels);
+                        var tileCount = tilingFunctions.getTileCountForWidthRounded(tilesWidth, tileSizePixels);
                         tilesWidth = tileCount * tileSizePixels;
                         self.visibleDuration = tileCount * tileSizeSeconds;
 
@@ -213,7 +213,7 @@ angular
 
                         tilesGroup.clipPath("url(#" + clipId + ")");
 
-                        tilesGroup.on("click", (source) => common.navigateTo(dataFunctions, visibleTiles, xScale, source));
+                        tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source));
 
                         xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeight], isVisible: false});
                         yAxis = d3.svg.axis()
@@ -238,7 +238,7 @@ angular
 
                         // reposition
                         focusGroup.translate(() => [xScale(self.middle), 0]);
-                        let {url, roundedDate} = common.isNavigatable(dataFunctions, visibleTiles, self.middle);
+                        let {url, roundedDate} = common.isNavigatable(tilingFunctions, dataFunctions, visibleTiles, self.middle);
                         focusText.text(() => {
                             if (self.middle) {
                                 return "Go to " + timeFormatter(roundedDate);

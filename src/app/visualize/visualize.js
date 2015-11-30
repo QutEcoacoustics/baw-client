@@ -99,7 +99,7 @@ angular
                     getText: function (d) {
                         return d.id;
                     },
-                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, tileDatum) {
+                    getTileUrl: function(date, tileSizePixels, tileDatum) {
                         var url = AnalysisResultFile.getLongDurationImageTile(
                             tileDatum.source,
                             date,
@@ -109,10 +109,11 @@ angular
                         );
 
                         // disabled for debugging
-                        url = undefined;
+                        //url = undefined;
+
                         return url;
                     },
-                    getNavigateUrl: function(date, category, tileSizeSeconds, tileSizePixels, itemDatum) {
+                    getNavigateUrl: function(date, tileSizePixels, itemDatum) {
                         var ar = itemDatum,
                             id = ar.id,
                             startOffset = (date - ar.recordedDate) / 1000;

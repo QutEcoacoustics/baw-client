@@ -35,11 +35,9 @@ angular
 
                         return `m-${hw} 0 l0 ${s} l${w} 0 l0 -${s} m-${hw} ${s} l0 ${r}`;
                     },
-                    getNavigateUrl(dataFunctions, category, tileSizeSeconds, tileWidthPixels, d, offset) {
+                    getNavigateUrl(dataFunctions, tileWidthPixels, d, offset) {
                         var url = dataFunctions.getNavigateUrl(
                             offset,
-                            category,
-                            tileSizeSeconds,
                             tileWidthPixels,
                             d
                         );
@@ -50,16 +48,7 @@ angular
 
                         return;
                     },
-                    /**
-                     * Get the best number of tiles for a given width.
-                     * @param width
-                     * @param tileWidthPixels
-                     */
-                    getTileCountForWidth(width, tileWidthPixels) {
-                        // round high so that we always have enough tiles
-                        // to fill a surface
-                        return Math.ceil(width / tileWidthPixels);
-                    },
+
                     getWidth(element, margin) {
                         var containerWidth = element.node().parentNode.getBoundingClientRect().width,
                             availableWidth = containerWidth - (margin.left + margin.right);
@@ -109,7 +98,7 @@ angular
                     isImageSuccessful(tile) {
                         return !successfulImages.has(tile.tileImageUrl);
                     },
-                    isNavigatable(dataFunctions, visibleTiles, clickDate) {
+                    isNavigatable(tilingFunctions, dataFunctions, visibleTiles, clickDate) {
                         // round to nearest 30 seconds for navigation urls
                         const navigationOffsetRounding = 30;
                         let roundedDate = roundDate.round(navigationOffsetRounding, clickDate);
@@ -120,14 +109,14 @@ angular
 
                         // reuse filtering method but don't allow for padding
                         var matchedTiles = visibleTiles.filter(tile => {
-                            return TilingFunctions.isTileVisible(searchRange, tile);
+                            return tilingFunctions.isTileVisible(searchRange, tile);
                         });
 
                         var url;
                         if (matchedTiles.length) {
                             // the source item that owns the tile
                             let itemFound = matchedTiles.find(tile => {
-                                return TilingFunctions.isItemVisible(dataFunctions, searchRange, tile.source);
+                                return tilingFunctions.isItemVisible(dataFunctions, searchRange, tile.source);
                             });
 
                             // the tile could still be outside of the item's actual range
@@ -149,12 +138,12 @@ angular
                     middle(interval) {
                         return +interval[0] + ((+interval[1] - +interval[0]) / 2.0);
                     },
-                    navigateTo(dataFunctions, visibleTiles, xScale, source) {
+                    navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source) {
                         var coordinates = d3.mouse(source.node()),
                             clickDate = xScale.invert(coordinates[0]);
 
                         // now see if there is a match for the date!
-                        var {url} = this.isNavigatable(dataFunctions, visibleTiles, clickDate);
+                        var {url} = this.isNavigatable(tilingFunctions, dataFunctions, visibleTiles, clickDate);
 
                         if (url) {
                             console.warn(

@@ -14,19 +14,53 @@ angular
                 const msInS = 1e3;
 
                 class TilingFunctions {
-                    constructor(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels) {
+                    constructor(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels, zoomStyleTiles) {
+                        for (var argument of arguments) {
+                            if (argument === undefined || argument === null) {
+                                throw new Error("A supplied argument was null or undefined");
+                            }
+                        }
+
                         this.dataFunctions = dataFunctions;
                         this.yScale = yScale;
                         this.xScale = xScale;
                         this.tileCache = tileCache;
                         this.resolutionScale = resolutionScale;
                         this.tileWidthPixels = tileWidthPixels;
+                        this.zoomStyleTiles = zoomStyleTiles === true;
+
+                        // set up methods that need special binding
+                        // TODO: this could be fixed by not using an ES6 class
+                        // or with ES6 fields
+                        this.getTileGTranslation = this.getTileGTranslation.bind(this);
+                        this.getTileLeft = this.getTileLeft.bind(this);
 
                     }
 
 
                     static and(a, b, d) {
                         return a(d) && b(d);
+                    }
+
+                    static updateResolutionScaleCeiling(availableResolutions, resolutionScale)
+                    {
+                        resolutionScale.domain(availableResolutions)
+                            .range([
+                                availableResolutions[0] || 0,
+                                ...availableResolutions
+                            ]);
+                    }
+
+                    static updateResolutionScaleMidpoint(availableResolutions, resolutionScale)
+                    {
+                        let midpoints = availableResolutions
+                            .map((x, i, array) => (((x - array[i - 1]) / 2) + array[i - 1]) || array[0]);
+
+                        resolutionScale.domain(midpoints)
+                            .range([
+                                availableResolutions[0] || 0,
+                                ...availableResolutions
+                            ]);
                     }
 
                     static tileKey(tile) {
@@ -51,18 +85,19 @@ angular
                         // pad the filtering extent with tileSize so that recordings that have
                         // duration < tileSize aren't filtered out prematurely
                         var fExtent = [(+visibleExtent[0]) - filterPaddingMs, (+visibleExtent[1]) + filterPaddingMs],
-                            f = this.isItemVisible.bind(this, this.dataFunctions.getLow, this.dataFunctions.getHigh, fExtent),
-                            g = this.isInCategory.bind(this, this.dataFunctions.getCategory, category),
+                            f = this.isItemVisible.bind(this, fExtent),
+                            g = this.isInCategory.bind(this, category),
                             h = TilingFunctions.and.bind(this, g, f);
 
                         // tile filter
                         var l = this.isTileVisible.bind(this, visibleExtent);
 
+                        let self = this;
                         return items
                             .filter(h)
                             .reduce(function (previous, current) {
-                                let selectedResolution = this.resolutionScale(resolution),
-                                    tiles = this.generateTiles(this.tileCache, current, selectedResolution);
+                                let selectedResolution = self.resolutionScale(resolution),
+                                    tiles = self.generateTiles(current, selectedResolution);
 
                                 let filteredTiles = tiles.filter(l);
                                 return previous.concat(filteredTiles);
@@ -100,12 +135,28 @@ angular
                         return tiles;
                     }
 
+                    /**
+                     * Get the best number of tiles for a given width.
+                     * @param width
+                     * @param tileWidthPixels
+                     */
+                    getTileCountForWidth(width, tileWidthPixels) {
+                        return width / tileWidthPixels;
+                    }
 
+                    /**
+                     * Get the best number of tiles for a given width.
+                     * @param width
+                     * @param tileWidthPixels
+                     */
+                    getTileCountForWidthRounded(width, tileWidthPixels) {
+                        // round high so that we always have enough tiles
+                        // to fill a surface
+                        return Math.ceil(width / tileWidthPixels);
+                    }
 
-                    getTileImage(category, tileSizeSeconds, tile) {
+                    getTileImage(tile) {
                         var url = this.dataFunctions.getTileUrl(tile.offset,
-                            category,
-                            tileSizeSeconds,
                             this.tileWidthPixels,
                             tile);
 
@@ -130,8 +181,8 @@ angular
                         return [this.getTileLeft(tile, i), 0];
                     }
 
-                    isInCategory(getCategory, category, d) {
-                        return getCategory(d) === category;
+                    isInCategory(category, d) {
+                        return this.dataFunctions.getCategory(d) === category;
                     }
 
                     isItemVisible(filterExtent, item) {
@@ -197,7 +248,7 @@ angular
                                 resolution,
                                 source,
                                 tileImageUrl: "",
-                                zoomStyleImage: true
+                                zoomStyleImage: this.zoomStyleTiles
                             };
                             item.tileImageUrl = this.getTileImage(item);
                             tiles.push(item);

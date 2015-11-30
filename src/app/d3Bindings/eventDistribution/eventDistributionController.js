@@ -30,7 +30,7 @@ angular
                     getText: function (d) {
                         return d.text;
                     },
-                    getTileUrl: function(date, category, tileSizeSeconds, tileSizePixels, datum) {
+                    getTileUrl: function(date, tileSizePixels, datum) {
                         var hourOfDay = date.getHours();
                         return "/tile_" + hourOfDay + ".png";
                     }

@@ -132,7 +132,7 @@ angular
 
                         // note this depends on the inputs being updated by reference
                         // or remaining constant
-                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels);
+                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels, true);
 
                         updateDataVariables(data);
 
@@ -158,7 +158,7 @@ angular
 
                     function setDimensions() {
                         tilesTotalWidthPixels = common.getWidth(container, margin);
-                        tileCount = common.getTileCountForWidth(tilesTotalWidthPixels, tileWidthPixels);
+                        tileCount = tilingFunctions.getTileCountForWidthRounded(tilesTotalWidthPixels, tileWidthPixels);
 
 
                         // want tilesHeightPixels to be a function of visualizationYMax and window
@@ -192,7 +192,7 @@ angular
                         // finally, convert to seconds
                         self.visibleDuration = visibleFraction / common.msInS;
                         // TODO: snap tile domain to zoom levels that are available
-                        self.tileSizeSeconds = self.visibleDuration / tileCount;
+                        self.tileSizeSeconds = self.visibleDuration / tilingFunctions.getTileCountForWidth(tilesTotalWidthPixels, tileWidthPixels);
                         self.resolution = self.tileSizeSeconds / tileWidthPixels;
 
 
@@ -211,14 +211,7 @@ angular
                         yScale.domain([self.visualizationYMax, 0])
                             .range([0, tilesHeightPixels]);
 
-
-                        resolutionScale.domain(self.availableResolutions)
-                            .range([
-                                0,
-                                //self.availableResolutions[0] || 0,
-                                ...self.availableResolutions
-                                //(self.availableResolutions.slice(-1) || [1])[0]
-                            ]);
+                        TilingFunctions.updateResolutionScaleCeiling(self.availableResolutions, resolutionScale);
                     }
 
 
@@ -242,7 +235,7 @@ angular
 
                         tilesGroup.clipPath("url(#" + clipId + ")");
 
-                        tilesGroup.on("click", (source) => common.navigateTo(dataFunctions, visibleTiles, xScale, source));
+                        tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source));
 
                         xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeightPixels], isVisible: false});
                         yAxis = d3.svg.axis()
@@ -295,7 +288,7 @@ angular
 
                         // reposition
                         focusGroup.translate(() => [xScale(self.middle), 0]);
-                        let {url, roundedDate} = common.isNavigatable(dataFunctions, visibleTiles, self.middle);
+                        let {url, roundedDate} = common.isNavigatable(tilingFunctions, dataFunctions, visibleTiles, self.middle);
                         focusText.text(() => {
                             if (self.middle) {
                                 return "Go to " + timeFormatter(roundedDate);
