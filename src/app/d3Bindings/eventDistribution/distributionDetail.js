@@ -65,7 +65,7 @@ angular
                          * this surface is animated (at the edges of the dataset)
                          */
                         datasetBoundsRect,
-                        laneLabelMarginRight = 5,
+                        laneLabelMarginRight = -50,
                         xAxisHeight = 30,
                         margin = {
                             top: 5,
@@ -77,7 +77,6 @@ angular
                     // this is the width and height of the main group
                         mainWidthPixels = 1200,
                         mainHeight = 0,
-                        laneHeight = 30,
 
                         orderedLaneIndexes = [],
                         orderedLaneHeights = [],
@@ -88,9 +87,11 @@ angular
                         resolutionScale = d3.scale.threshold(),
                         tilingFunctions = null,
                         visibleTiles = []
-                    ;
+                        ;
 
-                    const lanePadding = 5,
+                    const lanePadding = 20,
+                        laneHeight = 30,
+
                         /**
                          * A cache of tiles generated from items.
                          * @type {WeakMap<item, Map<resolution, Array<tiles>>>}
@@ -124,11 +125,6 @@ angular
                         updateDimensions();
 
                         updateScales();
-
-                        // pulling our y-axis update because yScale never changes for updateExtent
-                        // and thus only changes from update data
-                        yAxisFrequency.scale(yScaleForTiles).tickValues(yScaleForTiles.ticks(10).slice(0, -1).concat([self.visualizationYMax]));
-                        yAxisGroup.call(yAxisFrequency);
 
                         visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.category);
 
@@ -206,7 +202,7 @@ angular
                         mainWidthPixels = common.getWidth(container, margin);
                         tileCount = common.getTileCountForWidth(mainWidthPixels, tileWidthPixels);
 
-                        mainHeight = Math.max(getLaneLength() - 1, 0) * laneHeight + getFocusedLaneHeight();
+                        mainHeight = Math.max(getLaneLength() - 1, 0) * getLaneHeight() + getFocusedLaneHeight();
 
                         var dims = {
                             width: mainWidthPixels,
@@ -306,8 +302,7 @@ angular
                         // group for separator lines between lanes/categories
                         laneLinesGroup = main.append("g").classed("laneLinesGroup", true);
 
-                        // group for textual labels, left of the lanes
-                        laneLabelsGroup = main.append("g").classed("laneLabelsGroup", true);
+
 
                         // group for rects painted in lanes
                         mainItemsGroup = main.append("g")
@@ -335,7 +330,15 @@ angular
 
                         tilesGroup.on("click", (source) => common.navigateTo(dataFunctions, visibleTiles, xScale, source));
 
-                        xAxisSelected = new TimeAxis(main, xScale, {position: [0, 0], isVisible: false});
+                        // group for textual labels, left of the lanes
+                        laneLabelsGroup = main.append("g").classed("laneLabelsGroup", true);
+
+                        xAxisSelected = new TimeAxis(
+                            main, xScale, {
+                                position: [0, getSelectedAxisY()],
+                                isVisible: false,
+                                orient: "top"
+                            });
                         yAxisFrequency = d3.svg.axis()
                             .scale(yScaleForTiles)
                             .orient("left")
@@ -345,7 +348,6 @@ angular
                             .classed("y axis", true)
                             .translate([0, 0])
                             .call(yAxisFrequency);
-
 
                         // rect for showing selected lane (and visualization brush bounds)
                         visualizationBrushLaneOverlay = main.append("g")
@@ -364,9 +366,9 @@ angular
                         self.lanes = data.lanes || [];
                         self.maximum = data.maximum;
                         self.minimum = data.minimum;
-                        self.visualizationYMax = data.visualizationYMax;
-                        self.visualizationTileHeight = data.visualizationTileHeight;
-                        self.selectedCategory = self.lanes[0];
+                        self.visualizationYMax = data.visualizationYMax || 0;
+                        self.visualizationTileHeight = data.visualizationTileHeight || 0;
+                        self.selectedCategory = self.lanes.length === 0 ? 0 : self.lanes[0];
                         self.availableResolutions = data.availableResolutions || [];
 
                         // ensure resolutions are sorted in ascending order
@@ -426,9 +428,10 @@ angular
                     }
 
                     function updateYScales() {
-                        orderedLaneIndexes = d3.range(getLaneLength());
+                        // always have at least one lane, even if no data is available
+                        orderedLaneIndexes = d3.range(getLaneLength() || 1);
                         orderedLaneHeights = orderedLaneIndexes.map(x => {
-                            return self.lanes[x] === self.selectedCategory ? getFocusedLaneHeight() : laneHeight;
+                            return isIndexSelectedLane(x) ? getFocusedLaneHeight() : getLaneHeight();
                         });
 
                         yRange = orderedLaneHeights.reduce((previous, current, i) => {
@@ -441,10 +444,18 @@ angular
 
                         // we draw the tiles within the bounds of
                         // one lane within the main yScale
-                        let start = yScale(self.lanes.indexOf(self.selectedCategory));
+                        // also need to leave space for the padding and the top (focused) x-axis
+                        let lane = self.lanes.indexOf(self.selectedCategory),
+                            start = yScale(lane === -1 ? 0 : lane) + lanePadding + xAxisHeight;
                         // inverted y-axis
                         yScaleForTiles.domain([self.visualizationYMax, 0])
                             .range([start, start + getTilesGroupHeight()]);
+
+
+                        // TODO: pull our y-axis update because yScale never changes for updateExtent
+                        // and thus only changes from update data or category selection
+                        yAxisFrequency.scale(yScaleForTiles).tickValues(yScaleForTiles.ticks(10).slice(0, -1).concat([self.visualizationYMax]));
+                        yAxisGroup.call(yAxisFrequency);
                     }
 
 
@@ -546,9 +557,7 @@ angular
                                 return "miniItem" + getCategoryIndex(d);
                             },
 
-                            y: function (d) {
-                                return yScale(getCategoryIndex(d)) + lanePadding;
-                            },
+                            y: getItemRectY,
                             height: getTileHeight
                         };
 
@@ -589,13 +598,14 @@ angular
                             // intentionally falsey
                                 showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
 
+                            xAxisSelected.update(xScale, [0, getSelectedAxisY()], showAxis);
                             xAxis.update(xScale, [0, mainHeight], showAxis);
                         }
                     }
 
                     function updateTileElements() {
                         var rectAttrs = {
-                                height: self.visualizationTileHeight ,
+                                height: self.visualizationTileHeight,
 
                                 /**
                                  * The relative width of the image is a function of the
@@ -629,20 +639,20 @@ angular
 
                         // reposition
                         /*
-                        focusGroup.translate(() => [xScale(self.middle), 0]);
-                        let {url, roundedDate} = isNavigatable(self.middle);
-                        focusText.text(() => {
-                            if (self.middle) {
-                                return "Go to " + timeFormatter(roundedDate);
-                            }
+                         focusGroup.translate(() => [xScale(self.middle), 0]);
+                         let {url, roundedDate} = isNavigatable(self.middle);
+                         focusText.text(() => {
+                         if (self.middle) {
+                         return "Go to " + timeFormatter(roundedDate);
+                         }
 
-                            return "";
-                        });
-                        focusAnchor.attr("xlink:href", url);
-                        focusAnchor.classed("disabled", !url);
-                        // this IS MEGA bad for performance - forcing a layout
-                        //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
-                        focusStem.attr("d", getFocusStemPath());*/
+                         return "";
+                         });
+                         focusAnchor.attr("xlink:href", url);
+                         focusAnchor.classed("disabled", !url);
+                         // this IS MEGA bad for performance - forcing a layout
+                         //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
+                         focusStem.attr("d", getFocusStemPath());*/
 
                         // debug only
                         tilesGroup.attr(debugGroupAttrs);
@@ -708,7 +718,6 @@ angular
                         // intentionally falsey
                             showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
 
-                        xAxis.update(xScale, [0, 0], showAxis);
                     }
 
                     function updateVisualizationBrush() {
@@ -897,6 +906,10 @@ angular
                         return self.lanes.indexOf(dataFunctions.getCategory(d));
                     }
 
+                    function isIndexSelectedLane(i) {
+                        return self.lanes[i] === self.selectedCategory;
+                    }
+
                     /**
                      *  Gets separator lines between categories
                      * @param d
@@ -908,9 +921,10 @@ angular
                     }
 
                     function getTileHeight(d) {
-                        let i = getCategoryIndex(d);
+                        var i = getCategoryIndex(d),
+                            isSelected = isIndexSelectedLane(i);
                         //yScale(i + 1) - yScale(i)
-                        return orderedLaneHeights[i] - (2 * lanePadding);
+                        return isSelected ? getTilesGroupHeight() : laneHeight;
                     }
 
                     function getLaneLength() {
@@ -918,18 +932,32 @@ angular
                     }
 
                     function getFocusedLaneHeight() {
-                        return getTilesGroupHeight() + xAxisHeight;
+                        return getTilesGroupHeight() + xAxisHeight + 2 * lanePadding;
+                    }
+
+                    function getLaneHeight() {
+                        return laneHeight + 2 * lanePadding;
                     }
 
                     /**
-                     * Get the height for viz tiles or the lane height
-                     * if tile height not available
+                     * Get the height for viz tiles or the default lane height
+                     *  (sans padding) if tile height not available
                      * @returns {number|*|null}
                      */
                     function getTilesGroupHeight() {
-                        return (self.visualizationTileHeight || laneHeight);
+                        return self.visualizationTileHeight || laneHeight;
                     }
 
+                    function getItemRectY(item) {
+                        var i = getCategoryIndex(item),
+                            isSelected = isIndexSelectedLane(i);
+
+                        return yScale(i) + lanePadding + (isSelected ? xAxisHeight : 0);
+                    }
+
+                    function getSelectedAxisY() {
+                        return yScale(self.lanes.indexOf(self.selectedCategory)) + xAxisHeight + lanePadding;
+                    }
 
                 };
             }

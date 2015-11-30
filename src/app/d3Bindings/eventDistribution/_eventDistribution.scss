@@ -49,8 +49,8 @@ $generating-tile-color: $text-color;
 $legend-size: 2em;
 
 $standard-brush-fill: rgba(30, 144, 255, 0.2);
-$visualization-brush-fill: rgba(mix($standard-brush-fill, white), 1.0);
-$visualization-brush-lane-overlay-fill: $standard-brush-fill;
+$visualization-brush-fill: rgba(mix($standard-brush-fill, white), 0.7);
+$visualization-brush-lane-overlay-fill: rgba(255,255,255, 0.0);
 $visualization-brush-stroke: $gray-light;
 
 event-distribution-overview, event-distribution-detail {
