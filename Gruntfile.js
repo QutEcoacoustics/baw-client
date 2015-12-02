@@ -938,6 +938,7 @@ module.exports = function (grunt) {
                 return grunt.template.process(contents, {
                     data: {
                         build_configs: grunt.config("build_configs"),
+                        hostIp: grunt.config("hostIp"),
                         scripts: jsFiles,
                         styles: cssFiles,
                         mainStyle: mainCss,

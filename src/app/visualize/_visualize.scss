@@ -13,6 +13,14 @@
       border-right: $gray-lighter solid 1px;
       padding: 1px;
 
+      .legendItem {
+        width: $legend-size / 2.0;
+        height: $legend-size / 2.0;
+        display: inline-block;
+        vertical-align: baseline;
+
+        border: $tile-border-color solid 1px;
+      }
     }
   }
 

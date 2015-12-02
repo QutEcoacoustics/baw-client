@@ -17,6 +17,7 @@
     "bower": "^1.4",
     "connect-gzip-static": "^1.0.0",
     "connect-modrewrite": "0.7.x",
+    "dev-ip": "^1.0.1",
     "grunt": "~0.4.1",
     "grunt-babel": "^5.0.1",
     "grunt-beep": "^0.3.2",

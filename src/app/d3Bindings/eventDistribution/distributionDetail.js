@@ -89,6 +89,8 @@ angular
 
                     const
                         axisPadding = 14,
+                        fontLineHeight = 17,
+                        fontHeight = 14,
                         lanePaddingTop = 5,
                         lanePaddingBottom = 5,
                         lanePadding = lanePaddingTop + lanePaddingBottom,
@@ -139,7 +141,7 @@ angular
 
                         visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.selectedCategory);
 
-                        updateMain();
+                        updateMain(true, true, true);
                     }
 
                     function updateExtent(extent) {
@@ -162,10 +164,8 @@ angular
                         // recalculate what tiles are visible
                         visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.selectedCategory);
 
-                        extentUpdateMain();
 
-
-                        updateMain();
+                        updateMain(true, false, true);
                         //extentUpdateMain();
                     }
 
@@ -269,6 +269,8 @@ angular
                     }
 
                     function createMain() {
+                        // ordering is important - determines z-layout
+
                         // create main surface
                         main = chart.append("g")
                             .attr("width", mainWidthPixels)
@@ -339,11 +341,8 @@ angular
                         tilesGroup.clipPath("url(#" + tilesGroupClipId + ")");
 
 
+                        //tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source));
 
-                        tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source));
-
-                        // group for textual labels, left of the lanes
-                        laneLabelsGroup = main.append("g").classed("laneLabelsGroup", true);
 
                         xAxisSelected = new TimeAxis(
                             main, xScale, {
@@ -370,6 +369,10 @@ angular
                             .attr("height", getFocusedLaneHeight());
 
                         xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight], isVisible: false});
+
+                        // group for textual labels, left of the lanes
+                        laneLabelsGroup = main.append("g").classed("laneLabelsGroup", true);
+
                     }
 
                     function updateDataVariables(data) {
@@ -468,7 +471,7 @@ angular
                     }
 
 
-                    function updateMain() {
+                    function updateMain(extentChanged, dataUpdated, categoryChanged) {
 
                         var lineAttrs = {
                             x1: 0,
@@ -492,33 +495,53 @@ angular
                         lines.exit().remove();
 
                         // lane labels
-                        var labelAttrs = {
-                            x: -laneLabelMarginRight,
-                            y: function (d, i) {
-                                return yScale(i) + xAxisHeight + lanePaddingTop - axisPadding;
-                            },
-                            dy: "0",
-                            "text-anchor": "start",
-                            class: "laneText"
+
+                        let labelY = function (d, i) {
+                            return yScale(i) + xAxisHeight + lanePaddingTop - axisPadding - fontLineHeight;
                         };
 
                         // join and update
-                        let labels = laneLabelsGroup.selectAll("text")
-                            .data(self.lanes)
-                            .attr(labelAttrs);
-                        labels.selectAll("title")
-                            .text(dataFunctions.getCategoryName);
-                        labels.selectAll("rect")
-                            .text(dataFunctions.getCategoryName);
+                        let labels = laneLabelsGroup.selectAll("text").data(self.lanes),
+                            labelBackgrounds = laneLabelsGroup.selectAll("rect").data(self.lanes);
+                        if (categoryChanged && !(extentChanged || dataUpdated)) {
+                            // labels only need y changed when selected category has
+                            labels.attr("y", labelY);
+                            labelBackgrounds.attr("y", labelY);
+                        }
+                        else {
+                            var labelAttrs = {
+                                    x: -laneLabelMarginRight,
+                                    y: labelY,
+                                    dy: fontHeight - (fontLineHeight - fontHeight) / 2 ,
+                                    "text-anchor": "start",
+                                    class: "laneText"
+                                },
+                                labelBackgroundAttrs = {
+                                    x: labelAttrs.x,
+                                    y: labelY,
+                                    width: (d, i) => Math.ceil(labels[0][i].getComputedTextLength()) + 1,
+                                    height: fontLineHeight
+                                };
 
-                        labels.enter()
-                            .append("text")
-                            .text(dataFunctions.getCategoryName)
-                            .attr(labelAttrs)
-                            .append("title")
-                            .text(dataFunctions.getCategoryName);
 
-                        labels.exit().remove();
+                            labels.attr(labelAttrs);
+                            labels.selectAll("title")
+                                .text(dataFunctions.getCategoryName);
+                            labelBackgrounds.attr(labelBackgroundAttrs);
+
+                            labels.enter()
+                                .append("text")
+                                .text(dataFunctions.getCategoryName)
+                                .attr(labelAttrs)
+                                .append("title")
+                                .text(dataFunctions.getCategoryName);
+                            labelBackgrounds.enter()
+                                .insert("rect", ":first-child")
+                                .attr(labelBackgroundAttrs);
+
+                            labels.exit().remove();
+                            labelBackgrounds.exit().remove();
+                        }
 
                         extentUpdateMain();
                     }
@@ -755,14 +778,21 @@ angular
                     }
 
                     function onZoomStart() {
-                        //console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);// update which lane is shown in visualisation
-                        switchSelectedCategory();
+                        //console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);
 
+                        // update which lane is shown in visualisation
+                        var categoryChanged = switchSelectedCategory();
+
+                        // update y-axis and lane heights
+                        updateYScales();
+
+                        // re-renders entire surface
+                        updateMain(false, false, categoryChanged);
                     }
 
                     function onZoom() {
                         // the xScale is automatically updated
-                        // now just rerender everything
+                        // now just re-render everything
 
                         // HACK: check whether this event was triggered manually
                         var isManual = _lockManualZoom;
@@ -790,6 +820,7 @@ angular
                         switchSelectedCategory();
 
                         // updates the public visibleExtent field
+                        // and re-renders entire surface
                         self.updateExtent(domain);
 
                         // updates the controller - bind back
@@ -834,6 +865,10 @@ angular
                         return [tx, ty];
                     }
 
+                    /**
+                     *
+                     * @returns {boolean} - true if the category was changed
+                     */
                     function switchSelectedCategory() {
                         if (yScale) {
                             //console.debug("DistributionDetail:Category switch");
@@ -853,27 +888,31 @@ angular
                                 //updateVisualizationBrush();
                                 //updateYScales();
                                 //updateMain();
+
+                                return true;
                             }
+
+                            return false;
                         }
                     }
 
                     /*
-                    function getZoomFactorForResolution(fullExtent, visibleExtent, resolution) {
-                        var //vl = +visibleExtent[0],
-                            //vh = +visibleExtent[1],
-                            fullDifference = (+fullExtent[1]) - (+fullExtent[0]);
-                            //visibleDifference = vh - vl
+                     function getZoomFactorForResolution(fullExtent, visibleExtent, resolution) {
+                     var //vl = +visibleExtent[0],
+                     //vh = +visibleExtent[1],
+                     fullDifference = (+fullExtent[1]) - (+fullExtent[0]);
+                     //visibleDifference = vh - vl
 
-                        //var [scaleLower, scaleUpper] = zoom.scaleExtent();
+                     //var [scaleLower, scaleUpper] = zoom.scaleExtent();
 
-                        var [width] = zoom.size();
+                     var [width] = zoom.size();
 
-                        let desiredDuration = (width * resolution) * common.msInS,
-                            scale = fullDifference / desiredDuration;
+                     let desiredDuration = (width * resolution) * common.msInS,
+                     scale = fullDifference / desiredDuration;
 
-                        return scale;
+                     return scale;
 
-                    }*/
+                     }*/
 
                     function getZoomFactors(fullExtent, visibleExtent, limitSeconds) {
                         var vl = +visibleExtent[0],

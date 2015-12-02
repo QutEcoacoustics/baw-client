@@ -1,3 +1,4 @@
+var devIp = require("dev-ip"); // jshint ignore:line
 
 /**
  * This file/module contains all configuration for the build process.
@@ -11,6 +12,8 @@ module.exports = {
     es6_dir: "es6",
     build_dir: "build",
     compile_dir: "bin",
+
+    hostIp: devIp(),
 
     /**
      * The environment settings are loaded here.

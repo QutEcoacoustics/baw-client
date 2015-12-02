@@ -142,6 +142,10 @@ angular
                 return moment(d).format(constants.localization.dateTimeShortFormat);
             };
 
+            $scope.getLegendClass = function(site) {
+                return "miniItem" + $scope.sites.indexOf(site);
+            };
+
             function validateParameters() {
 
                 // parse QSPs

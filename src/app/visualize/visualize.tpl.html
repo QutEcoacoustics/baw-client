@@ -13,7 +13,7 @@
         <h2>Audio distribution from {{formatDate(distributionOptions.detailExtent[0])}} to
             {{formatDate(distributionOptions.detailExtent[1])}} (about {{distributionOptions.detailDuration}})</h2>
         <section class="row text-center">
-            <small class="col-md-8 col-md-offset-2">
+            <small class="col-md-12">
                 <span>Current filter: </span>
                 <span ng-switch="filterType">
                     <span ng-switch-when="projectId">one project ({{ids[0]}})</span>
@@ -28,6 +28,7 @@
                            &nbsp;&#47;&nbsp;
                         <span ng-repeat="s in p.sites | modelAvailable track by s.id">
                             <a ng-href="{{::s.urlWithProject(p)}}" target="_self">{{s.name}}</a>
+                            <span class="legendItem" ng-class="getLegendClass(s)"></span>
                             {{ $last && " " || ", "}}
                         </span>
 
