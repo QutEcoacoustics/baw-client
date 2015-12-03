@@ -61,8 +61,8 @@ angular
                         margin = {
                             top: 23,
                             right: 0,
-                            left: 68 + yAxisWidth,
-                            bottom: 0 + xAxisHeight
+                            left: 5 + yAxisWidth,
+                            bottom: 5 + xAxisHeight
                         },
 
                         visibleExtent = [],
