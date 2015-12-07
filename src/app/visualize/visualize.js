@@ -116,18 +116,19 @@ angular
                     getNavigateUrl: function(date, tileSizePixels, itemDatum) {
                         var ar = itemDatum,
                             id = ar.id,
-                            startOffset = (date - ar.recordedDate) / 1000;
+                            // convert delta to seconds, truncate milliseconds
+                            startOffsetSeconds = Math.floor((date - ar.recordedDate) / 1000);
 
                         // do not allow negative indexing!
-                        if (startOffset < 0) {
-                            startOffset = 0;
+                        if (startOffsetSeconds < 0) {
+                            startOffsetSeconds = 0;
                         }
 
                         // intentionally not specifying an end offset - let the listen page decide
                         return $url.formatUri(paths.site.ngRoutes.listen,
                             {
                                 recordingId: id,
-                                start: startOffset
+                                start: startOffsetSeconds
                             });
                     }
                 },

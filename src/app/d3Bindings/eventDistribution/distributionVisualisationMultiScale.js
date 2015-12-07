@@ -235,7 +235,7 @@ angular
 
                         tilesGroup.clipPath("url(#" + clipId + ")");
 
-                        tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source));
+                        tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, visibleTiles, xScale, source));
 
                         xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeightPixels], isVisible: false});
                         yAxis = d3.svg.axis()
@@ -288,7 +288,7 @@ angular
 
                         // reposition
                         focusGroup.translate(() => [xScale(self.middle), 0]);
-                        let {url, roundedDate} = common.isNavigatable(tilingFunctions, dataFunctions, visibleTiles, self.middle);
+                        let {url, roundedDate} = common.isNavigatable(tilingFunctions, visibleTiles, self.middle);
                         focusText.text(() => {
                             if (self.middle) {
                                 return "Go to " + timeFormatter(roundedDate);

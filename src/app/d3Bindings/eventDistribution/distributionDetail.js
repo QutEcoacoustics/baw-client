@@ -341,7 +341,7 @@ angular
                         tilesGroup.clipPath("url(#" + tilesGroupClipId + ")");
 
 
-                        //tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source));
+                        tilesGroup.on("click", () => common.navigateTo(tilingFunctions, visibleTiles, xScale, tilesGroup));
 
 
                         xAxisSelected = new TimeAxis(

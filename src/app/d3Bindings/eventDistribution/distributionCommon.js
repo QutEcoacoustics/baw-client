@@ -98,14 +98,14 @@ angular
                     isImageSuccessful(tile) {
                         return !successfulImages.has(tile.tileImageUrl);
                     },
-                    isNavigatable(tilingFunctions, dataFunctions, visibleTiles, clickDate) {
+                    isNavigatable(tilingFunctions, visibleTiles, clickDate) {
                         // round to nearest 30 seconds for navigation urls
                         const navigationOffsetRounding = 30;
                         let roundedDate = roundDate.round(navigationOffsetRounding, clickDate);
 
                         // plus one ms to cheat the system
                         // - the range should be valid, i.e. not zero width
-                        let searchRange = [roundedDate, +roundedDate + 1];
+                        let searchRange = [+roundedDate, +roundedDate + 1];
 
                         // reuse filtering method but don't allow for padding
                         var matchedTiles = visibleTiles.filter(tile => {
@@ -116,13 +116,17 @@ angular
                         if (matchedTiles.length) {
                             // the source item that owns the tile
                             let itemFound = matchedTiles.find(tile => {
-                                return tilingFunctions.isItemVisible(dataFunctions, searchRange, tile.source);
+                                return tilingFunctions.isItemVisible(searchRange, tile.source);
                             });
 
                             // the tile could still be outside of the item's actual range
                             // (as tiles are absolutely aligned and pad out items)
                             if (itemFound) {
-                                url = this.getNavigateUrl(itemFound.source, roundedDate);
+                                url = this.getNavigateUrl(
+                                    tilingFunctions.dataFunctions,
+                                    tilingFunctions.tileWidthPixels,
+                                    itemFound.source,
+                                    roundedDate);
                             }
                         }
 
@@ -138,20 +142,20 @@ angular
                     middle(interval) {
                         return +interval[0] + ((+interval[1] - +interval[0]) / 2.0);
                     },
-                    navigateTo(tilingFunctions, dataFunctions, visibleTiles, xScale, source) {
-                        var coordinates = d3.mouse(source.node()),
+                    navigateTo(tilingFunctions, visibleTiles, xScale, referenceElement) {
+                        var coordinates = d3.mouse(referenceElement[0][0]),
                             clickDate = xScale.invert(coordinates[0]);
 
                         // now see if there is a match for the date!
-                        var {url} = this.isNavigatable(tilingFunctions, dataFunctions, visibleTiles, clickDate);
+                        var {url} = this.isNavigatable(tilingFunctions, visibleTiles, clickDate);
 
                         if (url) {
                             console.warn(
                                 "distributionCommon::Click: Navigating to ",
                                 url,
                                 new Date(clickDate));
-                            $location.url(url);
-                            $rootScope.$apply();
+                            //$location.url(url);
+                            //$rootScope.$apply();
                         }
                         else {
                             console.error(
