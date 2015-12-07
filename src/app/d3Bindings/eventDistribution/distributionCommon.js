@@ -154,8 +154,8 @@ angular
                                 "distributionCommon::Click: Navigating to ",
                                 url,
                                 new Date(clickDate));
-                            //$location.url(url);
-                            //$rootScope.$apply();
+                            $location.url(url);
+                            $rootScope.$apply();
                         }
                         else {
                             console.error(
