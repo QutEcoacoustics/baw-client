@@ -10,11 +10,13 @@ angular
     .service(
         "DistributionDetail",
         [
+            "$window",
+            "$timeout",
             "d3",
             "TimeAxis",
             "distributionCommon",
             "distributionTilingFunctions",
-            function (d3, TimeAxis, common, TilingFunctions) {
+            function ($window, $timeout, d3, TimeAxis, common, TilingFunctions) {
                 return function DistributionDetail(target, data, dataFunctions, uniqueId) {
                     var self = this,
                         container = d3.select(target),
@@ -48,6 +50,14 @@ angular
                         visualizationDuration = null,
                     // HACK: a "lock" placed around the invocation of manual zoom events. Assumes synchronicity.
                         _lockManualZoom = false,
+                        /**
+                         * HACK: a flag used to disambiguate between clicks and drags.
+                         * @type {Number}
+                         * @private
+                         */
+                        _isZooming = null,
+                        _hasMouseMoved = null,
+                        _navigateTimeoutPromise = null,
                         laneLinesGroup,
                         laneLabelsGroup,
                         visualizationBrushArea,
@@ -109,7 +119,9 @@ angular
                          * A cache of tiles generated from items.
                          * @type {WeakMap<item, Map<resolution, Array<tiles>>>}
                          */
-                        tileCache = new WeakMap();
+                        tileCache = new WeakMap(),
+                        clickOrDblTimeoutMilliseconds = 300,
+                        clickOrDragThresholdPixels = 1;
 
                     // exports
                     self.updateData = updateData;
@@ -155,7 +167,7 @@ angular
                             return;
                         }
 
-// update public property
+                        // update public property
                         self.visibleExtent = extent;
 
                         // redraw elements and axes
@@ -340,8 +352,9 @@ angular
 
                         tilesGroup.clipPath("url(#" + tilesGroupClipId + ")");
 
-
-                        tilesGroup.on("click", () => common.navigateTo(tilingFunctions, visibleTiles, xScale, tilesGroup));
+                        tilesGroup.on("mousedown", onMouseDown);
+                        tilesGroup.on("click", onClickNavigate);
+                        tilesGroup.on("dblclick", onDblClick);
 
 
                         xAxisSelected = new TimeAxis(
@@ -423,6 +436,7 @@ angular
 
                         // falsely trigger zoom events to force d3 to re-render with new scale
                         zoomUpdate();
+
 
                         // by this point the two methods for calculating visible duration should be equivalent
                         let min = +self.minimum || 0,
@@ -512,7 +526,7 @@ angular
                             var labelAttrs = {
                                     x: -laneLabelMarginRight,
                                     y: labelY,
-                                    dy: fontHeight - (fontLineHeight - fontHeight) / 2 ,
+                                    dy: fontHeight - (fontLineHeight - fontHeight) / 2,
                                     "text-anchor": "start",
                                     class: "laneText"
                                 },
@@ -651,7 +665,8 @@ angular
                                  */
                                 width: d => {
                                     var imageScale = d.resolution / self.resolution;
-                                    //console.debug("DistributionVisualisation:updateElements:width: current image ratio:", imageScale, d.resolution, self.resolution);
+                                    //console.debug("DistributionVisualisation:updateElements:width: current image
+                                    // ratio:", imageScale, d.resolution, self.resolution);
                                     return tileWidthPixels * (imageScale);
                                 }
                             },
@@ -777,17 +792,46 @@ angular
                         visualizationBrushLaneOverlay.attr("width", width).translate([left, top]);
                     }
 
+                    /**
+                     * Analogous to touchstart / mousedown.
+                     * HOWEVER: touchstart happens before mousedown,
+                     * so if it is a touch event, onZoomStart happens significantly before onMouseDown
+                     * whereas if it is a mouse event, onMouseDown happens before onZoomStart.
+                     * We can use `d3.event.sourceEvent instanceof TouchEvent` to disambiguate.
+                     */
                     function onZoomStart() {
-                        //console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);
+                        console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);
+
+                        // HACK: check whether this event was triggered manually
+                        var isManual = _lockManualZoom;
+
+                        if (isManual) {
+                            return;
+                        }
 
                         // update which lane is shown in visualisation
                         var categoryChanged = switchSelectedCategory();
 
-                        // update y-axis and lane heights
-                        updateYScales();
+                        // if categoryChanged don't let onMouseDown/onClickNavigate trigger
+                        if (categoryChanged) {
+                            console.warn("DistributionDetail:zoomStart:preventDefault");
+                            d3.event.sourceEvent.preventDefault();
+                        }
 
-                        // re-renders entire surface
-                        updateMain(false, false, categoryChanged);
+                        // need the full re-render because of the touchstart event
+                        if (categoryChanged) {
+                            // updates the public visibleExtent field
+                            // and re-renders entire surface
+                            self.updateExtent(xScale.domain());
+                        }
+
+                        //if (categoryChanged) {
+                        //    // update y-axis and lane heights
+                        //    updateYScales();
+                        //
+                        //    // re-renders entire surface
+                        //    updateMain(false, false, categoryChanged);
+                        //}
                     }
 
                     function onZoom() {
@@ -798,7 +842,8 @@ angular
                         var isManual = _lockManualZoom;
 
                         // debugging, fixed zoom scale at specified resolutoin
-                        //zoom.scale([ getZoomFactorForResolution([self.minimum, self.maximum], self.visibleExtent, 60) ]);
+                        //zoom.scale([ getZoomFactorForResolution([self.minimum, self.maximum], self.visibleExtent, 60)
+                        // ]);
 
                         // prevent translating off the edge of our data (i.e. clamp the zoom/pan)
                         var domain = null;
@@ -809,7 +854,8 @@ angular
 
                         updatePublicZoomScale();
 
-                        //console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain, zoom.translate(), isManual);
+                        console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain,
+                         zoom.translate(), isManual);
 
                         // don't propagate cyclical events
                         if (isManual) {
@@ -828,7 +874,7 @@ angular
                     }
 
                     function onZoomEnd() {
-                        //console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
+                        console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
 
                         if (isItemsToRender) {
                             updatePublicZoomScale();
@@ -874,7 +920,7 @@ angular
                             //console.debug("DistributionDetail:Category switch");
                             var rounded = 0;
                             if (!_lockManualZoom) {
-                                var mouseY = d3.mouse(main[0][0])[1];
+                                var mouseY = d3.mouse(main.node())[1];
                                 var inverted = yScale.invert(mouseY);
                                 rounded = Math.floor(inverted);
                             }
@@ -1037,6 +1083,71 @@ angular
                     function getFocusedAxisY() {
                         return yScale(self.lanes.indexOf(self.selectedCategory)) + xAxisHeight + lanePaddingTop;
                     }
+
+                    function distance(pointA, pointB) {
+                        return Math.sqrt(
+                            Math.pow(pointA[0] - pointB[0], 2) +
+                            Math.pow(pointA[1] - pointB[1], 2)
+                        );
+                    }
+
+                    function onMouseDown() {
+                        console.debug("distributionDetail::onMouseDown:");
+                        // HACK: disambiguate between clicks and pans
+                        _isZooming = $window.performance.now();
+                        _hasMouseMoved = d3.mouse(main.node());
+                    }
+
+                    function onClickNavigate() {
+                        let now = $window.performance.now(),
+                            deltaTime = now - _isZooming,
+                            newPosition = d3.mouse(main.node()),
+                            deltaPosition = distance(newPosition, _hasMouseMoved);
+
+                        console.debug("distributionDetail::onClickNavigate: deltaTime, deltaPosition:", deltaTime, deltaPosition);
+
+                        // if the mouse hasn't moved
+                        if (deltaPosition < clickOrDragThresholdPixels) {
+                            console.debug("distributionDetail::onClickNavigate: **click** NOT drag", $window.performance.now());
+
+                            // and if we're not already tracking another click in a series for a double click
+                            if (!_navigateTimeoutPromise) {
+                                console.warn("distributionDetail::onClickNavigate::beforeTimeout:", $window.performance.now());
+                                // delay navigate for a set amount of time...
+                                // give the double click event handler time to cancel the navigate
+                                _navigateTimeoutPromise = $timeout(
+                                    //() => console.debug("distributionDetail::onClickNavigate::timeoutComplete:", $window.performance.now()),
+                                    () => {
+                                        // only navigate if the timeout was successful
+                                        console.warn("distributionDetail::onClickNavigate::timeoutResolved: Navigating now!", $window.performance.now());
+                                        //common.navigateTo(tilingFunctions, visibleTiles, xScale, tilesGroup);
+                                    },
+                                    clickOrDblTimeoutMilliseconds);
+
+                                // make sure we keep original reference to $timeout promise (i.e. don't chain the then)
+                                _navigateTimeoutPromise.finally(() => {
+                                    // this may not matter if we're navigating away,
+                                    // but cleaning up state is responsible
+                                    _navigateTimeoutPromise = null;
+                                });
+                            }
+                        }
+
+                        _isZooming = null;
+                        _hasMouseMoved = null;
+                    }
+
+                    /**
+                     * This handler exists solely to cancel navigation on a single click
+                     * if it in fact turns out to be a double click.
+                     */
+                    function onDblClick() {
+                        console.debug("distributionDetail::onDblClick: Cancelling navigate");
+
+                        // cancel the navigate from a single click
+                        $timeout.cancel(_navigateTimeoutPromise);
+                    }
+
 
                 };
             }

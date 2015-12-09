@@ -129,6 +129,7 @@ event-distribution-detail {
   .visualizationBrushLaneOverlay {
     stroke: $visualization-brush-stroke;
     fill: $visualization-brush-lane-overlay-fill;
+    pointer-events: none;
   }
 
   .tiles {
