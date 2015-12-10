@@ -59,5 +59,7 @@
     "test": "npm run build"
   },
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "rbush": "^1.4.1"
+  }
 }

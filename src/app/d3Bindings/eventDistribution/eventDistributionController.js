@@ -8,7 +8,8 @@ angular
         "$attrs",
         "d3",
         "moment",
-        function distributionController($scope, $element, $attrs, d3, moment) {
+        "roundDate",
+        function distributionController($scope, $element, $attrs, d3, moment, roundDate) {
             console.debug("event distribution controller:init");
             var self = this,
                 defaultFunctions = {
@@ -132,6 +133,7 @@ angular
                 }
             });
 
+            const secondsInOneDay = 86400;
             function tryUpdateDataVariables(data, newValue, options) {
                 var functions = options.functions;
                 // public field - share the reference
@@ -149,8 +151,12 @@ angular
                     let unique = new Set(data.items.map(functions.getCategory));
                     data.lanes = Array.from(unique);
                     if (data.items.length > 0) {
-                        data.maximum = Math.max.apply(null, data.items.map(functions.getHigh, functions));
-                        data.minimum = Math.min.apply(null, data.items.map(functions.getLow, functions));
+                        data.maximum = Math.max(...data.items.map(functions.getHigh, functions));
+                        data.minimum = Math.min(...data.items.map(functions.getLow, functions));
+
+                        // attempt to "nicefy" the dates for better rounding
+                        data.maximum = roundDate.ceil(secondsInOneDay, data.maximum);
+                        data.minimum = roundDate.floor(secondsInOneDay, data.minimum);
                     }
                     else {
                         data.maximum = 0;

@@ -1,3 +1,4 @@
+/* jshint -W100 */
 /**
  * Created by Anthony on 23/11/2015.
  */
@@ -10,7 +11,8 @@ angular
         [
             "d3",
             "roundDate",
-            function (d3, roundDate) {
+            "rbush",
+            function (d3, roundDate, rbush) {
                 const msInS = 1e3;
 
                 class TilingFunctions {
@@ -90,16 +92,19 @@ angular
                             h = TilingFunctions.and.bind(this, g, f);
 
                         // tile filter
-                        var l = this.isTileVisible.bind(this, visibleExtent);
+                        //var l = this.isTileVisible.bind(this, visibleExtent);
 
                         let self = this;
                         return items
                             .filter(h)
                             .reduce(function (previous, current) {
-                                let selectedResolution = self.resolutionScale(resolution),
-                                    tiles = self.generateTiles(current, selectedResolution);
+                                let selectedResolution = self.resolutionScale(resolution);
 
-                                let filteredTiles = tiles.filter(l);
+                                //let tiles = self.generateTiles(current, selectedResolution);
+                                //let filteredTiles = tiles.filter(l);
+
+                                let filteredTiles = self.generateTilesRTree(current, selectedResolution, visibleExtent);
+
                                 return previous.concat(filteredTiles);
                             }, [])
                             .sort(this.sortTiles);
@@ -133,6 +138,43 @@ angular
                         resolutionCache.set(resolution, tiles);
 
                         return tiles;
+                    }
+
+                    /**
+                     * Generate the tiles - but do not eagerly cache!
+                     * Also do not store tiles on item.
+                     * Too many tiles.
+                     * This implementation uses an R*-Tree
+                     * https://github.com/mourner/rbush
+                     *
+                     * @param tileCache {WeakMap<item, RTree<resolution×tiles>>} - the tile cache is a WeakMap of Maps
+                     */
+                    generateTilesRTree(item, resolution, visibleExtent) {
+                        // get rtree of resolution×tiles
+                        let resolutionTree = this.tileCache.get(item);
+
+                        if (resolutionTree) {
+                            // get tiles
+                            let cachedTiles = resolutionTree.search([visibleExtent[0], resolution, visibleExtent[1], resolution]);
+
+                            // if no results, assume not been cached yet
+                            if (cachedTiles.length > 0) {
+                                return cachedTiles;
+                            }
+                        }
+                        else {
+                            // create a new holder
+                            resolutionTree = rbush(9, [".offset", ".resolution", ".offsetEnd", ".resolution"]);
+                            this.tileCache.set(item, resolutionTree);
+                        }
+
+                        let tiles = this.splitIntoTiles(item, resolution);
+                        resolutionTree.load(tiles);
+
+                        !!!!!!!!!! MUST CATER FOR NO DUPLICATE GENERATION!!!!
+                            the r-tree accepts multiple copies of items
+
+                        return resolutionTree.search([visibleExtent[0], resolution, visibleExtent[1], resolution]);
                     }
 
                     /**

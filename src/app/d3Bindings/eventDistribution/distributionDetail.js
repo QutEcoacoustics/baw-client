@@ -42,8 +42,8 @@ angular
                         zoomSurface,
                         /**
                          * 30 seconds - from edge to edge of the graph.
-                         * TODO: refactor so that zoom limit is dynamic
-                         * it should be based off `availableResolutions`
+                         * Updated when zoom is calculated - is based off highest resolution
+                         * from `self.availableResolutions`
                          * @type {number}
                          */
                         zoomLimitSeconds = 30,
@@ -135,7 +135,7 @@ angular
                      * The currently visible extent.
                      * @type {Array<Date>}
                      */
-                    self.visibleExtent = null;
+                    self.visibleExtent = [0, 0];
                     self.selectedCategory = null;
                     self.currentZoomValue = 1;
 
@@ -149,11 +149,7 @@ angular
 
                         updateDimensions();
 
-                        updateScales();
-
-                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.selectedCategory);
-
-                        updateMain(true, true, true);
+                        updateExtent(self.visibleExtent);
                     }
 
                     function updateExtent(extent) {
@@ -167,18 +163,70 @@ angular
                             return;
                         }
 
+                        // if there is no visible extent set, zoom out to full data set
+                        // warning this resets the zoom level
+                        // though it should only take effect when visible extent === 0
+                        if (!self.visibleExtent || +self.visibleExtent[1] - +self.visibleExtent[0] === 0) {
+                            self.visibleExtent = [self.minimum, self.maximum];
+                        }
+
+                        updateExtentInternal(extent, {dataChanged: true, categoryChanged: true, zoomChanged: true});
+
+                    }
+
+                    /**
+                     * Called from user triggered events through zoomEvents
+                     */
+                    function updateExtentInternal(extent, {dataChanged, categoryChanged, zoomChanged}) {
+                        if (dataChanged) {
+                            if (!categoryChanged || !zoomChanged) {
+                                throw new Error("Invalid update state");
+                            }
+                        }
+
                         // update public property
                         self.visibleExtent = extent;
 
-                        // redraw elements and axes
-                        updateScales();
+                        // finally, convert to seconds
+                        self.visibleDuration = (+self.visibleExtent[1] - +self.visibleExtent[0]) / common.msInS;
+
+                        // TODO: snap tile domain to zoom levels that are available
+                        self.tileSizeSeconds = self.visibleDuration / tilingFunctions.getTileCountForWidth(mainWidthPixels, tileWidthPixels);
+                        self.resolution = self.tileSizeSeconds / tileWidthPixels;
+
+                        // update scales
+                        if (dataChanged) {
+                            updateScales();
+                        }
+
+                        // force zoom to update (not triggered internally)
+                        if (dataChanged || zoomChanged) {
+                            updateZoom();
+                        }
+
+                        // update yScales and y-axis
+                        if (dataChanged || categoryChanged) {
+                            updateYScales();
+                        }
 
                         // recalculate what tiles are visible
                         visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.selectedCategory);
 
+                        if (categoryChanged) {
+                            updateMain(dataChanged);
+                        }
 
-                        updateMain(true, false, true);
-                        //extentUpdateMain();
+                        renderRects();
+
+                        // do the tiling!
+                        renderTileElements();
+
+                        renderFocusGroup();
+
+                        // finally update the axis and other details
+                        if (isItemsToRender) {
+                            renderAxisAndChrome();
+                        }
                     }
 
                     function updateVisualisationDuration(newDuration) {
@@ -395,7 +443,9 @@ angular
                         self.maximum = data.maximum;
                         self.minimum = data.minimum;
                         self.visualizationYMax = data.visualizationYMax || 0;
+
                         self.visualizationTileHeight = data.visualizationTileHeight || 0;
+
                         self.selectedCategory = self.lanes.length === 0 ? 0 : self.lanes[0];
                         self.availableResolutions = data.availableResolutions || [];
 
@@ -407,23 +457,24 @@ angular
                     }
 
                     function updateScales() {
-                        // if there is no visible extent set, zoom out to full data set
-                        // warning this resets the zoom level
-                        // though it should only take effect when visible extent === 0
-                        if (!self.visibleExtent || +self.visibleExtent[1] - +self.visibleExtent[0] === 0) {
-                            self.visibleExtent = [self.minimum, self.maximum];
-                        }
-
-                        // finally, convert to seconds
-                        self.visibleDuration = (+self.visibleExtent[1] - +self.visibleExtent[0]) / common.msInS;
-
-
-                        // TODO: snap tile domain to zoom levels that are available
-                        self.tileSizeSeconds = self.visibleDuration / tilingFunctions.getTileCountForWidth(mainWidthPixels, tileWidthPixels);
-                        self.resolution = self.tileSizeSeconds / tileWidthPixels;
-
                         xScale.domain([self.minimum, self.maximum])
-                            .range([0, mainWidthPixels]);
+                            .rangeRound([0, mainWidthPixels]);
+
+                        /*
+                        // by this point the two methods for calculating visible duration should be equivalent
+                        let min = +self.minimum || 0,
+                            max = +self.maximum || 0,
+                            delta = max - min,
+                            visibleFraction = (delta / self.currentZoomValue) / common.msInS;
+                        console.assert(
+                            Math.abs(visibleFraction - self.visibleDuration) < 0.0001,
+                            "My math should be correct!");*/
+                    }
+
+                    function updateZoom() {
+                        if (self.availableResolutions.length > 0) {
+                            zoomLimitSeconds = self.availableResolutions[0] * mainWidthPixels;
+                        }
 
                         // update the zoom behaviour
                         zoom.x(xScale);
@@ -435,22 +486,9 @@ angular
                         updatePublicZoomScale();
 
                         // falsely trigger zoom events to force d3 to re-render with new scale
-                        zoomUpdate();
-
-
-                        // by this point the two methods for calculating visible duration should be equivalent
-                        let min = +self.minimum || 0,
-                            max = +self.maximum || 0,
-                            delta = max - min,
-                            visibleFraction = (delta / self.currentZoomValue) / common.msInS;
-                        console.assert(
-                            Math.abs(visibleFraction - self.visibleDuration) < 0.0001,
-                            "My math should be correct!");
-
-                        updateYScales();
-
-                        TilingFunctions.updateResolutionScaleCeiling(self.availableResolutions, resolutionScale);
-
+                        _lockManualZoom = true;
+                        zoom.event(main);
+                        _lockManualZoom = false;
                     }
 
                     function updateYScales() {
@@ -482,11 +520,12 @@ angular
                         // and thus only changes from update data or category selection
                         yAxisFrequency.scale(yScaleForTiles).tickValues(yScaleForTiles.ticks(10).slice(0, -1).concat([self.visualizationYMax]));
                         yAxisGroup.call(yAxisFrequency);
+
+                        TilingFunctions.updateResolutionScaleCeiling(self.availableResolutions, resolutionScale);
                     }
 
 
-                    function updateMain(extentChanged, dataUpdated, categoryChanged) {
-
+                    function updateMain(dataUpdated) {
                         var lineAttrs = {
                             x1: 0,
                             y1: getSeparatorLineY,
@@ -517,12 +556,8 @@ angular
                         // join and update
                         let labels = laneLabelsGroup.selectAll("text").data(self.lanes),
                             labelBackgrounds = laneLabelsGroup.selectAll("rect").data(self.lanes);
-                        if (categoryChanged && !(extentChanged || dataUpdated)) {
-                            // labels only need y changed when selected category has
-                            labels.attr("y", labelY);
-                            labelBackgrounds.attr("y", labelY);
-                        }
-                        else {
+
+                        if (dataUpdated) {
                             var labelAttrs = {
                                     x: -laneLabelMarginRight,
                                     y: labelY,
@@ -555,9 +590,11 @@ angular
 
                             labels.exit().remove();
                             labelBackgrounds.exit().remove();
+                        } else {
+                            // labels only need y changed when only selected category has
+                            labels.attr("y", labelY);
+                            labelBackgrounds.attr("y", labelY);
                         }
-
-                        extentUpdateMain();
                     }
 
                     /**
@@ -591,27 +628,12 @@ angular
                     /**
                      * Called when the extent is updated to repaint rects
                      */
-                    function extentUpdateMain() {
+                    function renderRects() {
 
                         // filter out data that is not in range
                         var visibleItems = filterAndClusterAudioRecordings();
 
                         // paint the visible rects
-                        var rectAttrs = {
-                            x: function (d) {
-                                return xScale(dataFunctions.getLow(d));
-                            },
-                            width: function (d) {
-                                return xScale(dataFunctions.getHigh(d)) - xScale(dataFunctions.getLow(d));
-                            },
-                            "class": function (d) {
-                                return "miniItem" + getCategoryIndex(d);
-                            },
-
-                            y: getItemRectY,
-                            height: getTileHeight
-                        };
-
                         // update the visible rects
                         var rects = mainItemsGroup.selectAll("rect")
                             .data(visibleItems, function getKey(d) {
@@ -626,70 +648,31 @@ angular
 
                         // remove old rects
                         rects.exit().remove();
-
-                        // do the tiling!
-                        updateTileElements();
-
-                        // finally update the axis and other details
-                        if (isItemsToRender) {
-                            updateVisualizationBrush();
-
-                            // update datasetBounds
-                            // effect a manual clip on the range
-                            var dbMinimum = Math.max(self.visibleExtent[0], self.minimum);
-                            var dbMaximum = Math.min(self.visibleExtent[1], self.maximum);
-                            xScale.clamp(true);
-                            datasetBoundsRect.attr({
-                                x: xScale(dbMinimum),
-                                width: Math.max(0, xScale(dbMaximum) - xScale(dbMinimum))
-                            });
-                            xScale.clamp(false);
-
-                            var domain = xScale.domain(),
-                            // intentionally falsey
-                                showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
-
-                            xAxisSelected.update(xScale, [0, getFocusedAxisY()], showAxis);
-                            xAxis.update(xScale, [0, mainHeight], showAxis);
-                        }
                     }
 
-                    function updateTileElements() {
-                        var rectAttrs = {
+                    function renderAxisAndChrome() {
+                        updateVisualizationBrush();
 
-                                height: self.visualizationTileHeight,
+                        // update datasetBounds
+                        // effect a manual clip on the range
+                        var dbMinimum = Math.max(self.visibleExtent[0], self.minimum);
+                        var dbMaximum = Math.min(self.visibleExtent[1], self.maximum);
+                        xScale.clamp(true);
+                        datasetBoundsRect.attr({
+                            x: xScale(dbMinimum) || 0.0,
+                            width: Math.max(0, xScale(dbMaximum) - xScale(dbMinimum)) || 0.0
+                        });
+                        xScale.clamp(false);
 
-                                /**
-                                 * The relative width of the image is a function of the
-                                 * the zoom panel's current scale vs the ideal scale of the tile.
-                                 */
-                                width: d => {
-                                    var imageScale = d.resolution / self.resolution;
-                                    //console.debug("DistributionVisualisation:updateElements:width: current image
-                                    // ratio:", imageScale, d.resolution, self.resolution);
-                                    return tileWidthPixels * (imageScale);
-                                }
-                            },
-                            imageAttrs = {
-                                height: rectAttrs.height,
-                                /**
-                                 * Disable automatic aspect ratio setting
-                                 */
-                                preserveAspectRatio: "none",
-                                width: rectAttrs.width
-                            };
+                        var domain = xScale.domain(),
+                        // intentionally falsey
+                            showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
 
+                        xAxisSelected.update(xScale, [0, getFocusedAxisY()], showAxis);
+                        xAxis.update(xScale, [0, mainHeight], showAxis);
+                    }
 
-                        const debugAttrs = {
-                                date: d => d.offset.toString(),
-                                tileResolution: d => d.resolution,
-                                tileResolutionRatio: d => (d.resolution / self.resolution).toFixed(4)
-                            },
-                            debugGroupAttrs = {
-                                actualResolution: self.resolution.toFixed(4),
-                                tileSize: self.tileSizeSeconds.toLocaleString()
-                            };
-
+                    function renderFocusGroup() {
                         // reposition
                         /*
                          focusGroup.translate(() => [xScale(self.middle), 0]);
@@ -706,6 +689,47 @@ angular
                          // this IS MEGA bad for performance - forcing a layout
                          //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
                          focusStem.attr("d", getFocusStemPath());*/
+                    }
+
+                    function renderTileElements() {
+                        var tileGroupAttrs = {
+
+                                height: self.visualizationTileHeight,
+
+                                /**
+                                 * The relative width of the image is a function of the
+                                 * the zoom panel's current scale vs the ideal scale of the tile.
+                                 */
+                                width: d => {
+                                    //var imageScale = d.resolution / self.resolution;
+                                    //return tileWidthPixels * (imageScale);
+
+                                    // this method (as opposed to multiplicative method above)
+                                    // rounds better - it matches the xScale's offset rounding because it uses
+                                    // the same internal mechanics
+                                    return xScale(d.offsetEnd) - xScale(d.offset);
+                                }
+                            },
+                            imageAttrs = {
+                                height: tileGroupAttrs.height,
+                                /**
+                                 * Disable automatic aspect ratio setting
+                                 */
+                                preserveAspectRatio: "none",
+                                width: tileGroupAttrs.width
+                            };
+
+
+                        const debugAttrs = {
+                                date: d => d.offset.toString(),
+                                tileResolution: d => d.resolution,
+                                tileResolutionRatio: d => (d.resolution / self.resolution).toFixed(4)
+                            },
+                            debugGroupAttrs = {
+                                actualResolution: self.resolution.toFixed(4),
+                                tileSize: self.tileSizeSeconds.toLocaleString()
+                            };
+
 
                         // debug only
                         tilesGroup.attr(debugGroupAttrs)
@@ -726,7 +750,7 @@ angular
 
                         // update dimensions for tile rects
                         tileElements.select("rect")
-                            .attr({width: rectAttrs.width});
+                            .attr({width: tileGroupAttrs.width});
 
                         // add new tiles
                         var newTileElements = tileElements.enter()
@@ -741,7 +765,7 @@ angular
                         //.data(visibleTiles, tileKey)
                         //.enter();
                         failedOrUnknownTileElements.append("rect")
-                            .attr(rectAttrs);
+                            .attr(tileGroupAttrs);
 
                         // but always add the image element
                         newTileElements.append("image")
@@ -756,22 +780,6 @@ angular
 
                         // remove old tiles
                         tileElements.exit().remove();
-
-                        // update datasetBounds
-                        // effect a manual clip on the range
-                        var dbMinimum = Math.max(self.visibleExtent[0], self.minimum);
-                        var dbMaximum = Math.min(self.visibleExtent[1], self.maximum);
-                        xScale.clamp(true);
-                        datasetBoundsRect.attr({
-                            x: xScale(dbMinimum) || 0.0,
-                            width: Math.max(0, xScale(dbMaximum) - xScale(dbMinimum)) || 0.0
-                        });
-                        xScale.clamp(false);
-
-                        var domain = xScale.domain(),
-                        // intentionally falsey
-                            showAxis = domain[1] - domain[0] != 0; // jshint ignore:line
-
                     }
 
                     function updateVisualizationBrush() {
@@ -800,7 +808,7 @@ angular
                      * We can use `d3.event.sourceEvent instanceof TouchEvent` to disambiguate.
                      */
                     function onZoomStart() {
-                        console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);
+                        //console.debug("DistributionDetail:zoomStart:", d3.event.translate, d3.event.scale);
 
                         // HACK: check whether this event was triggered manually
                         var isManual = _lockManualZoom;
@@ -822,16 +830,13 @@ angular
                         if (categoryChanged) {
                             // updates the public visibleExtent field
                             // and re-renders entire surface
-                            self.updateExtent(xScale.domain());
+                            updateExtentInternal(xScale.domain(), {
+                                dataChanged: false,
+                                categoryChanged,
+                                zoomChanged: false
+                            });
                         }
 
-                        //if (categoryChanged) {
-                        //    // update y-axis and lane heights
-                        //    updateYScales();
-                        //
-                        //    // re-renders entire surface
-                        //    updateMain(false, false, categoryChanged);
-                        //}
                     }
 
                     function onZoom() {
@@ -852,10 +857,12 @@ angular
                             domain = xScale.domain();
                         }
 
+                        //mainItemsGroup.translateAndScale(zoom.translate(), [zoom.scale(), 1]);
+
                         updatePublicZoomScale();
 
-                        console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain,
-                         zoom.translate(), isManual);
+                        //console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain,
+                        //zoom.translate(), isManual);
 
                         // don't propagate cyclical events
                         if (isManual) {
@@ -863,18 +870,18 @@ angular
                         }
 
                         // update which lane is shown in visualisation
-                        switchSelectedCategory();
+                        let categoryChanged = switchSelectedCategory();
 
                         // updates the public visibleExtent field
                         // and re-renders entire surface
-                        self.updateExtent(domain);
+                        updateExtentInternal(domain, {dataChanged: false, categoryChanged, zoomChanged: false});
 
                         // updates the controller - bind back
                         dataFunctions.extentUpdate(self.visibleExtent, "DistributionDetail");
                     }
 
                     function onZoomEnd() {
-                        console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
+                        //console.debug("DistributionDetail:zoomEnd:", d3.event.translate, d3.event.scale);
 
                         if (isItemsToRender) {
                             updatePublicZoomScale();
@@ -1001,12 +1008,6 @@ angular
                         };
                     }
 
-                    function zoomUpdate() {
-                        _lockManualZoom = true;
-                        zoom.event(main);
-                        _lockManualZoom = false;
-                    }
-
                     function updatePublicZoomScale() {
                         let z = zoom.scale();
 
@@ -1058,6 +1059,21 @@ angular
                     function getLaneHeight() {
                         return laneHeight + lanePadding;
                     }
+
+                    var rectAttrs = {
+                        x: function (d) {
+                            return xScale(dataFunctions.getLow(d));
+                        },
+                        width: function (d) {
+                            return xScale(dataFunctions.getHigh(d)) - xScale(dataFunctions.getLow(d));
+                        },
+                        "class": function (d) {
+                            return "miniItem" + getCategoryIndex(d);
+                        },
+
+                        y: getItemRectY,
+                        height: getTileHeight
+                    };
 
                     /**
                      * Get the height for viz tiles or the default lane height
@@ -1116,7 +1132,8 @@ angular
                                 // delay navigate for a set amount of time...
                                 // give the double click event handler time to cancel the navigate
                                 _navigateTimeoutPromise = $timeout(
-                                    //() => console.debug("distributionDetail::onClickNavigate::timeoutComplete:", $window.performance.now()),
+                                    //() => console.debug("distributionDetail::onClickNavigate::timeoutComplete:",
+                                    // $window.performance.now()),
                                     () => {
                                         // only navigate if the timeout was successful
                                         console.warn("distributionDetail::onClickNavigate::timeoutResolved: Navigating now!", $window.performance.now());
@@ -1152,7 +1169,8 @@ angular
                 };
             }
         ]
-    ).directive(
+    ).
+directive(
     "eventDistributionDetail",
     [
         "DistributionDetail",

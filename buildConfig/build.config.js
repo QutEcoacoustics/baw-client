@@ -86,8 +86,9 @@ module.exports = {
             "vendor/lodash/lodash.js",
             "vendor/bowser/bowser.js",
             "vendor/humanize-duration/humanize-duration.js",
-            "vendor/round-date/roundDate.js"
-],
+            "vendor/round-date/roundDate.js",
+            "node_modules/rbush/rbush.js"
+        ],
         js: [
             "node_modules/babel/node_modules/babel-core/browser-polyfill.js",
             "vendor/jquery/dist/jquery.js",
@@ -135,6 +136,7 @@ module.exports = {
             "vendor/draggabilly/draggabilly.js",
 
             "vendor/d3/d3.js",
+            "node_modules/rbush/rbush.js",
 
             "vendor/bowser/bowser.js",
 
