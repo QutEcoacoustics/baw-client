@@ -44,8 +44,7 @@ angular
                         return a(d) && b(d);
                     }
 
-                    static updateResolutionScaleCeiling(availableResolutions, resolutionScale)
-                    {
+                    static updateResolutionScaleCeiling(availableResolutions, resolutionScale) {
                         resolutionScale.domain(availableResolutions)
                             .range([
                                 availableResolutions[0] || 0,
@@ -53,8 +52,7 @@ angular
                             ]);
                     }
 
-                    static updateResolutionScaleMidpoint(availableResolutions, resolutionScale)
-                    {
+                    static updateResolutionScaleMidpoint(availableResolutions, resolutionScale) {
                         let midpoints = availableResolutions
                             .map((x, i, array) => (((x - array[i - 1]) / 2) + array[i - 1]) || array[0]);
 
@@ -72,41 +70,77 @@ angular
 
                     /**
                      * Filter items and return tiles for that item
-                     * @param dataFunctions
-                     * @param tileCache
-                     * @param resolutionScale
+                     * @param tileSizeSeconds
                      * @param resolution
                      * @param visibleExtent
                      * @param category
                      * @param items
-                     * @returns {*}
+                     * @returns {Tile[]}
                      */
                     filterTiles(tileSizeSeconds, resolution, items, visibleExtent, category) {
                         var filterPaddingMs = tileSizeSeconds * msInS;
+
                         // item filter
                         // pad the filtering extent with tileSize so that recordings that have
                         // duration < tileSize aren't filtered out prematurely
-                        var fExtent = [(+visibleExtent[0]) - filterPaddingMs, (+visibleExtent[1]) + filterPaddingMs],
-                            f = this.isItemVisible.bind(this, fExtent),
+                        var fExtent = [(+visibleExtent[0]) - filterPaddingMs, (+visibleExtent[1]) + filterPaddingMs];
+                        let tilingFunctions = this;
+
+                        var f = this.isItemVisible.bind(this, fExtent),
                             g = this.isInCategory.bind(this, category),
                             h = TilingFunctions.and.bind(this, g, f);
 
                         // tile filter
                         //var l = this.isTileVisible.bind(this, visibleExtent);
 
-                        let self = this;
                         return items
                             .filter(h)
                             .reduce(function (previous, current) {
-                                let selectedResolution = self.resolutionScale(resolution);
+                                let selectedResolution = tilingFunctions.resolutionScale(resolution);
 
                                 //let tiles = self.generateTiles(current, selectedResolution);
                                 //let filteredTiles = tiles.filter(l);
 
-                                let filteredTiles = self.generateTilesRTree(current, selectedResolution, visibleExtent);
+                                let filteredTiles = tilingFunctions.generateTilesRTree(current, selectedResolution, visibleExtent);
 
                                 return previous.concat(filteredTiles);
                             }, [])
+                            .sort(this.sortTiles);
+
+                    }
+
+                    /**
+                     * Filter items and return tiles for that item
+                     * @param tileSizeSeconds
+                     * @param resolution
+                     * @param visibleExtent
+                     * @param category
+                     * @param {rbush} itemsTree
+                     * @returns {Tile[]}
+                     */
+                    filterTilesRTree(tileSizeSeconds, resolution, itemsTree, visibleExtent, category) {
+                        var filterPaddingMs = tileSizeSeconds * msInS;
+
+                        // item filter
+                        // pad the filtering extent with tileSize so that recordings that have
+                        // duration < tileSize aren't filtered out prematurely
+                        var searchExtent0 = (+visibleExtent[0]) - filterPaddingMs,
+                            searchExtent1 = (+visibleExtent[1]) + filterPaddingMs;
+
+                        var tilingFunctions = this;
+
+
+                        var tileFilter = function (previous, current) {
+                            var selectedResolution = tilingFunctions.resolutionScale(resolution);
+
+                            var filteredTiles = tilingFunctions.generateTilesRTree(current, selectedResolution, visibleExtent);
+
+                            return previous.concat(filteredTiles);
+                        };
+
+                        return itemsTree
+                            .search([searchExtent0, category, searchExtent1, category])
+                            .reduce(tileFilter, [])
                             .sort(this.sortTiles);
                     }
 
@@ -150,31 +184,45 @@ angular
                      * @param tileCache {WeakMap<item, RTree<resolution×tiles>>} - the tile cache is a WeakMap of Maps
                      */
                     generateTilesRTree(item, resolution, visibleExtent) {
+                        //console.timeStamp("Begin resolution " + resolution);
+
                         // get rtree of resolution×tiles
                         let resolutionTree = this.tileCache.get(item);
 
-                        if (resolutionTree) {
-                            // get tiles
-                            let cachedTiles = resolutionTree.search([visibleExtent[0], resolution, visibleExtent[1], resolution]);
+                        // do new tiles need to be generated?
+                        let needsGeneration = false;
 
-                            // if no results, assume not been cached yet
-                            if (cachedTiles.length > 0) {
-                                return cachedTiles;
-                            }
+                        if (resolutionTree) {
+                            // check: have tiles been generated for *current* resolution
+                            needsGeneration = !item.tileCacheTracker.has(resolution);
                         }
                         else {
                             // create a new holder
-                            resolutionTree = rbush(9, [".offset", ".resolution", ".offsetEnd", ".resolution"]);
+                            // the max node value was chosen based off informal experimentation
+                            // it is a compromise between search speed and load speed
+                            resolutionTree = rbush(200, [".offset", ".resolution", ".offsetEnd", ".resolution"]);
                             this.tileCache.set(item, resolutionTree);
+
+                            item.tileCacheTracker = new Set();
+                            needsGeneration = true;
                         }
 
-                        let tiles = this.splitIntoTiles(item, resolution);
-                        resolutionTree.load(tiles);
+                        if (needsGeneration) {
 
-                        !!!!!!!!!! MUST CATER FOR NO DUPLICATE GENERATION!!!!
-                            the r-tree accepts multiple copies of items
+                            let tiles = this.splitIntoTiles(item, resolution);
 
-                        return resolutionTree.search([visibleExtent[0], resolution, visibleExtent[1], resolution]);
+                            //console.time("rbush:load");
+                            resolutionTree.load(tiles);
+                            //console.timeEnd("rbush:load");
+
+                            // register that we have cached tiles at this resolution
+                            item.tileCacheTracker.add(resolution);
+                        }
+
+                        //console.time("rbush:search");
+                        let tiles = resolutionTree.search([visibleExtent[0], resolution, visibleExtent[1], resolution]);
+                        //console.timeEnd("rbush:search");
+                        return tiles;
                     }
 
                     /**
@@ -259,8 +307,10 @@ angular
                     /**
                      * Generate the tiles to show on the fly.
                      * These tiles should NOT contain references to other objects.
+                     * WARNING: this function has been optimized for speed in V8's JS engine
+                     * WARNING: modify with extreme care
                      * @param source
-                     * @param i
+                     * @param resolution
                      * @returns {Array}
                      */
                     splitIntoTiles(source, resolution) {
@@ -273,26 +323,35 @@ angular
                         // round down to the lower unit of time, determined by `tileSizeSeconds`
                         var niceLow = roundDate.floor(idealTileSizeSeconds, low),
                         // subtract a 'tile' otherwise we generate one too many
-                            niceHigh = new Date(+roundDate.ceil(idealTileSizeSeconds, high) - idealTileSizeSeconds),
-                            offset = niceLow;
+                            niceHigh = +(new Date(+roundDate.ceil(idealTileSizeSeconds, high) - idealTileSizeSeconds)),
+                            offset = +niceLow;
 
                         // use d3's in built range functionality to generate steps
-                        var tiles = [];
+                        var tiles = [], tilingFunctions = this;
                         while (offset < niceHigh) {
                             // d3's offset floor's the input! FFS!
                             //var nextOffset = d3.time.second.offset(offset, idealTileSizeSeconds);
-                            var nextOffset = new Date(+offset + (idealTileSizeSeconds * msInS));
+                            var nextOffset = offset + (idealTileSizeSeconds * msInS);
                             var item = {
                                 //audioNavigationUrl: getNavigateUrl(source, offset),
-                                key: offset.toISOString() + this.dataFunctions.getId(source),
-                                offset: offset,
-                                offsetEnd: nextOffset,
+                                key: offset + "_" + this.dataFunctions.getId(source),
+                                offset: new Date(offset),
+                                offsetEnd: new Date(nextOffset),
                                 resolution,
                                 source,
-                                tileImageUrl: "",
-                                zoomStyleImage: this.zoomStyleTiles
+                                zoomStyleImage: this.zoomStyleTiles,
+                                // delay generation of url
+                                // url extremely expensive
+                                // beside, only need to generate width/tileSize urls at a time
+                                get tileImageUrl() {
+                                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters
+                                    delete this.tileImageUrl;
+                                    //noinspection JSUnresolvedVariable
+                                    this.tileImageUrl = tilingFunctions.getTileImage(this);
+
+                                    return this.tileImageUrl;
+                                }
                             };
-                            item.tileImageUrl = this.getTileImage(item);
                             tiles.push(item);
                             offset = nextOffset;
                         }

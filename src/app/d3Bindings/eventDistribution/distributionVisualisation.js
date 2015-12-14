@@ -71,7 +71,8 @@ angular
                     /*
                      * WeakMap<item, Map<resolution, tiles>>
                      */
-                        tileCache = new WeakMap();
+                        tileCache = new WeakMap(),
+                        itemsTree;
 
 
                     const timeFormatter = d3.time.format("%H:%M:%S");
@@ -99,7 +100,13 @@ angular
                         updateScales();
 
                         // recalculate what tiles are visible
-                        visibleTiles = tilingFunctions.filterTiles(tileSizeSeconds, resolution, self.items, visibleExtent, self.category);
+                        visibleTiles = tilingFunctions.filterTilesRTree(
+                            tileSizeSeconds,
+                            resolution,
+                            itemsTree,
+                            visibleExtent,
+                            self.category
+                        );
 
                         updateElements();
 
@@ -116,7 +123,13 @@ angular
                         updateScales();
 
                         // recalculate what tiles are visible
-                        visibleTiles = tilingFunctions.filterTiles(tileSizeSeconds, resolution, self.items, visibleExtent, self.category);
+                        visibleTiles = tilingFunctions.filterTilesRTree(
+                            tileSizeSeconds,
+                            resolution,
+                            itemsTree,
+                            visibleExtent,
+                            self.category
+                        );
 
                         updateElements();
                     }
@@ -141,6 +154,8 @@ angular
                     function updateDataVariables(data) {
                         // data should be an array of items with extents
                         self.items = data.items;
+                        itemsTree = data.itemsTree;
+
                         self.maximum = data.maximum;
                         self.minimum = data.minimum;
                         self.visualizationYMax = data.visualizationYMax;

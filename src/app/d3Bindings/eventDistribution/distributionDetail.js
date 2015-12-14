@@ -94,7 +94,11 @@ angular
                         yScaleForTiles = d3.scale.linear(),
                         resolutionScale = d3.scale.threshold(),
                         tilingFunctions = null,
-                        visibleTiles = []
+                        visibleTiles = [],
+                        /**
+                         * A mirror of self.items in a R*-Tree format
+                         */
+                        itemsTree
                         ;
 
                     const
@@ -210,7 +214,15 @@ angular
                         }
 
                         // recalculate what tiles are visible
-                        visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items, self.visibleExtent, self.selectedCategory);
+                        //visibleTiles = tilingFunctions.filterTiles(self.tileSizeSeconds, self.resolution, self.items,
+                        // self.visibleExtent, self.selectedCategory);
+                        visibleTiles = tilingFunctions.filterTilesRTree(
+                            self.tileSizeSeconds,
+                            self.resolution,
+                            itemsTree,
+                            self.visibleExtent,
+                            self.selectedCategory
+                        );
 
                         if (categoryChanged) {
                             updateMain(dataChanged);
@@ -439,6 +451,8 @@ angular
                     function updateDataVariables(data) {
                         // public field - share the reference
                         self.items = data.items || [];
+                        itemsTree = data.itemsTree;
+
                         self.lanes = data.lanes || [];
                         self.maximum = data.maximum;
                         self.minimum = data.minimum;
@@ -461,14 +475,14 @@ angular
                             .rangeRound([0, mainWidthPixels]);
 
                         /*
-                        // by this point the two methods for calculating visible duration should be equivalent
-                        let min = +self.minimum || 0,
-                            max = +self.maximum || 0,
-                            delta = max - min,
-                            visibleFraction = (delta / self.currentZoomValue) / common.msInS;
-                        console.assert(
-                            Math.abs(visibleFraction - self.visibleDuration) < 0.0001,
-                            "My math should be correct!");*/
+                         // by this point the two methods for calculating visible duration should be equivalent
+                         let min = +self.minimum || 0,
+                         max = +self.maximum || 0,
+                         delta = max - min,
+                         visibleFraction = (delta / self.currentZoomValue) / common.msInS;
+                         console.assert(
+                         Math.abs(visibleFraction - self.visibleDuration) < 0.0001,
+                         "My math should be correct!");*/
                     }
 
                     function updateZoom() {
@@ -607,7 +621,12 @@ angular
                         // get the duration (in real time) equivalent to 1px
                         //let visibleTime = xScale.invert(1);
 
-                        let filtered = self.items.filter(isRectVisible);
+                        let filtered = itemsTree.search([
+                            self.visibleExtent[0],
+                            -Infinity,
+                            self.visibleExtent[1],
+                            +Infinity
+                        ]);
 
 
                         // TODO: actually implement clustering
@@ -1018,10 +1037,10 @@ angular
                         zoom.translate([-xScale(dateOffset), 0]);
                     }
 
-                    function isRectVisible(d) {
-                        return dataFunctions.getLow(d) < self.visibleExtent[1] &&
-                            dataFunctions.getHigh(d) > self.visibleExtent[0];
-                    }
+                    //function isRectVisible(d) {
+                    //    return dataFunctions.getLow(d) < self.visibleExtent[1] &&
+                    //        dataFunctions.getHigh(d) > self.visibleExtent[0];
+                    //}
 
                     function getCategoryIndex(d) {
                         return self.lanes.indexOf(dataFunctions.getCategory(d));

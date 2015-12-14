@@ -10,8 +10,12 @@
         </div>
     </section>
     <div ng-if="!errorState" event-distribution data="recordingData" options="distributionOptions">
-        <h2>Audio distribution from {{formatDate(distributionOptions.detailExtent[0])}} to
-            {{formatDate(distributionOptions.detailExtent[1])}} (about {{distributionOptions.detailDuration}})</h2>
+        <h2>Audio distribution for
+             <span ng-repeat="p in projects">
+                 {{:: p.name}}
+                 {{:: $last && " " || ","}}
+             </span>
+            (about {{distributionOptions.detailDuration}} visible)</h2>
         <section class="row text-center">
             <small class="col-md-12">
                 <span>Current filter: </span>
@@ -36,16 +40,7 @@
                      {{ $last && " " || ";"}} &nbsp;
                 </span>
             </small>
-            <div class="col-md-2 text-right">
-                <label class="temporalContextLabel" for="showTemporalContext">Show overview</label>
-                <input id="showTemporalContext" class="input-xs" type="checkbox" ng-model="$parent.showOverview"/>
-            </div>
         </section>
-        <section class="row" ng-if="$parent.showOverview">
-            <event-distribution-overview></event-distribution-overview>
-            <div ng-if="isLoading" class="loadingImage"></div>
-        </section>
-
         <section class="row">
             <event-distribution-detail></event-distribution-detail>
             <div ng-if="isLoading" class="loadingImage"></div>

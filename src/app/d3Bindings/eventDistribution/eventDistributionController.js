@@ -9,7 +9,8 @@ angular
         "d3",
         "moment",
         "roundDate",
-        function distributionController($scope, $element, $attrs, d3, moment, roundDate) {
+        "rbush",
+        function distributionController($scope, $element, $attrs, d3, moment, roundDate, rbush) {
             console.debug("event distribution controller:init");
             var self = this,
                 defaultFunctions = {
@@ -148,6 +149,10 @@ angular
                 }
                 else {
                     data.items = newValue || [];
+                    // a R*-Tree for fast item retrieval
+                    data.itemsTree = rbush(9, functions.getBoundingBoxAccessors());
+                    data.itemsTree.load(data.items);
+
                     let unique = new Set(data.items.map(functions.getCategory));
                     data.lanes = Array.from(unique);
                     if (data.items.length > 0) {

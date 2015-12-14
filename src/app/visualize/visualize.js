@@ -99,6 +99,14 @@ angular
                     getText: function (d) {
                         return d.id;
                     },
+                    /**
+                     * Used by rbush (R*-Tree) for accessing object properties
+                     * @returns {string[]}
+                     */
+                    getBoundingBoxAccessors() {
+                        // format: [".minX", ".minY", ".maxX", ".maxY"]
+                      return [".recordedDateMilliseconds", ".siteId", ".recordedEndDateMilliSeconds", ".siteId"];
+                    },
                     getTileUrl: function(date, tileSizePixels, tileDatum) {
                         var url = AnalysisResultFile.getLongDurationImageTile(
                             tileDatum.source,
