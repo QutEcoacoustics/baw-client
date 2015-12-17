@@ -15,35 +15,48 @@
                  {{:: p.name}}
                  {{:: $last && " " || ","}}
              </span>
-            (about {{distributionOptions.detailDuration}} visible)</h2>
+            <small>(about {{distributionOptions.detailDuration}} visible)</small>
+        </h2>
         <section class="row text-center">
-            <small class="col-md-12">
-                <span>Current filter: </span>
-                <span ng-switch="filterType">
-                    <span ng-switch-when="projectId">one project ({{ids[0]}})</span>
-                    <span ng-switch-when="siteId">one site ({{ids[0]}})</span>
-                    <span ng-switch-when="siteIds">many sites (ids)</span>
-                </span> that is showing information from&nbsp;
+            <small class="col-md-12 legend">
+                <span>Legend: </span>
+                <!--<span ng-switch="filterType">-->
+                    <!--<span ng-switch-when="projectId">one project ({{ids[0]}})</span>-->
+                    <!--<span ng-switch-when="siteId">one site ({{ids[0]}})</span>-->
+                    <!--<span ng-switch-when="siteIds">many sites (ids)</span>-->
+                <!--</span> showing audio from&nbsp;-->
                 <span ng-repeat="p in projects">
                     <span class="projectSiteList">
                         <!--{{ $first && "" || ", "}}-->
 
                         <a ng-href="{{::p.url}}" target="_self">{{p.name}}</a>
                            &nbsp;&#47;&nbsp;
-                        <span ng-repeat="s in p.sites | modelAvailable track by s.id">
-                            <a ng-href="{{::s.urlWithProject(p)}}" target="_self">{{s.name}}</a>
+                        <span ng-repeat="s in ::p.sites | orderBy: 'name' | modelAvailable track by s.id" class="legend-entry">
                             <span class="legendItem" ng-class="getLegendClass(s)"></span>
+                            <a ng-href="{{::s.urlWithProject(p)}}" target="_self">{{s.name}}</a>
                             {{ $last && " " || ", "}}
                         </span>
 
                     </span>
-                     {{ $last && " " || ";"}} &nbsp;
+                     {{ $last && "." || "; "}}
                 </span>
+                Other:
+                    <span class="legend-entry" ><span class="legendItem outOfBounds"></span> outside of dataset,</span>
+                    <span class="legend-entry" ><span class="legendItem missing"></span> no audio data.</span>
             </small>
         </section>
         <section class="row">
             <event-distribution-detail></event-distribution-detail>
             <div ng-if="isLoading" class="loadingImage"></div>
+            <small class="text-muted pull-right">
+
+                Resolution: {{ distributionOptions.currentResolution}} s/px,
+                Zoom: {{ distributionOptions.currentZoom }}&times;, 
+                <label class="no-images-checkbox">
+                    Hide images
+                    <input type="checkbox" ng-model="hideImages.hide" />
+                </label>
+            </small>
         </section>
 
         <section class="row">

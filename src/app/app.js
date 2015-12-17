@@ -326,16 +326,6 @@ angular.module("baw",
                   $route.reload();
               };
 
-              // STANDARD DATE FORMAT
-              $rootScope.dateOptions = {
-                  changeMonth: true,
-                  changeYear:  true,
-                  dateFormat:  "yy-mm-dd",
-                  duration:    "fast",
-                  yearRange:   "1800:3000"
-
-              };
-
               // cross-site scripting token storage
               $rootScope.csrfToken = null;
 

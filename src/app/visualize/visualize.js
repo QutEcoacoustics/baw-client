@@ -30,7 +30,7 @@ angular
 
             $scope.recordingData = [];
             $scope.errorState = undefined;
-            $scope.showOverview = false;
+            $scope.hideImages = {hide: false};
             $scope.filterType = null;
             $scope.sites = [];
             $scope.projects = [];
@@ -38,8 +38,8 @@ angular
 
             // get user profile
             UserProfile.get.then(function() {
-                $scope.showOverview = UserProfile.profile.preferences.visualize.showTemporalContext;
-                console.debug("Visualize::User preference for showing overview set to ", $scope.showOverview);
+                $scope.hideImages.hide = !!UserProfile.profile.preferences.visualize.hideImages;
+                console.debug("Visualize::User preference for hiding images set to ", $scope.hideImages.hide);
             });
 
 
@@ -70,10 +70,13 @@ angular
 
             // update user profile if needed
             $scope.$watch(function() {
-                return $scope.showOverview;
+                return $scope.hideImages.hide;
             }, function (newValue) {
-               if (UserProfile.profile && newValue !== UserProfile.profile.preferences.visualize.showTemporalContext) {
-                   UserProfile.profile.preferences.visualize.showTemporalContext = newValue;
+               if (UserProfile.profile && newValue !== UserProfile.profile.preferences.visualize.hideImages) {
+
+                   // delete old setting
+                   delete UserProfile.profile.preferences.visualize.showTemporalContext;
+                   UserProfile.profile.preferences.visualize.hideImages = newValue;
 
                    UserProfile.updatePreferences();
                }
@@ -108,6 +111,10 @@ angular
                       return [".recordedDateMilliseconds", ".siteId", ".recordedEndDateMilliSeconds", ".siteId"];
                     },
                     getTileUrl: function(date, tileSizePixels, tileDatum) {
+                        if ($scope.hideImages.hide) {
+                            return;
+                        }
+
                         var url = AnalysisResultFile.getLongDurationImageTile(
                             tileDatum.source,
                             date,

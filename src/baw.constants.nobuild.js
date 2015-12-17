@@ -8,6 +8,7 @@ module.exports = function (environment) {
         },
         "localization": {
             "dateTimeFormat": "YYYY-MMM-DD HH:mm:ss",
+            "dateTimeFormatD3": "%Y-%b-%d %H:%M:%S",
             "dateTimeFormatAngular": "yyyy-MMM-dd HH:mm:ss",
             "dateTimeShortFormat": "YYYY-MMM-DD HH:mm",
             "dateFormat": "YYYY-MMM-DD"
@@ -29,7 +30,7 @@ module.exports = function (environment) {
                 "muted": false,
                 "autoPlay": false,
                 "visualize": {
-                    "showTemporalContext": false
+                    "hideImages": false
                 }
             },
             "userName": "Unknown user"

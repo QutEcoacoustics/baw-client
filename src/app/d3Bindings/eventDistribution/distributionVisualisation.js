@@ -15,10 +15,11 @@ angular
             "$rootScope",
             "d3",
             "roundDate",
+            "customMultiDateFormat",
             "TimeAxis",
             "distributionCommon",
             "distributionTilingFunctions",
-            function ($location, $rootScope, d3, roundDate, TimeAxis, common, TilingFunctions) {
+            function ($location, $rootScope, d3, roundDate, customMultiDateFormat, TimeAxis, common, TilingFunctions) {
                 return function DistributionVisualisation(target, data, dataFunctions, uniqueId) {
                     // variables
                     var self = this,
@@ -140,7 +141,7 @@ angular
 
                         // note this depends on the inputs being updated by reference
                         // or remaining constant
-                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache,  d3.scale.identity(), tileSizePixels, false);
+                        tilingFunctions = new TilingFunctions(dataFunctions, yScale, xScale, tileCache, d3.scale.identity(), tileSizePixels, false);
 
                         updateDataVariables(data);
 
@@ -230,7 +231,10 @@ angular
 
                         tilesGroup.on("click", (source) => common.navigateTo(tilingFunctions, visibleTiles, xScale, source));
 
-                        xAxis = new TimeAxis(main, xScale, {position: [0, tilesHeight], isVisible: false});
+                        xAxis = new TimeAxis(main, xScale, {
+                            position: [0, tilesHeight], isVisible: false,
+                            customDateFormat: customMultiDateFormat()
+                        });
                         yAxis = d3.svg.axis()
                             .scale(yScale)
                             .orient("left")
@@ -265,7 +269,7 @@ angular
                         focusAnchor.classed("disabled", !url);
                         // this IS MEGA bad for performance- forcing a layout
                         //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
-                        focusStem.attr("d",  common.getFocusStemPath());
+                        focusStem.attr("d", common.getFocusStemPath());
 
                         // create data join
                         var tileElements = tilesGroup.selectAll(".tile")

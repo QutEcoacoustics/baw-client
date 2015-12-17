@@ -78,7 +78,7 @@ angular
              * Gets or sets a translate transform for a SVG element
              * @param {Number[]} [translate]
              * @param {Number[]} [scale]
-             * @returns {this|Number[]}
+             * @returns {this|{Number[],Number[]}}
              */
             d3.selection.prototype.translateAndScale = function (translate, scale) {
 

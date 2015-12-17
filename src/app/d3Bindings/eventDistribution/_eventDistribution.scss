@@ -29,7 +29,8 @@ $Paired: (
 );
 $mini-backgrounds: join($Paired, $Set3);
 
-
+$font-size: $font-size-small + 1px;
+$smaller-font-size: $font-size-small - 2px;
 
 $out-of-bounds-color: #DDD;
 $dataset-in-bounds-bg-color: #ffffff;
@@ -38,12 +39,24 @@ $tile-border-color: #777;
 
 $tile-background-color: #e5ffd8;
 $generating-tile-color: $text-color;
-$legend-size: 2em;
+
 
 $standard-brush-fill: rgba(30, 144, 255, 0.2);
 $visualization-brush-fill: rgba(mix($standard-brush-fill, white), 0.7);
 $visualization-brush-lane-overlay-fill: rgba(255, 255, 255, 0.0);
 $visualization-brush-stroke: $gray-light;
+
+@mixin frequency-axis() {
+  .y.axis.frequency {
+    * {
+      font-size: $smaller-font-size;
+    }
+
+    .axis-label {
+      font-weight: bold;
+    }
+  }
+}
 
 event-distribution-overview, event-distribution-detail {
 
@@ -73,7 +86,7 @@ event-distribution-overview, event-distribution-detail {
 
   .laneLabelsGroup {
     & rect {
-      fill: white;
+      fill: rgba(255, 255, 255, 0.75);
     }
   }
 
@@ -82,6 +95,8 @@ event-distribution-overview, event-distribution-detail {
     fill: dodgerblue;
     fill-opacity: .365;
   }
+
+  @include frequency-axis();
 
 }
 
@@ -101,7 +116,7 @@ event-distribution-overview {
   }
 
   & text {
-    font: 10px sans-serif;
+    font: $smaller-font-size sans-serif;
   }
 }
 
@@ -111,7 +126,7 @@ event-distribution-detail {
   }
 
   & text {
-    font: 13px sans-serif;
+    font: $font-size sans-serif;
   }
 
   .outOfBounds {
@@ -147,6 +162,8 @@ event-distribution-detail {
   }
 }
 
+
+
 event-distribution-visualisation, event-distribution-visualisation-multi-scale {
   text-align: center;
 
@@ -154,7 +171,7 @@ event-distribution-visualisation, event-distribution-visualisation-multi-scale {
   }
 
   & text {
-    font: 13px sans-serif;
+    font: $font-size sans-serif;
   }
 
   .imageTrack {
@@ -227,37 +244,7 @@ event-distribution-visualisation, event-distribution-visualisation-multi-scale {
       }
 
     }
+
+    @include frequency-axis();
   }
-
-  dl {
-
-    dt {
-      width: $legend-size;
-      height: $legend-size;
-      display: inline-block;
-      vertical-align: middle;
-
-      border: $tile-border-color solid 1px;
-    }
-
-    dd {
-      display: inline;
-      margin-right: 1em;
-      vertical-align: middle;
-
-    }
-
-    .outOfBounds {
-      background-color: $out-of-bounds-color;
-    }
-
-    .noAudioInDataset {
-      background-color: $dataset-in-bounds-bg-color;
-    }
-
-    .generating {
-      background-color: $tile-background-color;
-    }
-  }
-
 }

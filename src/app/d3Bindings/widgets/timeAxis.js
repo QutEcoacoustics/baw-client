@@ -13,9 +13,11 @@ angular
                         tickPadding: 8,
                         position: [0, 0],
                         isVisible: true,
-                        orient: "bottom"
+                        orient: "bottom",
+                        customDateFormat: undefined
                     },
                     options = angular.extend(defaultOptions, _options),
+
                     scale = _scale || d3.time.scale(),
                     axisG;
 
@@ -32,12 +34,12 @@ angular
                     var axis = d3.svg.axis()
                         .scale(scale)
                         .orient(options.orient)
-                        // d3 should automatically work out the tick interval
-                        //.ticks(d3.time.month, 1)
-                        // TODO: provide a dynamic/multiscale set of time formats
-                        //.tickFormat(d3.time.format("%y-%m"))
                         .tickSize(options.tickSize)
                         .tickPadding(options.tickPadding);
+
+                    if (options.customDateFormat) {
+                        axis.tickFormat(d3.time.format.multi(options.customDateFormat));
+                    }
 
                     axisG = targetGroup.append("g")
                         .classed("x axis time", true)

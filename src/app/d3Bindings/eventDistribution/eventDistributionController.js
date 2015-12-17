@@ -84,6 +84,8 @@ angular
                     $scope.options.detailExtent = newExtent;
                     $scope.options.visualizationDuration = humanized;
                     $scope.options.selectedLane = selectedLane;
+                    $scope.options.currentResolution = self.detail.resolution.toFixed(2);
+                    $scope.options.currentZoom = self.detail.currentZoomValue.toFixed(0);
                 }
 
                 if (!$scope.$root.$$phase) {

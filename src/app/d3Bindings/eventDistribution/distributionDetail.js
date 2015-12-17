@@ -12,11 +12,15 @@ angular
         [
             "$window",
             "$timeout",
+            "conf.constants",
             "d3",
+            "humanize-duration",
+            "customMultiDateFormat",
             "TimeAxis",
+            "MeasureWidget",
             "distributionCommon",
             "distributionTilingFunctions",
-            function ($window, $timeout, d3, TimeAxis, common, TilingFunctions) {
+            function ($window, $timeout, constants, d3, humanizeDuration, customMultiDateFormat, TimeAxis, MeasureWidget, common, TilingFunctions) {
                 return function DistributionDetail(target, data, dataFunctions, uniqueId) {
                     var self = this,
                         container = d3.select(target),
@@ -26,6 +30,10 @@ angular
                         mainClipRect,
                         clipClass = "clippedToVisibleBounds",
                         outerClipId = "distributionDetail_" + uniqueId,
+                        /**
+                         * A widget used to display bounds information
+                         */
+                        mainMeasure,
                         xAxis,
                         /**
                          * The 'top' x axis for the currently selected lane.
@@ -33,6 +41,7 @@ angular
                         xAxisSelected,
                         yAxisFrequency,
                         yAxisGroup,
+                        yAxisFrequencyLabel,
                         xScale = d3.time.scale(),
                         yScale = d3.scale.linear(),
                         zoom,
@@ -60,6 +69,8 @@ angular
                         _navigateTimeoutPromise = null,
                         laneLinesGroup,
                         laneLabelsGroup,
+                        labels,
+                        labelBackgrounds,
                         visualizationBrushArea,
                         visualizationBrushLaneOverlay,
                         mainItemsGroup,
@@ -84,7 +95,7 @@ angular
                     // these are initial values only
                     // this is the width and height of the main group
                         mainWidthPixels = 1200,
-                        mainHeight = 0,
+                        mainHeight = 100,
 
                         orderedLaneIndexes = [],
                         orderedLaneHeights = [],
@@ -102,17 +113,20 @@ angular
                         ;
 
                     const
-                        axisPadding = 14,
+                        dateTimeFormatD3 = d3.time.format(constants.localization.dateTimeFormatD3),
+                        axisPadding = 9,
                         fontLineHeight = 17,
                         fontHeight = 14,
-                        lanePaddingTop = 5,
-                        lanePaddingBottom = 5,
+                        lanePaddingTop = 4,
+                        lanePaddingBottom = 4,
                         lanePadding = lanePaddingTop + lanePaddingBottom,
-                        laneHeight = 30,
+                        laneHeight = 24,
                         xAxisHeight = 26,
                         yAxisWidth = 55,
+                        measureHeight = 16,
+                        measureOverLap = 0,
                         margin = {
-                            top: 5,
+                            top: 5 + measureHeight - measureOverLap,
                             right: 5,
                             bottom: 5 + xAxisHeight,
                             left: yAxisWidth + 5
@@ -318,6 +332,9 @@ angular
                             // width is updated by updateMain
                             datasetBoundsRect.attr("height", mainHeight);
                         }
+                        if (mainMeasure) {
+                            mainMeasure.update({width: mainWidthPixels});
+                        }
 
                         chart.style("height", common.svgHeight(mainHeight, margin) + "px");
 
@@ -416,22 +433,46 @@ angular
                         tilesGroup.on("click", onClickNavigate);
                         tilesGroup.on("dblclick", onDblClick);
 
+                        mainMeasure = new MeasureWidget(
+                            main.append("g"),
+                            {
+                                height: measureHeight,
+                                width: mainWidthPixels,
+                                position: [0, -measureHeight + measureOverLap],
+                                text: [
+                                    getLowerVisibleDateFormatted,
+                                    getVisibleDurationFormatted,
+                                    getUpperVisibleDateFormatted,
+                                ]
+                            }
+                        );
 
-                        xAxisSelected = new TimeAxis(
-                            main, xScale, {
-                                position: [0, getFocusedAxisY()],
-                                isVisible: false,
-                                orient: "top"
-                            });
+                        xAxisSelected = new TimeAxis(main, xScale, {
+                            position: [0, getFocusedAxisY()],
+                            isVisible: false,
+                            orient: "top",
+                            customDateFormat: customMultiDateFormat()
+                        });
                         yAxisFrequency = d3.svg.axis()
                             .scale(yScaleForTiles)
                             .orient("left")
                             .tickSize(6)
-                            .tickPadding(8);
+                            .tickPadding(4);
                         yAxisGroup = main.append("g")
-                            .classed("y axis", true)
-                            .translate([0, 0])
-                            .call(yAxisFrequency);
+                            .classed("y axis frequency", true)
+                            .translate([0, 0]);
+                            // suppress label rendering initially
+                            //.call(yAxisFrequency);
+                        yAxisFrequencyLabel = yAxisGroup.append("text")
+                            .text("Frequency (Hz)")
+                            .attr({
+                                // render off screen initially
+                                x: -1000,
+                                transform: "rotate(-90)",
+                                dy: "1.0em",
+                                "text-anchor": "middle",
+                                "class": "axis-label"
+                            });
 
                         // rect for showing selected lane (and visualization brush bounds)
                         visualizationBrushLaneOverlay = main.append("g")
@@ -441,10 +482,16 @@ angular
                             .classed("visualizationBrushLaneOverlay", true)
                             .attr("height", getFocusedLaneHeight());
 
-                        xAxis = new TimeAxis(main, xScale, {position: [0, mainHeight], isVisible: false});
+                        xAxis = new TimeAxis(main, xScale, {
+                            position: [0, mainHeight],
+                            isVisible: false,
+                            customDateFormat: customMultiDateFormat()
+                        });
 
                         // group for textual labels, left of the lanes
                         laneLabelsGroup = main.append("g").classed("laneLabelsGroup", true);
+                        labels = laneLabelsGroup.selectAll("text");
+                        labelBackgrounds = laneLabelsGroup.selectAll("rect");
 
                     }
 
@@ -458,7 +505,7 @@ angular
                         self.minimum = data.minimum;
                         self.visualizationYMax = data.visualizationYMax || 0;
 
-                        self.visualizationTileHeight = data.visualizationTileHeight || 0;
+                        self.visualizationTileHeight = data.visualizationTileHeight || 100;
 
                         self.selectedCategory = self.lanes.length === 0 ? 0 : self.lanes[0];
                         self.availableResolutions = data.availableResolutions || [];
@@ -532,8 +579,14 @@ angular
 
                         // TODO: pull our y-axis update because yScale never changes for updateExtent
                         // and thus only changes from update data or category selection
-                        yAxisFrequency.scale(yScaleForTiles).tickValues(yScaleForTiles.ticks(10).slice(0, -1).concat([self.visualizationYMax]));
+                        yAxisFrequency.scale(yScaleForTiles)
+                            .tickValues(yScaleForTiles.ticks(10).slice(0, -1).concat([self.visualizationYMax]));
                         yAxisGroup.call(yAxisFrequency);
+                        // attributes swapped (and negged) because of rotate transform
+                        yAxisFrequencyLabel.attr({
+                            y: -laneLabelMarginRight,
+                            x: -yScale(self.lanes.indexOf(self.selectedCategory) + 0.5)
+                        });
 
                         TilingFunctions.updateResolutionScaleCeiling(self.availableResolutions, resolutionScale);
                     }
@@ -568,8 +621,8 @@ angular
                         };
 
                         // join and update
-                        let labels = laneLabelsGroup.selectAll("text").data(self.lanes),
-                            labelBackgrounds = laneLabelsGroup.selectAll("rect").data(self.lanes);
+                        labels = labels.data(self.lanes, d3.id);
+                        labelBackgrounds = labelBackgrounds.data(self.lanes, d3.id);
 
                         if (dataUpdated) {
                             var labelAttrs = {
@@ -582,7 +635,7 @@ angular
                                 labelBackgroundAttrs = {
                                     x: labelAttrs.x,
                                     y: labelY,
-                                    width: (d, i) => Math.ceil(labels[0][i].getComputedTextLength()) + 1,
+                                    width: (d, i) => Math.ceil(labels[0][i].getComputedTextLength()) + 3,
                                     height: fontLineHeight
                                 };
 
@@ -689,6 +742,9 @@ angular
 
                         xAxisSelected.update(xScale, [0, getFocusedAxisY()], showAxis);
                         xAxis.update(xScale, [0, mainHeight], showAxis);
+
+                        // update measure
+                        mainMeasure.updateLabelsText();
                     }
 
                     function renderFocusGroup() {
@@ -1050,6 +1106,35 @@ angular
                         return self.lanes[i] === self.selectedCategory;
                     }
 
+                    function getLowerVisibleDateFormatted() {
+                        if (self.visibleExtent[0]) {
+                            return dateTimeFormatD3(self.visibleExtent[0]);
+                        }
+
+                        return "";
+                    }
+
+                    function getVisibleDurationFormatted() {
+                        if (self.visibleDuration) {
+                            return humanizeDuration(
+                                self.visibleDuration * common.msInS,
+                                {
+                                    largest: 2,
+                                    round: true
+                                });
+                        }
+
+                        return "";
+                    }
+
+                    function getUpperVisibleDateFormatted() {
+                        if (self.visibleExtent[1]) {
+                            return dateTimeFormatD3(self.visibleExtent[1]);
+                        }
+
+                        return "";
+                    }
+
                     /**
                      *  Gets separator lines between categories
                      * @param d
@@ -1057,7 +1142,8 @@ angular
                      * @returns {*}
                      */
                     function getSeparatorLineY(d, i) {
-                        return yScale(i);
+                        // shift so there is a bottom line but not a top
+                        return yScale(i + 1);
                     }
 
                     function getTileHeight(d) {
