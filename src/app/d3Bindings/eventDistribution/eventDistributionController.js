@@ -77,6 +77,8 @@ angular
                         visualizationMiddles.map(x => moment.duration(x, "seconds").humanize()) || "";
                 }
 
+                $scope.options.functions.extentUpdated(newExtent);
+
                 function update() {
                     // object reference!
                     $scope.options.overviewExtent = newExtent;
@@ -89,10 +91,10 @@ angular
                 }
 
                 if (!$scope.$root.$$phase) {
-                    $scope.$apply(update);
+                    $scope.$applyAsync(update);
                 }
                 else {
-                    $scope.$eval(update);
+                    $scope.$evalAsync(update);
                 }
             };
 

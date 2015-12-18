@@ -55,7 +55,12 @@ angular
 
                         return availableWidth;
                     },
-                    imageCheck(tile) {
+                    imageCheck(mainResolution, imageVisibilityThreshold, tile ) {
+                        let resolutionRatio = tile.resolution /  mainResolution;
+                        if (resolutionRatio < imageVisibilityThreshold) {
+                            return null;
+                        }
+
                         // check if the image has been successfully downloaded before
                         // if it has not, do not set
                         // if it has, then set

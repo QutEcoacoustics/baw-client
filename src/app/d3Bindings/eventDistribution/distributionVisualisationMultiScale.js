@@ -309,12 +309,14 @@ angular
                         var tileElements = tilesGroup.selectAll(".tile")
                             .data(visibleTiles, TilingFunctions.tileKey);
 
+                        let imageCheck = common.imageCheck.bind(null, self.resolution, 0);
+
                         // update old tiles
                         tileElements.translate(tilingFunctions.getTileGTranslation)
                             .attr(debugAttrs)
                             .select("image")
                             .attr({
-                                "xlink:href": common.imageCheck,
+                                "xlink:href": imageCheck,
                                 width: imageAttrs.width
                             });
 
@@ -340,7 +342,7 @@ angular
                         // but always add the image element
                         newTileElements.append("image")
                             .attr(imageAttrs)
-                            .attr("xlink:href", common.imageCheck)
+                            .attr("xlink:href", imageCheck)
                             .on("error", common.imageLoadError, true)
                             .on("load", common.imageLoadSuccess, true)
                             // the following two handlers are for IE compatibility

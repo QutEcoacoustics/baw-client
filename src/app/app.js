@@ -179,7 +179,8 @@ angular.module("baw",
                          templateUrl: paths.site.files.visualize,
                          controller: "VisualizeController",
                          title: "Visualize audio distribution",
-                         fullWidth: true
+                         fullWidth: true,
+                        reloadOnSearch: false
                      }).
 
                      // missing route page

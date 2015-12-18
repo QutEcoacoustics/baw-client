@@ -113,6 +113,12 @@ angular
                         ;
 
                     const
+                        /**
+                         * The threshold for downloading images.
+                         * It is a ratio (e.g. 0.05 = 5% of normal width)
+                         * @type {number}
+                         */
+                        imageVisibilityThreshold = 0.05,
                         dateTimeFormatD3 = d3.time.format(constants.localization.dateTimeFormatD3),
                         axisPadding = 9,
                         fontLineHeight = 17,
@@ -795,16 +801,17 @@ angular
                             };
 
 
-                        const debugAttrs = {
-                                date: d => d.offset.toString(),
-                                tileResolution: d => d.resolution,
-                                tileResolutionRatio: d => (d.resolution / self.resolution).toFixed(4)
-                            },
+                        const /*debugAttrs = {
+                                date: d => d.offset.toString()
+                            },*/
                             debugGroupAttrs = {
                                 actualResolution: self.resolution.toFixed(4),
-                                tileSize: self.tileSizeSeconds.toLocaleString()
+                                tileSize: self.tileSizeSeconds.toLocaleString(),
+                                tileResolution: () => visibleTiles[0].resolution,
+                                tileResolutionRatio: () => (visibleTiles[0].resolution / self.resolution).toFixed(4)
                             };
 
+                        let imageCheck = common.imageCheck.bind(null, self.resolution, imageVisibilityThreshold);
 
                         // debug only
                         tilesGroup.attr(debugGroupAttrs)
@@ -816,10 +823,10 @@ angular
 
                         // update old tiles
                         tileElements.translate(tilingFunctions.getTileGTranslation)
-                            .attr(debugAttrs)
+                            //.attr(debugAttrs)
                             .select("image")
                             .attr({
-                                "xlink:href": common.imageCheck,
+                                "xlink:href": imageCheck,
                                 width: imageAttrs.width
                             });
 
@@ -830,7 +837,7 @@ angular
                         // add new tiles
                         var newTileElements = tileElements.enter()
                             .append("g")
-                            .attr(debugAttrs)
+                            //.attr(debugAttrs)
                             .translate(tilingFunctions.getTileGTranslation)
                             .classed("tile", true);
 
@@ -845,7 +852,7 @@ angular
                         // but always add the image element
                         newTileElements.append("image")
                             .attr(imageAttrs)
-                            .attr("xlink:href", common.imageCheck)
+                            .attr("xlink:href", imageCheck)
                             .on("error", common.imageLoadError, true)
                             .on("load", common.imageLoadSuccess, true)
                             // the following two handlers are for IE compatibility
