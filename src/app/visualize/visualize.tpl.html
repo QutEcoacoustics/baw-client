@@ -21,9 +21,9 @@
             <small class="col-md-12 legend">
                 <span>Legend: </span>
                 <!--<span ng-switch="filterType">-->
-                    <!--<span ng-switch-when="projectId">one project ({{ids[0]}})</span>-->
-                    <!--<span ng-switch-when="siteId">one site ({{ids[0]}})</span>-->
-                    <!--<span ng-switch-when="siteIds">many sites (ids)</span>-->
+                <!--<span ng-switch-when="projectId">one project ({{ids[0]}})</span>-->
+                <!--<span ng-switch-when="siteId">one site ({{ids[0]}})</span>-->
+                <!--<span ng-switch-when="siteIds">many sites (ids)</span>-->
                 <!--</span> showing audio from&nbsp;-->
                 <span ng-repeat="p in projects">
                     <span class="projectSiteList">
@@ -31,7 +31,8 @@
 
                         <a ng-href="{{::p.url}}" target="_self">{{p.name}}</a>
                            &nbsp;&#47;&nbsp;
-                        <span ng-repeat="s in ::p.sites | orderBy: 'name' | modelAvailable track by s.id" class="legend-entry">
+                        <span ng-repeat="s in ::p.sites | orderBy: 'name' | modelAvailable track by s.id"
+                              class="legend-entry">
                             <span class="legendItem" ng-class="getLegendClass(s)"></span>
                             <a ng-href="{{::s.urlWithProject(p)}}" target="_self">{{s.name}}</a>
                             {{ $last && " " || ", "}}
@@ -41,20 +42,30 @@
                      {{ $last && "." || "; "}}
                 </span>
                 Other:
-                    <span class="legend-entry" ><span class="legendItem outOfBounds"></span> outside of dataset,</span>
-                    <span class="legend-entry" ><span class="legendItem missing"></span> no audio data.</span>
+                <span class="legend-entry"><span class="legendItem outOfBounds"></span> outside of dataset,</span>
+                <span class="legend-entry"><span class="legendItem missing"></span> no audio data.</span>
             </small>
         </section>
         <section class="row">
             <event-distribution-detail></event-distribution-detail>
             <div ng-if="isLoading" class="loadingImage"></div>
-            <small class="text-muted pull-right">
+
+        </section>
+        <section class="row text-muted">
+            <small class="col-md-6">
+                <button type="button" class="btn btn-default btn-xs"
+                        ng-click="resetZoomOnClick($event)">
+                    Reset zoom
+                </button>
+
+            </small>
+            <small class="col-md-6 text-right">
 
                 Resolution: {{ distributionOptions.currentResolution}} s/px,
-                Zoom: {{ distributionOptions.currentZoom }}&times;, 
+                Zoom: {{ distributionOptions.currentZoom }}&times;,
                 <label class="no-images-checkbox">
                     Hide images
-                    <input type="checkbox" ng-model="hideImages.hide" />
+                    <input type="checkbox" ng-model="hideImages.hide"/>
                 </label>
             </small>
         </section>

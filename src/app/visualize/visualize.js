@@ -22,9 +22,20 @@ angular
             function ($scope, $location, $routeParams, $http, $q, _, moment, $url,
                       paths, constants, modelAssociations,
                       Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
+                const extent0Key = "extent0",
+                    extent1Key = "extent1";
 
                 var projectToSiteLinker = modelAssociations.generateLinker("Project", "Site");
                 var siteToProjectLinker = modelAssociations.generateLinker("Site", "Project");
+
+                var updateLocationSearch = _.throttle(function (newExtent) {
+                    //console.debug(...newExtent);
+                    $location.search({
+                        [$scope.filterType]: $routeParams[$scope.filterType],
+                        [extent0Key]: +newExtent[0],
+                        [extent1Key]: +newExtent[1]
+                    });
+                }, 250);
 
                 var sitesMap = {};
                 var projectsMap = {};
@@ -148,7 +159,7 @@ angular
                                 });
                         },
                         extentUpdated(newExtent) {
-                            console.debug(...newExtent);
+                            //console.debug(...newExtent);
                             // if value has changed, update the search for deep linkingness
                             if (newExtent) {
                                 updateLocationSearch(newExtent);
@@ -158,25 +169,22 @@ angular
                     // TODO: do not hard code
                     availableResolutions: [0.02, 0.04, 0.08, 0.16, 0.2, 0.4, 0.6, 1, 2, 4, 6, 12, 24, 60],
                     visualizationTileHeight: 256,
-                    visualizationYMax: 11025
-                };
-
-                var updateLocationSearch = _.throttle(function (newExtent) {
-                    console.debug(...newExtent);
-                    $location.search({
-                        [$scope.filterType]: $routeParams[$scope.filterType],
-                        extent0: +newExtent[0],
-                        extent1: +newExtent[1]
-                    });
-                }, 250);
-
-
-                $scope.formatDate = function (d) {
-                    return moment(d).format(constants.localization.dateTimeShortFormat);
+                    visualizationYMax: 11025,
+                    initialExtent: parameters.initialExtent
                 };
 
                 $scope.getLegendClass = function (site) {
                     return "miniItem" + $scope.sites.indexOf(site);
+                };
+
+                $scope.resetZoomOnClick = function ($event) {
+                    $scope.distributionOptions.functions.extentUpdate([
+                        $scope.distributionOptions.dataMinimum,
+                        $scope.distributionOptions.dataMaximum
+                    ]);
+
+                    //  unfocus
+                    $event.toElement.blur();
                 };
 
                 function validateParameters() {
@@ -228,10 +236,20 @@ angular
 
                     $scope.ids = ids;
 
+                    var initialExtent = null;
+                    if ($routeParams.hasOwnProperty(extent0Key) &&
+                        $routeParams.hasOwnProperty(extent1Key)) {
+                        initialExtent = [
+                            new Date(Number($routeParams[extent0Key])),
+                            new Date(Number($routeParams[extent1Key]))
+                        ];
+                    }
+
                     return {
-                        projectFirst: hasProjectId,
-                        ids: ids,
-                        error: $scope.errorState
+                        error: $scope.errorState,
+                        ids,
+                        initialExtent,
+                        projectFirst: hasProjectId
                     };
                 }
 
