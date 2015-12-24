@@ -152,11 +152,16 @@ angular
                             }
 
                             // intentionally not specifying an end offset - let the listen page decide
-                            return $url.formatUri(paths.site.ngRoutes.listen,
-                                {
-                                    recordingId: id,
-                                    start: startOffsetSeconds
-                                });
+                            /*return $url.formatUri(paths.site.ngRoutes.listen,
+                             {
+                             recordingId: id,
+                             start: startOffsetSeconds
+                             });*/
+                            return $url.formatUriFast(
+                                paths.site.ngRoutes.listenWithStartFast,
+                                id,
+                                startOffsetSeconds
+                            );
                         },
                         extentUpdated(newExtent) {
                             //console.debug(...newExtent);

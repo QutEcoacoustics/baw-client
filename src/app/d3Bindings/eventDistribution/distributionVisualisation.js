@@ -157,6 +157,9 @@ angular
                         self.items = data.items;
                         itemsTree = data.itemsTree;
 
+                        self.lanes = new Map();
+                        (data.lanes || []).forEach((item, index) => self.lanes.set(item, index));
+
                         self.maximum = data.maximum;
                         self.minimum = data.minimum;
                         self.visualizationYMax = data.visualizationYMax;
@@ -294,25 +297,9 @@ angular
                         //.data(visibleTiles, tileKey)
                         //.enter();
                         failedOrUnknownTileElements.append("rect")
-                            .attr(imageAttrs);
-
-                        failedOrUnknownTileElements.append("text")
-                            .text(getOffsetDate)
-                            .attr({
-                                y: tilesHeight / 2.0,
-                                x: tileSizePixels / 2.0,
-                                width: tilesWidth,
-                                "text-anchor": "middle",
-                                dy: "0em"
-                            });
-                        failedOrUnknownTileElements.append("text")
-                            .text(getOffsetTime)
-                            .attr({
-                                y: tilesHeight / 2.0,
-                                x: tileSizePixels / 2.0,
-                                width: tileSizePixels,
-                                "text-anchor": "middle",
-                                dy: "1em"
+                            .attr(imageAttrs)
+                            .attr("class", tileDatum => {
+                                return "miniItem" + getCategoryIndex(tileDatum.source);
                             });
 
                         // but always add the image element
@@ -359,14 +346,9 @@ angular
                         return self.visualizationTileHeight || 0;
                     }
 
-                    function getOffsetDate(d) {
-                        return d.offset.toLocaleDateString();
+                    function getCategoryIndex(d) {
+                        return self.lanes.get(dataFunctions.getCategory(d));
                     }
-
-                    function getOffsetTime(d) {
-                        return d.offset.toLocaleTimeString();
-                    }
-
                 };
             }
         ]

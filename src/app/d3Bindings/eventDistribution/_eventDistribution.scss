@@ -27,7 +27,7 @@ $Paired: (
         rgb(251, 154, 153),
         rgb(227, 26, 28),
 );
-$mini-backgrounds: join($Paired, $Set3);
+$mini-backgrounds: join(join($Paired, $Set3), join($Paired, $Set3));
 
 $font-size: $font-size-small + 1px;
 $smaller-font-size: $font-size-small - 2px;
@@ -196,7 +196,7 @@ event-distribution-visualisation, event-distribution-visualisation-multi-scale {
 
         //border-left: deeppink solid 1px;
         //border-right: blue solid 1px;
-        fill: $tile-background-color;
+        //fill: $tile-background-color;
 
         //stroke: rgba(0, 0, 0, 0.5);
         //stroke-width: 1px;
@@ -206,13 +206,13 @@ event-distribution-visualisation, event-distribution-visualisation-multi-scale {
         //fill: rgba(0, 0, 255, 0.2);
       }
 
-      .tile text {
-        font-size: 8pt;
-        color: $generating-tile-color;
-        font-weight: bold;
-        padding: 0 1px;
-
-      }
+      //.tile text {
+      //  font-size: 8pt;
+      //  color: $generating-tile-color;
+      //  font-weight: bold;
+      //  padding: 0 1px;
+      //
+      //}
 
     }
 
