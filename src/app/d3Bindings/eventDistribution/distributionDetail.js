@@ -18,9 +18,11 @@ angular
             "customMultiDateFormat",
             "TimeAxis",
             "MeasureWidget",
+            "FocusStem",
             "distributionCommon",
             "distributionTilingFunctions",
-            function ($window, $timeout, constants, d3, humanizeDuration, customMultiDateFormat, TimeAxis, MeasureWidget, common, TilingFunctions) {
+            function ($window, $timeout, constants, d3, humanizeDuration, customMultiDateFormat, TimeAxis, MeasureWidget,
+                      FocusStem, common, TilingFunctions) {
                 return function DistributionDetail(target, data, dataFunctions, uniqueId) {
                     var self = this,
                         container = d3.select(target),
@@ -39,6 +41,7 @@ angular
                          * The 'top' x axis for the currently selected lane.
                          */
                         xAxisSelected,
+                        focusStem,
                         yAxisFrequency,
                         yAxisGroup,
                         yAxisFrequencyLabel,
@@ -120,6 +123,7 @@ angular
                          */
                         imageVisibilityThreshold = 0.05,
                         dateTimeFormatD3 = d3.time.format(constants.localization.dateTimeFormatD3),
+                        timeFormatter = d3.time.format(constants.localization.timeFormatD3),
                         axisPadding = 9,
                         fontLineHeight = 17,
                         fontHeight = 14,
@@ -128,6 +132,7 @@ angular
                         lanePadding = lanePaddingTop + lanePaddingBottom,
                         laneHeight = 24,
                         xAxisHeight = 26,
+                        focusStemHeight = xAxisHeight + 2 + (fontLineHeight),
                         yAxisWidth = 55,
                         measureHeight = 16,
                         measureOverLap = 0,
@@ -162,6 +167,12 @@ angular
                     self.visibleExtent = [0, 0];
                     self.selectedCategory = null;
                     self.currentZoomValue = 1;
+                    /**
+                     * A point in the x domain representing the last point of interaction
+                     * from the user.
+                     * @type {null}
+                     */
+                    self.focus = null;
 
                     // init
                     create();
@@ -459,6 +470,17 @@ angular
                             orient: "top",
                             customDateFormat: customMultiDateFormat()
                         });
+
+                        focusStem = new FocusStem(
+                            main.append("g"),
+                            {
+                                isVisible: false,
+                                position: [xScale(self.focus), 0],
+                                text: "Go to",
+                                root: xAxisHeight + 2
+                            }
+                        );
+
                         yAxisFrequency = d3.svg.axis()
                             .scale(yScaleForTiles)
                             .orient("left")
@@ -467,8 +489,10 @@ angular
                         yAxisGroup = main.append("g")
                             .classed("y axis frequency", true)
                             .translate([0, 0]);
-                            // suppress label rendering initially
-                            //.call(yAxisFrequency);
+                        // suppress label rendering initially
+                        // squashed axis looks icky
+                        //.call(yAxisFrequency);
+
                         yAxisFrequencyLabel = yAxisGroup.append("text")
                             .text("Frequency (Hz)")
                             .attr({
@@ -577,7 +601,7 @@ angular
                         // one lane within the main yScale
                         // also need to leave space for the padding and the top (focused) x-axis
                         let lane = self.lanes.indexOf(self.selectedCategory),
-                            start = yScale(lane === -1 ? 0 : lane) + lanePaddingTop + xAxisHeight;
+                            start = yScale(lane === -1 ? 0 : lane) + lanePaddingTop + focusStemHeight;
                         // inverted y-axis
                         yScaleForTiles.domain([self.visualizationYMax, 0])
                             .range([start, start + getTilesGroupHeight()]);
@@ -754,22 +778,24 @@ angular
                     }
 
                     function renderFocusGroup() {
-                        // reposition
-                        /*
-                         focusGroup.translate(() => [xScale(self.middle), 0]);
-                         let {url, roundedDate} = isNavigatable(self.middle);
-                         focusText.text(() => {
-                         if (self.middle) {
-                         return "Go to " + timeFormatter(roundedDate);
-                         }
+                        if (!self.focus) {
+                            self.focus = common.middle(xScale.domain());
+                        }
 
-                         return "";
-                         });
-                         focusAnchor.attr("xlink:href", url);
-                         focusAnchor.classed("disabled", !url);
-                         // this IS MEGA bad for performance - forcing a layout
-                         //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
-                         focusStem.attr("d", getFocusStemPath());*/
+                        // reposition
+                        let {url, roundedDate} = common.isNavigatable(tilingFunctions, visibleTiles, self.focus);
+
+                        let text = "Go to " +
+                            (self.focus ? timeFormatter(roundedDate) : "");
+
+                        focusStem.update(
+                            {
+                                position: [xScale(self.focus), getFocusedFocusStemY()],
+                                text,
+                                url,
+                                isVisible: true
+                            }
+                        );
                     }
 
                     function renderTileElements() {
@@ -802,13 +828,21 @@ angular
 
 
                         const /*debugAttrs = {
-                                date: d => d.offset.toString()
-                            },*/
+                         date: d => d.offset.toString()
+                         },*/
                             debugGroupAttrs = {
                                 actualResolution: self.resolution.toFixed(4),
                                 tileSize: self.tileSizeSeconds.toLocaleString(),
-                                tileResolution: () => visibleTiles[0].resolution,
-                                tileResolutionRatio: () => (visibleTiles[0].resolution / self.resolution).toFixed(4)
+                                tileResolution: () => {
+                                    if (visibleTiles.length > 0) {
+                                        return visibleTiles[0].resolution;
+                                    }
+                                },
+                                tileResolutionRatio: () => () => {
+                                    if (visibleTiles.length > 0) {
+                                        return (visibleTiles[0].resolution / self.resolution).toFixed(4);
+                                    }
+                                }
                             };
 
                         let imageCheck = common.imageCheck.bind(null, self.resolution, imageVisibilityThreshold);
@@ -899,6 +933,8 @@ angular
                             return;
                         }
 
+                        updateFocusDate(false);
+
                         // update which lane is shown in visualisation
                         var categoryChanged = switchSelectedCategory();
 
@@ -918,6 +954,9 @@ angular
                                 zoomChanged: false
                             });
                         }
+                        else {
+                            //renderFocusGroup();
+                        }
 
                     }
 
@@ -932,6 +971,9 @@ angular
                         //zoom.scale([ getZoomFactorForResolution([self.minimum, self.maximum], self.visibleExtent, 60)
                         // ]);
 
+                        //console.debug("DistributionDetail:zoom:Pre", d3.event.translate, d3.event.scale, xScale.domain(),
+                        //    zoom.translate(), isManual);
+
                         // prevent translating off the edge of our data (i.e. clamp the zoom/pan)
                         var domain = null;
                         if (xScale) {
@@ -939,11 +981,14 @@ angular
                             domain = xScale.domain();
                         }
 
+                        updateFocusDate(false);
+
+
                         //mainItemsGroup.translateAndScale(zoom.translate(), [zoom.scale(), 1]);
 
                         updatePublicZoomScale();
 
-                        //console.debug("DistributionDetail:zoom:", d3.event.translate, d3.event.scale, domain,
+                        //console.debug("DistributionDetail:zoom:Post", d3.event.translate, d3.event.scale, domain,
                         //zoom.translate(), isManual);
 
                         // don't propagate cyclical events
@@ -1001,7 +1046,7 @@ angular
                     }
 
                     /**
-                     *
+                     * Does not actually render
                      * @returns {boolean} - true if the category was changed
                      */
                     function switchSelectedCategory() {
@@ -1020,9 +1065,6 @@ angular
                                 // update public field - this will allow us to switch which
                                 // lane is shown based on where an interaction happens on the drawing surface
                                 self.selectedCategory = newCategory;
-                                //updateVisualizationBrush();
-                                //updateYScales();
-                                //updateMain();
 
                                 return true;
                             }
@@ -1165,7 +1207,7 @@ angular
                     }
 
                     function getFocusedLaneHeight() {
-                        return getTilesGroupHeight() + xAxisHeight + lanePadding;
+                        return getTilesGroupHeight() + focusStemHeight + lanePadding;
                     }
 
                     function getLaneHeight() {
@@ -1200,16 +1242,20 @@ angular
                         var i = getCategoryIndex(item),
                             isSelected = isIndexSelectedLane(i);
 
-                        return yScale(i) + lanePaddingTop + (isSelected ? xAxisHeight : 0);
+                        return yScale(i) + lanePaddingTop + (isSelected ? focusStemHeight : 0);
                     }
 
                     function getTileGroupTranslation() {
                         var selectedIndex = self.lanes.indexOf(self.selectedCategory);
-                        return [0, yScale(selectedIndex) + lanePaddingTop + xAxisHeight];
+                        return [0, yScale(selectedIndex) + lanePaddingTop + focusStemHeight];
                     }
 
                     function getFocusedAxisY() {
-                        return yScale(self.lanes.indexOf(self.selectedCategory)) + xAxisHeight + lanePaddingTop;
+                        return yScale(self.lanes.indexOf(self.selectedCategory)) + focusStemHeight + lanePaddingTop;
+                    }
+
+                    function getFocusedFocusStemY() {
+                        return yScale(self.lanes.indexOf(self.selectedCategory)) + focusStemHeight + lanePaddingTop;
                     }
 
                     function distance(pointA, pointB) {
@@ -1248,7 +1294,7 @@ angular
                                     // $window.performance.now()),
                                     () => {
                                         // only navigate if the timeout was successful
-                                        console.warn("distributionDetail::onClickNavigate::timeoutResolved: Navigating now!", $window.performance.now());
+                                        //console.warn("distributionDetail::onClickNavigate::timeoutResolved: Navigating now!", $window.performance.now());
                                         //common.navigateTo(tilingFunctions, visibleTiles, xScale, tilesGroup);
                                     },
                                     clickOrDblTimeoutMilliseconds);
@@ -1277,7 +1323,29 @@ angular
                         $timeout.cancel(_navigateTimeoutPromise);
                     }
 
+                    function updateFocusDate(fromMiddle) {
+                        if (fromMiddle) {
+                            self.focus = common.middle(self.visibleExtent);
+                        }
+                        else {
+                            let position = d3.mouse(main.node())[0];
 
+                            if (isNaN(position)) {
+                                // do not update
+                                return;
+                            }
+
+                            self.focus = xScale.invert(position);
+
+                            if (self.focus < self.minimum) {
+                                self.focus = self.minimum;
+                            }
+
+                            if (self.focus > self.maximum) {
+                                self.focus = self.maximum;
+                            }
+                        }
+                    }
                 };
             }
         ]

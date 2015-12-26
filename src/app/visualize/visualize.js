@@ -8,6 +8,7 @@ angular
             "$routeParams",
             "$http",
             "$q",
+            "$timeout",
             "lodash",
             "moment",
             "$url",
@@ -19,7 +20,7 @@ angular
             "AudioRecording",
             "AnalysisResultFile",
             "UserProfile",
-            function ($scope, $location, $routeParams, $http, $q, _, moment, $url,
+            function ($scope, $location, $routeParams, $http, $q, $timeout, _, moment, $url,
                       paths, constants, modelAssociations,
                       Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
                 const extent0Key = "extent0",
@@ -42,7 +43,10 @@ angular
 
                 $scope.recordingData = [];
                 $scope.errorState = undefined;
-                $scope.hideImages = {hide: false};
+                $scope.visualizeOptions = {
+                    hideImages: false,
+                    hideFixed: false
+                };
                 $scope.filterType = null;
                 $scope.sites = [];
                 $scope.projects = [];
@@ -50,8 +54,12 @@ angular
 
                 // get user profile
                 UserProfile.get.then(function () {
-                    $scope.hideImages.hide = !!UserProfile.profile.preferences.visualize.hideImages;
-                    console.debug("Visualize::User preference for hiding images set to ", $scope.hideImages.hide);
+                    $scope.visualizeOptions.hideImages = !!UserProfile.profile.preferences.visualize.hideImages;
+                    $scope.visualizeOptions.hideFixed = !!UserProfile.profile.preferences.visualize.hideFixed;
+                    console.debug(
+                        "Visualize::User preference for hiding images set to ",
+                        $scope.visualizeOptions.hideImages,
+                        $scope.visualizeOptions.hideFixed);
                 });
 
 
@@ -82,7 +90,7 @@ angular
 
                 // update user profile if needed
                 $scope.$watch(function () {
-                    return $scope.hideImages.hide;
+                    return $scope.visualizeOptions.hideImages;
                 }, function (newValue) {
                     if (UserProfile.profile && newValue !== UserProfile.profile.preferences.visualize.hideImages) {
 
@@ -91,6 +99,27 @@ angular
                         UserProfile.profile.preferences.visualize.hideImages = newValue;
 
                         UserProfile.updatePreferences();
+                    }
+                });
+
+                $scope.$watch(function () {
+                    return $scope.visualizeOptions.hideFixed;
+                }, function (newValue) {
+                    if (UserProfile.profile && newValue !== UserProfile.profile.preferences.visualize.hideFixed) {
+                        UserProfile.profile.preferences.visualize.hideFixed = newValue;
+
+                        UserProfile.updatePreferences();
+
+                        if (!newValue) {
+                            // make it async so that it moves to end of queue
+                            // (ng-if needs to do its thing before we trigger render)
+                            $timeout(function () {
+                                // force a re-render when we turn it on
+                                $scope.distributionOptions.functions.extentUpdate(
+                                    $scope.distributionOptions.detailExtent
+                                );
+                            }, 0);
+                        }
                     }
                 });
 
@@ -123,7 +152,7 @@ angular
                             return [".recordedDateMilliseconds", ".siteId", ".recordedEndDateMilliSeconds", ".siteId"];
                         },
                         getTileUrl: function (date, tileSizePixels, tileDatum) {
-                            if ($scope.hideImages.hide) {
+                            if ($scope.visualizeOptions.hideImages) {
                                 return;
                             }
 

@@ -63,14 +63,18 @@
 
                 Resolution: {{ distributionOptions.currentResolution}} s/px,
                 Zoom: {{ distributionOptions.currentZoom }}&times;,
-                <label class="no-images-checkbox">
+                <label class="">
                     Hide images
-                    <input type="checkbox" ng-model="hideImages.hide"/>
+                    <input type="checkbox" ng-model="visualizeOptions.hideImages"/>
+                </label>,
+                <label class="">
+                    Hide fixed resolution
+                    <input type="checkbox" ng-model="visualizeOptions.hideFixed"/>
                 </label>
             </small>
         </section>
 
-        <section class="row">
+        <section class="row" ng-if="!visualizeOptions.hideFixed">
             <h3>Fixed resolution visualisation for {{ distributionOptions.visualizationDuration[0] }} in
                 {{ distributionOptions.functions.getCategoryName(distributionOptions.selectedLane) }}</h3>
             <event-distribution-visualisation></event-distribution-visualisation>

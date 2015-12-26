@@ -15,11 +15,14 @@ angular
             "$rootScope",
             "d3",
             "roundDate",
+            "conf.constants",
             "customMultiDateFormat",
             "TimeAxis",
+            "FocusStem",
             "distributionCommon",
             "distributionTilingFunctions",
-            function ($location, $rootScope, d3, roundDate, customMultiDateFormat, TimeAxis, common, TilingFunctions) {
+            function ($location, $rootScope, d3, roundDate, constants, customMultiDateFormat, TimeAxis, FocusStem,
+                      common, TilingFunctions) {
                 return function DistributionVisualisation(target, data, dataFunctions, uniqueId) {
                     // variables
                     var self = this,
@@ -30,12 +33,8 @@ angular
                         tilesBackground = main.select(".tilesBackground"),
                         datasetBoundsRect = main.select(".datasetBounds"),
                         tilesGroup = main.select(".tiles"),
-                        focusGroup = main.select(".focusGroup"),
-                        focusTextGroup = focusGroup.select(".focusTextGroup"),
-                        focusLine = focusGroup.select(".focusLine"),
-                        focusStem = focusGroup.select(".focusStem"),
-                        focusAnchor = focusGroup.select(".focusAnchor"),
-                        focusText = focusGroup.select(".focusText"),
+                        focusGroup = main.select(".focus-group"),
+                        focusStem,
                         tilesClipRect,
 
                         tileSizePixels = 60,
@@ -76,7 +75,7 @@ angular
                         itemsTree;
 
 
-                    const timeFormatter = d3.time.format("%H:%M:%S");
+                    const timeFormatter = d3.time.format(constants.localization.timeFormatD3);
 
                     // exports
                     self.items = [];
@@ -192,9 +191,6 @@ angular
                             tilesClipRect.attr(attrs);
                         }
 
-                        focusLine.attr("height", newHeight + common.focusStemPathDefaults.root);
-                        focusTextGroup.translate(() => [0, -(common.focusStemPathDefaults.root + common.focusStemPathDefaults.stems)]);
-
                         // update the controller with the visible tilesWidth
                         dataFunctions.visualisationDurationUpdate(self.visibleDuration);
                     }
@@ -248,6 +244,15 @@ angular
                             .translate([0, 0])
                             .call(yAxis);
 
+                        focusStem = new FocusStem(
+                            focusGroup,
+                            {
+                                isVisible: false,
+                                position: [xScale(self.middle), 0],
+                                text: "Go to"
+                            }
+                        );
+
                         updateElements();
                     }
 
@@ -259,20 +264,19 @@ angular
                         };
 
                         // reposition
-                        focusGroup.translate(() => [xScale(self.middle), 0]);
                         let {url, roundedDate} = common.isNavigatable(tilingFunctions, visibleTiles, self.middle);
-                        focusText.text(() => {
-                            if (self.middle) {
-                                return "Go to " + timeFormatter(roundedDate);
-                            }
 
-                            return "";
-                        });
-                        focusAnchor.attr("xlink:href", url);
-                        focusAnchor.classed("disabled", !url);
-                        // this IS MEGA bad for performance- forcing a layout
-                        //focusStem.attr("d", getFocusStemPath(focusText.node().getComputedTextLength()));
-                        focusStem.attr("d", common.getFocusStemPath());
+                        let text = "Go to " +
+                            (self.middle ? timeFormatter(roundedDate) : "");
+
+                        focusStem.update(
+                            {
+                                position: [xScale(self.middle), 0],
+                                text,
+                                url,
+                                isVisible: true
+                            }
+                        );
 
                         // create data join
                         var tileElements = tilesGroup.selectAll(".tile")
