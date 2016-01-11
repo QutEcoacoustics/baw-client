@@ -193,5 +193,8 @@
 
     ga('create', '<%= build_configs.current.ga.trackingId %>', 'auto');
 </script>
+<% if (build_configs.current.key === "development") { %>
+    <script src="http://<%= hostIp[0] %>:35729/livereload.js"></script>
+<% } %>
 </body>
 </html>

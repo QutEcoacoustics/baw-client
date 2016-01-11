@@ -87,7 +87,9 @@ angular
                             updateExtent(extent);
                         }
                         else {
+                            _lockManualBrush = true;
                             display();
+                            _lockManualBrush = false;
                         }
 
                         xAxis.update(xScale, [0, miniHeight], true);
@@ -249,7 +251,7 @@ angular
                         .data(that.lanes)
                         .enter()
                         .append("text")
-                        .text(id)
+                        .text(dataFunctions.getCategoryName)
                         .attr({
                                   x: -labelRectPadding,
                                   y: function (d, i) {
@@ -324,10 +326,6 @@ angular
 
                 function getCategoryIndex(d) {
                     return that.lanes.indexOf(dataFunctions.getCategory(d));
-                }
-
-                function id(a) {
-                    return a;
                 }
 
                 function calculateMiniWidth() {

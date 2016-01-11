@@ -56,7 +56,8 @@ module.exports = function (environment) {
                     "show": "/bookmarks/{bookmarkId}"
                 },
                 "analysisResults": {
-                    "system": "/audio_recordings/{recordingId}/analysis.{format}"
+                    "system": "/analysis_jobs/system/audio_recordings/{recordingId}",
+                    "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}",
                 }
             },
             "links": {
@@ -123,6 +124,7 @@ module.exports = function (environment) {
             "ngRoutes": {
                 "recentRecordings": "/listen",
                 "listen": "/listen/{recordingId}",
+                "listenWithStartFast": ["/listen/", "?start="],
                 "library": "/library",
                 "libraryItem": "/library/{recordingId}/audio_events/{audioEventId}",
                 "visualize": "/visualize",
@@ -152,39 +154,59 @@ module.exports = function (environment) {
             return fragments[0];
         }
         else {
-            var path = fragments[0];
+            var firstFragment = fragments[0];
 
-            if (path.slice(-1) === "/") {
-                path = path.slice(0, -1);
+            if (firstFragment.slice(-1) === "/") {
+                firstFragment = firstFragment.slice(0, -1);
+            }
+
+            var path = [firstFragment],
+                wasAnyArray = false;
+
+            function processFragment(stringFragment, isLast) {
+                if ((typeof stringFragment) !== "string") {
+                    throw "joinPathFragments: Path fragment " + stringFragment + " is not a string";
+                }
+
+                var hasFirst = stringFragment[0] === "/";
+                var hasLast = (stringFragment.slice(-1))[0] === "/";
+
+                if (!hasFirst) {
+                    stringFragment = "/" + stringFragment;
+                }
+
+                if (hasLast && !isLast) {
+                    stringFragment = stringFragment.slice(0, -1);
+                }
+
+                return stringFragment;
             }
 
             for (var i = 1; i < fragments.length; i++) {
                 var f = fragments[i];
 
-                if ((typeof f) !== "string") {
-                    throw "joinPathFragments: Path fragment " + f + " is not a string";
+                var isArray = f instanceof Array;
+                if (isArray) {
+                   wasAnyArray = true;
+                    f.forEach(function(item, index) {
+                        path.push(processFragment(item,  i === (fragments.length - 1)));
+                    });
                 }
-
-                var hasFirst = f[0] === "/";
-                var hasLast = (f.slice(-1))[0] === "/";
-
-                if (!hasFirst) {
-                    f = "/" + f;
+                else {
+                    path.push(processFragment(f, i === (fragments.length - 1)));
                 }
-
-                if (hasLast && i !== (fragments.length - 1)) {
-                    f = f.slice(0, -1);
-                }
-
-                path += f;
             }
 
-            return path;
+            if (wasAnyArray) {
+                return path;
+            }
+
+            return path.join("");
         }
     }
 
     function isObject(x) {
-        return typeof x === "object" && x !== null;
+        return typeof x === "object" && x !== null && !(x instanceof Array);
     }
 
     // add helper paths

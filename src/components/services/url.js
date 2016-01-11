@@ -95,11 +95,23 @@ angular
             }
         }
 
+        function formatUriFast(urlFragments, ...urlValues) {
+            let length = urlFragments.length;
+
+            let url = "";
+            for(let i = 0; i < length; i++) {
+                url += urlFragments[i] + urlValues[i];
+            }
+
+            return url;
+        }
+
         var exported = {
-            fixedEncodeURIComponent: fixedEncodeURIComponent,
-            encodeUriQuery: encodeUriQuery,
-            toKeyValue: toKeyValue,
-            formatUri: formatUri
+            fixedEncodeURIComponent,
+            encodeUriQuery,
+            toKeyValue,
+            formatUri,
+            formatUriFast
         };
 
         this.registerRenamer = function(suffix, renamerFunc) {

@@ -1,3 +1,4 @@
+var devIp = require("dev-ip"); // jshint ignore:line
 
 /**
  * This file/module contains all configuration for the build process.
@@ -11,6 +12,8 @@ module.exports = {
     es6_dir: "es6",
     build_dir: "build",
     compile_dir: "bin",
+
+    hostIp: devIp(),
 
     /**
      * The environment settings are loaded here.
@@ -83,10 +86,11 @@ module.exports = {
             "vendor/lodash/lodash.js",
             "vendor/bowser/bowser.js",
             "vendor/humanize-duration/humanize-duration.js",
-            "vendor/round-date/roundDate.js"
-],
+            "vendor/round-date/roundDate.js",
+            "node_modules/rbush/rbush.js"
+        ],
         js: [
-            "node_modules/babel/node_modules/babel-core/browser-polyfill.js",
+            "node_modules/babel-core/browser-polyfill.js",
             "vendor/jquery/dist/jquery.js",
             "vendor/angular/angular.js",
 
@@ -132,6 +136,7 @@ module.exports = {
             "vendor/draggabilly/draggabilly.js",
 
             "vendor/d3/d3.js",
+            "node_modules/rbush/rbush.js",
 
             "vendor/bowser/bowser.js",
 

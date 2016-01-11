@@ -11,7 +11,8 @@ angular
             resource.getSitesByIds = function (siteIds) {
                 var query = QueryBuilder.create(function (q) {
                     return q.in("id", siteIds)
-                        .project({include: ["id", "name"]});
+                        .project({include: ["id", "name"]})
+                        .sort({orderBy: "name"});
                 });
                 return $http
                     .post(url, query.toJSON())
@@ -21,17 +22,24 @@ angular
             resource.getSitesByProjectIds = function (projectIds) {
                 var projectIdsUnique = _.uniq(projectIds);
                 var query = QueryBuilder.create(function (q) {
-                    return q.in("projects.id", projectIdsUnique);
+                    return q.in("projects.id", projectIdsUnique)
+                        .project({include: ["id", "name"]})
+                        .sort({orderBy: "name"});
                 });
-                return $http.post(url, query.toJSON());
+                return $http
+                    .post(url, query.toJSON())
+                    .then( x => SiteModel.makeFromApi(x));
             };
 
             resource.getAllSites = function () {
                 var url = paths.api.routes.site.filterAbsolute;
                 var query = QueryBuilder.create(function (q) {
-                    return q.project({"include": ["id", "name"]});
+                    return q.project({"include": ["id", "name"]})
+                        .sort({orderBy: "name"});
                 });
-                return $http.post(url, query.toJSON());
+                return $http
+                    .post(url, query.toJSON())
+                    .then( x => SiteModel.makeFromApi(x));
             };
 
             /*resource.getAllSites = function () {

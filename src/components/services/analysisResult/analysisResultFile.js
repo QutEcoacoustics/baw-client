@@ -7,116 +7,133 @@
 angular
     .module("bawApp.services.analysisResultFile", [])
     .constant(
-    "ecosoundsAnalysisResults",
-    {
-        fieldDelimiter: "_",
-        fileDelimiter: "__",
-        imageExtension: "png",
-        falseColorProfiles: [
-            "ACI-ENT-EVN",
-            "BGN-POW-CVR"
-        ],
-        tiledTag: "Tile",
-        longDurationAnalysisName: "Towsey.Acoustic",
-        defaultResolution: 60,
-        fileDateFormat: "YYYYMMDD-HHmmss[Z]",
-        numberFormatter: function(number) {
-            return number;
-        }
-    }
-)
-    .factory(
-    "AnalysisResultFile",
-    [
-        "$http",
-        "$url",
-        "moment",
-        "conf.paths",
-        "casingTransformers",
         "ecosoundsAnalysisResults",
-        function ($http, $url, moment, paths, casingTransformers, ear) {
-            var uuidRegex = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/;
-
-            function getLongDurationImage(audioRecording, imageType) {
-                if (!audioRecording) {
-                    throw new Error("Expected an object for audioRecording");
-                }
-
-                if (audioRecording.id === undefined || !angular.isNumber(audioRecording.id)) {
-                    throw new Error("Expected an audio recording to have an id");
-                }
-
-                if (!audioRecording.uuid || !uuidRegex.test(audioRecording.uuid)) {
-                    throw new Error("Expected an audio recording to have a uuid");
-                }
-
-                if (!audioRecording.recordedDate || !angular.isDate(audioRecording.recordedDate)) {
-                    throw new Error("Expected audio recording to have a valid recorded date");
-                }
-
-                if (!imageType) {
-                    imageType = ear.falseColorProfiles[0];
-                }
-
-                if (ear.falseColorProfiles.indexOf(imageType) === -1) {
-                    throw new Error("Expected a known image type");
-                }
-
-                var fileFragment = "";
-                fileFragment += audioRecording.uuid;
-                fileFragment += ear.fieldDelimiter;
-                fileFragment += moment.utc(+audioRecording.recordedDate).format(ear.fileDateFormat);
-                fileFragment += ear.fileDelimiter;
-                fileFragment += imageType;
-                fileFragment += "." + ear.imageExtension;
-
-                var url = $url.formatUri(
-                    paths.api.routes.analysisResults.systemAbsolute,
-                    {
-                        recordingId: audioRecording.id,
-                        format: ear.imageExtension,
-                        fileName: fileFragment,
-                        analysisId: ear.longDurationAnalysisName
-                    },
-                    casingTransformers.underscore
-                );
-
-                return url;
+        {
+            fieldDelimiter: "_",
+            fileDelimiter: "__",
+            imageExtension: "png",
+            falseColorProfiles: [
+                "ACI-ENT-EVN",
+                "BGN-POW-CVR",
+                "BLENDED"
+            ],
+            tiledTag: "Tile",
+            longDurationAnalysisName: "Towsey.Acoustic",
+            zoomingSubFolder: "ZoomingTiles",
+            defaultResolution: 60,
+            fileDateFormat: "YYYYMMDD-HHmmss[Z]",
+            numberFormatter: function (number) {
+                return number;
             }
-
-            function getLongDurationImageTile(audioRecording, tileDate, resolution, imageType) {
-                if (!tileDate || !angular.isDate(tileDate)) {
-                    throw new Error("Expected a valid tile date argument");
-                }
-
-                if (resolution === undefined) {
-                    resolution = ear.defaultResolution;
-                }
-
-                if (!angular.isNumber(resolution)) {
-                    throw new Error("Expected a valid tile resolution");
-                }
-
-                var url = getLongDurationImage(audioRecording, imageType);
-
-                var tileFragment = ".";
-                tileFragment += ear.tiledTag;
-                tileFragment += ear.fieldDelimiter;
-                tileFragment += moment.utc(+tileDate).format(ear.fileDateFormat);
-                tileFragment += ear.fieldDelimiter;
-                tileFragment += ear.numberFormatter(resolution);
-
-                // insert before extension
-                var insertIndex = url.lastIndexOf("." + ear.imageExtension);
-
-                return url.substr(0, insertIndex) + tileFragment + url.substr(insertIndex);
-            }
-
-
-            return {
-                getLongDurationImage: getLongDurationImage,
-                getLongDurationImageTile: getLongDurationImageTile
-            };
         }
-    ]
-);
+    )
+    .factory(
+        "AnalysisResultFile",
+        [
+            "$http",
+            "$url",
+            "moment",
+            "conf.paths",
+            "casingTransformers",
+            "ecosoundsAnalysisResults",
+            function ($http, $url, moment, paths, casingTransformers, ear) {
+                var uuidRegex = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/;
+
+                function getLongDurationImage(audioRecording, imageType, subFolder) {
+                    if (!audioRecording) {
+                        throw new Error("Expected an object for audioRecording");
+                    }
+
+                    if (audioRecording.id === undefined || !angular.isNumber(audioRecording.id)) {
+                        throw new Error("Expected an audio recording to have an id");
+                    }
+
+                    if (!audioRecording.uuid || !uuidRegex.test(audioRecording.uuid)) {
+                        throw new Error("Expected an audio recording to have a uuid");
+                    }
+
+                    if (!audioRecording.recordedDate || !angular.isDate(audioRecording.recordedDate)) {
+                        throw new Error("Expected audio recording to have a valid recorded date");
+                    }
+
+                    if (!imageType) {
+                        imageType = ear.falseColorProfiles[0];
+                    }
+
+                    if (ear.falseColorProfiles.indexOf(imageType) === -1) {
+                        throw new Error("Expected a known image type");
+                    }
+
+                    var fileFragment = "";
+                    fileFragment += ear.longDurationAnalysisName + "/";
+                    if (subFolder) {
+                        fileFragment += subFolder + "/";
+                    }
+                    fileFragment += audioRecording.uuid;
+                    fileFragment += ear.fieldDelimiter;
+                    fileFragment += moment.utc(+audioRecording.recordedDate).format(ear.fileDateFormat);
+                    fileFragment += ear.fileDelimiter;
+                    fileFragment += imageType;
+                    fileFragment += "." + ear.imageExtension;
+
+                    var url = $url.formatUri(
+                        paths.api.routes.analysisResults.systemAbsolute,
+                        {
+                            recordingId: audioRecording.id,
+
+                        },
+                        casingTransformers.underscore
+                    );
+
+                    return url + "/" + fileFragment;
+                }
+
+                function getLongDurationImageTile(audioRecording, tileDate, resolution, imageType, zooming) {
+                    if (!tileDate || !angular.isDate(tileDate)) {
+                        throw new Error("Expected a valid tile date argument");
+                    }
+
+                    if (resolution === undefined) {
+                        resolution = ear.defaultResolution;
+                    }
+
+                    if (!angular.isNumber(resolution)) {
+                        throw new Error("Expected a valid tile resolution");
+                    }
+
+                    let subFolder = null;
+                    if (zooming) {
+                        subFolder = ear.zoomingSubFolder;
+                        imageType = ear.falseColorProfiles[2];
+                    }
+
+
+                    let ms = tileDate.getMilliseconds(),
+                        msString = ms === 0 ? "" : (ms / 1000).toString().substring(1),
+                        tileDateString = moment.utc(+tileDate).format(ear.fileDateFormat),
+                        lastIndex = tileDateString.length - 1,
+                        url = getLongDurationImage(audioRecording, imageType, subFolder);
+
+                    tileDateString = tileDateString.substr(0, lastIndex ) + msString + tileDateString[lastIndex];
+
+                    var tileFragment = ".";
+                    tileFragment += ear.tiledTag;
+                    tileFragment += ear.fieldDelimiter;
+                    tileFragment += tileDateString;
+                    tileFragment += ear.fieldDelimiter;
+                    tileFragment += ear.numberFormatter(resolution);
+
+                    // insert before extension
+                    var insertIndex = url.lastIndexOf("." + ear.imageExtension);
+
+                    return url.substr(0, insertIndex) + tileFragment + url.substr(insertIndex);
+                }
+
+
+                return {
+                    getLongDurationImage: getLongDurationImage,
+                    getLongDurationImageTile: getLongDurationImageTile
+                };
+            }
+        ]
+    );
