@@ -90,7 +90,7 @@ module.exports = {
             "node_modules/rbush/rbush.js"
         ],
         js: [
-            "node_modules/babel-core/browser-polyfill.js",
+            "node_modules/babel/node_modules/babel-core/browser-polyfill.js,
             "vendor/jquery/dist/jquery.js",
             "vendor/angular/angular.js",
 
