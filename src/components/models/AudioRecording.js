@@ -48,6 +48,8 @@ angular
                 class AudioRecording extends AudioRecordingCore {
                     constructor(resource) {
                         super(resource);
+
+                        this.recordedEndDate = new Date(this.recordedEndDateMilliSeconds);
                     }
                 }
 

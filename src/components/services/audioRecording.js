@@ -52,7 +52,7 @@ angular
                 resource.getRecordingsForLibrary = function (audioRecordingIds) {
                     var query = QueryBuilder.create(q => q
                         .in("id", audioRecordingIds)
-                        .project({include: ["id", "siteId", "durationSeconds"]}));
+                        .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]}));
 
                     return $http
                         .post(filterUrl, query.toJSON())

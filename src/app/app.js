@@ -146,7 +146,7 @@ angular.module("baw",
                      when("/listen", {templateUrl: paths.site.files.recordings.recentRecordings, controller: "RecentRecordingsCtrl", title: "Listen"}).
                      when("/listen/:recordingId", {templateUrl: paths.site.files.listen, controller: "ListenCtrl", title: ":recordingId",  fullWidth: true}).
 
-                     //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+                     //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenController'}).
 
                      when("/accounts", {templateUrl: "/assets/accounts_sign_in.html", controller: "AccountsCtrl"}).
                      when("/accounts/:action",
