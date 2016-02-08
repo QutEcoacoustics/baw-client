@@ -1,43 +1,36 @@
-/* Palette URL:  http://paletton.com/#uid=72S0B0kmpy3ralWpLt3iZHreGQA
-#####  Palette URL: http://paletton.com/#uid=72S0B0kaVz84jP27qHbeJtFiHpX
-*/
-/* Feel free to copy&paste color codes to your application */
-
-/* As hex codes */
-
-$color-primary-0: #3CC754;
-/* Main Primary color */
-$color-primary-1: #148628;
-$color-primary-2: #23B13B;
-$color-primary-3: #59DA6F;
-$color-primary-4: #7FEC92;
-
-$color-secondary-1-0: #3981A8;
-/* Main Secondary color (1) */
-$color-secondary-1-1: #16506F;
-$color-secondary-1-2: #236C93;
-$color-secondary-1-3: #579FC6;
-$color-secondary-1-4: #7FBFE1;
-
-$color-secondary-2-0: #FFAD4D;
-/* Main Secondary color (2) */
-$color-secondary-2-1: #AF6B1A;
-$color-secondary-2-2: #E8922D;
-$color-secondary-2-3: #FFBA68;
-$color-secondary-2-4: #FFCA8A;
-
-$color-complement-0: #FF5A4D;
-/* Main Complement color */
-$color-complement-1: #AF251A;
-$color-complement-2: #E83B2D;
-$color-complement-3: #FF7368;
-$color-complement-4: #FF938A;
-
-$mini-backgrounds: (
-        $color-primary-0 $color-secondary-1-0 $color-secondary-2-0 $color-complement-0 $color-primary-1 $color-secondary-1-1 $color-secondary-2-1 $color-complement-1 $color-primary-2 $color-secondary-1-2 $color-secondary-2-2 $color-complement-2 $color-primary-3 $color-secondary-1-3 $color-secondary-2-3 $color-complement-3 $color-primary-4 $color-secondary-1-4 $color-secondary-2-4 $color-complement-4
+//http://colorbrewer2.org/
+$Set3: (
+        rgb(141, 211, 199),
+        rgb(255, 255, 179),
+        rgb(190, 186, 218),
+        rgb(251, 128, 114),
+        rgb(128, 177, 211),
+        rgb(253, 180, 98),
+        rgb(179, 222, 105),
+        rgb(252, 205, 229),
+        rgb(217, 217, 217),
+        rgb(188, 128, 189),
+        rgb(204, 235, 197),
+        rgb(255, 237, 111)
 );
+$Paired: (
+        rgb(178, 223, 138),
+        rgb(51, 160, 44),
+        rgb(166, 206, 227),
+        rgb(31, 120, 180),
+        rgb(253, 191, 111),
+        rgb(255, 127, 0),
+        rgb(202, 178, 214),
+        rgb(106, 61, 154),
+        rgb(255, 255, 153),
+        rgb(177, 89, 40),
+        rgb(251, 154, 153),
+        rgb(227, 26, 28),
+);
+$mini-backgrounds: join(join($Paired, $Set3), join($Paired, $Set3));
 
-//$mini-backgrounds: darksalmon darkolivegreen slategray #8f7f6f #7a6f8f #8f6f8f;
+$font-size: $font-size-small + 1px;
+$smaller-font-size: $font-size-small - 2px;
 
 $out-of-bounds-color: #DDD;
 $dataset-in-bounds-bg-color: #ffffff;
@@ -46,12 +39,24 @@ $tile-border-color: #777;
 
 $tile-background-color: #e5ffd8;
 $generating-tile-color: $text-color;
-$legend-size: 2em;
+
 
 $standard-brush-fill: rgba(30, 144, 255, 0.2);
-$visualization-brush-fill: rgba(mix($standard-brush-fill, white), 1.0);
-$visualization-brush-lane-overlay-fill: $standard-brush-fill;
+$visualization-brush-fill: rgba(mix($standard-brush-fill, white), 0.7);
+$visualization-brush-lane-overlay-fill: rgba(255, 255, 255, 0.0);
 $visualization-brush-stroke: $gray-light;
+
+@mixin frequency-axis() {
+  .y.axis.frequency {
+    * {
+      font-size: $smaller-font-size;
+    }
+
+    .axis-label {
+      font-weight: bold;
+    }
+  }
+}
 
 event-distribution-overview, event-distribution-detail {
 
@@ -79,22 +84,30 @@ event-distribution-overview, event-distribution-detail {
 
   }
 
+  .laneLabelsGroup {
+    & rect {
+      fill: rgba(255, 255, 255, 0.75);
+    }
+  }
+
   .brush .extent {
     stroke: gray;
     fill: dodgerblue;
     fill-opacity: .365;
   }
 
-  @for $i from 1 through length($mini-backgrounds) {
-    $item: nth($mini-backgrounds, $i);
+  @include frequency-axis();
 
-    & .miniItem#{$i - 1} {
-      fill: $item;
-      stroke-width: 6;
-      fill-opacity: 1.0;
-    }
+}
+
+@for $i from 1 through length($mini-backgrounds) {
+  $item: nth($mini-backgrounds, $i);
+
+  & .miniItem#{$i - 1} {
+    fill: $item;
+    background-color: $item;
+    fill-opacity: 1.0;
   }
-
 }
 
 event-distribution-overview {
@@ -103,7 +116,7 @@ event-distribution-overview {
   }
 
   & text {
-    font: 10px sans-serif;
+    font: $smaller-font-size sans-serif;
   }
 }
 
@@ -113,7 +126,7 @@ event-distribution-detail {
   }
 
   & text {
-    font: 13px sans-serif;
+    font: $font-size sans-serif;
   }
 
   .outOfBounds {
@@ -131,17 +144,34 @@ event-distribution-detail {
   .visualizationBrushLaneOverlay {
     stroke: $visualization-brush-stroke;
     fill: $visualization-brush-lane-overlay-fill;
+    pointer-events: none;
+  }
+
+  .tiles {
+    cursor: pointer;
+
+    .tile rect {
+      //stroke: rgba(0, 0, 0, 0.5);
+      //stroke-width: 1px;
+      //border-left: rgba(255, 0, 0, 0.5) solid 1px;
+      //border-right: rgba(0, 255, 0, 0.5) solid 1px;
+
+      fill: rgba(255, 255, 255, 0);
+    }
+
   }
 }
 
-event-distribution-visualisation {
+
+
+event-distribution-visualisation, event-distribution-visualisation-multi-scale {
   text-align: center;
 
   .metaTrack {
   }
 
   & text {
-    font: 13px sans-serif;
+    font: $font-size sans-serif;
   }
 
   .imageTrack {
@@ -166,78 +196,28 @@ event-distribution-visualisation {
 
         //border-left: deeppink solid 1px;
         //border-right: blue solid 1px;
-        fill: $tile-background-color;
+        //fill: $tile-background-color;
+
+        //stroke: rgba(0, 0, 0, 0.5);
+        //stroke-width: 1px;
+        //
+        //border-left: rgba(255, 0, 0, 0.5) solid 1px;
+        //border-right: rgba(0, 255, 0, 0.5) solid 1px;
+        //fill: rgba(0, 0, 255, 0.2);
       }
 
-      .tile text {
-        font-size: 8pt;
-        color: $generating-tile-color;
-        font-weight: bold;
-        padding: 0 1px;
-
-      }
+      //.tile text {
+      //  font-size: 8pt;
+      //  color: $generating-tile-color;
+      //  font-weight: bold;
+      //  padding: 0 1px;
+      //
+      //}
 
     }
 
-    .focusGroup {
-      text-anchor: middle;
-      shape-rendering: crispEdges;
 
-      .focusLine {
-        fill: $visualization-brush-stroke;
-      }
 
-      .focusTextGroup {
-
-        & path {
-          fill: none;
-          stroke-width: 1px;
-          stroke: $visualization-brush-stroke;
-        }
-      }
-
-      .focusAnchor.disabled {
-        pointer-events: none;
-      }
-      .focusText {
-        fill: $text-muted;
-      }
-      .focusAnchor[*|href] > .focusText {
-        fill: $link-color;
-      }
-
-    }
+    @include frequency-axis();
   }
-
-  dl {
-
-    dt {
-      width: $legend-size;
-      height: $legend-size;
-      display: inline-block;
-      vertical-align: middle;
-
-      border: $tile-border-color solid 1px;
-    }
-
-    dd {
-      display: inline;
-      margin-right: 1em;
-      vertical-align: middle;
-
-    }
-
-    .outOfBounds {
-      background-color: $out-of-bounds-color;
-    }
-
-    .noAudioInDataset {
-      background-color: $dataset-in-bounds-bg-color;
-    }
-
-    .generating {
-      background-color: $tile-background-color;
-    }
-  }
-
 }

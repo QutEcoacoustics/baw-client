@@ -19,7 +19,7 @@ angular
                 }
 
                 get url() {
-                    // project url
+                    // project view url
                     return $url.formatUri(
                         paths.api.links.projectAbsolute,
                         {projectId: this.id}

@@ -38,11 +38,17 @@ angular
 
             // augment d3
             var d3 = d3Provider.configureVendorInstance();
-            var coordinatesRegex = /translate\((.*)\)/;
+            const coordinatesRegex = /translate\((.*)\)/;
+
+            /**
+             * Gets or sets a translate transform for a SVG element
+             * @param {Number[]} [position]
+             * @returns {undefined|Number[]}
+             */
             d3.selection.prototype.translate = function (position) {
                 if (position) {
                     if (typeof position === "function") {
-                        return this.attr("transform", function() {
+                        return this.attr("transform", function () {
                             var p = position.apply(this, arguments);
 
                             return "translate(" + p[0] + "," + p[1] + ")";
@@ -68,7 +74,47 @@ angular
                 }
             };
 
-            d3.selection.prototype.clipPath = function(clipUrl) {
+            /**
+             * Gets or sets a translate transform for a SVG element
+             * @param {Number[]} [translate]
+             * @param {Number[]} [scale]
+             * @returns {this|{Number[],Number[]}}
+             */
+            d3.selection.prototype.translateAndScale = function (translate, scale) {
+
+                if (arguments.length === 0) {
+                    let node = this.node();
+                    for (let svgTransform of node.transform.baseVal) {
+                        // https://developer.mozilla.org/en/docs/Web/API/SVGTransform
+                        if (svgTransform.type === SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                            translate = [svgTransform.matrix.e, svgTransform.matrix.f];
+                        }
+                        else if (svgTransform.type === SVGTransform.SVG_TRANSFORM_SCALE) {
+                            scale = [svgTransform.matrix.a, svgTransform.matrix.d];
+                        }
+                    }
+
+                    return {translate, scale};
+                }
+
+                return this.attr("transform", function () {
+                    var p = translate;
+                    if (typeof translate === "function") {
+                        p = translate.apply(this, arguments);
+                    }
+                    p = p || [0, 0];
+
+                    var s = scale;
+                    if (typeof scale === "function") {
+                        s = scale.apply(this, arguments);
+                    }
+                    s = s || [1, 1];
+
+                    return `translate(${p[0]}, ${p[1]}) scale(${s[0]}, ${s[1]})`;
+                });
+            };
+
+            d3.selection.prototype.clipPath = function (clipUrl) {
                 var funcIriRegex = /url\(#(.*)\)/;
                 if (arguments.length === 1) {
                     var match = funcIriRegex.exec(clipUrl),

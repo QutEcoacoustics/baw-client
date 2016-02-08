@@ -176,7 +176,7 @@ angular.module("baw",
                 fullWidth: true
             }).
 
-            //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenCtrl'}).
+            //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenController'}).
 
             when("/accounts", {templateUrl: "/assets/accounts_sign_in.html", controller: "AccountsCtrl"}).
             when("/accounts/:action",
@@ -246,7 +246,8 @@ angular.module("baw",
                 templateUrl: paths.site.files.visualize,
                 controller: "VisualizeController",
                 title: "Visualize audio distribution",
-                fullWidth: true
+                fullWidth: true,
+                reloadOnSearch: false
             }).
 
             // missing route page
@@ -392,16 +393,6 @@ angular.module("baw",
             // reload a view and controller (shortcut for full page refresh)
             $rootScope.$reloadView = function () {
                 $route.reload();
-            };
-
-            // STANDARD DATE FORMAT
-            $rootScope.dateOptions = {
-                changeMonth: true,
-                changeYear: true,
-                dateFormat: "yy-mm-dd",
-                duration: "fast",
-                yearRange: "1800:3000"
-
             };
 
             // cross-site scripting token storage

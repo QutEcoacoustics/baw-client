@@ -1,0 +1,25 @@
+.focus-stem {
+  text-anchor: middle;
+  shape-rendering: crispEdges;
+
+  .focus-line {
+    fill: $visualization-brush-stroke;
+  }
+
+  .focus-stem-path {
+      fill: none;
+      stroke-width: 1px;
+      stroke: $visualization-brush-stroke;
+  }
+
+  .focus-anchor.disabled {
+    pointer-events: none;
+  }
+  .focus-text {
+    fill: $text-muted;
+  }
+  .focus-anchor[*|href] > .focus-text {
+    fill: $link-color;
+  }
+
+}

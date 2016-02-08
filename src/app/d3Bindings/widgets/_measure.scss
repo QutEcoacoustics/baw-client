@@ -1,0 +1,14 @@
+.measure-widget {
+  text {
+    font-size: $font-size-small;
+    fill: $text-muted;
+    stroke: none;
+  }
+
+  & * {
+
+
+    fill: none;
+    stroke: $text-muted;
+  }
+}

@@ -258,7 +258,7 @@ bawds.directive("bawAnnotationViewer",
                         AudioEvent[method](parameters, postData,
                             function success(value, headers) {
                                 console.debug("AnnotationEditor:modelUpdatesServer: " + action + " success", value);
-                                serverUpdatesModel(scope, action, value, annotation);
+                                serverUpdatesModel(scope, action, value.data, annotation);
                             },
                             function error(response) {
                                 console.error("AnnotationEditor:modelUpdatesServer: " + action + " FAILURE", response);

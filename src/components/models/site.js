@@ -24,18 +24,20 @@ angular
                     // in this case we can't provide a url to the site because the main website
                     // does not have a flat path for site access (i.e. requires a project id for the url)
                     if (this.projects && this.projects.length !== 0) {
-                        return this.projects.map((project) => {
-                            if (project && project.id) {
-                                return $url.formatUri(paths.api.links.siteAbsolute,
-                                    {
-                                        projectId: project.id,
-                                        siteId: this.id
-                                    });
-                            }
-                        });
+                        return this.projects.map(this.urlWithProject, this);
                     }
                     else {
                         return null;
+                    }
+                }
+
+                urlWithProject(project) {
+                    if (project && project.id) {
+                        return $url.formatUri(paths.api.links.siteAbsolute,
+                            {
+                                projectId: project.id,
+                                siteId: this.id
+                            });
                     }
                 }
             }

@@ -37,6 +37,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-babel");
     grunt.loadNpmTasks("grunt-ng-constant");
     grunt.loadNpmTasks("grunt-editor");
+    grunt.loadNpmTasks("grunt-beep");
 
     /**
      * Load in our build configuration file.
@@ -751,7 +752,8 @@ module.exports = function (grunt) {
              */
             options: {
                 livereload: true,
-                spawn: false
+                livereloadOnError: false,
+                spawn: true
             },
 
             /**
@@ -776,7 +778,7 @@ module.exports = function (grunt) {
                     "<%= app_files.js %>"
                 ],
                 // recent modification: files are copied before unit tests are run!
-                tasks: ["jshint:src", "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
+                tasks: ["jshint:src", "beep:error", "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
             },
 
             jssrc2: {
@@ -784,7 +786,7 @@ module.exports = function (grunt) {
                     "<%= app_files.specialjs %>",
                 ],
                 // recent modification: files are copied before unit tests are run!
-                tasks: ["jshint:src", "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
+                tasks: ["jshint:src", "beep:error","ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
             },
 
 
@@ -936,6 +938,7 @@ module.exports = function (grunt) {
                 return grunt.template.process(contents, {
                     data: {
                         build_configs: grunt.config("build_configs"),
+                        hostIp: grunt.config("hostIp"),
                         scripts: jsFiles,
                         styles: cssFiles,
                         mainStyle: mainCss,

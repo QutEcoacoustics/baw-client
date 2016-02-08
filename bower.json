@@ -16,7 +16,7 @@
     "d3": "~3.5.x",
     "draggabilly": "~1.1.x",
     "hint.css": "https://github.com/chinchang/hint.css.git",
-    "humanize-duration": "^2.6",
+    "humanize-duration": "^3.4",
     "jasmine-expect": "1.x",
     "jquery-ui": "~1.11.x",
     "lodash": "3.7",

@@ -8,9 +8,11 @@ module.exports = function (environment) {
         },
         "localization": {
             "dateTimeFormat": "YYYY-MMM-DD HH:mm:ss",
+            "dateTimeFormatD3": "%Y-%b-%d %H:%M:%S",
             "dateTimeFormatAngular": "yyyy-MMM-dd HH:mm:ss",
             "dateTimeShortFormat": "YYYY-MMM-DD HH:mm",
-            "dateFormat": "YYYY-MMM-DD"
+            "dateFormat": "YYYY-MMM-DD",
+            "timeFormatD3": "%H:%M:%S"
         },
         "listen": {
             "chunkDurationSeconds": 30.0,
@@ -29,7 +31,8 @@ module.exports = function (environment) {
                 "muted": false,
                 "autoPlay": false,
                 "visualize": {
-                    "showTemporalContext": false
+                    "hideImages": false,
+                    "hideFixed": false
                 }
             },
             "userName": "Unknown user"
