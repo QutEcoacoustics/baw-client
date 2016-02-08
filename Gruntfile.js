@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         path = require("path"),
         slash = require("slash"),
         _ = require("lodash"),
-        sass = require("./node_modules/grunt-sass/node_modules/node-sass");
+        sass = require("node-sass");
 
     var _invalidateRequireCacheForFile = function(filePath){
         delete require.cache[path.resolve(filePath)];
@@ -416,7 +416,7 @@ module.exports = function (grunt) {
         babel: {
             options: {
                 sourceMap: true,
-                optional: ["es7.comprehensions"]
+                presets: "es2015"
             },
             transpile_appjs: {
                 files: [
@@ -556,7 +556,8 @@ module.exports = function (grunt) {
          */
         jshint: {
             options: {
-                jshintrc: ".jshintrc"
+                jshintrc: ".jshintrc",
+                reporter: require("jshint-stylish")
             },
             src: [
                 "<%= app_files.js %>",

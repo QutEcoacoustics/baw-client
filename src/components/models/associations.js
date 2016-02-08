@@ -98,7 +98,8 @@ angular
                     id = "id",
                     arityMany = Symbol("many"),
                 //arityOne = Symbol("one"),
-                    unavailable = "This parent resource is unavailable.";
+                    unavailable = "This parent resource is unavailable.",
+                    undefinedToUnavailable = x => x === undefined ? new ModelUnavailable(unavailable) : x;
 
                 function many(name) {
                     return {
@@ -250,8 +251,7 @@ angular
                                     // handle the cases of missing associations
                                     // this can sometimes happen when certain associations are
                                     // filtered out from a dataset for security reasons
-                                    realAssociations = realAssociations.map(
-                                        x => x === undefined ? new ModelUnavailable(unavailable) : x);
+                                    realAssociations = realAssociations.map(undefinedToUnavailable);
 
                                     // assign to child
                                     currentTarget[targetName] = manyTargets ? realAssociations : realAssociations[0];
@@ -342,7 +342,7 @@ angular
                  */
                 function arrayToMap(items) {
                     return new Map(
-                        [for (item of items) [item[id], item]]
+                        items.map(item => [item[id], item])
                     );
                 }
 

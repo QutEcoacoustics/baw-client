@@ -57,8 +57,8 @@ describe("The predictiveCache service", function () {
 
         it("ensure the interceptor implements the expected methods", function () {
             expect(predictiveCacheInterceptor).toImplement({
-                response: null,
-                listeners: null
+                response: Function,
+                listeners: Function
             });
         });
 

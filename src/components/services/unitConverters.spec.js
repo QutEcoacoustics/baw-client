@@ -93,13 +93,13 @@ describe("The unitConverter service", function () {
 
         it("returns an object that implements the required API", function () {
             expect(converters).toImplement({
-                input: {},
-                conversions: {},
-                pixelsToSeconds: angular.noop,
-                secondsToPixels: angular.noop,
-                hertzToPixels: angular.noop,
-                invertHertz: angular.noop,
-                invertPixels: angular.noop
+                input: Object,
+                conversions: Object,
+                pixelsToSeconds: Function,
+                secondsToPixels: Function,
+                hertzToPixels: Function,
+                invertHertz: Function,
+                invertPixels: Function
             });
         });
 

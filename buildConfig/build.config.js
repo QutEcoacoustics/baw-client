@@ -90,7 +90,7 @@ module.exports = {
             "node_modules/rbush/rbush.js"
         ],
         js: [
-            "node_modules/babel/node_modules/babel-core/browser-polyfill.js",
+            "node_modules/babel-polyfill/dist/polyfill.js",
             "vendor/jquery/dist/jquery.js",
             "vendor/angular/angular.js",
 
@@ -127,13 +127,7 @@ module.exports = {
             "vendor/angular-sanitize/angular-sanitize.js",
 
             // draggabilly
-            "vendor/classie/classie.js",
-            "vendor/eventEmitter/EventEmitter.js",
-            "vendor/eventie/eventie.js",
-            "vendor/get-style-property/get-style-property.js",
-            // get-size depends on get-style-property... it has to come after it
-            "vendor/get-size/get-size.js",
-            "vendor/draggabilly/draggabilly.js",
+            "vendor/draggabilly/dist/draggabilly.pkgd.js",
 
             "vendor/d3/d3.js",
             "node_modules/rbush/rbush.js",
