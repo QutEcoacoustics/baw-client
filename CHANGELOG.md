@@ -1,3 +1,37 @@
+<a name="0.18.0"></a>
+# [0.18.0](https://github.com/QutBioacoustics/baw-client/compare/v0.17.4...v0.18.0) (2016-02-06)
+
+
+### Bug Fixes
+
+* **listen, library:** Fixed various API compat bugs ([f8683c2](https://github.com/QutBioacoustics/baw-client/commit/f8683c2))
+
+### Other Notes
+
+* **Visualize** Zooming spectrograms interface
+  * Added support for different height lanes ([2d12f74](https://github.com/QutBioacoustics/baw-client/commit/2d12f74))
+  * Completed focus stem widget ([f30f3d9](https://github.com/QutBioacoustics/baw-client/commit/f30f3d9))
+  * Completed zooming tiles addressing ([d3400f5](https://github.com/QutBioacoustics/baw-client/commit/d3400f5))
+  * enabled navigation ([6e1a7a6](https://github.com/QutBioacoustics/baw-client/commit/6e1a7a6))
+  * Finished bulk of the zooming functionality. Cleanup needed now ([25aa8d1](https://github.com/QutBioacoustics/baw-client/commit/25aa8d1))
+  * Finished deep linking functionality ([52a84aa](https://github.com/QutBioacoustics/baw-client/commit/52a84aa))
+  * Finshed fixing tap/drag event disambiguation ([9d69081](https://github.com/QutBioacoustics/baw-client/commit/9d69081))
+  * fixing up navigation links ([68e22ec](https://github.com/QutBioacoustics/baw-client/commit/68e22ec))
+  * Further work on zooming spectrograms ([4bf609f](https://github.com/QutBioacoustics/baw-client/commit/4bf609f))
+  * Intial work on zomming spectrograms ([04bf371](https://github.com/QutBioacoustics/baw-client/commit/04bf371))
+  * Major refactor, major perf improvement ([316e730](https://github.com/QutBioacoustics/baw-client/commit/316e730))
+  * Masses of visual tweaks. ([ae1daa6](https://github.com/QutBioacoustics/baw-client/commit/ae1daa6))
+  * Merging multisclae vis control with detail control - Check point ([29320b4](https://github.com/QutBioacoustics/baw-client/commit/29320b4))
+  * MOre enhancements ([f9650c0](https://github.com/QutBioacoustics/baw-client/commit/f9650c0))
+  * More progress on integrating controls - up to runtime debugging ([7abdfe2](https://github.com/QutBioacoustics/baw-client/commit/7abdfe2))
+  * More work on zooming spectrograms ([bc25fc2](https://github.com/QutBioacoustics/baw-client/commit/bc25fc2))
+  * Perf improvements ([a0c7ef5](https://github.com/QutBioacoustics/baw-client/commit/a0c7ef5))
+  * Performance optimizations for tile rendering ([cca0477](https://github.com/QutBioacoustics/baw-client/commit/cca0477))
+  * Removed the redundant zooming control ([ce054b5](https://github.com/QutBioacoustics/baw-client/commit/ce054b5))
+  * Started visual cleanup ([bc73301](https://github.com/QutBioacoustics/baw-client/commit/bc73301))
+
+
+
 <a name="0.17.4"></a>
 ## [0.17.4](https://github.com/QutBioacoustics/baw-client/compare/v0.17.3...v0.17.4) (2015-10-16)
 
@@ -999,6 +1033,8 @@ Build related fixes.
 * Worked on Virtual Bird Tour. ([bed0e47](https://github.com/QutBioacoustics/baw-client/commit/bed0e47))
 * working on media controller and tests ([f396088](https://github.com/QutBioacoustics/baw-client/commit/f396088))
 * Wrote *a lot* of unit tests. ([829d366](https://github.com/QutBioacoustics/baw-client/commit/829d366))
+
+
 
 
 
