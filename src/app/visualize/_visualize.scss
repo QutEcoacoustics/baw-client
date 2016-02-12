@@ -42,17 +42,16 @@
     }
   }
 
-  .temporalContextLabel {
-    font-size: 8pt;
-    font-weight: normal;
-  }
-
   .loadingImage {
     $loadGifPath: image-url('load.gif');
     background: $loadGifPath center center no-repeat;
     width: 100%;
     height: 60px;
 
+  }
+
+  section {
+    margin-bottom: 2px;
   }
 
   /*
