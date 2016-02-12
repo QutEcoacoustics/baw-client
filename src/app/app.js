@@ -454,9 +454,9 @@ angular.module("baw",
                      // only do it once - we best not be too annoying
                      var supported = constants.browserSupport;
                      var isSupportedBrowser = false;
-                     var version = parseFloat(bowser.browser.version);
+                var version = parseFloat(bowser.version);
                      angular.forEach(supported.optimum, function (value, key) {
-                         if (isSupportedBrowser || (bowser.browser[key] && version >= value)) {
+                    if (isSupportedBrowser || (bowser[key] && version >= value)) {
                              isSupportedBrowser = true;
                          }
                      });
@@ -467,11 +467,11 @@ angular.module("baw",
 
                                  var supportedBrowser = false;
                                  angular.forEach(supported.supported, function (value, key) {
-                                     if (bowser.browser[key]) {
+                                if (bowser[key]) {
                                          if (version >= value) {
                                              growl.info(supported.baseMessage.format({
-                                                 name: bowser.browser.name,
-                                                 version: bowser.browser.version,
+                                            name: bowser.name,
+                                            version: bowser.version,
                                                  reason: "not well tested"
                                              }));
                                              supportedBrowser = true;
@@ -485,8 +485,8 @@ angular.module("baw",
 
                                  if (!supportedBrowser) {
                                      growl.warning(supported.baseMessage.format({
-                                         name: bowser.browser.name,
-                                         version: bowser.browser.version,
+                                    name: bowser.name,
+                                    version: bowser.version,
                                          reason: "not supported"
                                      }));
                                  }
