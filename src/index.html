@@ -83,13 +83,13 @@
 <div growl>
 </div>
 
-<div ng-class="{ 'container-liquid': fullWidth, 'container': !fullWidth }">
+<div ng-class="{ 'container-fluid': fullWidth, 'container': !fullWidth }">
 
     <div class="row">
         <div class="leftMenu col-md-2" ></div>
         <!-- each view must specify the controller they use -->
-        <div id="content-wrapper" ng-class="{ 'container-liquid': fullWidth, 'col-md-8': !fullWidth }" ng-view></div>
         <div class="leftMenu col-md-2" ></div>
+        <div id="content-wrapper" ng-class="{ 'col-md-12': fullWidth, 'col-md-8': !fullWidth }" ng-view></div>
     </div>
 </div>
 
