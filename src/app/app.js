@@ -127,6 +127,12 @@ angular.module("baw",
             $routeProvider.whenDefaults = whenDefaults;
             $routeProvider.fluidIf = baw.fluidIf;
 
+            // secondary navs
+            const analysisJobsNav = {
+                title: "Analysis Jobs",
+                href: paths.site.ngRoutes.analysisJobs.list
+            };
+
             // routes
             $routeProvider.
             when("/home", {templateUrl: "/assets/home.html", controller: "HomeCtrl"}).
@@ -143,22 +149,26 @@ angular.module("baw",
             when(paths.site.ngRoutes.analysisJobs.list, {
                 templateUrl: paths.site.files.jobs.list,
                 controller: "JobsListController",
-                title: "Analysis Jobs",
-                fullWidth: false
+                title: analysisJobsNav.title,
+                fullWidth: false,
+                secondaryNavigation: []
             }).
             when(paths.site.ngRoutes.analysisJobs.new, {
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
                 title: "New Analysis Job",
-                fullWidth: false
+                fullWidth: false,
+                secondaryNavigation: [ analysisJobsNav ]
             }).
             when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
                 title: "Analysis Job Details",
-                fullWidth: false
+                fullWidth: false,
+                secondaryNavigation: [ analysisJobsNav ]
             }).
-            //when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title: "Jobs", fullWidth: false}).
+            //when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title: "Jobs",
+            // fullWidth: false}).
 
             when("/recordings", {templateUrl: "/assets/recordings.html", controller: "RecordingsCtrl"}).
             when("/recordings/:recordingId",

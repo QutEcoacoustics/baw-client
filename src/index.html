@@ -82,10 +82,12 @@
 <div ng-class="{ 'container-fluid': fullWidth, 'container': !fullWidth }">
 
     <div class="row">
-        <div class="leftMenu col-md-2" ></div>
+        <left-nav-bar class="leftMenu col-md-2" ng-if="!fullWidth"></left-nav-bar>
+
         <!-- each view must specify the controller they use -->
-        <div class="leftMenu col-md-2" ></div>
         <div id="content-wrapper" ng-class="{ 'col-md-12': fullWidth, 'col-md-8': !fullWidth }" ng-view></div>
+
+        <right-nav-bar class="rightMenu col-md-2" ng-if="!fullWidth"></right-nav-bar>
     </div>
 </div>
 

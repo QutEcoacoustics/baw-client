@@ -1,10 +1,10 @@
-angular.module("bawApp.navigation", [])
+angular.module("bawApp.navigation.breadcrumbs", [])
 
     .directive("navigation", ["conf.paths", function (paths) {
 
         return {
             restrict: "E",
-            templateUrl: paths.site.files.navigation
+            templateUrl: paths.site.files.navigation.crumbs
         };
     }])
 

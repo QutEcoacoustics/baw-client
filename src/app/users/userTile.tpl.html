@@ -1,0 +1,17 @@
+<div class="media">
+    <div class="media-left media-middle">
+        <a ng-href="$ctrl.userProfile.url" >
+            <img alt="$ctrl.userProfile.userName"
+                 class="media-object"
+                 src="{{:: $ctrl.defaultUserImage }}"
+                 ng-src="{{ $ctrl.userProfile.imageUrls.tiny.url }}">
+        </a>
+    </div>
+    <div class="media-body">
+        <a  ng-href="$ctrl.userProfile.url">
+            {{ $ctrl.userProfile.userName }}
+        </a>
+        <br>
+        over 3 years ago
+    </div>
+</div>

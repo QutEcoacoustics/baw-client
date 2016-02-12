@@ -96,7 +96,11 @@ module.exports = function (environment) {
                     "list": "annotationLibrary/annotationLibrary.tpl.html",
                     "item": "annotationLibrary/annotationItem.tpl.html"
                 },
-                "navigation": "navigation/navigation.tpl.html",
+                "navigation": {
+                    "crumbs": "navigation/navigation.tpl.html",
+                    "left": "navigation/leftNavBar.tpl.html",
+                    "right": "navigation/rightNavBar.tpl.html"
+                },
                 "birdWalk": {
                     "list": "birdWalks/birdWalks.tpl.html",
                     "detail": "birdWalks/birdWalk.tpl.html",
@@ -121,6 +125,9 @@ module.exports = function (environment) {
                 "jobs": {
                     details: "jobs/details/jobDetails.tpl.html",
                     list: "jobs/list/jobsList.tpl.html"
+                },
+                "users": {
+                    "userTile": "users/userTile.tpl.html"
                 }
             },
             // routes used by angular
@@ -200,9 +207,9 @@ module.exports = function (environment) {
 
                 var isArray = f instanceof Array;
                 if (isArray) {
-                   wasAnyArray = true;
-                    f.forEach(function(item, index) {
-                        path.push(processFragment(item,  i === (fragments.length - 1)));
+                    wasAnyArray = true;
+                    f.forEach(function (item, index) {
+                        path.push(processFragment(item, i === (fragments.length - 1)));
                     });
                 }
                 else {
@@ -242,6 +249,8 @@ module.exports = function (environment) {
     recursivePath(paths.api.links, paths.api.root);
     recursivePath(paths.site.files, paths.site.root);
     recursivePath(paths.site.ngRoutes, paths.api.root);
+    recursivePath(paths.site.assets, joinPathFragments(environment.siteRoot, environment.siteDir));
 
     return paths;
-};
+}
+;
