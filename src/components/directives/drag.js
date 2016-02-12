@@ -36,8 +36,6 @@ ngDragabilly.directive("draggie",
                 dragEnd: angular.noop
             };
 
-            // TODO: make getStyleProperty a module
-            var transformProperty = getStyleProperty("transform"); // jshint ignore:line
 
             return {
                 restrict: "A",
@@ -46,12 +44,13 @@ ngDragabilly.directive("draggie",
                 },
                 link: function (scope, $element, attributes/*, controller, transcludeFunction*/) {
                     var element = $element[0];
+                    const transformProperty = typeof element.style.transform === "string" ? "transform" : "WebkitTransform";
 
                     scope.options = angular.extend(defaultOptions, scope.options);
 
                     var draggie = new Draggabilly(element, scope.options);
 
-                    draggie.on("dragStart", function (draggie, event, pointer) {
+                    draggie.on("dragStart", function (event, pointer) {
                         scope.options.dragStart(scope, draggie, event, pointer);
 
                         if (scope.options.raiseAngularEvents) {
@@ -59,7 +58,7 @@ ngDragabilly.directive("draggie",
                         }
                     });
 
-                    draggie.on("dragMove", function (draggie, event, pointer) {
+                    draggie.on("dragMove", function (event, pointer) {
                         scope.options.dragMove(scope, draggie, event, pointer);
 
                         if (scope.options.raiseAngularEvents) {
@@ -73,7 +72,7 @@ ngDragabilly.directive("draggie",
                         element.style[transformProperty] = "translate3d( " + position.x + "px, " + position.y + "px, 0)";
                     };
 
-                    draggie.on("dragEnd", function (draggie, event, pointer) {
+                    draggie.on("dragEnd", function (event, pointer) {
                         if (!scope.options.useLeftTop) {
                             reposition(draggie.element, draggie.position);
                         }
