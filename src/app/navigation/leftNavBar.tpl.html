@@ -1,0 +1,13 @@
+<nav role="navigation">
+    <h6>
+        <strong class="text-uppercase text-muted">
+            {{ $ctrl.title }}
+        </strong>
+    </h6>
+    <ul class="nav nav-pills nav-stacked" ng-repeat="link in $ctrl.links ">
+        <li  ng-class="{ active: link.isActive }">
+            <a title="" data-toggle="tooltip" data-placement="right" ng-href="{{ link.href }}"
+               data-original-title="View your projects">{{ link.title }}</a>
+        </li>
+    </ul>
+</nav>
