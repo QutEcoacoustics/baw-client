@@ -21,7 +21,7 @@ angular.module("bawApp.login.loginWidget", [])
                             $scope.profile = UserProfile.profile;
                         });
 
-                        $scope.defaultUserImage = paths.site.files.login.defaultImageAbsolute;
+                        $scope.defaultUserImage = paths.site.assets.users.defaultImageAbsolute;
                         $scope.logoutLink = paths.api.links.logoutAbsolute;
                         $scope.loginLink = paths.api.links.loginActualAbsolute;
                         $scope.registerLink = paths.api.links.registerAbsolute;

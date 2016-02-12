@@ -32,8 +32,8 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand"
-               ng-href="{{::paths.api.links.homeAbsolute}}" target="_self">
-                {{::brand.name}}
+               ng-href="{{:: paths.api.links.homeAbsolute }}" target="_self">
+                {{:: brand.name }}
                 <!-- TODO: logo goes here -->
                 <!--<img alt="Brand" src="">-->
             </a>
@@ -42,14 +42,14 @@
         <div class="collapse navbar-collapse" collapse="isCollapsed">
             <ul class="nav navbar-nav">
                 <li ng-class="{ active: activePath('/projects') }">
-                    <a ng-href="{{paths.api.links.projectsAbsolute}}"
+                    <a ng-href="{{ paths.api.links.projectsAbsolute }}"
                        target="_self">Projects</a>
                 </li>
                 <li ng-class="{ active: activePath('/listen') }">
-                    <a ng-href="{{paths.site.ngRoutes.recentRecordings}}">Listen</a>
+                    <a ng-href="{{ paths.site.ngRoutes.recentRecordings }}">Listen</a>
                 </li>
                 <li ng-class="{ active: activePath('/library') }">
-                    <a ng-href="{{paths.site.ngRoutes.library}}">Library</a>
+                    <a ng-href="{{ paths.site.ngRoutes.library }}">Library</a>
                 </li>
                 <li class="dropdown"
                     dropdown>
@@ -129,7 +129,7 @@
     ga('create', '<%= build_configs.current.ga.trackingId %>', 'auto');
 </script>
 <% if (build_configs.current.key === "development") { %>
-    <script src="http://<%= hostIp[0] %>:35729/livereload.js"></script>
+<script src="http://<%= hostIp[0] %>:35729/livereload.js"></script>
 <% } %>
 </body>
 </html>

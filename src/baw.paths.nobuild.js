@@ -86,8 +86,7 @@ module.exports = function (environment) {
                 "error404": "error/error_404.tpl.html",
                 "home": "home/home.tpl.html",
                 "login": {
-                    "loginWidget": "login/widget/loginWidget.tpl.html",
-                    "defaultImage": "assets/img/user_spanhalf.png"
+                    "loginWidget": "login/widget/loginWidget.tpl.html"
                 },
                 "listen": "listen/listen.tpl.html",
                 "annotationViewer": "annotationViewer/annotationViewer.tpl.html",
@@ -144,7 +143,12 @@ module.exports = function (environment) {
                 }
             },
             // general links for use in <a />'s
-            "links": {}
+            "links": {},
+            "assets": {
+                "users": {
+                    "defaultImage": "assets/img/user_spanhalf.png"
+                }
+            }
         }
     };
 

@@ -8,11 +8,11 @@ module.exports = function (grunt) {
         _ = require("lodash"),
         sass = require("node-sass");
 
-    var _invalidateRequireCacheForFile = function(filePath){
+    var _invalidateRequireCacheForFile = function (filePath) {
         delete require.cache[path.resolve(filePath)];
     };
 
-    var requireNoCache =  function(filePath){
+    var requireNoCache = function (filePath) {
         _invalidateRequireCacheForFile(filePath);
         return require(filePath);
     };
@@ -38,6 +38,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-ng-constant");
     grunt.loadNpmTasks("grunt-editor");
     grunt.loadNpmTasks("grunt-beep");
+    grunt.loadNpmTasks("grunt-newer");
 
     /**
      * Load in our build configuration file.
@@ -49,7 +50,8 @@ module.exports = function (grunt) {
      */
     var processVendorJs =
         require("./buildConfig/vendorTemplateProcessing.js")
-        (grunt, "./buildConfig/vendor.wrapper", "window.bawApp.externalsCallback", userConfig.vendor_files.jsWrapWithModule);
+        (grunt, "./buildConfig/vendor.wrapper", "window.bawApp.externalsCallback",
+            userConfig.vendor_files.jsWrapWithModule);
 
 
     /**
@@ -160,8 +162,8 @@ module.exports = function (grunt) {
                 writerOpts: {
                     // conventional-changelog-writer options go here
                     // adapted from https://github.com/ajoslin/conventional-changelog/blob/master/presets/angular.js
-                    transform: function(commit) {
-                        var ignored =["chore", "style", "refactor", "test"];
+                    transform: function (commit) {
+                        var ignored = ["chore", "style", "refactor", "test"];
 
                         if (commit.type === "feat") {
                             commit.type = "Features";
@@ -212,7 +214,7 @@ module.exports = function (grunt) {
                             commit.subject = commit.subject.substring(0, 80);
                         }
 
-                        _.map(commit.notes, function(note) {
+                        _.map(commit.notes, function (note) {
                             if (note.title === "BREAKING CHANGE") {
                                 note.title = "BREAKING CHANGES";
                             }
@@ -239,7 +241,7 @@ module.exports = function (grunt) {
                     "bower.json"
                 ],
                 updateConfigs: [
-                  "pkg"
+                    "pkg"
                 ],
                 commit: true,
                 commitMessage: "chore(release): v%VERSION%",
@@ -305,7 +307,7 @@ module.exports = function (grunt) {
                         "conf.environment": appEnvironment
                     };
 
-                    Object.keys(constantsFiles).forEach(function(key) {
+                    Object.keys(constantsFiles).forEach(function (key) {
                         var constantsModule = requireNoCache(constantsFiles[key]);
 
                         result[key] = constantsModule(appEnvironment);
@@ -373,8 +375,7 @@ module.exports = function (grunt) {
                 })()
             },
             build_appjs: {
-                options: {
-                },
+                options: {},
                 files: [
                     {
                         src: ["<%= app_files.js %>", "**/!(*.spec).js.map"],
@@ -466,7 +467,7 @@ module.exports = function (grunt) {
                         });
                     }()),
                     "buildConfig/module.prefix",
-//                    "<%= build_dir %>/src/**/*generated.js",
+                    //                    "<%= build_dir %>/src/**/*generated.js",
                     "<%= build_dir %>/src/**/*.js",
                     "<%= html2js.app.dest %>",
                     "<%= html2js.common.dest %>",
@@ -530,8 +531,8 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     outputStyle: "expanded",
-                    sourceComments: "normal" /*'map',
-                     sourceMap: '<%= sassDestName %>.map'*/
+                    sourceComments: "normal",
+                    //sourceMap: true // currently broken :-(, refers to the wrong partials
                 },
                 src: "<%= app_files.processedSass %>",
                 dest: "<%= sassDest %>"
@@ -559,13 +560,21 @@ module.exports = function (grunt) {
                 jshintrc: ".jshintrc",
                 reporter: require("jshint-stylish")
             },
-            src: [
-                "<%= app_files.js %>",
-                "!src/**/*.generated.js"
-            ],
-            test: [
-                "<%= app_files.jsunit %>"
-            ],
+            src: {
+                //files: {
+                    src: [
+                        "<%= app_files.js %>",
+                        "!src/**/*.generated.js"
+                    ]
+               //}
+            },
+            test: {
+               // files: {
+                    src: [
+                        "<%= app_files.jsunit %>"
+                    ]
+               // }
+            },
             gruntfile: [
                 "Gruntfile.js"
             ]
@@ -684,22 +693,26 @@ module.exports = function (grunt) {
                 options: {
                     hostname: "*",
                     port: 8080,
-                    base: "./<%= build_dir %>",
+                    base: [
+                        "./"
+                    ],
                     //debug: true,
                     livereload: true,
                     middleware: function (connect, options) {
+                        var buildDirectory = grunt.config("build_dir");
+                        grunt.log.writeln("Base webserver directory: " + options.base);
+                        grunt.log.writeln("Build webserver directory: " + buildDirectory);
 
-                        grunt.log.writeln(options.base);
 
                         return [
                             modRewrite([
 
                                 // for source maps
-                                "^/assets/styles/vendor(.*) /vendor$1 [L]",
-                                "^/assets/styles/src(.*) /src$1 [L]",
+                                //"^/assets/styles/vendor(.*) /vendor$1 [L]",
+                                //"^/assets/styles/src(.*) /src$1 [L]",
 
                                 // this rule should match anything under assets and basically not rewrite it
-                                "^/assets(.*) /assets$1 [L]",
+                                //"^/assets(.*) /" + buildDirectory + "/assets$1 [L]",
 
 
                                 // this rule matches anything without an extension
@@ -712,7 +725,8 @@ module.exports = function (grunt) {
                                 // with or without a querystring
                                 // if matched, the root (index.html) is sent back instead.
                                 // from there, angular deals with the route information
-                                "!(\\/[^\\.\\/\\?]+\\.\\w+) / [L]"
+                                "!(\\/[^\\.\\/\\?]+\\.\\w+) /" + buildDirectory + "/ [L]"
+
                             ]),
 
                             // disable all caching
@@ -725,14 +739,28 @@ module.exports = function (grunt) {
                             // will be served from.
                             //connect.static(options.base[0]),
                             gzipStatic(options.base[0])
-
-                            // for source maps
-                            //connect.static(__dirname)
                         ];
                     }
                 }
             }
         },
+
+        /**
+         * The grunt newer task allows us to only send modified files
+         * to tasks. This task typically needs no configuration.
+         * The configuration below is to to do a performance comparison
+         * (with/without the task).
+         * The `newer` task send a live reload (after a JS source change) in
+         * ~5 seconds. With the task disabled it takes about ~40 seconds to
+         * process all files.
+         */
+        // newer: {
+        //     options: {
+        //         override: function(detail, include) {
+        //             include(true);
+        //         }
+        //     }
+        // },
 
         /**
          * And for rapid development, we have a watch set up that checks to see if
@@ -754,7 +782,7 @@ module.exports = function (grunt) {
             options: {
                 livereload: true,
                 livereloadOnError: false,
-                spawn: true
+                //spawn: true
             },
 
             /**
@@ -779,15 +807,15 @@ module.exports = function (grunt) {
                     "<%= app_files.js %>"
                 ],
                 // recent modification: files are copied before unit tests are run!
-                tasks: ["jshint:src", "beep:error", "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
+                tasks: ["newer:jshint:src", "beep:error", "ngconstant:build", "newer:babel:transpile_appjs", "copy:build_appjs", "newer:karma:unit:run"]
             },
 
             jssrc2: {
                 files: [
-                    "<%= app_files.specialjs %>",
+                    "<%= app_files.specialjs %>"
                 ],
                 // recent modification: files are copied before unit tests are run!
-                tasks: ["jshint:src", "beep:error","ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
+                tasks: ["jshint:src", "beep:error", "ngconstant:build", "babel:transpile_appjs", "copy:build_appjs", "karma:unit:run"]
             },
 
 
@@ -837,7 +865,7 @@ module.exports = function (grunt) {
                 files: [
                     "<%= app_files.jsunit %>"
                 ],
-                tasks: ["babel:transpile_appjs", "jshint:test", "karma:unit:run"],
+                tasks: ["newer:babel:transpile_appjs", "newer:jshint:test", "karma:unit:run"],
                 options: {
                     livereload: false
                 }
@@ -885,7 +913,7 @@ module.exports = function (grunt) {
         "index:compile"
     ]);
 
-    grunt.registerTask("release", "bump, changelog, commit, and publish to Github", function(type) {
+    grunt.registerTask("release", "bump, changelog, commit, and publish to Github", function (type) {
 
         if (!type) {
             grunt.fatal(new Error("release task must have a type supplied"));

@@ -37,6 +37,7 @@
     "grunt-editor": "^0.1.0",
     "grunt-html2js": "~0.3.2",
     "grunt-karma": "^0.12",
+    "grunt-newer": "^1.1.1",
     "grunt-ng-constant": "2.0",
     "grunt-sass": "^1.1.0",
     "jasmine-core": "^2.4.1",
@@ -56,6 +57,7 @@
   },
   "scripts": {
     "watch": "grunt watch",
+    "watch-verbose": "grunt watch --verbose",
     "watch-force": "grunt watch --force",
     "build": "grunt",
     "postinstall": "bower install",
