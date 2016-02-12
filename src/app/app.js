@@ -176,7 +176,8 @@ angular.module("baw",
                 fullWidth: true
             }).
 
-            //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenController'}).
+            //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller:
+            // 'ListenController'}).
 
             when("/accounts", {templateUrl: "/assets/accounts_sign_in.html", controller: "AccountsCtrl"}).
             when("/accounts/:action",
@@ -210,7 +211,8 @@ angular.module("baw",
                     return "/library?audioRecordingId=" + routeParams.recordingId;
                 },
                 templateUrl: paths.site.files.library.list,
-                title: ":recordingId", fullWidth: true
+                title: ":recordingId",
+                fullWidth: true
             }).
             when("/library/:recordingId/audio_events", {
                 redirectTo: function (routeParams, path, search) {
@@ -221,7 +223,7 @@ angular.module("baw",
             when("/library/:recordingId/audio_events/:audioEventId", {
                 templateUrl: paths.site.files.library.item,
                 controller: "AnnotationItemCtrl",
-                title: "Annotation :audioEventId"
+                title: "Annotations"
             }).
 
             when(paths.site.ngRoutes.demo.d3, {
