@@ -180,7 +180,7 @@ angular.module("baw",
                          controller: "VisualizeController",
                          title: "Visualize audio distribution",
                          fullWidth: true,
-                        reloadOnSearch: false
+                         reloadOnSearch: false
                      }).
 
                      // missing route page

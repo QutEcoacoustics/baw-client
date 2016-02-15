@@ -31,10 +31,12 @@ angular
 
                 var updateLocationSearch = _.throttle(function (newExtent) {
                     //console.debug(...newExtent);
+
+                    $location.replace();
                     $location.search({
-                        [$scope.filterType]: $routeParams[$scope.filterType],
-                        [extent0Key]: +newExtent[0],
-                        [extent1Key]: +newExtent[1]
+                         [$scope.filterType]: $routeParams[$scope.filterType],
+                         [extent0Key]: +newExtent[0],
+                         [extent1Key]: +newExtent[1]
                     });
                 }, 250);
 
