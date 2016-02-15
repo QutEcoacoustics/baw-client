@@ -24,19 +24,21 @@ angular
                       paths, constants, modelAssociations,
                       Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
                 const extent0Key = "extent0",
-                    extent1Key = "extent1";
+                    extent1Key = "extent1",
+                    selectedLaneKey = "lane";
 
                 var projectToSiteLinker = modelAssociations.generateLinker("Project", "Site");
                 var siteToProjectLinker = modelAssociations.generateLinker("Site", "Project");
 
-                var updateLocationSearch = _.throttle(function (newExtent) {
+                var updateLocationSearch = _.throttle(function (newExtent, category) {
                     //console.debug(...newExtent);
 
                     $location.replace();
                     $location.search({
-                         [$scope.filterType]: $routeParams[$scope.filterType],
-                         [extent0Key]: +newExtent[0],
-                         [extent1Key]: +newExtent[1]
+                        [$scope.filterType]: $routeParams[$scope.filterType],
+                        [extent0Key]: +newExtent[0],
+                        [extent1Key]: +newExtent[1],
+                        [selectedLaneKey]: category
                     });
                 }, 250);
 
@@ -194,11 +196,11 @@ angular
                                 startOffsetSeconds
                             );
                         },
-                        extentUpdated(newExtent) {
+                        extentUpdated(newExtent, category) {
                             //console.debug(...newExtent);
                             // if value has changed, update the search for deep linkingness
                             if (newExtent) {
-                                updateLocationSearch(newExtent);
+                                updateLocationSearch(newExtent, category);
                             }
                         }
                     },
@@ -206,7 +208,7 @@ angular
                     availableResolutions: [0.02, 0.04, 0.08, 0.16, 0.2, 0.4, 0.6, 1, 2, 4, 6, 12, 24, 60],
                     visualizationTileHeight: 256,
                     visualizationYMax: 11025,
-                    initialExtent: parameters.initialExtent
+                    initialSelection: parameters.initialSelection
                 };
 
                 $scope.getLegendClass = function (site) {
@@ -272,19 +274,24 @@ angular
 
                     $scope.ids = ids;
 
-                    var initialExtent = null;
+                    var initialSelection = null;
                     if ($routeParams.hasOwnProperty(extent0Key) &&
-                        $routeParams.hasOwnProperty(extent1Key)) {
-                        initialExtent = [
-                            new Date(Number($routeParams[extent0Key])),
-                            new Date(Number($routeParams[extent1Key]))
-                        ];
+                        $routeParams.hasOwnProperty(extent1Key) &&
+                        $routeParams.hasOwnProperty(selectedLaneKey)
+                    ) {
+                        initialSelection = {
+                            category: Number($routeParams[selectedLaneKey]),
+                            extent: [
+                                new Date(Number($routeParams[extent0Key])),
+                                new Date(Number($routeParams[extent1Key]))
+                            ]
+                        };
                     }
 
                     return {
                         error: $scope.errorState,
                         ids,
-                        initialExtent,
+                        initialSelection,
                         projectFirst: hasProjectId
                     };
                 }
