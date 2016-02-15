@@ -838,7 +838,7 @@ angular
                                         return visibleTiles[0].resolution;
                                     }
                                 },
-                                tileResolutionRatio: () => () => {
+                                tileResolutionRatio: () => {
                                     if (visibleTiles.length > 0) {
                                         return (visibleTiles[0].resolution / self.resolution).toFixed(4);
                                     }
