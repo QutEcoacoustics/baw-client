@@ -296,13 +296,18 @@ angular
                     }
 
                     /**
-                     * Order tiles based on their date. This allows elements to be painted in the
-                     * DOM in the right order
+                     * Order tiles based on their offset date, and secondarily, their recorded date.
+                     * This allows elements to be painted in the DOM in the right order
                      * @param tileA
                      * @param tileB
                      */
                     sortTiles(tileA, tileB) {
-                        return tileA.offset - tileB.offset;
+                        let delta = tileA.offset - tileB.offset;
+                        if (delta === 0) {
+                            return tileA.source.recordedDateMilliseconds - tileB.source.recordedDateMilliseconds;
+                        }
+
+                        return delta;
                     }
 
                     /**
@@ -324,7 +329,9 @@ angular
                         // round down to the lower unit of time, determined by `tileSizeSeconds`
                         var niceLow = roundDate.floor(idealTileSizeSeconds, low),
                         // subtract a 'tile' otherwise we generate one too many
-                            niceHigh = +(new Date(+roundDate.ceil(idealTileSizeSeconds, high) - idealTileSizeSeconds)),
+                            niceHigh = +(new Date(
+                                    +roundDate.ceil(idealTileSizeSeconds, high) - (idealTileSizeSeconds * msInS)
+                                )),
                             offset = +niceLow;
 
                         // use d3's in built range functionality to generate steps
