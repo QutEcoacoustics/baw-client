@@ -981,7 +981,8 @@ angular
                             domain = xScale.domain();
                         }
 
-                        updateFocusDate(false);
+                        // if it is a manual event just go back to the middle
+                        updateFocusDate(isManual);
 
 
                         //mainItemsGroup.translateAndScale(zoom.translate(), [zoom.scale(), 1]);
@@ -1328,6 +1329,9 @@ angular
                             self.focus = common.middle(self.visibleExtent);
                         }
                         else {
+                            // doing this outside of a d3 triggered event will cause an error!
+                            // In FF, SVGPoint.x/y cannot be assigned undefined which is what
+                            // happens when d3.event is null.
                             let position = d3.mouse(main.node())[0];
 
                             if (isNaN(position)) {

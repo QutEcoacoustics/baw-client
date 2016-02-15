@@ -17,7 +17,8 @@ angular
 
                 class TilingFunctions {
                     constructor(dataFunctions, yScale, xScale, tileCache, resolutionScale, tileWidthPixels, zoomStyleTiles) {
-                        for (var argument of arguments) {
+                        var args = Array.from(arguments);
+                        for (var argument of args) {
                             if (argument === undefined || argument === null) {
                                 throw new Error("A supplied argument was null or undefined");
                             }
