@@ -1,3 +1,20 @@
+<a name="0.18.1"></a>
+## [0.18.1](https://github.com/QutBioacoustics/baw-client/compare/v0.18.0...v0.18.1) (2016-02-16)
+
+
+### Bug Fixes
+
+* **visualize:** Confusing text negated ([f7b54c8](https://github.com/QutBioacoustics/baw-client/commit/f7b54c8))
+* **visualize:** Deep linking no longer messes up back history ([a382feb](https://github.com/QutBioacoustics/baw-client/commit/a382feb)), closes [#255](https://github.com/QutBioacoustics/baw-client/issues/255) [#249](https://github.com/QutBioacoustics/baw-client/issues/249)
+* **visualize:** Deep linking now includes selected category ([c64411f](https://github.com/QutBioacoustics/baw-client/commit/c64411f)), closes [#250](https://github.com/QutBioacoustics/baw-client/issues/250)
+* **visualize:** Firefox compatibility fixes ([63c7363](https://github.com/QutBioacoustics/baw-client/commit/63c7363)), closes [#256](https://github.com/QutBioacoustics/baw-client/issues/256)
+* **visualize:** Fixes tileResolutionRatio attribute ([e35d105](https://github.com/QutBioacoustics/baw-client/commit/e35d105)), closes [#251](https://github.com/QutBioacoustics/baw-client/issues/251)
+* **visualize:** More complete fix for single-click cursor focus ([47a117d](https://github.com/QutBioacoustics/baw-client/commit/47a117d)), closes [#249](https://github.com/QutBioacoustics/baw-client/issues/249) [#249](https://github.com/QutBioacoustics/baw-client/issues/249)
+* **visualize:** Tile generation algorithm unit tested ([e8e8fbb](https://github.com/QutBioacoustics/baw-client/commit/e8e8fbb)), closes [#244](https://github.com/QutBioacoustics/baw-client/issues/244)
+* **visualize:** Unit bug fixed for tile generation ([0fef143](https://github.com/QutBioacoustics/baw-client/commit/0fef143)), closes [#244](https://github.com/QutBioacoustics/baw-client/issues/244)
+
+
+
 <a name="0.18.0"></a>
 # [0.18.0](https://github.com/QutBioacoustics/baw-client/compare/v0.17.4...v0.18.0) (2016-02-06)
 
@@ -1033,6 +1050,8 @@ Build related fixes.
 * Worked on Virtual Bird Tour. ([bed0e47](https://github.com/QutBioacoustics/baw-client/commit/bed0e47))
 * working on media controller and tests ([f396088](https://github.com/QutBioacoustics/baw-client/commit/f396088))
 * Wrote *a lot* of unit tests. ([829d366](https://github.com/QutBioacoustics/baw-client/commit/829d366))
+
+
 
 
 
