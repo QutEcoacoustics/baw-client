@@ -30,8 +30,8 @@ angular
                 var projectToSiteLinker = modelAssociations.generateLinker("Project", "Site");
                 var siteToProjectLinker = modelAssociations.generateLinker("Site", "Project");
 
-                var updateLocationSearch = _.throttle(function (newExtent, category) {
-                    //console.debug(...newExtent);
+                var updateLocationSearch = function (newExtent, category) {
+                    //console.debug("Visualize::updateLocationSearch::", newExtent, category);
 
                     $location.replace();
                     $location.search({
@@ -40,7 +40,8 @@ angular
                         [extent1Key]: +newExtent[1],
                         [selectedLaneKey]: category
                     });
-                }, 250);
+                };
+                updateLocationSearch = _.throttle(updateLocationSearch, 250);
 
                 var sitesMap = {};
                 var projectsMap = {};

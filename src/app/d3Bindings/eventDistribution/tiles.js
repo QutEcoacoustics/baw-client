@@ -321,21 +321,25 @@ angular
                      */
                     splitIntoTiles(source, resolution) {
                         let idealTileSizeSeconds = resolution * this.tileWidthPixels;
+                        const minimumTileWidthThreshold = resolution;
 
                         // coerce just in case (d3 does this internally)
                         let low = new Date(this.dataFunctions.getLow(source)),
                             high = new Date(this.dataFunctions.getHigh(source));
 
                         // round down to the lower unit of time, determined by `tileSizeSeconds`
-                        var niceLow = roundDate.floor(idealTileSizeSeconds, low),
-                        // subtract a 'tile' otherwise we generate one too many
-                            niceHigh = +(new Date(
-                                    +roundDate.ceil(idealTileSizeSeconds, high) - (idealTileSizeSeconds * msInS)
-                                )),
-                            offset = +niceLow;
+                        var niceLow = +roundDate.floor(idealTileSizeSeconds, low);
+
+                        // In some cases a fraction of an extra second exists in the metadata.
+                        // We assume tiles aren't produced if they would have less than 1px of content
+                        var roundedHigh = roundDate.round(minimumTileWidthThreshold, high);
+
+                        // round up to higher unit of time, determined by `tileSizeSeconds`
+                        var niceHigh = +roundDate.ceil(idealTileSizeSeconds, roundedHigh);
 
                         // use d3's in built range functionality to generate steps
                         var tiles = [], tilingFunctions = this;
+                        var offset = niceLow;
                         while (offset < niceHigh) {
                             // d3's offset floor's the input! FFS!
                             //var nextOffset = d3.time.second.offset(offset, idealTileSizeSeconds);
