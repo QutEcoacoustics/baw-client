@@ -69,7 +69,7 @@ angular
                          */
                         _isZooming = null,
                         _hasMouseMoved = null,
-                        _navigateTimeoutPromise = null,
+                        //_navigateTimeoutPromise = null,
                         laneLinesGroup,
                         laneLabelsGroup,
                         labels,
@@ -148,9 +148,9 @@ angular
                          * A cache of tiles generated from items.
                          * @type {WeakMap<item, Map<resolution, Array<tiles>>>}
                          */
-                        tileCache = new WeakMap(),
-                        clickOrDblTimeoutMilliseconds = 300,
-                        clickOrDragThresholdPixels = 1;
+                        tileCache = new WeakMap();
+                        //clickOrDblTimeoutMilliseconds = 300,
+                        //clickOrDragThresholdPixels = 1;
 
                     // exports
                     self.updateData = updateData;
@@ -1256,12 +1256,12 @@ angular
                         return yScale(self.lanes.indexOf(self.selectedCategory)) + focusStemHeight + lanePaddingTop;
                     }
 
-                    function distance(pointA, pointB) {
-                        return Math.sqrt(
-                            Math.pow(pointA[0] - pointB[0], 2) +
-                            Math.pow(pointA[1] - pointB[1], 2)
-                        );
-                    }
+                    // function distance(pointA, pointB) {
+                    //     return Math.sqrt(
+                    //         Math.pow(pointA[0] - pointB[0], 2) +
+                    //         Math.pow(pointA[1] - pointB[1], 2)
+                    //     );
+                    // }
 
                     function onMouseDown() {
                         console.debug("distributionDetail::onMouseDown:");
