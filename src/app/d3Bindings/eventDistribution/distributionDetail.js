@@ -368,9 +368,6 @@ angular
                          tilesGroup.attr(attrs);
                          tilesBackground.attr(attrs);
                          datasetBoundsRect.attr("height", tilesHeightPixels);
-
-                         focusLine.attr("height", tilesHeightPixels + focusStemPath.root);
-                         focusTextGroup.translate(() => [0, -(focusStemPath.root + focusStemPath.stems)]);
                          */
                     }
 
@@ -1271,10 +1268,13 @@ angular
                         // HACK: disambiguate between clicks and pans
                         _isZooming = $window.performance.now();
                         _hasMouseMoved = d3.mouse(main.node());
+
+                        updateFocusDate(false);
+                        renderFocusGroup();
                     }
 
                     function onClickNavigate() {
-                        let now = $window.performance.now(),
+                        /*let now = $window.performance.now(),
                             deltaTime = now - _isZooming,
                             newPosition = d3.mouse(main.node()),
                             deltaPosition = distance(newPosition, _hasMouseMoved);
@@ -1310,7 +1310,7 @@ angular
                         }
 
                         _isZooming = null;
-                        _hasMouseMoved = null;
+                        _hasMouseMoved = null;*/
                     }
 
                     /**
@@ -1321,7 +1321,7 @@ angular
                         console.debug("distributionDetail::onDblClick: Cancelling navigate");
 
                         // cancel the navigate from a single click
-                        $timeout.cancel(_navigateTimeoutPromise);
+                        //$timeout.cancel(_navigateTimeoutPromise);
                     }
 
                     function updateFocusDate(fromMiddle) {
