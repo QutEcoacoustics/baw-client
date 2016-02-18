@@ -130,7 +130,7 @@ angular
                         return q.in("audioEvents.id", audioEventIds);
                     });
 
-                    return $http.post(url, query.toJSON()).then(x => TagModel.makeFromApi(x));
+                    return $http.post(url, query.toJSONString()).then(x => TagModel.makeFromApi(x));
                 };
 
                 return resource;
