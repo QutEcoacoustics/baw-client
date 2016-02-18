@@ -130,7 +130,8 @@ angular.module("baw",
             // secondary navs
             const analysisJobsNav = {
                 title: "Analysis Jobs",
-                href: paths.site.ngRoutes.analysisJobs.list
+                href: paths.site.ngRoutes.analysisJobs.list,
+
             };
 
             // routes
@@ -151,21 +152,24 @@ angular.module("baw",
                 controller: "JobsListController",
                 title: analysisJobsNav.title,
                 fullWidth: false,
-                secondaryNavigation: []
+                secondaryNavigation: [],
+                icon: "tasks"
             }).
             when(paths.site.ngRoutes.analysisJobs.new, {
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
-                title: "New Analysis Job",
+                title: "Analysis Job",
                 fullWidth: false,
-                secondaryNavigation: [ analysisJobsNav ]
+                secondaryNavigation: [ analysisJobsNav ],
+                icon: "tasks"
             }).
             when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
-                title: "Analysis Job Details",
+                title: "Analysis Job",
                 fullWidth: false,
-                secondaryNavigation: [ analysisJobsNav ]
+                secondaryNavigation: [ analysisJobsNav ],
+                icon: "tasks"
             }).
             //when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title: "Jobs",
             // fullWidth: false}).

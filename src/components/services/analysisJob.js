@@ -9,9 +9,10 @@ angular
             "$q",
             "conf.paths",
             "lodash",
+            "casingTransformers",
             "QueryBuilder",
             "baw.models.AnalysisJob",
-            function ($resource, bawResource, $http, $q, paths, _, QueryBuilder, AnalysisJobModel) {
+            function ($resource, bawResource, $http, $q, paths, _, casingTransformers, QueryBuilder, AnalysisJobModel) {
 
                 // FAKED!
                 let fakedData = [
@@ -19,8 +20,8 @@ angular
                         "id": 261,
                         "name": "job name 261",
                         "script_id": 261,
-                        "creator_id": 1410,
-                        "updater_id": null,
+                        "creator_id": 144,
+                        "updater_id": 9,
                         "created_at": "2015-11-06T00:37:52.201+07:00",
                         "updated_at": "2015-11-06T00:37:52.201+07:00",
                         "description": null,
@@ -51,8 +52,8 @@ angular
                         "id": 26,
                         "name": "job name 26",
                         "script_id": 26,
-                        "creator_id": 1410,
-                        "updater_id": null,
+                        "creator_id": 144,
+                        "updater_id": 9,
                         "created_at": "2015-11-06T00:37:52.201+07:00",
                         "updated_at": "2015-11-06T00:37:52.201+07:00",
                         "description": null,
@@ -83,8 +84,8 @@ angular
                         "id": 61,
                         "name": "job name 61",
                         "script_id": 61,
-                        "creator_id": 1410,
-                        "updater_id": null,
+                        "creator_id": 9,
+                        "updater_id": 144,
                         "created_at": "2015-11-06T00:37:52.201+07:00",
                         "updated_at": "2015-11-06T00:37:52.201+07:00",
                         "description": null,
@@ -110,8 +111,32 @@ angular
                             "creator_id": 1410,
                             "created_at": "2015-11-06T00:37:52.192+07:00"
                         }
+                    },
+                    {
+                        "id": 1,
+                        "name": "job test creation",
+                        "annotation_name": null,
+                        "custom_settings": "#custom settings 267",
+                        "script_id": 1,
+                        "creator_id": 9,
+                        "updater_id": 9,
+                        "deleter_id": null,
+                        "deleted_at": null,
+                        "created_at": "2016-02-18 06:03:10.047508",
+                        "updated_at": "2016-02-18 06:03:10.093619",
+                        "description": null,
+                        "saved_search_id": 1,
+                        "started_at": "2016-02-18 06:03:10.028024",
+                        "overall_status": "new",
+                        "overall_status_modified_at": "2016-02-18 06:03:10.028276",
+                        "overall_progress": {"queued":0,"working":0,"successful":0,"failed":0,"total":0},
+                        "overall_progress_modified_at": "2016-02-18 06:03:10.028776",
+                        "overall_count": 1,
+                        "overall_duration_seconds": 1.0000
                     }
+
                 ];
+                fakedData = casingTransformers.transformObject(fakedData, casingTransformers.camelize);
 
                 function query() {
                     //const path = paths.api.routes.analysisResults;
