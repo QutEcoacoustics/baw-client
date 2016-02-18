@@ -1,12 +1,13 @@
 class JobDetailsController {
-    constructor($scope, $routeParams, $http, AnalysisJobService) {
+    constructor($scope, $routeParams, $http, ActiveResource, AnalysisJobService) {
 
         $scope.analysisJob = null;
 
         AnalysisJobService
-            .get($routeParams.analysisJobId)
+            .get(Number($routeParams.analysisJobId))
             .then(function (response) {
                 $scope.analysisJob = response.data.data[0];
+                ActiveResource.set($scope.analysisJob);
             });
 
         $scope.pieChart = {};
@@ -36,6 +37,7 @@ angular
             "$scope",
             "$routeParams",
             "$http",
+            "ActiveResource",
             "AnalysisJob",
             JobDetailsController
         ]);
