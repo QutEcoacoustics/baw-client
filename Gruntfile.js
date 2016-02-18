@@ -241,7 +241,7 @@ module.exports = function (grunt) {
                     "bower.json"
                 ],
                 updateConfigs: [
-                  "pkg"
+                    "pkg"
                 ],
                 commit: true,
                 commitMessage: "chore(release): v%VERSION%",
@@ -417,6 +417,8 @@ module.exports = function (grunt) {
         babel: {
             options: {
                 sourceMap: true,
+                retainLines: true,
+
                 presets: "es2015"
             },
             transpile_appjs: {
@@ -562,16 +564,16 @@ module.exports = function (grunt) {
             },
             src: {
                 //files: {
-            src: [
-                "<%= app_files.js %>",
-                "!src/**/*.generated.js"
+                    src: [
+                        "<%= app_files.js %>",
+                        "!src/**/*.generated.js"
                     ]
                //}
             },
             test: {
                // files: {
                     src: [
-                "<%= app_files.jsunit %>"
+                        "<%= app_files.jsunit %>"
                     ]
                // }
             },
