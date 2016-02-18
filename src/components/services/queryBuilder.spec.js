@@ -106,7 +106,7 @@ describe("The QueryBuilder", function () {
 
         var actual = q.compose(q.or(q.eq("field", 3.0), q.lt("field", 6.0)));
 
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("will gracefully resolve key conflicts for combinators in the deep merge - test 2", function() {
@@ -133,7 +133,7 @@ describe("The QueryBuilder", function () {
             return q;
         });
 
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("a query operator should return a new instance of a Query", function () {
@@ -170,7 +170,7 @@ describe("The QueryBuilder", function () {
     it("should be able to produce a bare query", function () {
         var expected = {};
 
-        expect(q.toJSON(spaces)).toBe(j(expected));
+        expect(q.toJSONString(spaces)).toBe(j(expected));
     });
 
 
@@ -187,7 +187,7 @@ describe("The QueryBuilder", function () {
 
         var actual = q.compose(q.and(q.eq("field", 3.0)));
 
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should ensure .end and .compose and .create are the same", function () {
@@ -206,16 +206,16 @@ describe("The QueryBuilder", function () {
         };
 
         var actualCompose = q.compose(q.eq("fieldA", 3.0).or(q.field("fieldB").lt(6.0).gt(3.0)));
-        expect(actualCompose.toJSON(spaces)).toBe(j(expected));
+        expect(actualCompose.toJSONString(spaces)).toBe(j(expected));
 
         q = queryBuilder.create();
         var actualEnd = q.eq("fieldA", 3.0).or(q.field("fieldB").lt(6.0).gt(3.0)).end();
-        expect(actualEnd.toJSON(spaces)).toBe(j(expected));
+        expect(actualEnd.toJSONString(spaces)).toBe(j(expected));
 
         var actualCreate = queryBuilder.create(function (q) {
             return q.eq("fieldA", 3.0).or(q.field("fieldB").lt(6.0).gt(3.0));
         });
-        expect(actualCreate.toJSON(spaces)).toBe(j(expected));
+        expect(actualCreate.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should ensure not is arity:1 only", function () {
@@ -235,7 +235,7 @@ describe("The QueryBuilder", function () {
 
         var actual = q.compose(q.eq("field", 3.0));
 
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should allow more than one operation at root level", function () {
@@ -252,7 +252,7 @@ describe("The QueryBuilder", function () {
 
         var actual = q.compose(q.eq("fieldA", 3.0).eq("fieldB", 6.0));
 
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("ensures that the in function only takes an array", function () {
@@ -276,7 +276,7 @@ describe("The QueryBuilder", function () {
 
         var actual = q.compose(q.in("fieldA", new Set([1, 2, 3, 3])));
 
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("ensures that the in function automatically does a uniqueness check", function () {
@@ -290,7 +290,7 @@ describe("The QueryBuilder", function () {
 
         var actual = q.compose(q.in("fieldA", [1, 2, 3, 3]));
 
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("ensures the regex function is not supported", function () {
@@ -316,7 +316,7 @@ describe("The QueryBuilder", function () {
 
                 var actual = q.compose(q[rangeFunction]("fieldA", "(3,20.0)"));
 
-                expect(actual.toJSON(spaces)).toBe(j(expected));
+                expect(actual.toJSONString(spaces)).toBe(j(expected));
 
                 expected.filter.fieldA[rangeFunction] = {
                     from: 3,
@@ -326,7 +326,7 @@ describe("The QueryBuilder", function () {
                 q = queryBuilder.create();
                 actual = q.compose(q[rangeFunction]("fieldA", {from: 3, to: 20.0}));
 
-                expect(actual.toJSON(spaces)).toBe(j(expected));
+                expect(actual.toJSONString(spaces)).toBe(j(expected));
             });
 
             it(rangeFunction + " it validates a string range", function () {
@@ -400,7 +400,7 @@ describe("The QueryBuilder", function () {
 
                 var actual = q.compose(q[rangeFunction]("fieldA", {from: 20, to: null}));
 
-                expect(actual.toJSON(spaces)).toBe(j(expected));
+                expect(actual.toJSONString(spaces)).toBe(j(expected));
 
                 expected = {
                     filter: {
@@ -415,7 +415,7 @@ describe("The QueryBuilder", function () {
                 q = queryBuilder.create();
                 actual = q.compose(q[rangeFunction]("fieldA", {from: null, to: 20}));
 
-                expect(actual.toJSON(spaces)).toBe(j(expected));
+                expect(actual.toJSONString(spaces)).toBe(j(expected));
 
                 expected = {
                 };
@@ -423,7 +423,7 @@ describe("The QueryBuilder", function () {
                 q = queryBuilder.create();
                 actual = q.compose(q[rangeFunction]("fieldA", {from: null, to: null}));
 
-                expect(actual.toJSON(spaces)).toBe(j(expected));
+                expect(actual.toJSONString(spaces)).toBe(j(expected));
             });
         });
 
@@ -437,11 +437,11 @@ describe("The QueryBuilder", function () {
             };
 
             var actual = q.compose(q.range("fieldA", "(,20.0)"));
-            expect(actual.toJSON(spaces)).toBe(j(expected));
+            expect(actual.toJSONString(spaces)).toBe(j(expected));
 
             q = queryBuilder.create();
             actual = q.compose(q.range("fieldA", {to: 20}));
-            expect(actual.toJSON(spaces)).toBe(j(expected));
+            expect(actual.toJSONString(spaces)).toBe(j(expected));
 
             expected = {
                 filter: {
@@ -453,7 +453,7 @@ describe("The QueryBuilder", function () {
 
             q = queryBuilder.create();
             actual = q.compose(q.range("fieldA", "(,20.0]"));
-            expect(actual.toJSON(spaces)).toBe(j(expected));
+            expect(actual.toJSONString(spaces)).toBe(j(expected));
         });
 
         it("the smart range function simplifies a missing upper bound", function () {
@@ -466,7 +466,7 @@ describe("The QueryBuilder", function () {
             };
             
             var actual = q.compose(q.range("fieldA", "(3,)"));
-            expect(actual.toJSON(spaces)).toBe(j(expected));
+            expect(actual.toJSONString(spaces)).toBe(j(expected));
 
 
             expected = {
@@ -479,11 +479,11 @@ describe("The QueryBuilder", function () {
 
             q = queryBuilder.create();
             actual = q.compose(q.range("fieldA", "[3,)"));
-            expect(actual.toJSON(spaces)).toBe(j(expected));
+            expect(actual.toJSONString(spaces)).toBe(j(expected));
 
             q = queryBuilder.create();
             actual = q.compose(q.range("fieldA", {from: 3}));
-            expect(actual.toJSON(spaces)).toBe(j(expected));
+            expect(actual.toJSONString(spaces)).toBe(j(expected));
         });
 
     });
@@ -509,7 +509,7 @@ describe("The QueryBuilder", function () {
         var actual = q.compose(q.and(
             q.lt("fieldA", 3.0).contains("fieldB", "hello").gt("fieldA", 0.0)
         ).lt("fieldC", 17));
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should handle a more complex query - with separate queries for the same field", function () {
@@ -531,7 +531,7 @@ describe("The QueryBuilder", function () {
             q.lt("fieldA", 3.0).contains("fieldB", "hello"),
             q.gt("fieldA", 0.0)
         ));
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should handle a more complex query - with lots of nesting", function () {
@@ -579,7 +579,7 @@ describe("The QueryBuilder", function () {
                 )
             )
         ));
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should allow paging to be set", function () {
@@ -591,7 +591,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.page({items: 10, page: 30});
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should validate page arguments", function () {
@@ -620,7 +620,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.page.disable();
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
 
@@ -633,7 +633,7 @@ describe("The QueryBuilder", function () {
            };
 
            var actual = q.page({}).page.disable();
-           expect(actual.toJSON(spaces)).toBe(j(expected));
+           expect(actual.toJSONString(spaces)).toBe(j(expected));
        });
 
     it("should should allow re-enabling of paging", function () {
@@ -646,7 +646,7 @@ describe("The QueryBuilder", function () {
 
         // this essentially represents paging with the default options
         var actual = q.page.disable().page({});
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
 
@@ -664,7 +664,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.eq("fieldA", 30).page({items: 5, page: 2}).end();
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should always update root with paging...even if on a subquery (for disablePaging too)", function () {
@@ -680,7 +680,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.eq("fieldA", 30).page.disable().end();
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should allow sorting to be set", function () {
@@ -692,7 +692,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.sort({orderBy: "durationSeconds", direction: "desc"});
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should validate sorting arguments", function () {
@@ -731,7 +731,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.lt("fieldB", 6.0).sort({orderBy: "durationSeconds"}).end();
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should allow projection to be set (whitelist)", function () {
@@ -744,7 +744,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.project({include: ["durationSeconds", "id"]});
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
 
     });
 
@@ -757,7 +757,7 @@ describe("The QueryBuilder", function () {
             }
         };
         var actual = q.project({exclude: ["durationSeconds", "id"]});
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
     it("should validate projection arguments", function () {
@@ -796,7 +796,7 @@ describe("The QueryBuilder", function () {
         };
 
         var actual = q.notEq("fieldC", 7.5).project({include: ["durationSeconds", "fieldC"]}).end();
-        expect(actual.toJSON(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(expected));
     });
 
 
@@ -918,7 +918,7 @@ describe("The QueryBuilder", function () {
             {page: 1, items: 10}
         ).end();
 
-        expect(actual.toJSON(spaces)).toBe(j(complexExpected));
+        expect(actual.toJSONString(spaces)).toBe(j(complexExpected));
     });
 
     it("should be able to load a very complex query", function () {

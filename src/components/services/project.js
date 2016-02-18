@@ -32,7 +32,7 @@ angular
                 });
                 resource.getAllProjects = function () {
                     return $http
-                        .post(gapUrl, gapQuery.toJSON())
+                        .post(gapUrl, gapQuery.toJSONString())
                         .then(x => ProjectModel.makeFromApi(x));
                 };
 
@@ -47,7 +47,7 @@ angular
                     });
 
                     return $http
-                        .post(gpbiUrl, query.toJSON())
+                        .post(gpbiUrl, query.toJSONString())
                         .then(x => ProjectModel.makeFromApi(x));
 
                 };
@@ -61,7 +61,7 @@ angular
                     });
 
                     return $http
-                        .post(gpbsiUrl, query.toJSON())
+                        .post(gpbsiUrl, query.toJSONString())
                         .then(x => ProjectModel.makeFromApi(x));
                 };
 

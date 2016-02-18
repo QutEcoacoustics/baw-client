@@ -417,7 +417,7 @@ angular
                         return this.end.call(query);
                     };
 
-                    this.toJSON = function toJSON(spaces) {
+                this.toJSON = function() {
                         var compiledQuery = {},
                             that = this;
 
@@ -427,7 +427,11 @@ angular
                             }
                         });
 
-                        return JSON.stringify(compiledQuery, null, spaces);
+                    return compiledQuery;
+                };
+
+                this.toJSONString = function toJSON(spaces) {
+                    return JSON.stringify(this.toJSON(), null, spaces);
                     };
 
                     this.toQueryString = function toQueryString() {

@@ -30,7 +30,7 @@ angular
                 resource.getRecentRecordings = function () {
 
 
-                    return $http.post(filterUrl, query.toJSON());
+                    return $http.post(filterUrl, query.toJSONString());
                 };
 
                 resource.getRecordingsForVisualization = function (siteIds) {
@@ -45,7 +45,7 @@ angular
                     });
 
                     return $http
-                        .post(filterUrl, query.toJSON())
+                        .post(filterUrl, query.toJSONString())
                         .then(x => AudioRecordingCore.makeFromApi(x));
                 };
 
@@ -55,7 +55,7 @@ angular
                         .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]}));
 
                     return $http
-                        .post(filterUrl, query.toJSON())
+                        .post(filterUrl, query.toJSONString())
                         .then(x => AudioRecordingModel.makeFromApi(x));
                 };
                 return resource;

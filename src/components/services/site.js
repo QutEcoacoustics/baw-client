@@ -15,7 +15,7 @@ angular
                         .sort({orderBy: "name"});
                 });
                 return $http
-                    .post(url, query.toJSON())
+                    .post(url, query.toJSONString())
                     .then( x => SiteModel.makeFromApi(x));
             };
 
@@ -27,7 +27,7 @@ angular
                         .sort({orderBy: "name"});
                 });
                 return $http
-                    .post(url, query.toJSON())
+                    .post(url, query.toJSONString())
                     .then( x => SiteModel.makeFromApi(x));
             };
 
@@ -38,7 +38,7 @@ angular
                         .sort({orderBy: "name"});
                 });
                 return $http
-                    .post(url, query.toJSON())
+                    .post(url, query.toJSONString())
                     .then( x => SiteModel.makeFromApi(x));
             };
 
@@ -47,7 +47,7 @@ angular
              var query = QueryBuilder.create(function (q) {
              return q.project({"include": ["id", "name"]});
              });
-             return $http.post(url, query.toJSON());
+             return $http.post(url, query.toJSONString());
              };*/
 
 
