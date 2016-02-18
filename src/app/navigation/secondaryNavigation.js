@@ -1,9 +1,22 @@
 angular
     .module("bawApp.navigation.secondaryNavigation", [])
+    .factory("ActiveResource", function () {
+        var activeResource = {
+            resource: null,
+            set(newValue) {
+                this.resource = newValue;
+            },
+            get() {
+                return this.resource;
+            }
+        };
+
+        return activeResource;
+    })
     .controller("SecondaryNavigationController", [
-        "$rootScope", "$location", "$route", "conf.paths",
-        function ($rootScope, $location, $route, paths) {
-            var self = this;
+        "$rootScope", "$location", "$route", "conf.paths", "ActiveResource",
+        function ($rootScope, $location, $route, paths, ActiveResource) {
+            var controller = this;
 
             const omnipresentLinks = [
                 {
@@ -18,18 +31,30 @@ angular
 
             this.title = "";
             this.links = omnipresentLinks;
+            this.activeResource = null;
+            this.icon = null;
 
-            $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
-                self.title = current.$$route.title;
+            $rootScope.$on("$routeChangeSuccess", onRouteChangeSuccess);
+            $rootScope.$watch(
+                () => ActiveResource.resource,
+                () => controller.activeResource = ActiveResource.get()
+            );
 
-                let currentLink = {title: self.title, href: $location.$$path};
+            function onRouteChangeSuccess(event, current, previous, rejection) {
+                // reset the active resource
+                ActiveResource.set(null);
+
+                controller.title = current.$$route.title;
+                controller.icon = current.$$route.icon;
+
+                let currentLink = {title: controller.title, href: $location.$$path};
                 let extraLinks = current.$$route.secondaryNavigation || [];
 
-                self.links = omnipresentLinks
+                controller.links = omnipresentLinks
                     .concat(extraLinks)
                     .concat(currentLink)
                     .map(activePath.bind(null, current.$$route));
-            });
+            }
 
             let activePath = function (route, link) {
                 link.isActive = route.regexp.test(link.href);

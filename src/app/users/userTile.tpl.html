@@ -1,17 +1,17 @@
-<div class="media">
+<ng-transclude ng-show="$ctrl.resource"></ng-transclude>
+<div class="media" ng-show="$ctrl.resource">
     <div class="media-left media-middle">
-        <a ng-href="$ctrl.userProfile.url" >
-            <img alt="$ctrl.userProfile.userName"
+        <a ng-href="{{ $ctrl.userProfile.url }}">
+            <img alt="{{ $ctrl.userProfile.userName }}"
                  class="media-object"
-                 src="{{:: $ctrl.defaultUserImage }}"
-                 ng-src="{{ $ctrl.userProfile.imageUrls.tiny.url }}">
+                 ng-src="{{ $ctrl.userProfile.imageUrls.tiny.url || $ctrl.defaultUserImage }}">
         </a>
     </div>
     <div class="media-body">
-        <a  ng-href="$ctrl.userProfile.url">
+        <a ng-href="{{ $ctrl.userProfile.url }}">
             {{ $ctrl.userProfile.userName }}
         </a>
         <br>
-        over 3 years ago
+        {{ $ctrl.friendlyDate }}
     </div>
 </div>
