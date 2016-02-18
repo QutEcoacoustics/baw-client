@@ -417,6 +417,8 @@ module.exports = function (grunt) {
         babel: {
             options: {
                 sourceMap: true,
+                retainLines: true,
+
                 presets: "es2015"
             },
             transpile_appjs: {
