@@ -57,13 +57,12 @@ angular
                 .then(function success(response) {
                           console.log("User profile loaded");
 
-                          exports.profile = (new UserProfileModel(response.data.data,
-                                                                 constants.defaultProfile));
+                          exports.profile = (new UserProfileModel(response.data.data));
                           return exports.profile;
                       }, function error(response) {
                           console.error("User profile load failed, default profile loaded", response);
 
-                          exports.profile = (new UserProfileModel(null, constants.defaultProfile));
+                          exports.profile = (new UserProfileModel(null));
                       }
             ).finally(function () {
                           $rootScope.$broadcast(UserProfileEvents.loaded, exports);
@@ -85,7 +84,21 @@ angular
                         .in("id", userIds)
                         .project({"include": ["id", "userName"]});
                 });
-                return $http.post(url, query.toJSON());
+                return $http.post(url, query.toJSONString());
+            };
+
+            exports.getUserForMetadataTile = function (userId) {
+                const url = paths.api.routes.user.filterAbsolute;
+                // Note:  "imageUrls" are included no matter what as of
+                // v0.18.0 of baw-server.
+                var query = QueryBuilder.create(function (q) {
+                    return q
+                        .eq("id", userId)
+                        .project({include: ["id", "userName"]});
+                });
+
+                return $http.post(url, query)
+                    .then(x => UserProfileModel.makeFromApi(x));
             };
 
 

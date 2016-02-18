@@ -6,17 +6,14 @@ angular
         "baw.models.associations",
         "baw.models.ApiBase",
         "conf.paths",
+        "conf.constants",
         "$url",
-        function (associations, ApiBase, paths, $url) {
+        function (associations, ApiBase, paths, constants, $url) {
 
             class UserProfile extends ApiBase {
-                constructor(resource, defaultProfile) {
-                    if (!defaultProfile) {
-                        throw new Error("A default profile must be supplied");
-                    }
-
+                constructor(resource) {
                     if (!resource) {
-                        resource = defaultProfile;
+                        resource = constants.defaultProfile;
                     }
 
                     super(resource);
@@ -24,7 +21,7 @@ angular
                     this.preferences = this.preferences || {};
 
                     // ensure preferences are always updated
-                    this.preferences = Object.assign({}, defaultProfile.preferences, this.preferences);
+                    this.preferences = Object.assign({}, constants.defaultProfile.preferences, this.preferences);
 
                     this.imageUrls = this.imageUrls.reduce((s, c) => {
                         c.url = paths.api.root + c.url;

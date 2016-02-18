@@ -1,11 +1,19 @@
 <nav role="navigation">
     <h4>
-        <span class="glyphicon glyphicon-alert"></span> {{ $ctrl.title }}
+        <span class="glyphicon" ng-class="'glyphicon-' + $ctrl.icon"
+        ng-if="$ctrl.icon" ></span>
+        <span>{{ $ctrl.title }}</span>
     </h4>
-    <hr />
-    <h4>Created by</h4>
-    <user-tile></user-tile>
 
-    <h4>Modified by</h4>
-    <user-tile></user-tile>
+    <hr />
+
+    <user-tile mode="created" resource="$ctrl.activeResource">
+        <h4>Created by</h4>
+    </user-tile>
+
+    <br/>
+
+    <user-tile mode="modified" resource="$ctrl.activeResource">
+        <h4>Modified by</h4>
+    </user-tile>
 </nav>

@@ -11,18 +11,22 @@ angular
             this.friendlyDate = null;
 
             $scope.$watch(
-                (scope) => scope.resource,
-                () => {
+                (scope) => scope.$ctrl.resource,
+                function () {
+                    if (!self.resource) {
+                        return;
+                    }
+
                     // update the user profile
+                    UserProfile
+                        .getUserForMetadataTile(self.resource[userKey])
+                        .then((result) => {
+                            self.userProfile = result.data.data[0];
+                        });
 
                     // update the friendly date
-                    self.friendlyDate = moment(self.resource[self]).fromNow()
+                    self.friendlyDate = moment(self.resource[dateKey]).fromNow();
                 });
-
-
-            UserProfile.get.then(() => {
-                self.userPprofile = UserProfile.profile;
-            });
 
             this.$onInit = function () {
                 let created = this.mode === "created",
@@ -32,18 +36,18 @@ angular
                     throw new Error("The `mode` attribute must be set to `created` or `modified`");
                 }
 
-                userKey = this.mode + "Id";
-                userKey = created ? ;
+                userKey = created ?  "creatorId" : "updaterId";
+                dateKey = created ?  "createdAt" : "updatedAt";
             };
-
         }])
     .component("userTile", {
         bindings: {
             resource: "<",
-            mode: "@",
+            mode: "@"
         },
         controller: "UserTileController",
         templateUrl: ["conf.paths", function (paths) {
             return paths.site.files.users.userTile;
-        }]
+        }],
+        transclude: true
     });
