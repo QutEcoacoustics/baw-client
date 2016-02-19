@@ -4,7 +4,7 @@ class JobDetailsController {
         $scope.analysisJob = null;
 
         AnalysisJobService
-            .get($routeParams.analysisJobId)
+            .get(Number($routeParams.analysisJobId))
             .then(function (response) {
                 $scope.analysisJob = response.data.data[0];
                 ActiveResource.set($scope.analysisJob);

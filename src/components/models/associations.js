@@ -15,6 +15,23 @@ angular
 
                     constructor(resource) {
                         Object.assign(this, resource);
+
+                        // createdAt and UpdatedAt are fairly common attributes
+                        if (this.createdAt) {
+                            this.createdAt = new Date(this.createdAt);
+                        }
+
+                        if (this.updatedAt) {
+                            this.updatedAt = new Date(this.updatedAt);
+                        }
+                        
+                        if (this.creatorId) {
+                            this.creatorId = Number(this.creatorId);
+                        }
+
+                        if (this.updaterId) {
+                            this.updaterId = Number(this.updaterId);
+                        }
                     }
 
                     static make(resource) {
