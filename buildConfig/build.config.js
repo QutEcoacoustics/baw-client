@@ -165,6 +165,11 @@ module.exports = {
                 template.src = "vendor/bootstrap-sass/assets/fonts/bootstrap/**";
                 template.dest += "fonts/bootstrap/";
 
+                return template;
+            },
+            function (template) {
+                template.src = "vendor/font-awesome/fonts/**";
+                template.dest += "fonts/";
 
                 return template;
             }
