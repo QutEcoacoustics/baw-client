@@ -104,7 +104,8 @@ angular
                         "overall_progress": {"queued":0,"working":0,"successful":90,"failed":10,"total":100},
                         "overall_progress_modified_at": "2016-02-18 06:03:10.028776",
                         "overall_count": 100,
-                        "overall_duration_seconds": 100 * 3600 * 2
+                        "overall_duration_seconds": 100 * 3600 * 2,
+                        "overall_size_bytes": 123456789
 
                     },
 
@@ -125,7 +126,7 @@ angular
                         "started_at": "2016-02-18 06:03:10.028024",
                         "overall_status": "suspended",
                         "overall_status_modified_at": "2016-02-18 06:03:10.028276",
-                        "overall_progress": {"queued":0,"working":0,"successful":90,"failed":10,"total":100},
+                        "overall_progress": {"queued":10,"working":0,"successful":80,"failed":10,"total":100},
                         "overall_progress_modified_at": "2016-02-18 06:03:10.028776",
                         "overall_count": 99,
                         "overall_duration_seconds": 99999

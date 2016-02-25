@@ -124,10 +124,15 @@ module.exports = function (environment) {
                 "visualize": "visualize/visualize.tpl.html",
                 "jobs": {
                     details: "jobs/details/jobDetails.tpl.html",
-                    list: "jobs/list/jobsList.tpl.html"
+                    list: "jobs/list/jobsList.tpl.html",
+                    "new": "jobs/new/jobNew.tpl.html"
                 },
                 "users": {
                     "userTile": "users/userTile.tpl.html"
+                },
+                "savedSearches": {
+                    "new": "savedSearches/widgets/newSavedSearch.tpl.html",
+                    "list": "savedSearches/widgets/listSavedSearches.tpl.html"
                 }
             },
             // routes used by angular

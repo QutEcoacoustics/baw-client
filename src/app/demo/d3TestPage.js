@@ -34,7 +34,7 @@ angular.module("bawApp.demo.d3", [])
 
             // populate selects with options
             $q
-                .all([Site.getAllSites(), Project.getAllProjects()])
+                .all([Site.getAllSite(), Project.getAllProjectNames()])
                 .then(
                 function (results) {
                     $scope.sites = results[0].data.data;

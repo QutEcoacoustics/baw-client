@@ -1,5 +1,5 @@
 <ng-transclude ng-show="$ctrl.resource"></ng-transclude>
-<div class="media" ng-show="$ctrl.resource">
+<div class="media" ng-show="$ctrl.resource" ng-class="{skinny: $ctrl.skinny !== undefined}">
     <div class="media-left media-middle">
         <a ng-href="{{ $ctrl.userProfile.url }}">
             <img alt="{{ $ctrl.userProfile.userName }}"

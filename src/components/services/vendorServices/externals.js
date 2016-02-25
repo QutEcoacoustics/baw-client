@@ -1,6 +1,6 @@
 angular
     .module("bawApp.vendorServices", [
-        "bawApp.vendorServices.auto"
+        "bawApp.vendorServices.auto",
         //"bawApp.services.core.mySillyLibrary"
 
 

@@ -1,0 +1,39 @@
+.analysis-jobs-list {
+
+  .actions .media-list > * {
+    display: inline-block;
+    // effectively col-md-2
+    width: ($container-md / $grid-columns) * 2
+  }
+}
+
+.analysis-job-new, .analysis-job-details {
+
+  .custom-settings-panel {
+    min-height: 20 * 12px;
+    width: 100%;
+    resize: vertical;
+
+    border: 1px solid $input-border;
+    border-radius: $input-border-radius;
+
+    &[disabled] {
+      cursor: $cursor-disabled !important;
+
+      background: $list-group-disabled-bg;
+
+      & * {
+        pointer-events: none;
+      }
+
+      & .ace_cursor {
+        visibility: hidden;
+      }
+    }
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+}

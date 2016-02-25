@@ -1,0 +1,48 @@
+<!-- TODO: add typeahead filter-->
+<!-- TODO: add paging -->
+<div ng-if="!$ctrl.savedSearchesExist">
+    <p class="text-muted">No saved searches exist. Try creating a new one.</p>
+</div>
+<table class="table table-hover" ng-if="$ctrl.savedSearchesExist">
+    <caption>
+        Available saved searches
+    </caption>
+    <thead>
+    <tr>
+        <th class="col-md-1">
+        </th>
+        <th class="col-md-3">
+            Name
+        </th>
+        <th class="col-md-5">
+            Description
+        </th>
+        <th class="col-md-3">
+            Created by
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="savedSearch in $ctrl.savedSearches"
+        ng-class="{active: $ctrl.selectedSavedSearch.id === savedSearch.id }"
+        ng-click="$ctrl.selectedSavedSearch = savedSearch">
+        <td>
+            <label>
+
+                <input type="radio" name="savedSearch"
+                       ng-value="savedSearch"
+                       ng-model="$ctrl.selectedSavedSearch">
+            </label>
+        </td>
+        <td>
+            {{ savedSearch.name }}
+        </td>
+        <td>
+            {{ savedSearch.description }}
+        </td>
+        <td>
+            <user-tile mode="created" resource="savedSearch" skinny></user-tile>
+        </td>
+    </tr>
+    </tbody>
+</table>

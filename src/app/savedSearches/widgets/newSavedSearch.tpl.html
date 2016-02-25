@@ -1,0 +1,138 @@
+<ng-form class="form-horizontal" role="form" name="newSavedSearchForm">
+    <!-- TODO: feature, advanced mode -->
+    <h4>Which audio data?</h4>
+    <div class="form-group">
+        <label class="string required col-md-3 control-label" for="projectSelection">
+            <small>(required)</small>
+            Project
+        </label>
+        <div class="col-md-9">
+            <select name="projectSelection"
+                    class="form-control"
+                    ng-required="true"
+                    ng-model="$ctrl.newSavedSearch.basicFilter.projectId"
+                    ng-options="p.id as p.name for p in $ctrl.projects">
+                <option value="" disabled selected hidden>Choose a project...</option>
+            </select>
+            <ng-messages for="newSavedSearchForm.projectSelection.$error" class="help-block" role="alert"
+                         ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                <ng-message when="required">A name is required for this job.</ng-message>
+            </ng-messages>
+        </div>
+    </div>
+    <div class="form-group" ng-disabled="!$ctrl.newSavedSearch.basicFilter.projectId">
+        <label class="string required col-md-3 control-label" for="siteSelection">
+            <small>(select one or more)</small>
+            Sites
+        </label>
+        <div class="col-md-9">
+            <p class="text-right">
+                <button type="button"
+                        class="btn btn-default btn-xs"
+                        ng-disabled="!$ctrl.newSavedSearch.basicFilter.projectId"
+                        ng-click="$ctrl.selectAllSites(newSavedSearchForm.siteSelection)">
+                    Select all
+                </button>
+            </p>
+            <select name="siteSelection"
+                    class="form-control"
+                    ng-required="true"
+                    multiple
+                    ng-disabled="!$ctrl.newSavedSearch.basicFilter.projectId"
+                    ng-model="$ctrl.newSavedSearch.basicFilter.siteIds"
+                    ng-options="s.id as s.name for s in $ctrl.sites">
+                <!--<option value="" disabled selected hidden>(All sites)</option>-->
+            </select>
+
+            <ng-messages for="newSavedSearchForm.siteSelection.$error" class="help-block" role="alert"
+                         ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                <ng-message when="required">A name is required for this job.</ng-message>
+            </ng-messages>
+        </div>
+    </div>
+
+    <h4>Which dates?</h4>
+    <div class="form-group">
+        <label class="string required col-md-3 control-label" for="startDate">
+            Start date
+        </label>
+        <div class="col-md-9">
+            <p class="input-group">
+                <input name="startDate"
+                       type="text"
+                       class="form-control"
+                       uib-datepicker-popup="{{format}}"
+                       ng-model="dt"
+                       is-open="popup1.opened"
+                       datepicker-options="dateOptions"
+                       ng-required="true"
+                       close-text="Close"
+                       alt-input-formats="altInputFormats"/>
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" ng-click="open1()"><i
+                          class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </p>
+            <!--<ng-messages for="newAnalysisJobForm.startDate.$error" class="help-block" role="alert"-->
+                         <!--ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">-->
+                <!--<ng-message when="required">A name is required for this job.</ng-message>-->
+                <!--<ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>-->
+            <!--</ng-messages>-->
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label class="string required col-md-3 control-label" for="analysisJobName">
+            End date
+        </label>
+        <div class="col-md-9">
+            <input name="analysisJobName"
+                   class="form-control"
+                   type="text"
+                   ng-required="true"
+                   ng-minlength="3"
+
+                   ng-model="jobNew.analysisJob.name">
+            <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
+                         ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                <ng-message when="required">A name is required for this job.</ng-message>
+                <ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>
+            </ng-messages>
+        </div>
+    </div>
+
+    <h4>Name and description</h4>
+    <div class="form-group">
+        <label class="string required col-md-3 control-label" for="analysisJobName">
+            <small>(required)</small>
+            Name
+        </label>
+        <div class="col-md-9">
+            <input name="analysisJobName"
+                   class="form-control"
+                   type="text"
+                   ng-required="true"
+                   ng-minlength="3"
+
+                   ng-model="jobNew.analysisJob.name">
+            <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
+                         ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                <ng-message when="required">A name is required for this job.</ng-message>
+                <ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>
+            </ng-messages>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="text optional col-md-3 control-label" for="analysisJobDescription">Description</label>
+        <div class="col-md-9">
+                        <textarea name="analysisJobDescription"
+                                  rows="3"
+                                  class="text optional form-control"
+                                  ng-model="jobNew.analysisJob.description">
+                        </textarea>
+        </div>
+    </div>
+
+</ng-form>
