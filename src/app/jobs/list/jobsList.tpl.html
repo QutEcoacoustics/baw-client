@@ -1,50 +1,108 @@
-<div id="content">
+<layout content-for="action-items">
+    <li>
+        <a href="{{ jobsList.newAnalysisJobRoute }}">
+            <span class="fa fa-plus"></span>
+            New analysis job
+        </a>
+    </li>
+</layout>
+<div id="content" class="analysis-jobs-list">
     <h1>Analysis Jobs</h1>
 
     <p>
         This is a list of analysis jobs you have access to.
     </p>
 
-    <h2>Jobs</h2>
 
-    <h3>Active</h3>
-    <ul class="list-group">
-        <li class="list-group-item" ng-repeat="analysisJob in analysisJobs">
+    <div class="panel panel-default" ng-repeat="analysisJob in jobsList.analysisJobs">
+        <div class="panel-heading">
             <a href="{{ analysisJob.viewUrl }}">
-                <h4 class="list-group-item-heading">{{ analysisJob.name }}</h4>
+                <h3 class="list-group-item-heading">
+                    {{ analysisJob.name }}
+                    <span class="label pull-right"
+                          ng-class="'label-' + jobsList.getOverallStatusType(analysisJob.overallStatus)">
+                        <i ng-if="analysisJob.isActive"
+                           class="fa fa-spinner fa-spin"></i>
+                        {{ analysisJob.overallStatus }}
+                    </span>
+                </h3>
             </a>
-            <div class="list-group-item-text">
-                <div class="stats">
-                    <span>{{ analysisJob.overallCount }} recordings </span>,
-                    <span>Size: 16TB</span>,
-                    <span>{{ analysisJob.friendlyDuration }}</span>,
 
+        </div>
+        <div class="panel-body">
+            <div class="list-group-item-text">
+                <div class="stats row">
+
+                    <div class="col-md-12">
+                        Audio included in this job:
+                        <span class="">
+                            <span class="fa fa-file-audio-o"></span>
+                            recordings
+                            <span class="badge">{{ analysisJob.overallCount }}</span>
+                        </span>,
+                        <span class="">
+                            <span class="fa fa-file-audio-o"></span>
+                            size
+                            <span class="badge">{{ analysisJob.friendlySize }}</span>
+                        </span>,
+                        <span class="">
+                            <span class="fa fa-clock-o"></span>
+                            duration
+                            <span class="badge">{{ analysisJob.friendlyDuration }}</span>
+                        </span>
+
+                    </div>
                 </div>
-                <div class="">
-                    <h5>Progress</h5>
-                    <uib-progressbar
-                            ng-class="{
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>
+                            Progress
+                            <small>
+                                (last updated {{ analysisJob.friendlyUpdated }})
+                            </small>
+                        </h4>
+                        <uib-progress
+                                ng-class="{
                                 'progress-striped': analysisJob.isActive,
                                 active: analysisJob.isActive
-                            }">
-                        <uib-bar
-                                ng-repeat="bar in stacked track by $index"
-                                value="bar.value"
-                                type="{{bar.type}}">
-                            <span ng-hide="bar.value < 5">{{bar.value}}%</span>
-                        </uib-bar>
-                    </uib-progressbar>
+                            }"
+                                max="analysisJob.overallCount">
+                            <uib-bar
+                                    ng-repeat="(key, bar) in analysisJob.overallProgress track by $index"
+                                    ng-if="jobsList.isProgressKeyVisible(key)"
+                                    value="bar"
+                                    type="{{ jobsList.getType(key) }}"
+                                    tooltip-placement="auto bottom"
+                                    uib-tooltip="{{ key }}"
+
+                                    tooltip-enable="bar != 0">
+                                <span ng-hide="bar / analysisJob.overallCount < 0.05">{{bar}}%</span>
+                            </uib-bar>
+                            <uib-bar ng-if="analysisJob.isNew || analysisJob.isPreparing">
+                                <span>{{ analysisJob.overallStatus }}</span>
+                            </uib-bar>
+                        </uib-progress>
+
+                    </div>
                 </div>
-                <div class="actions">
-                    <a ng-href="{{}}" class="btn btn-primary btn-small">
-                        <span class="glyphicon glyphicon-info-sign"></span> Details
-                    </a>
-                </div>
+                <!--<div class="actions">
+
+                    <ul class="media-list">
+                        <user-tile mode="created" resource="analysisJob">
+                            <p>Created by</p>
+                        </user-tile>
+
+                        <user-tile mode="modified" resource="analysisJob">
+                            <p>Modified by</p>
+                        </user-tile>
+                        <a ng-href="{{}}" class="btn btn-primary btn-small">
+                            <span class="glyphicon glyphicon-info-sign"></span> Details
+                        </a>
+                    </ul>
+                </div>-->
             </div>
+        </div>
+    </div>
 
-        </li>
-    </ul>
-
-    <h3>Completed</h3>
 
 </div>

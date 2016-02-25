@@ -1,31 +1,36 @@
 class JobDetailsController {
     constructor($scope, $routeParams, $http, ActiveResource, AnalysisJobService) {
+        let controller = this;
 
-        $scope.analysisJob = null;
+        this.isNew = $routeParams.new;
+
+        this.random2 = Math.random() + 2;
 
         AnalysisJobService
             .get(Number($routeParams.analysisJobId))
             .then(function (response) {
-                $scope.analysisJob = response.data.data[0];
-                ActiveResource.set($scope.analysisJob);
+                controller.analysisJob = response.data.data[0];
+                ActiveResource.set(controller.analysisJob);
             });
 
-        $scope.pieChart = {};
 
-        $http.get("https://api.imgur.com/3/album/d6tSP", {
-            headers: {
-                "Authorization": "Client-ID 43d0684d25f69f1"
+        this.aceConfig = {
+            useWrapMode: true,
+            showGutter: true,
+            theme: "xcode",
+            mode: "yaml",
+            firstLineNumber: 1,
+            onLoad: function (editor) {
+                editor.renderer.$cursorLayer.element.style.display = "none";
+
+                editor.getSession().setUseSoftTabs(true);
+                // This is to remove following warning message on console:
+                // Automatically scrolling cursor into view after selection change this will be disabled in the next
+                // version set editor.$blockScrolling = Infinity to disable this message
+                editor.$blockScrolling = Infinity;
             },
-            withCredentials: false
-        }).then(
-            function success(response) {
-                let random = Math.randomInt(0, response.data.data.images.length);
-                $scope.pieChart = response.data.data.images[random];
-            },
-            function failure() {
-                console.error("API fail");
-            }
-        );
+            onChange: controller.aceChanged
+        };
     }
 }
 

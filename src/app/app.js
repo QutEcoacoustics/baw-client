@@ -56,6 +56,7 @@ angular.module("baw",
         "ui.bootstrap",
         "ui.bootstrap.typeahead",
         "ui.bootstrap.tpls",
+        "ui.ace", // code-editor! used for analysis jobs config
         "ng-form-group", // connects angular form validation with bootstrap classes
         "decipher.tags",
         "angular-growl",
@@ -130,8 +131,7 @@ angular.module("baw",
             // secondary navs
             const analysisJobsNav = {
                 title: "Analysis Jobs",
-                href: paths.site.ngRoutes.analysisJobs.list,
-
+                href: paths.site.ngRoutes.analysisJobs.list
             };
 
             // routes
@@ -150,15 +150,17 @@ angular.module("baw",
             when(paths.site.ngRoutes.analysisJobs.list, {
                 templateUrl: paths.site.files.jobs.list,
                 controller: "JobsListController",
+                controllerAs: "jobsList",
                 title: analysisJobsNav.title,
                 fullWidth: false,
                 secondaryNavigation: [],
                 icon: "tasks"
             }).
             when(paths.site.ngRoutes.analysisJobs.new, {
-                templateUrl: paths.site.files.jobs.details,
-                controller: "JobDetailsController",
-                title: "Analysis Job",
+                templateUrl: paths.site.files.jobs.new,
+                controller: "JobNewController",
+                controllerAs: "jobNew",
+                title: "New Analysis Job",
                 fullWidth: false,
                 secondaryNavigation: [ analysisJobsNav ],
                 icon: "tasks"
@@ -166,6 +168,7 @@ angular.module("baw",
             when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
+                controllerAs: "jobDetails",
                 title: "Analysis Job",
                 fullWidth: false,
                 secondaryNavigation: [ analysisJobsNav ],

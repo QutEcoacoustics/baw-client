@@ -1,16 +1,38 @@
+<layout content-for="action-items">
+    <li>
+        <a href="{{ jobsList.newAnalysisJobRoute }}">
+            <span class="fa fa-pencil"></span>
+            Edit this analysis job
+        </a>
+    </li>
+    <li>
+        <a href="{{ jobsList.newAnalysisJobRoute }}">
+            <span class="fa fa-trash"></span>
+            Delete analysis job
+        </a>
+    </li>
+</layout>
 <div id="content">
     <h1>{{ analysisJob.name }}</h1>
 
     <h2>Overview</h2>
 
+    {{ random }}
 
     <h2>Progress</h2>
 
-    <img src="{{ pieChart.link }}" >
-
+    {{ jobDetails.random2 }}
 
     <h2>Other crap</h2>
     {{ analysisJob }}
+
+    <div class="col-md-12 ">
+        <div class="custom-settings-panel"
+             ui-ace="jobDetails.aceConfig"
+             ng-model="jobDetails.analysisJob.customSettings"
+             readonly>
+        </div>
+    </div>
 
 
 </div>

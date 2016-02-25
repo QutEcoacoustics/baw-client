@@ -1,11 +1,16 @@
 <nav role="navigation">
     <h4>
-        <span class="glyphicon" ng-class="'glyphicon-' + $ctrl.icon"
+        <span class="fa" ng-class="'fa-' + $ctrl.icon"
         ng-if="$ctrl.icon" ></span>
         <span>{{ $ctrl.title }}</span>
     </h4>
 
     <hr />
+
+    <ul class="nav nav-pills nav-stacked" layout render-for="action-items">
+    </ul>
+
+    <br>
 
     <user-tile mode="created" resource="$ctrl.activeResource">
         <h4>Created by</h4>

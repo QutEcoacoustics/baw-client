@@ -1,0 +1,17 @@
+.analysis-jobs-list {
+
+  .actions .media-list > * {
+    display: inline-block;
+    // effectively col-md-2
+    width: ($container-md / $grid-columns) * 2
+  }
+}
+
+
+
+
+  .custom-settings-panel {
+    height: 20em;
+
+  }
+

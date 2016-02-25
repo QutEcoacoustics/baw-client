@@ -33,6 +33,7 @@ angular
             this.links = omnipresentLinks;
             this.activeResource = null;
             this.icon = null;
+            this.actionItemsTemplate = null;
 
             $rootScope.$on("$routeChangeSuccess", onRouteChangeSuccess);
             $rootScope.$watch(
@@ -46,6 +47,7 @@ angular
 
                 controller.title = current.$$route.title;
                 controller.icon = current.$$route.icon;
+                controller.actionItemsTemplate = current.$$route.actionsTemplateUrl;
 
                 let currentLink = {title: controller.title, href: $location.$$path};
                 let extraLinks = current.$$route.secondaryNavigation || [];
@@ -72,5 +74,89 @@ angular
         templateUrl: ["conf.paths", function (paths) {
             return paths.site.files.navigation.right;
         }]
+    })
+    .directive("layout", [
+        "$cacheFactory",
+        "$timeout",
+        "$rootScope",
+        function ($cacheFactory, $timeout, $rootScope) {
+            const layoutCacheKey = "layoutCache",
+                maxRenderAttempts = 2;
 
-    });
+            var layoutCache = $cacheFactory(layoutCacheKey),
+                renderers = [];
+
+            function storeLayout(layoutKey, linkArguments) {
+                // remove the original layout directive
+                linkArguments.element[0].remove();
+
+                layoutCache.put(layoutKey, linkArguments);
+            }
+
+            function applyLayout(renderer, renderAttempts = maxRenderAttempts) {
+                //console.debug("layoutDirective::link::applyLayout: ", renderer.layoutKey);
+
+                let storedLayout = layoutCache.get(renderer.layoutKey);
+
+                if (storedLayout === undefined) {
+                    if (renderAttempts <= 0) {
+                        console.warn(`layout rendering failed for layoutKey '${renderer.layoutKey}' after ${maxRenderAttempts} attempts`);
+                        return;
+                    }
+
+                    // try again next render loop!
+                    //console.debug(`The \`layout\` directive has no stored content for the \`render-for\` key '${renderer.layoutKey}' - trying again`);
+                    renderAttempts--;
+                    $timeout(applyLayout, 0, true, renderer, renderAttempts);
+                    return;
+                }
+
+                storedLayout.transclude(function(clone, scope) {
+                    renderer.element.append(clone);
+                    renderer.source = {content: clone, scope};
+                });
+            }
+
+            function onRouteChangeStart(event, current, previous, rejection) {
+                renderers.forEach((renderer) => {
+                    renderer.source.content.remove();
+                    renderer.source.scope.$destroy();
+                    renderer.source = null;
+                });
+
+                layoutCache.removeAll();
+            }
+
+            function viewContentLoaded() {
+                for (let renderer of renderers) {
+                    applyLayout(renderer);
+                }
+            }
+
+            $rootScope.$on("$routeChangeStart", onRouteChangeStart);
+            $rootScope.$on("$viewContentLoaded", viewContentLoaded);
+
+            return {
+                transclude: true,
+                restrict: "EA",
+                scope: {
+                    contentFor: "@",
+                    renderFor: "@"
+                },
+                link: function (scope, element, attr, ctrl, transclude) {
+                    if (attr.contentFor && attr.renderFor) {
+                        throw "The `layout` directive cannot have `content-for` and `render-for` attributes set at the same time.";
+                    }
+
+                    if (attr.contentFor) {
+                        //console.debug("layoutDirective::link::contentFor: ", attr.contentFor);
+                        storeLayout(attr.contentFor, {scope, element, attr, ctrl, transclude});
+                    }
+
+                    if (attr.renderFor) {
+                        //console.debug("layoutDirective::link::renderFor: ", attr.renderFor);
+                        renderers.push({layoutKey: attr.renderFor, scope, element, attr, ctrl, transclude});
+                    }
+                }
+            };
+        }]);
