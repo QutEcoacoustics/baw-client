@@ -30,15 +30,17 @@ angular
                 constructor(resource) {
                     super(resource);
 
-                    this.savedSearchId = Number(this.savedSearchId);
-                    this.startedAt = new Date(this.startedAt);
+                    this.customSettings = this.customSettings || null;
                     this.overallStatusModifiedAt = new Date(this.overallStatusModifiedAt);
                     this.overallProgressModifiedAt = new Date(this.overallProgressModifiedAt);
                     this.overallCount = Number(this.overallCount);
                     this.overallDurationSeconds = Number(this.overallDurationSeconds);
-                    //this.overallProgress = Object.assign({}, defaultProgress, this.overallProgress);
-
-
+                    this.overallSizeBytes = this.overallSizeBytes || null;
+                    this.overallStatus = this.overallStatus || null;
+                    this.overallProgress = this.overallProgress || null;
+                    this.savedSearchId = Number(this.savedSearchId);
+                    this.scriptId = this.scriptId || null;
+                    this.startedAt = new Date(this.startedAt);
                 }
 
 

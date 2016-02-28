@@ -17,6 +17,7 @@ angular.module(
         //"bawApp.models.taggings",
         "bawApp.models.tag",
         "bawApp.models.media",
+        "bawApp.models.script",
         //"bawApp.models.birdWalkService",
         //"bawApp.models.breadcrumbs",
         "bawApp.models.userProfile",

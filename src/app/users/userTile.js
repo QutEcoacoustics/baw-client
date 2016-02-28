@@ -43,7 +43,8 @@ angular
     .component("userTile", {
         bindings: {
             resource: "<",
-            mode: "@"
+            mode: "@",
+            skinny: "@"
         },
         controller: "UserTileController",
         templateUrl: ["conf.paths", function (paths) {
