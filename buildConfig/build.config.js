@@ -94,6 +94,7 @@ module.exports = {
             "node_modules/babel-polyfill/dist/polyfill.js",
             "vendor/jquery/dist/jquery.js",
             "vendor/angular/angular.js",
+            "vendor/angular-messages/angular-messages.js",
 
             "buildConfig/externalModule.js",
 

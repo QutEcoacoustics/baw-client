@@ -24,11 +24,12 @@
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "round-date": "^1.1",
     "angular-loading-bar": "~0.8.x",
-    "ng-form-group": "1.3.x",
+    "ng-form-group": "git://github.com/atruskie/ng-form-group.git#my-own-custom-build",
     "bootstrap-sass": "3.3-stable",
     "font-awesome": "^4.5.0",
     "filesize": "^3.2.1",
-    "angular-ui-ace": "bower"
+    "angular-ui-ace": "bower",
+    "angular-messages": "^1.5.0"
   },
   "dependencies": {},
   "private": true,

@@ -1,0 +1,13 @@
+form, ng-form {
+
+  &.ng-invalid ng-messages.summary-errors * {
+
+    color: $state-danger-text;
+  }
+
+  &.ng-valid ng-messages.summary-errors * {
+
+    color: $state-danger-text;
+  }
+
+}

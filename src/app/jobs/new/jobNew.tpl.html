@@ -23,52 +23,52 @@
                     Available analysis type
                 </caption>
                 <thead>
-                <tr>
-                    <th class="col-md-1">
-                    </th>
-                    <th class="col-md-3">
-                        Name
-                    </th>
-                    <th class="col-md-1">
-                        Version
-                    </th>
-                    <th class="col-md-4">
-                        Description
-                    </th>
-                    <th class="col-md-3">
-                        Created by
-                    </th>
-                </tr>
+                    <tr>
+                        <th class="col-md-1">
+                        </th>
+                        <th class="col-md-3">
+                            Name
+                        </th>
+                        <th class="col-md-1">
+                            Version
+                        </th>
+                        <th class="col-md-4">
+                            Description
+                        </th>
+                        <th class="col-md-3">
+                            Created by
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="script in jobNew.scripts"
-                    ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
-                    ng-click="jobNew.scriptSelect(script.id)">
-                    <td>
-                        <label>
+                    <tr ng-repeat="script in jobNew.scripts"
+                        ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
+                        ng-click="jobNew.scriptSelect(script.id)">
+                        <td>
+                            <label>
 
-                            <input type="radio" name="analysisType"
-                                   ng-value="script.id"
-                                   ng-model="jobNew.analysisJob.scriptId">
-                        </label>
-                    </td>
-                    <td>
-                        {{ script.name }}
-                    </td>
-                    <td>
-                        {{ script.version }}
-                    </td>
-                    <td>
-                        {{ script.description }}
-                    </td>
-                    <td>
-                        <user-tile mode="created" resource="script"></user-tile>
-                    </td>
-                </tr>
+                                <input type="radio" name="analysisType"
+                                       ng-value="script.id"
+                                       ng-model="jobNew.analysisJob.scriptId">
+                            </label>
+                        </td>
+                        <td>
+                            {{ script.name }}
+                        </td>
+                        <td>
+                            {{ script.version }}
+                        </td>
+                        <td>
+                            {{ script.description }}
+                        </td>
+                        <td>
+                            <user-tile mode="created" resource="script"></user-tile>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <p>
-                <input type="hidden" ng-model="jobNew.analysisJob.scriptId" ng-required="true">
+                <input type="hidden" ng-model="jobNew.analysisJob.scriptId" ng-required="true" name="analyisScriptId">
             </p>
         </div>
         <div class="row">
@@ -95,32 +95,37 @@
                 Give this analysis job a meaningful name and a useful description.
             </p>
 
-            <div class="form-group">
-                <label class="string required col-md-3 control-label" for="analysisJobName">
-                    <small>(required)</small>
-                    Name
-                </label>
-                <div class="col-md-9">
-                    <input name="analysisJobName"
-                           class="required form-control"
-                           type="text"
-                           ng-required="true"
-                           ng-minlength="3"
-                           ng-model-options="{updateOn: 'blur'}"
-                           ng-model="jobNew.analysisJob.name">
+            <fieldset>
+                <div class="form-group">
+                    <label class="string required col-md-3 control-label" for="analysisJobName">
+                        <small>(required)</small>
+                        Name
+                    </label>
+                    <div class="col-md-9">
+                        <input name="analysisJobName"
+                               class="required form-control"
+                               type="text"
+                               ng-required="true"
+                               ng-minlength="3"
+
+                               ng-model="jobNew.analysisJob.name">
+                        <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
+                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                            <ng-message when="required">You did not enter a name.</ng-message>
+                            <ng-message when="minlength">Your name is too short.</ng-message>
+                        </ng-messages>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="text optional col-md-3 control-label" for="analysisJobDescription">Description</label>
-                <div class="col-md-9">
+                <div class="form-group">
+                    <label class="text optional col-md-3 control-label" for="analysisJobDescription">Description</label>
+                    <div class="col-md-9">
                         <textarea name="analysisJobDescription"
                                   rows="3"
                                   class="text optional form-control"
                                   ng-model="jobNew.analysisJob.description">
                         </textarea>
+                    </div>
                 </div>
-            </div>
-            <ng-messages></ng-messages>
 
             </fieldset>
         </div>
@@ -135,7 +140,16 @@
                 <li>The results cannot be removed</li>
             </ul>
 
-            <div class="form-group">
+
+            <div class="">
+                <ng-messages for="newAnalysisJobForm" class="help-block summary-errors" role="alert" multiple
+                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                    <ng-message when="$invalid">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        There are errors on the form. Please fix them to continue.
+                    </ng-message>
+                </ng-messages>
+
                 <div class="col-md-offset-8 col-md-4 text-right">
                     <input type="reset" name="cancel" value="Cancel" class="btn btn-default">
                     <input type="submit" name="submit" value="Submit" class="btn btn-default btn-primary">
