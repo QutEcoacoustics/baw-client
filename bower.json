@@ -28,8 +28,7 @@
     "bootstrap-sass": "3.3-stable",
     "font-awesome": "^4.5.0",
     "filesize": "^3.2.1",
-    "angular-ui-ace": "bower",
-    "angular-auto-validate": "^1.19.3"
+    "angular-ui-ace": "bower"
   },
   "dependencies": {},
   "private": true,

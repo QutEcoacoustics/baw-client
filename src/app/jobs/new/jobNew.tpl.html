@@ -7,7 +7,11 @@
         Boring explanation
     </p>
 
-    <ng-form class="form-horizontal" accept-charset="UTF-8" name="newAnalysisJobForm">
+    <form class="form-horizontal"
+          accept-charset="UTF-8"
+          name="newAnalysisJobForm"
+          ng-submit="jobNew.submitAnalysisJob()"
+          novalidate>
         <div class="row">
             <h2>1. Select data</h2>
         </div>
@@ -19,48 +23,48 @@
                     Available analysis type
                 </caption>
                 <thead>
-                    <tr>
-                        <th class="col-md-1">
-                        </th>
-                        <th class="col-md-3">
-                            Name
-                        </th>
-                        <th class="col-md-1">
-                            Version
-                        </th>
-                        <th class="col-md-4">
-                            Description
-                        </th>
-                        <th class="col-md-3">
-                            Created by
-                        </th>
-                    </tr>
+                <tr>
+                    <th class="col-md-1">
+                    </th>
+                    <th class="col-md-3">
+                        Name
+                    </th>
+                    <th class="col-md-1">
+                        Version
+                    </th>
+                    <th class="col-md-4">
+                        Description
+                    </th>
+                    <th class="col-md-3">
+                        Created by
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="script in jobNew.scripts"
-                        ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
-                        ng-click="jobNew.scriptSelect(script.id)">
-                        <td>
-                            <label>
+                <tr ng-repeat="script in jobNew.scripts"
+                    ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
+                    ng-click="jobNew.scriptSelect(script.id)">
+                    <td>
+                        <label>
 
-                                <input type="radio" name="analysisType"
-                                       ng-value="script.id"
-                                       ng-model="jobNew.analysisJob.scriptId">
-                            </label>
-                        </td>
-                        <td>
-                            {{ script.name }}
-                        </td>
-                        <td>
-                            {{ script.version }}
-                        </td>
-                        <td>
-                            {{ script.description }}
-                        </td>
-                        <td>
-                            <user-tile mode="created" resource="script"></user-tile>
-                        </td>
-                    </tr>
+                            <input type="radio" name="analysisType"
+                                   ng-value="script.id"
+                                   ng-model="jobNew.analysisJob.scriptId">
+                        </label>
+                    </td>
+                    <td>
+                        {{ script.name }}
+                    </td>
+                    <td>
+                        {{ script.version }}
+                    </td>
+                    <td>
+                        {{ script.description }}
+                    </td>
+                    <td>
+                        <user-tile mode="created" resource="script"></user-tile>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <p>
@@ -134,11 +138,10 @@
             <div class="form-group">
                 <div class="col-md-offset-8 col-md-4 text-right">
                     <input type="reset" name="cancel" value="Cancel" class="btn btn-default">
-                    <input type="submit" name="submit" value="Submit" class="btn btn-default btn-primary"
-                           ng-submit="jobNew.submitAnalysisJob()">
+                    <input type="submit" name="submit" value="Submit" class="btn btn-default btn-primary">
                 </div>
             </div>
         </div>
-    </ng-form>
+    </form>
     <br/>
 </div>

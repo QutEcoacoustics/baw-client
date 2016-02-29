@@ -66,6 +66,10 @@ class JobNewController {
     submitAnalysisJob() {
         console.info("submitAnalysisJob: ", this.analysisJob);
     }
+
+    debug() {
+        console.info("debug: ", this.analysisJob);
+    }
 }
 
 angular
