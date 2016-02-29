@@ -67,9 +67,18 @@
                     </tr>
                 </tbody>
             </table>
-            <p>
-                <input type="hidden" ng-model="jobNew.analysisJob.scriptId" ng-required="true" name="analyisScriptId">
-            </p>
+            <div class="form-group">
+                <input type="hidden"
+                       class="form-control"
+                       ng-model="jobNew.analysisJob.scriptId"
+                       ng-required="true"
+
+                       name="analysisScriptId">
+                <ng-messages for="newAnalysisJobForm.analysisScriptId.$error" class="help-block" role="alert"
+                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                    <ng-message when="required">An analysis needs to be selected.</ng-message>
+                </ng-messages>
+            </div>
         </div>
         <div class="row">
             <h2>3. Customise analysis</h2>
@@ -103,7 +112,7 @@
                     </label>
                     <div class="col-md-9">
                         <input name="analysisJobName"
-                               class="required form-control"
+                               class="form-control"
                                type="text"
                                ng-required="true"
                                ng-minlength="3"
@@ -111,8 +120,8 @@
                                ng-model="jobNew.analysisJob.name">
                         <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
                              ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
-                            <ng-message when="required">You did not enter a name.</ng-message>
-                            <ng-message when="minlength">Your name is too short.</ng-message>
+                            <ng-message when="required">A name is required for this job.</ng-message>
+                            <ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>
                         </ng-messages>
                     </div>
                 </div>
