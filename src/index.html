@@ -85,7 +85,7 @@
         <left-nav-bar class="leftMenu col-md-2" ng-if="!fullWidth"></left-nav-bar>
 
         <!-- each view must specify the controller they use -->
-        <div id="content-wrapper" ng-class="{ 'col-md-12': fullWidth, 'col-md-8': !fullWidth }" ng-view></div>
+        <div id="content-wrapper" ng-class="{ 'col-md-12': fullWidth, 'col-md-8': !fullWidth }" ng-view autoscroll></div>
 
         <right-nav-bar class="rightMenu col-md-2" ng-if="!fullWidth"></right-nav-bar>
     </div>
