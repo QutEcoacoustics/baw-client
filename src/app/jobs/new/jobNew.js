@@ -1,12 +1,22 @@
+const jobNewControllerSymbol = Symbol("JobNewControllerPrivates");
+
 class JobNewController {
-    constructor($scope, $routeParams, AnalysisJobService, AnalysisJobModel, ScriptService) {
+    constructor($scope, $routeParams, $timeout, paths, AnalysisJobService, AnalysisJobModel, ScriptService) {
+        this[jobNewControllerSymbol] = {};
+        let privates = this[jobNewControllerSymbol];
+        
         let controller = this;
 
-        this.random2 = Math.random() + 2;
+        this.jobListPath = paths.site.ngRoutes.analysisJobs.list;
+        
+        privates.newSavedSearch = false;
+        privates.$scope = $scope;
+        privates.$timeout = $timeout;
+        privates.$scope.newAnalysisJobForm = null;
 
         // the new analysis job we are making
         this.analysisJob = new AnalysisJobModel();
-
+        this.selectedSavedSearch = null;
 
         // the available scripts
         this.scripts = [];
@@ -41,7 +51,18 @@ class JobNewController {
             }
         );
 
+        $scope.$watch(
+            () => this.analysisJob.selectedSavedSearch,
+            (newValue) => {
+                if (newValue === null || newValue === undefined) {
+                    this.analysisJob.savedSearchId = null;
 
+                }
+                else {
+                    this.analysisJob.savedSearchId = newValue.id;
+                }
+            }
+        );
     }
 
     aceLoaded(editor) {
@@ -59,16 +80,32 @@ class JobNewController {
 
     }
 
+    get newSavedSearch() {
+        return this[jobNewControllerSymbol].newSavedSearch;
+    }
+
+    set newSavedSearch(value) {
+        let p = this[jobNewControllerSymbol];
+
+        p.newSavedSearch = value;
+        this.selectedSavedSearch = null;
+
+        // this hack fixes: after form has been submitted, user chooses, new saved search,
+        // form fields are pristine.
+        if (p.$scope.newAnalysisJobForm.$invalid && p.$scope.newAnalysisJobForm.$submitted) {
+            p.$timeout(() => p.$scope.$broadcast("$submitted"));
+        }
+    }
+
+
     scriptSelect(id) {
         this.analysisJob.scriptId = id;
     }
 
     submitAnalysisJob() {
         console.info("submitAnalysisJob: ", this.analysisJob);
-    }
 
-    debug() {
-        console.info("debug: ", this.analysisJob);
+
     }
 }
 
@@ -79,6 +116,8 @@ angular
         [
             "$scope",
             "$routeParams",
+            "$timeout",
+            "conf.paths",
             "AnalysisJob",
             "baw.models.AnalysisJob",
             "Script",

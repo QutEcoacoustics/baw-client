@@ -1,6 +1,7 @@
 var bawds = bawds || angular.module("bawApp.directives", [
         "bawApp.configuration",
-        "bawApp.directives.ui.bootstrap"
+        "bawApp.directives.ui.bootstrap",
+        "bawApp.directives.formChildrenHack"
     ]);
 
 

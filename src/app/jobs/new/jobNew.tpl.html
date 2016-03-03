@@ -2,11 +2,18 @@
 
 </layout>
 <div id="content" class="analysis-job-new">
-    <h1>New Analysis Job</h1>
-    <p>
-        Boring explanation
-    </p>
-
+    <div class="row">
+        <h1>New Analysis Job</h1>
+        <p>
+            Analysis jobs can be used to analyze subsets of audio data.
+            Use this page to select the data to analyze, choose the analysis to run,
+            configure the settings for the analysis, and submit it for execution.
+        </p>
+        <p>
+            Analysis jobs take time to complete. After you create an analysis job
+            you can monitor its progress from its details page.
+        </p>
+    </div>
     <form class="form-horizontal"
           accept-charset="UTF-8"
           name="newAnalysisJobForm"
@@ -14,57 +21,110 @@
           novalidate>
         <div class="row">
             <h2>1. Select data</h2>
+            <p>What audio data do you want to analyze?</p>
+            <p ng-hide="jobNew.newSavedSearch">
+                <strong>Choose a saved search</strong>
+            </p>
+            <p ng-show="jobNew.newSavedSearch">
+                <strong>Creating a saved search...</strong>
+            </p>
+            <div ng-hide="jobNew.newSavedSearch">
+                <list-saved-searches selected="jobNew.selectedSavedSearch"></list-saved-searches>
+            </div>
+            <br/>
+            <p ng-hide="jobNew.newSavedSearch">
+                Or create a
+                <button type="button"
+                        class="btn btn-default"
+                        ng-click="jobNew.newSavedSearch = true">
+                    <span class="fa fa-plus"></span>
+                    New saved search
+                </button>
+            </p>
+            <div ng-if="jobNew.newSavedSearch">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>New saved search</h4>
+                    </div>
+                    <div class="panel-body">
+                        <new-saved-search model="jobNew.selectedSavedSearch"></new-saved-search>
+                    </div>
+                </div>
+                <p>
+                    Or
+                    <button type="button"
+                            class="btn btn-default btn-xs"
+                            ng-click="jobNew.newSavedSearch = false">
+                        cancel
+                    </button>
+                    creating a saved search.
+                </p>
+            </div>
+            <div class="form-group">
+                <input type="hidden"
+                       class="form-control"
+                       ng-model="jobNew.selectedSavedSearch"
+                       ng-required="true"
+
+                       name="selectedSavedSearch">
+                <ng-messages for="newAnalysisJobForm.selectedSavedSearch.$error" class="help-block" role="alert"
+                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                    <ng-message when="required">A saved search needs to be selected.</ng-message>
+                </ng-messages>
+                t
+                {{ jobNew.selectedSavedSearch }}
+            </div>
         </div>
         <div class="row">
-            <h2>2. Select analysis types</h2>
+            <h2>2. Select analysis type</h2>
 
-            <table class="table table-hover">
+            <table class="table table-hover col-md-12">
                 <caption>
-                    Available analysis type
+                    Available analysis types
                 </caption>
                 <thead>
-                    <tr>
-                        <th class="col-md-1">
-                        </th>
-                        <th class="col-md-3">
-                            Name
-                        </th>
-                        <th class="col-md-1">
-                            Version
-                        </th>
-                        <th class="col-md-4">
-                            Description
-                        </th>
-                        <th class="col-md-3">
-                            Created by
-                        </th>
-                    </tr>
+                <tr>
+                    <th class="col-md-1">
+                    </th>
+                    <th class="col-md-3">
+                        Name
+                    </th>
+                    <th class="col-md-1">
+                        Version
+                    </th>
+                    <th class="col-md-4">
+                        Description
+                    </th>
+                    <th class="col-md-3">
+                        Created by
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="script in jobNew.scripts"
-                        ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
-                        ng-click="jobNew.scriptSelect(script.id)">
-                        <td>
-                            <label>
+                <tr ng-repeat="script in jobNew.scripts"
+                    ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
+                    ng-click="jobNew.scriptSelect(script.id)">
+                    <td>
+                        <label>
 
-                                <input type="radio" name="analysisType"
-                                       ng-value="script.id"
-                                       ng-model="jobNew.analysisJob.scriptId">
-                            </label>
-                        </td>
-                        <td>
-                            {{ script.name }}
-                        </td>
-                        <td>
-                            {{ script.version }}
-                        </td>
-                        <td>
-                            {{ script.description }}
-                        </td>
-                        <td>
-                            <user-tile mode="created" resource="script"></user-tile>
-                        </td>
-                    </tr>
+                            <input type="radio" name="analysisType"
+                                   ng-value="script.id"
+                                   ng-model="jobNew.analysisJob.scriptId">
+                        </label>
+                    </td>
+                    <td>
+                        {{ script.name }}
+                    </td>
+                    <td>
+                        {{ script.version }}
+                    </td>
+                    <td>
+                        {{ script.description }}
+                    </td>
+                    <td>
+                        <user-tile mode="created" resource="script" skinny></user-tile>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <div class="form-group">
@@ -119,9 +179,10 @@
 
                                ng-model="jobNew.analysisJob.name">
                         <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
-                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                                     ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
                             <ng-message when="required">A name is required for this job.</ng-message>
-                            <ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>
+                            <ng-message when="minlength">The name entered is too short (3 character minimum)>
+                            </ng-message>
                         </ng-messages>
                     </div>
                 </div>
@@ -150,20 +211,19 @@
             </ul>
 
 
-            <div class="">
-                <ng-messages for="newAnalysisJobForm" class="help-block summary-errors" role="alert" multiple
-                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
-                    <ng-message when="$invalid">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        There are errors on the form. Please fix them to continue.
-                    </ng-message>
-                </ng-messages>
+            <ng-messages for="newAnalysisJobForm" class="help-block summary-errors" role="alert" multiple
+                         ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                <ng-message when="$invalid">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    There are errors on the page. Please fix them to continue.
+                </ng-message>
+            </ng-messages>
 
-                <div class="col-md-offset-8 col-md-4 text-right">
-                    <input type="reset" name="cancel" value="Cancel" class="btn btn-default">
-                    <input type="submit" name="submit" value="Submit" class="btn btn-default btn-primary">
-                </div>
+            <div class="col-md-offset-8 col-md-4 text-right">
+                <a ng-href="{{ jobNew.jobListPath }}" class="btn btn-default">Cancel</a>
+                <input type="submit" name="submit" value="Submit" class="btn btn-default btn-primary">
             </div>
+
         </div>
     </form>
     <br/>

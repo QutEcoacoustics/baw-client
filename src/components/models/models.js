@@ -5,7 +5,7 @@ angular.module(
         "rails",
         "bawApp.services",
         "bawApp.models.associations",
-//
+        //
         // endpoint specific
         "bawApp.models.analysisJob",
         //"bawApp.models.bookmark",
@@ -17,6 +17,7 @@ angular.module(
         //"bawApp.models.taggings",
         "bawApp.models.tag",
         "bawApp.models.media",
+        "bawApp.models.savedSearch",
         "bawApp.models.script",
         //"bawApp.models.birdWalkService",
         //"bawApp.models.breadcrumbs",

@@ -129,6 +129,10 @@ module.exports = function (environment) {
                 },
                 "users": {
                     "userTile": "users/userTile.tpl.html"
+                },
+                "savedSearches": {
+                    "new": "savedSearches/widgets/newSavedSearch.tpl.html",
+                    "list": "savedSearches/widgets/listSavedSearches.tpl.html"
                 }
             },
             // routes used by angular

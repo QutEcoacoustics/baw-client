@@ -23,7 +23,7 @@ angular
 
 
                 get friendlyUpdated() {
-                    var lastUpdate = Math.max(this.overallProgressModifiedAt, this.overallStatusModifiedAt);
+                    var lastUpdate = this.createdAt;
 
                     return  moment(lastUpdate).fromNow();
                 }

@@ -25,6 +25,7 @@ angular.module(
         "bawApp.services.taggings",
         "bawApp.services.tag",
         "bawApp.services.media",
+        "bawApp.services.savedSearch",
         "bawApp.services.script",
         "bawApp.services.birdWalkService",
         "bawApp.services.breadcrumbs",
