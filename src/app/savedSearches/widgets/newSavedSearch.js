@@ -17,6 +17,18 @@ class NewSavedSearchController {
         this.projects = [];
         this.sites = [];
 
+        // settings
+
+        this.dateSettingsStart = {
+            maxDate: this.newSavedSearch.basicFilter.maximumDate
+        };
+
+        this.dateSettingsEnd = {
+            minDate: this.newSavedSearch.basicFilter.minimumDate
+
+        };
+
+
         // load projects
         ProjectService
             .getAllProjectNames()
@@ -26,7 +38,11 @@ class NewSavedSearchController {
         // WARNING: object structural equality watcher!
         $scope.$watch(
             () => this.newSavedSearch,
-            () => this.newSavedSearch.updateQueryFromBasicFilter(),
+            () => {
+                this.newSavedSearch.updateQueryFromBasicFilter();
+                this.dateSettingsStart.maxDate = this.newSavedSearch.basicFilter.maximumDate;
+                this.dateSettingsEnd.minDate = this.newSavedSearch.basicFilter.minimumDate;
+            },
             true
         );
 
@@ -34,7 +50,7 @@ class NewSavedSearchController {
             () => this.newSavedSearch.basicFilter.projectId,
             (newValue) => {
                 if (newValue) {
-                    this.downloadSites();
+                    this.loadSites();
                 }
             }
         );
@@ -45,12 +61,15 @@ class NewSavedSearchController {
         siteSelectorModel.$setDirty();
     }
 
-    downloadSites() {
+    loadSites() {
         this[newSavedSearchControllerSymbol].SiteService
             .getSitesByProjectIds([this.newSavedSearch.basicFilter.projectId])
             .then((response) => this.sites = response.data.data);
     }
-
+    
+    suggestName() {
+        this.newSavedSearch.name = this.newSavedSearch.generateSuggestedName(this.projects, this.sites);
+    }
 
 }
 
@@ -68,8 +87,9 @@ angular
             newSavedSearch: "=model",
         },
         controller: "NewSavedSearchController",
-        templateUrl: ["conf.paths", function (paths) {
-            return paths.site.files.savedSearches.new;
-        }]
+        templateUrl: [
+            "conf.paths", function (paths) {
+                return paths.site.files.savedSearches.new;
+            }]
     });
 

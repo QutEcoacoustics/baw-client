@@ -19,12 +19,13 @@ angular
         "baw.models.ApiBase",
         "baw.models.AnalysisJob.progressKeys",
         "baw.models.AnalysisJob.statusKeys",
+        "UserProfile",
         "conf.paths",
         "$url",
         "humanize-duration",
         "filesize",
         "moment",
-        function (associations, ApiBase, keys, statusKeys, paths, $url, humanizeDuration, filesize, moment) {
+        function (associations, ApiBase, keys, statusKeys, UserProfile, paths, $url, humanizeDuration, filesize, moment) {
 
             class AnalysisJob extends ApiBase {
                 constructor(resource) {
@@ -42,7 +43,6 @@ angular
                     this.scriptId = this.scriptId || null;
                     this.startedAt = new Date(this.startedAt);
                 }
-
 
                 get isNew() {
                     return this.overallStatus === statusKeys.new;
@@ -98,6 +98,29 @@ angular
                     return $url.formatUri(paths.site.ngRoutes.analysisJobs.list);
                 }
 
+
+                generateSuggestedName() {
+                    let currentUserName =  !!UserProfile.profile ? UserProfile.profile.userName : "(unknown user)";
+                    let scriptName = !!this.script ? this.script.name : "(not chosen)";
+                    let savedSearchName = !!this.savedSearch && !!this.savedSearch.name ? this.savedSearch.name : "(not chosen)";
+                    return `${currentUserName} running the ${scriptName} analysis on the ${savedSearchName} data`;
+                }
+
+                get savedSearch() {
+                    return this._savedSearch || null;
+                }
+
+                set savedSearch(value) {
+                    this._savedSearch = value;
+                }
+
+                get script() {
+                    return this._script || null;
+                }
+
+                set script(value) {
+                    this._script = value;
+                }
 
             }
 

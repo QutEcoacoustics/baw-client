@@ -51,3 +51,16 @@ a.disabled {
   padding: $nav-link-padding;
   margin: 0;
 }
+
+
+.form-group.has-error .input-group-btn button {
+  border-color: $state-danger-text;
+}
+
+.form-group.has-warning .input-group-btn button {
+  border-color:$state-warning-text;
+}
+
+.form-group.has-success .input-group-btn button {
+  border-color: $state-success-text;
+}

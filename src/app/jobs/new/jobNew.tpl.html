@@ -22,26 +22,26 @@
         <div class="row">
             <h2>1. Select data</h2>
             <p>What audio data do you want to analyze?</p>
-            <p ng-hide="jobNew.newSavedSearch">
+            <p ng-hide="jobNew.isCreatingNewSavedSearch">
                 <strong>Choose a saved search</strong>
             </p>
-            <p ng-show="jobNew.newSavedSearch">
+            <p ng-show="jobNew.isCreatingNewSavedSearch">
                 <strong>Creating a saved search...</strong>
             </p>
-            <div ng-hide="jobNew.newSavedSearch">
+            <div ng-hide="jobNew.isCreatingNewSavedSearch">
                 <list-saved-searches selected="jobNew.selectedSavedSearch"></list-saved-searches>
             </div>
             <br/>
-            <p ng-hide="jobNew.newSavedSearch">
+            <p ng-hide="jobNew.isCreatingNewSavedSearch">
                 Or create a
                 <button type="button"
                         class="btn btn-default"
-                        ng-click="jobNew.newSavedSearch = true">
+                        ng-click="jobNew.isCreatingNewSavedSearch = true">
                     <span class="fa fa-plus"></span>
                     New saved search
                 </button>
             </p>
-            <div ng-if="jobNew.newSavedSearch">
+            <div ng-if="jobNew.isCreatingNewSavedSearch">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4>New saved search</h4>
@@ -54,7 +54,7 @@
                     Or
                     <button type="button"
                             class="btn btn-default btn-xs"
-                            ng-click="jobNew.newSavedSearch = false">
+                            ng-click="jobNew.isCreatingNewSavedSearch = false">
                         cancel
                     </button>
                     creating a saved search.
@@ -68,11 +68,9 @@
 
                        name="selectedSavedSearch">
                 <ng-messages for="newAnalysisJobForm.selectedSavedSearch.$error" class="help-block" role="alert"
-                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.selectedSavedSearch.$dirty">
                     <ng-message when="required">A saved search needs to be selected.</ng-message>
                 </ng-messages>
-                t
-                {{ jobNew.selectedSavedSearch }}
             </div>
         </div>
         <div class="row">
@@ -135,7 +133,7 @@
 
                        name="analysisScriptId">
                 <ng-messages for="newAnalysisJobForm.analysisScriptId.$error" class="help-block" role="alert"
-                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                             ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.analysisScriptId.$dirty">
                     <ng-message when="required">An analysis needs to be selected.</ng-message>
                 </ng-messages>
             </div>
@@ -171,15 +169,25 @@
                         Name
                     </label>
                     <div class="col-md-9">
-                        <input name="analysisJobName"
-                               class="form-control"
-                               type="text"
-                               ng-required="true"
-                               ng-minlength="3"
+                        <p>
+                            <input name="analysisJobName"
+                                   class="form-control"
+                                   type="text"
+                                   ng-required="true"
+                                   ng-minlength="3"
 
-                               ng-model="jobNew.analysisJob.name">
+                                   ng-model="jobNew.analysisJob.name">
+                        </p>
+                        <div class="text-right">
+                            <button type="button"
+                                    class="btn btn-default btn-xs"
+                                    ng-click="jobNew.analysisJob.name = jobNew.analysisJob.generateSuggestedName()">
+                                <i class="fa fa-question-circle text-info"></i>
+                                Use a suggested name
+                            </button>
+                        </div>
                         <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
-                                     ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                                     ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.analysisJobName.$dirty">
                             <ng-message when="required">A name is required for this job.</ng-message>
                             <ng-message when="minlength">The name entered is too short (3 character minimum)>
                             </ng-message>
@@ -212,7 +220,7 @@
 
 
             <ng-messages for="newAnalysisJobForm" class="help-block summary-errors" role="alert" multiple
-                         ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
+                         ng-if="newAnalysisJobForm.$submitted">
                 <ng-message when="$invalid">
                     <i class="fa fa-exclamation-triangle"></i>
                     There are errors on the page. Please fix them to continue.
