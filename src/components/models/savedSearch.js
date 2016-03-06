@@ -75,16 +75,16 @@ angular
                         }
                         
                         if (filter.siteIds.length > 0) {
-                            q.in("siteId", filter.siteIds);
+                            q = q.in("siteId", filter.siteIds);
                         }
                         
                         if (filter.minimumDate) {
-                            filter.gt("recordedDate", filter.minimumDate);
+                            q = q.gt("recordedDate", filter.minimumDate);
                         }
 
                         if (filter.maximumDate) {
                             // NB: recordedEndDate does not currently exist.
-                            filter.lt("recordedEndDate", filter.maximumDate);
+                            q = q.lt("recordedEndDate", filter.maximumDate);
                         }
 
                         return q;

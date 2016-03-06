@@ -57,47 +57,59 @@
             Start date
         </label>
         <div class="col-md-9">
-            <p class="input-group">
+            <div class="input-group">
                 <input name="startDate"
                        type="text"
                        class="form-control"
-                       uib-datepicker-popup="{{format}}"
-                       ng-model="dt"
-                       is-open="popup1.opened"
-                       datepicker-options="dateOptions"
-                       ng-required="true"
+                       placeholder="YYYY-MM-DD"
+                       uib-datepicker-popup
+                       ng-model="$ctrl.newSavedSearch.basicFilter.minimumDate"
+                       is-open="startDateOpened"
                        close-text="Close"
-                       alt-input-formats="altInputFormats"/>
+                       datepicker-options="$ctrl.dateSettingsStart"
+                       baw-max-date="$ctrl.newSavedSearch.basicFilter.maximumDate"
+                />
                 <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" ng-click="open1()"><i
-                          class="glyphicon glyphicon-calendar"></i></button>
+                  <button type="button" class="btn btn-default" ng-click="startDateOpened = true">
+                      <i class="fa fa-calendar"></i>
+                  </button>
                 </span>
-            </p>
-            <!--<ng-messages for="newAnalysisJobForm.startDate.$error" class="help-block" role="alert"-->
-                         <!--ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">-->
-                <!--<ng-message when="required">A name is required for this job.</ng-message>-->
-                <!--<ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>-->
-            <!--</ng-messages>-->
+            </div>
+            <ng-messages for="newSavedSearchForm.startDate.$error" class="help-block" role="alert"
+                         ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.$dirty">
+                <ng-message when="date">The date entered is in an invalid format. Must match the pattern YYYY-MM-DD.</ng-message>
+                <ng-message when="maxDate">The start date must be less than the end date.</ng-message>
+            </ng-messages>
         </div>
     </div>
 
-
     <div class="form-group">
-        <label class="string required col-md-3 control-label" for="analysisJobName">
+        <label class="string required col-md-3 control-label" for="endDate">
             End date
         </label>
         <div class="col-md-9">
-            <input name="analysisJobName"
-                   class="form-control"
-                   type="text"
-                   ng-required="true"
-                   ng-minlength="3"
-
-                   ng-model="jobNew.analysisJob.name">
-            <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
-                         ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.$dirty">
-                <ng-message when="required">A name is required for this job.</ng-message>
-                <ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>
+            <div class="input-group">
+                <input name="endDate"
+                       type="text"
+                       class="form-control"
+                       placeholder="YYYY-MM-DD"
+                       uib-datepicker-popup
+                       ng-model="$ctrl.newSavedSearch.basicFilter.maximumDate"
+                       is-open="endDateopened"
+                       close-text="Close"
+                       datepicker-options="$ctrl.dateSettingsEnd"
+                       baw-min-date="$ctrl.newSavedSearch.basicFilter.minimumDate"
+                />
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" ng-click="endDateopened = true">
+                      <i class="fa fa-calendar"></i>
+                  </button>
+                </span>
+            </div>
+            <ng-messages for="newSavedSearchForm.endDate.$error" class="help-block" role="alert"
+                         ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.$dirty">
+                <ng-message when="date">The date entered is in an invalid format. Must match the pattern YYYY-MM-DD.</ng-message>
+                <ng-message when="minDate">The end date must be greater than the start date.</ng-message>
             </ng-messages>
         </div>
     </div>

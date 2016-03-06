@@ -17,6 +17,18 @@ class NewSavedSearchController {
         this.projects = [];
         this.sites = [];
 
+        // settings
+
+        this.dateSettingsStart = {
+            maxDate: this.newSavedSearch.basicFilter.maximumDate
+        };
+
+        this.dateSettingsEnd = {
+            minDate: this.newSavedSearch.basicFilter.minimumDate
+
+        };
+
+
         // load projects
         ProjectService
             .getAllProjectNames()
@@ -26,7 +38,11 @@ class NewSavedSearchController {
         // WARNING: object structural equality watcher!
         $scope.$watch(
             () => this.newSavedSearch,
-            () => this.newSavedSearch.updateQueryFromBasicFilter(),
+            () => {
+                this.newSavedSearch.updateQueryFromBasicFilter();
+                this.dateSettingsStart.maxDate = this.newSavedSearch.basicFilter.maximumDate;
+                this.dateSettingsEnd.minDate = this.newSavedSearch.basicFilter.minimumDate;
+            },
             true
         );
 
@@ -51,7 +67,6 @@ class NewSavedSearchController {
             .then((response) => this.sites = response.data.data);
     }
 
-
 }
 
 angular
@@ -68,8 +83,9 @@ angular
             newSavedSearch: "=model",
         },
         controller: "NewSavedSearchController",
-        templateUrl: ["conf.paths", function (paths) {
-            return paths.site.files.savedSearches.new;
-        }]
+        templateUrl: [
+            "conf.paths", function (paths) {
+                return paths.site.files.savedSearches.new;
+            }]
     });
 
