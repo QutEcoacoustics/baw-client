@@ -34,7 +34,7 @@ class JobNewController {
             theme: "xcode",
             mode: "yaml",
             firstLineNumber: 1,
-            onLoad: this.aceLoaded,
+            onLoad: (editor) => this.aceLoaded(editor),
             onChange: this.aceChanged
         };
 
@@ -48,6 +48,9 @@ class JobNewController {
                 let currentScript = this.scripts.find(x => x.id === newValue);
                 this.analysisJob.customSettings = currentScript.executableSettings;
                 this.analysisJob.script = currentScript;
+
+                let mode = mimeToMode(currentScript.executableSettingsMediaType);
+                this[jobNewControllerSymbol].aceInstance.setMode("ace/mode/" + mode);
             }
         );
 
@@ -63,10 +66,24 @@ class JobNewController {
                 }
             }
         );
+
+        function mimeToMode(mimeType) {
+            if (["application/x-yaml", "text/yaml "].indexOf(mimeType) >= 0) {
+                return "yaml";
+            }
+            else if (["application/xml", "text/xml",  "application/x-xml"].indexOf(mimeType) >= 0) {
+                return "xml";
+            }
+            else if ([ "application/json", "text/x-json"].indexOf(mimeType) >= 0) {
+                return "json";
+            }
+        }
     }
 
     aceLoaded(editor) {
-        editor.getSession().setUseSoftTabs(true);
+        this[jobNewControllerSymbol].aceInstance = editor.getSession();
+
+        this[jobNewControllerSymbol].aceInstance.setUseSoftTabs(true);
 
         editor.maxLines = Infinity;
 
