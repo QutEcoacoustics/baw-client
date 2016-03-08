@@ -16,7 +16,6 @@ class JobNewController {
 
         // the new analysis job we are making
         this.analysisJob = new AnalysisJobModel();
-        this.selectedSavedSearch = null;
 
         // the available scripts
         this.scripts = [];
@@ -46,8 +45,9 @@ class JobNewController {
                     return;
                 }
 
-                this.analysisJob.customSettings =
-                    this.scripts.find(x => x.id === newValue).executableSettings;
+                let currentScript = this.scripts.find(x => x.id === newValue);
+                this.analysisJob.customSettings = currentScript.executableSettings;
+                this.analysisJob.script = currentScript;
             }
         );
 
@@ -80,12 +80,14 @@ class JobNewController {
 
     }
 
-    get newSavedSearch() {
-        return this[jobNewControllerSymbol].newSavedSearch;
+    get isCreatingNewSavedSearch() {
+        return this[jobNewControllerSymbol].isCreatingNewSavedSearch;
     }
 
-    set newSavedSearch(value) {
+    set isCreatingNewSavedSearch(value) {
         let p = this[jobNewControllerSymbol];
+
+        p.isCreatingNewSavedSearch = value;
 
         p.newSavedSearch = value;
         this.selectedSavedSearch = null;
@@ -95,6 +97,14 @@ class JobNewController {
         if (p.$scope.newAnalysisJobForm.$invalid && p.$scope.newAnalysisJobForm.$submitted) {
             p.$timeout(() => p.$scope.$broadcast("$submitted"));
         }
+    }
+
+    get selectedSavedSearch() {
+        return this.analysisJob.savedSearch;
+    }
+
+    set selectedSavedSearch(value) {
+        this.analysisJob.savedSearch = value;
     }
 
 

@@ -9,6 +9,13 @@ angular
             let revalidating = false;
 
 
+            /**
+             * For the model to update by simulating a user entering a value.
+             * The problem with the standard $validate function is that it assigns
+             * `undefined` to the model value if validation fails. We DON'T want that
+             * ... we just want to update the validation state
+             * @param ngModel
+             */
             function forceUpdate(ngModel) {
                 ngModel.$$lastCommittedViewValue = null;
                 ngModel.$commitViewValue(ngModel.$viewValue);

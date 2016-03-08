@@ -50,7 +50,7 @@ class NewSavedSearchController {
             () => this.newSavedSearch.basicFilter.projectId,
             (newValue) => {
                 if (newValue) {
-                    this.downloadSites();
+                    this.loadSites();
                 }
             }
         );
@@ -61,10 +61,14 @@ class NewSavedSearchController {
         siteSelectorModel.$setDirty();
     }
 
-    downloadSites() {
+    loadSites() {
         this[newSavedSearchControllerSymbol].SiteService
             .getSitesByProjectIds([this.newSavedSearch.basicFilter.projectId])
             .then((response) => this.sites = response.data.data);
+    }
+    
+    suggestName() {
+        this.newSavedSearch.name = this.newSavedSearch.generateSuggestedName(this.projects, this.sites);
     }
 
 }
