@@ -11,15 +11,23 @@
             Delete analysis job
         </a>
     </li>
+    <li>
+        <a href="{{ jobsList.newAnalysisJobRoute }}">
+            <i class="fa fa-table"></i>
+            Show results
+        </a>
+    </li>
 </layout>
 <div id="content" class="analysis-job-details">
-    <h1>{{ analysisJob.name }}</h1>
+    <h1>{{ jobDetails.analysisJob.name }}</h1>
 
-    <h2>Overview</h2>
+    {{ jobDetails.analysisJob.description }}
 
-    {{ random }}
 
-    <h2>Progress</h2>
+    <h2>Description</h2>
+
+
+
 
     {{ jobDetails.random2 }}
 

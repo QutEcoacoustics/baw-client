@@ -17,6 +17,7 @@ angular
                     this.version = Number(this.version);
 
                     this.executableSettings = this.executableSettings || null;
+                    this.executableSettingsMediaType = this.executableSettingsMediaType || null; 
 
 
                 }
