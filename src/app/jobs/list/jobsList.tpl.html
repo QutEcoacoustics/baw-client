@@ -25,16 +25,18 @@
 
     <div class="panel panel-default" ng-repeat="analysisJob in jobsList.analysisJobs">
         <div class="panel-heading">
-            <a href="{{ analysisJob.viewUrl }}">
-                <h3 class="list-group-item-heading">
+            <a href="{{ analysisJob.viewUrl }}" class="list-item-header-a">
+                <h4 >
                     {{ analysisJob.name }}
-                    <span class="label pull-right"
+                </h4>
+                <div class="text-right">
+                    <span class="label"
                           ng-class="'label-' + jobsList.getOverallStatusType(analysisJob.overallStatus)">
-                        <i ng-if="analysisJob.isActive"
-                           class="fa fa-spinner fa-spin"></i>
-                        {{ analysisJob.overallStatus }}
+                            <i ng-if="analysisJob.isActive"
+                               class="fa fa-spinner fa-spin"></i>
+                            {{ analysisJob.overallStatus }}
                     </span>
-                </h3>
+                </div>
             </a>
 
         </div>
@@ -43,7 +45,7 @@
                 <div class="stats row">
 
                     <div class="col-md-12">
-                        Audio included in this job:
+                        <span>Audio included: </span>
                         <span class="">
                             <span class="fa fa-file-audio-o"></span>
                             recordings
@@ -64,12 +66,12 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <h4>
+                        <h5>
                             Progress
                             <small>
                                 (last updated {{ analysisJob.friendlyUpdated }})
                             </small>
-                        </h4>
+                        </h5>
                         <uib-progress
                                 ng-class="{
                                 'progress-striped': analysisJob.isActive,

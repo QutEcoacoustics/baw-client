@@ -24,7 +24,7 @@ angular
                         if (this.updatedAt) {
                             this.updatedAt = new Date(this.updatedAt);
                         }
-                        
+
                         if (this.creatorId) {
                             this.creatorId = Number(this.creatorId);
                         }
@@ -32,6 +32,16 @@ angular
                         if (this.updaterId) {
                             this.updaterId = Number(this.updaterId);
                         }
+                    }
+
+                    /**
+                     * If called, auto downloads linked resources.
+                     * Since we wabt customiseable behaviour, we force an explicit call
+                     * to autoDownload.
+                     * @param resources
+                     */
+                    autoDownload(resources) {
+
                     }
 
                     static make(resource) {
@@ -70,6 +80,12 @@ angular
                         response.data.data = items;
 
                         return response;
+                    }
+
+                    static makeFromApiWithType(Type) {
+                        return function (resource) {
+                            return this.makeFromApi.call(Type, resource);
+                        };
                     }
                 }
 
@@ -114,18 +130,24 @@ angular
                     parentManyRelationSuffix = "Id" + pluralitySuffix,
                     id = "id",
                     arityMany = Symbol("many"),
-                //arityOne = Symbol("one"),
+                    arityOne = Symbol("one"),
                     unavailable = "This parent resource is unavailable.",
-                    undefinedToUnavailable = x => x === undefined ? new ModelUnavailable(unavailable) : x;
+                    undefinedToUnavailable = x => x === undefined ? new ModelUnavailable(unavailable) : x,
+                    linkerCache = new Map();
+
+                var getName = (n) => n instanceof Object ? n.name : n;
+                var getArity = (n) => n instanceof Object ? n.arity : arityOne;
 
                 function many(name) {
-                    return {
-                        name,
-                        arity: arityMany
-                    };
+                    return {name, arity: arityMany};
                 }
 
-                var associations = new Map([
+                function one(name) {
+                    return {name, arity: arityOne};
+                }
+
+
+                var associations = Object.freeze(new Map([
                     [
                         "Tag", {
                         parents: null, children: [many("Tagging")]
@@ -163,8 +185,20 @@ angular
                     [
                         "User", {
                         parents: null, children: [many("Bookmark")]
+                    }],
+                    [
+                        "SavedSearch", {
+                        parents: [many("AnalysisJob")], children: null
+                    }],
+                    [
+                        "Script", {
+                        parents: [many("AnalysisJob")], children: null
+                    }],
+                    [
+                        "AnalysisJob", {
+                        parents: null, children: [one("Script"), one("SavedSearch")]
                     }]
-                ]);
+                ]));
 
 
                 function chainToString(chain) {
@@ -174,12 +208,64 @@ angular
                 return {
                     generateLinker,
                     arrayToMap,
-                    makeFromApi (Type) {
-                        return function (resource) {
-                            return ApiBase.makeFromApi.call(Type, resource);
-                        };
-                    }
+                    associations,
+                    autoDownload
                 };
+
+
+                function autoDownload(targetType, arity = arityOne, limit = []) {
+                    throw new Error("Not Implemented");
+                    /*
+                    // get associated models
+                    let targetAssociation = associations.get(targetType),
+                        models = [];
+                    if (targetAssociation.parents) {
+                        models = models.concat(targetAssociation.parents);
+                    }
+                    if (targetAssociation.children) {
+                        models = models.concat(targetAssociation.children);
+                    }
+
+                    models = models
+                        .filter(p => arity === arityMany || getArity(p) === arityOne)
+                        .filter(p => limit.length === 0 || limit.indexOf(getName(p)) >= 0);
+
+                    // get linkers
+                    let linkers = models.map( model => generateLinker(targetType, model) );
+
+                    // TODO: this won't work until services are expressed as Service functions
+                    let getService = () => { };
+
+                    for (let i = 0; i < models.length; i++) {
+
+
+                        let model = models[i],
+                            arity = getArity(model),
+                            service = getService(getName(model));
+
+                        if (arity === arityMany) {
+                            service.filter()
+                        }
+                        else {
+                            service.get()
+                        }
+                    }
+                    */
+                }
+
+
+
+                function isManyAssociation(previousAssociation, currentAssociation) {
+                    let p = previousAssociation.parents || [],
+                        c = previousAssociation.children || [];
+
+                    let a = p.concat(c).find(x => getName(x) === currentAssociation);
+                    if (!a) {
+                        return false;
+                    }
+
+                    return getArity(a) === arityMany;
+                }
 
                 /**
                  * This function determines if there is a way to link
@@ -187,6 +273,11 @@ angular
                  * that will do the linking.
                  */
                 function generateLinker(child, parent) {
+
+                    let cacheKey = child + "---->" + parent;
+                    if (linkerCache.has(cacheKey)) {
+                       return linkerCache.get(cacheKey);
+                    }
 
                     if (!associations.has(child)) {
                         throw new Error("Child must be one of the known associations");
@@ -215,7 +306,7 @@ angular
                     console.debug("associations:generateLinker:", chainToString(chain));
 
                     // now make an optimised function to execute it
-                    return function (target, associationCollections) {
+                    let linker = function (target, associationCollections) {
                         var currentTargets = [target];
                         for (let c = 1; c < chain.length; c++) {
                             let association = chain[c],
@@ -225,6 +316,9 @@ angular
                                 targetName = correctCase[c] + (manyTargets ? pluralitySuffix : "");
 
                             // get the collection appropriate for the first association
+                            if (!associationCollections.hasOwnProperty(association)) {
+                                throw new Error(`No associations Map supplied for model ${association}`);
+                            }
                             let possibleParentObjects = associationCollections[association];
 
                             // when following many arity associations, there may be more than one
@@ -283,17 +377,8 @@ angular
                         return target;
                     };
 
-                    function isManyAssociation(previousAssociation, currentAssociation) {
-                        let p = previousAssociation.parents || [],
-                            c = previousAssociation.children || [];
-
-                        let a = p.concat(c).find(x => x.name === currentAssociation);
-                        if (!a) {
-                            return false;
-                        }
-
-                        return a.arity === arityMany;
-                    }
+                    linkerCache.set(cacheKey, linker);
+                    return linker;
                 }
 
                 /**
@@ -323,7 +408,7 @@ angular
 
                     for (var i = 0; i < nodesToVisit.length; i++) {
                         var n = nodesToVisit[i];
-                        let thisNode = n instanceof Object ? n.name : n;
+                        let thisNode = getName(n);
 
                         // prevent cyclic loops
                         // if the new node has already been visited,

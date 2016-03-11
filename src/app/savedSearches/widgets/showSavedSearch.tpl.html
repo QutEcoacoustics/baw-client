@@ -1,0 +1,25 @@
+<div class="show-saved-search">
+    <div class="panel panel-default" ng-show="$ctrl.savedSearch">
+        <div class="panel-body">
+            <div class="col-md-8">
+                <h4>
+                    {{ $ctrl.savedSearch.name }}
+                </h4>
+                <p>
+                    {{ $ctrl.savedSearch.description }}
+                </p>
+            </div>
+            <div class="col-md-4">
+                <user-tile mode="created" class="pull-right" resource="$ctrl.savedSearch" skinny>
+                    Created by
+                </user-tile>
+            </div>
+            <!--<p ng-if="$ctrl.savedSearch....">-->
+            <!-- TODO: need to create UI to show saved searches -->
+            <!--</p>-->
+        </div>
+    </div>
+    <div ng-if="!$ctrl.savedSearch" class="loadingImage">
+        <span class="fa fa-spinner fa-spin"></span>
+    </div>
+</div>

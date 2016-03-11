@@ -64,3 +64,14 @@ a.disabled {
 .form-group.has-success .input-group-btn button {
   border-color: $state-success-text;
 }
+
+// allow using labels outside of headings at normal size
+.list-group-item .label {
+  font-size: inherit;
+}
+
+// let media objects be as wide as needed
+.media-body-auto-width {
+  width: auto;
+}
+

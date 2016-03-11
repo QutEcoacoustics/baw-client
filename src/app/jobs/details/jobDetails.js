@@ -1,49 +1,84 @@
-class JobDetailsController {
-    constructor($scope, $routeParams, $http, ActiveResource, AnalysisJobService) {
-        let controller = this;
-
-        this.isNew = $routeParams.new;
-
-        this.random2 = Math.random() + 2;
-
-        AnalysisJobService
-            .get(Number($routeParams.analysisJobId))
-            .then(function (response) {
-                controller.analysisJob = response.data.data[0];
-                ActiveResource.set(controller.analysisJob);
-            });
-
-
-        this.aceConfig = {
-            useWrapMode: true,
-            showGutter: true,
-            theme: "xcode",
-            mode: "yaml",
-            firstLineNumber: 1,
-            onLoad: function (editor) {
-                editor.renderer.$cursorLayer.element.style.display = "none";
-
-                editor.getSession().setUseSoftTabs(true);
-                // This is to remove following warning message on console:
-                // Automatically scrolling cursor into view after selection change this will be disabled in the next
-                // version set editor.$blockScrolling = Infinity to disable this message
-                editor.$blockScrolling = Infinity;
-            },
-            onChange: controller.aceChanged
-        };
-    }
-}
-
 angular
     .module("bawApp.jobs.details", [])
     .controller(
-        "JobDetailsController",
-        [
+        "JobDetailsController", [
+            "JobsCommon",
             "$scope",
             "$routeParams",
             "$http",
             "ActiveResource",
+            "baw.models.associations",
+            "baw.models.AnalysisJob.progressKeys",
+            "baw.models.AnalysisJob.statusKeys",
             "AnalysisJob",
-            JobDetailsController
+            "Script",
+            "SavedSearch",
+            "growl",
+            function (JobsCommon, ...dependencies) {
+
+                // this whole jig is necessary to allow us to use extends clause.
+                // This ugly intersection is the result of using angular DI with
+                // ES6 classes.
+
+
+                class JobDetailsController extends JobsCommon {
+                    constructor($scope, $routeParams, $http, ActiveResource, modelAssociations,
+                                keys, statuses, AnalysisJobService,
+                                ScriptService, SavedSearchService, growl) {
+                        super(keys, statuses);
+                        let controller = this;
+                        const savedSearchLinker = modelAssociations.generateLinker("AnalysisJob", "SavedSearch");
+                        const scriptLinker = modelAssociations.generateLinker("AnalysisJob", "Script");
+
+                        AnalysisJobService
+                            .get(Number($routeParams.analysisJobId))
+                            .then(function (response) {
+                                controller.analysisJob = response.data.data[0];
+                                ActiveResource.set(controller.analysisJob);
+                            })
+                            .then(() => {
+                                return ScriptService.get(this.analysisJob.scriptId);
+                            })
+                            .then((response) => {
+                                let scriptLookup = modelAssociations.arrayToMap(response.data.data);
+                                scriptLinker(this.analysisJob, {Script: scriptLookup});
+                            })
+                            .then(() => {
+                                return SavedSearchService.get(this.analysisJob.scriptId);
+                            })
+                            .then((response) => {
+                                let savedSearchLookup = modelAssociations.arrayToMap(response.data.data);
+                                savedSearchLinker(this.analysisJob, {SavedSearch: savedSearchLookup});
+                            })
+                            .catch((error) => {
+                                console.error("AnalysisJobs::details::error: ", error);
+                                growl.warning(
+                                    "There was a problem loading this page. Please refresh the page. If you see this message often please let us know.");
+                            });
+
+
+                        this.aceConfig = {
+                            useWrapMode: true,
+                            showGutter: true,
+                            theme: "xcode",
+                            mode: "yaml",
+                            firstLineNumber: 1,
+                            onLoad: function (editor) {
+                                //editor.renderer.$cursorLayer.element.style.display = "none";
+
+                                editor.getSession().setUseSoftTabs(true);
+                                // This is to remove following warning message on console:
+                                // Automatically scrolling cursor into view after selection change this will be
+                                // disabled in the next version set editor.$blockScrolling = Infinity to disable this
+                                // message
+                                editor.$blockScrolling = Infinity;
+                            },
+                            onChange: controller.aceChanged
+                        };
+                    }
+                }
+
+                return new JobDetailsController(...dependencies);
+            }
         ]);
 

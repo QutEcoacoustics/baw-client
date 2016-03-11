@@ -1,24 +1,25 @@
 <nav role="navigation">
     <h4>
         <span class="fa" ng-class="'fa-' + $ctrl.icon"
-        ng-if="$ctrl.icon" ></span>
+              ng-if="$ctrl.icon"></span>
         <span>{{ $ctrl.title }}</span>
     </h4>
 
-    <hr />
+    <hr/>
 
     <ul class="nav nav-pills nav-stacked" layout render-for="action-items">
     </ul>
 
     <br>
 
-    <user-tile mode="created" resource="$ctrl.activeResource">
+
+    <user-tile mode="created" resource="$ctrl.activeResource" skinny="true">
         <h4>Created by</h4>
     </user-tile>
+    <br class="hidden-sm"/>
 
-    <br/>
-
-    <user-tile mode="modified" resource="$ctrl.activeResource">
+    <user-tile mode="modified" resource="$ctrl.activeResource" skinny="true">
         <h4>Modified by</h4>
     </user-tile>
+
 </nav>

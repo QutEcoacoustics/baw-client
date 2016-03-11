@@ -1,0 +1,25 @@
+<div class="show-script">
+    <div class="panel panel-default" ng-show="$ctrl.script">
+        <div class="panel-body">
+            <div class="col-md-8">
+                <h4>
+                    {{ $ctrl.script.name }}
+                </h4>
+                <p>
+                    {{ $ctrl.script.description }}
+                </p>
+                <p>
+                    (version {{ $ctrl.script.version }})
+                </p>
+            </div>
+            <div class="col-md-4">
+                <user-tile mode="created" class="pull-right" resource="$ctrl.script" skinny>
+                    Created by
+                </user-tile>
+            </div>
+        </div>
+    </div>
+    <div ng-if="!$ctrl.script" class="loadingImage">
+        <span class="fa fa-spinner fa-spin"></span>
+    </div>
+</div>
