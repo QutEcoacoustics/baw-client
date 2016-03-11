@@ -132,7 +132,11 @@ module.exports = function (environment) {
                 },
                 "savedSearches": {
                     "new": "savedSearches/widgets/newSavedSearch.tpl.html",
-                    "list": "savedSearches/widgets/listSavedSearches.tpl.html"
+                    "list": "savedSearches/widgets/listSavedSearches.tpl.html",
+                    "show": "savedSearches/widgets/showSavedSearch.tpl.html"
+                },
+                "scripts": {
+                    "show": "scripts/widgets/showScript.tpl.html"
                 }
             },
             // routes used by angular

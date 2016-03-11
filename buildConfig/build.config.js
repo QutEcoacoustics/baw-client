@@ -82,6 +82,7 @@ module.exports = {
     vendor_files: {
         jsWrapWithModule: [
             "vendor/d3/d3.js",
+            "vendor/c3/c3.js",
             "vendor/momentjs/moment.js",
             "vendor/lodash/lodash.js",
             "vendor/bowser/bowser.js",
@@ -133,6 +134,7 @@ module.exports = {
             "vendor/draggabilly/dist/draggabilly.pkgd.js",
 
             "vendor/d3/d3.js",
+            "vendor/c3/c3.js",
             "node_modules/rbush/rbush.js",
 
             "vendor/bowser/bowser.js",
@@ -163,7 +165,9 @@ module.exports = {
 
             "vendor/angular-growl-v2/build/angular-growl.css",
 
-            "vendor/angular-loading-bar/build/loading-bar.css"
+            "vendor/angular-loading-bar/build/loading-bar.css",
+
+            "vendor/c3/c3.css"
         ],
         assets: [
             // jquery-ui is stoopid, special case

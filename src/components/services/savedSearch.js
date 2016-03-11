@@ -20,7 +20,7 @@ angular
                     {
                         "id": 1,
                         "name": "test saved search - SERF",
-                        "description": null,
+                        "description": "I'm a description and that's ok",
                         "stored_query":{"siteId":{"in":[398, 401, 399, 402, 400, 508 ] }},
                         "creator_id": 9,
                         "created_at": "2016-02-18T15:21:45.862+10:00",
@@ -30,7 +30,7 @@ angular
                     {
                         "id": 2,
                         "name": "FAKE DATA test saved search - SERFishg",
-                        "description": "I'm a description and that's ok",
+                        "description": "I'm a description and that's ok ALA LA la La al LAA",
                         "stored_query":{"siteId":{"in":[398, 754 ] }},
                         "creator_id": 144,
                         "created_at": "2016-03-01T15:21:45.862+10:00",

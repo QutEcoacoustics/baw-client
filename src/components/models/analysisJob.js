@@ -68,9 +68,26 @@ angular
                     return this.isNew || this.isPreparing || this.isProcessing;
                 }
 
+                get completedRatio() {
+                    return ((this.overallProgress.successful || 0) + (this.overallProgress.failed || 0)) / this.overallCount;
+                }
+
+                get successfulRatio() {
+                    return (this.overallProgress.successful || 0) / this.overallCount;
+                }
+
+
                 get friendlyDuration() {
                     return humanizeDuration(this.overallDurationSeconds * 1000, {largest: 2});
                 }
+
+                get friendlyRunningTime() {
+                    let lastUpdate = Math.max(+this.overallProgressModifiedAt, +this.overallStatusModifiedAt),
+                        delta = +lastUpdate - +this.createdAt;
+
+                    return  moment.duration(delta).humanize();
+                }
+
 
                 get friendlySize() {
                     if (this.overallSizeBytes) {
@@ -100,10 +117,10 @@ angular
 
 
                 generateSuggestedName() {
-                    let currentUserName =  !!UserProfile.profile ? UserProfile.profile.userName : "(unknown user)";
+                    //let currentUserName =  !!UserProfile.profile ? UserProfile.profile.userName : "(unknown user)";
                     let scriptName = !!this.script ? this.script.name : "(not chosen)";
                     let savedSearchName = !!this.savedSearch && !!this.savedSearch.name ? this.savedSearch.name : "(not chosen)";
-                    return `${currentUserName} running the ${scriptName} analysis on the ${savedSearchName} data`;
+                    return `"${scriptName}" analysis run on the "${savedSearchName}" data`;
                 }
 
                 get savedSearch() {

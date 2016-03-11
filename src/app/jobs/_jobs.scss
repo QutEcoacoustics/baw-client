@@ -5,6 +5,21 @@
     // effectively col-md-2
     width: ($container-md / $grid-columns) * 2
   }
+
+  .list-item-header-a {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    & > h4 {
+      flex-grow: 1;
+    }
+    & > div {
+      flex-grow: 1;
+    }
+  }
 }
 
 .analysis-job-new, .analysis-job-details {
@@ -27,7 +42,15 @@
       }
 
       & .ace_cursor {
-        visibility: hidden;
+        display: none;
+      }
+    }
+
+    &[readonly] {
+      background: lighten($input-bg-disabled, 3%);
+
+      & .ace_cursor {
+        display: none;
       }
     }
   }

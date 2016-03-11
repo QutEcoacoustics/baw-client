@@ -41,7 +41,7 @@ angular
                     },
                     {
                         "id": 22222,
-                        "name": "fake 22222 fake",
+                        "name": "fake 22222 fake fake 22222 fake fake 22222 fake ",
                         "annotation_name": null,
                         "custom_settings": "#custom settings 267",
                         "script_id": 1,
@@ -64,7 +64,7 @@ angular
                     },
                     {
                         "id": 1,
-                        "name": "job test creation",
+                        "name": "\"simulate work analysis\" run on the \"All sites in SERF Acoustic Study\" data",
                         "annotation_name": null,
                         "custom_settings": "#custom settings 267",
                         "script_id": 1,
@@ -80,9 +80,10 @@ angular
                         "overall_status": "processing",
                         "overall_status_modified_at": "2016-02-18 06:03:10.028276",
                         "overall_progress": {"queued":10,"working":1,"successful":35,"failed":4,"total":0},
-                        "overall_progress_modified_at": "2016-02-18 06:03:10.028776",
+                        "overall_progress_modified_at": (new Date()).setMinutes(0,0,0),
                         "overall_count": 50,
-                        "overall_duration_seconds": 88888
+                        "overall_duration_seconds": 88888,
+                        "overall_size_bytes": 123456789
                     },
                     {
                         "id": 3600,
