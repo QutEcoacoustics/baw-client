@@ -155,11 +155,16 @@ module.exports = function (environment) {
                 analysisJobs: {
                     list: "/analysis_jobs",
                     "new": "/analysis_jobs/new",
-                    details: "/analysis_jobs/{analysisJobId}"
+                    details: "/analysis_jobs/{analysisJobId}",
+                    results: "/analysis_jobs/{analysisJobId}/results/{path?*}"
                 }
             },
             // general links for use in <a />'s
-            "links": {},
+            "links": {
+                analysisJobs: {
+                    results: "/analysis_jobs/{analysisJobId}/results/"
+                }
+            },
             "assets": {
                 "users": {
                     "defaultImage": "assets/img/user_spanhalf.png"

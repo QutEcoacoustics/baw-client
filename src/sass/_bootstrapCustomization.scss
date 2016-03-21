@@ -11,22 +11,18 @@
   margin-right: auto;
 }
 
-
-.clickable
-{
+.clickable {
   cursor: pointer;
 }
 
-.clickable .glyphicon
-{
+.clickable .glyphicon {
   background: rgba(0, 0, 0, 0.15);
   display: inline-block;
   padding: 6px 7px 6px 6px;
   border-radius: $border-radius-base;
 }
 
-.panel-heading span
-{
+.panel-heading span {
   margin-top: -0.35em;
   font-size: 15px;
   margin-right: -0.6em;
@@ -42,6 +38,20 @@ a.disabled {
 
 }
 
+// ensure glyphicons in links retain formatting and style
+a {
+  & > .fa.default-color {
+    color: $text-color;
+    display: inline;
+  }
+
+  & > .glyphicon.default-color {
+    color: $text-color;
+    display: inline;
+    position: inherit;
+  }
+
+}
 
 // display nav-pills without making them links
 // i.e. for text
@@ -52,13 +62,13 @@ a.disabled {
   margin: 0;
 }
 
-
+// ensure form buttons get the same outline style
 .form-group.has-error .input-group-btn button {
   border-color: $state-danger-text;
 }
 
 .form-group.has-warning .input-group-btn button {
-  border-color:$state-warning-text;
+  border-color: $state-warning-text;
 }
 
 .form-group.has-success .input-group-btn button {
@@ -74,4 +84,5 @@ a.disabled {
 .media-body-auto-width {
   width: auto;
 }
+
 
