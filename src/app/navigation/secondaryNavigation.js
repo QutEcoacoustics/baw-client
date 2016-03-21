@@ -119,9 +119,11 @@ angular
 
             function onRouteChangeStart(event, current, previous, rejection) {
                 renderers.forEach((renderer) => {
-                    renderer.source.content.remove();
-                    renderer.source.scope.$destroy();
-                    renderer.source = null;
+                    if (renderer.source) {
+                        renderer.source.content.remove();
+                        renderer.source.scope.$destroy();
+                        renderer.source = null;
+                    }
                 });
 
                 layoutCache.removeAll();
