@@ -273,9 +273,24 @@ angular.module("baw",
             }).
 
             // missing route page
-            when("/", {templateUrl: paths.site.files.home, controller: "HomeCtrl"}).
-            when("/404", {templateUrl: paths.site.files.error404, controller: "ErrorCtrl"}).
-            when("/404?path=:errorPath", {templateUrl: paths.site.files.error404, controller: "ErrorCtrl"}).
+            when("/", {
+                templateUrl: paths.site.files.home,
+                controller: "HomeCtrl",
+                title: "Home",
+                fullWidth: false
+            }).
+            when("/404", {
+                templateUrl: paths.site.files.error404,
+                controller: "ErrorController",
+                title: "Not found",
+                fullWidth: false
+            }).
+            when("/404?path=:errorPath", {
+                templateUrl: paths.site.files.error404,
+                controller: "ErrorController",
+                title: "Not found",
+                fullWidth: false
+            }).
             otherwise({
                 redirectTo: function (params, location, search) {
                     return "/404?path=" + location;
@@ -408,7 +423,9 @@ angular.module("baw",
 
             // https://docs.angularjs.org/api/ngRoute/service/$route
             $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
-                document.title = appEnvironment.brand.title + " | " + $route.current.title;
+                
+                let title = $route.current && ( "|" + $route.current.title) || "";
+                document.title = appEnvironment.brand.title + title;
                 $rootScope.fullWidth = $route.current.$$route.fullWidth;
             });
 
