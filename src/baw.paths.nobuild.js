@@ -83,7 +83,7 @@ module.exports = function (environment) {
             // The following intentionally are not prefixed with a '/'
             // static files
             "files": {
-                "error404": "error/error_404.tpl.html",
+                "error404": "error/error404.tpl.html",
                 "home": "home/home.tpl.html",
                 "login": {
                     "loginWidget": "login/widget/loginWidget.tpl.html"
