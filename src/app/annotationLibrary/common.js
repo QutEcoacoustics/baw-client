@@ -159,7 +159,8 @@ angular
                         // modify annotations by reference
                         annotations.forEach(annotation => {
                             annotationToTagLinker(annotation, {
-                                Tag: tagLookup
+                                Tag: tagLookup,
+                                Tagging: new Map()
                             });
 
                             annotation.urls.tagSearch = createFilterUrl({
