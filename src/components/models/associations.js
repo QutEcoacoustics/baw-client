@@ -84,7 +84,7 @@ angular
 
                     static makeFromApiWithType(Type) {
                         return function (resource) {
-                            return this.makeFromApi.call(Type, resource);
+                            return ApiBase.makeFromApi.call(Type, resource);
                         };
                     }
                 }
