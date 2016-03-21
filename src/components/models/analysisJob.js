@@ -103,6 +103,13 @@ angular
 
                     return  moment(lastUpdate).fromNow();
                 }
+                
+                get resultsUrl() {
+                    return $url.formatUri(
+                        paths.site.links.analysisJobs.results,
+                        {analysisJobId: this.id}
+                    );
+                }
 
                 get viewUrl() {
                     return $url.formatUri(

@@ -12,7 +12,7 @@
     <!--</a>-->
     <!--</li>-->
     <li>
-        <a href="{{ jobsList.newAnalysisJobRoute }}">
+        <a href="{{ jobDetails.analysisJob.resultsUrl }}">
             <i class="fa fa-table"></i>
             Show results
         </a>
@@ -25,8 +25,16 @@
         <p>
             {{ jobDetails.analysisJob.description }}
         <span class="text-muted" ng-if="!jobDetails.analysisJob.description">
-            No description available.
+            No description entered.
         </span>
+        </p>
+        <p>
+            Results are available as they are generated. Click
+            <a href="{{ jobDetails.analysisJob.resultsUrl }}">
+                <i class="fa fa-table default-color"></i>
+                Show results
+            </a>
+            to see them.
         </p>
     </div>
     <div class="row">
@@ -49,15 +57,16 @@
 
             </li>
             <li class="list-group-item">
-                Completed
-                <span class="badge">{{ jobDetails.analysisJob.completedRatio | percentage}}</span>
-
-            </li>
-            <li class="list-group-item">
                 Running time
                 <span class="badge">{{ jobDetails.analysisJob.friendlyRunningTime }}</span>
 
             </li>
+            <li class="list-group-item">
+                Completed
+                <span class="badge">{{ jobDetails.analysisJob.completedRatio | percentage}}</span>
+
+            </li>
+
         </ul>
 
         <ul class="list-group col-md-6">
@@ -78,15 +87,20 @@
 
             </li>
             <li class="list-group-item">
-                Another stat
-                <span class="badge">14</span>
+                Sucessful
+                <span class="badge">{{ jobDetails.analysisJob.successfulRatio | percentage}}</span>
 
             </li>
         </ul>
     </div>
     <div class="row">
         <h2>Progress</h2>
-        <c3-donut class="col-md-12"></c3-donut>
+        <c3-chart class="col-md-12"
+                  width="jobDetails.chartWidth"
+                  height="jobDetails.chartHeight"
+                  data="jobDetails.chartData"
+                  options="jobDetails.chartOptions"
+        ></c3-chart>
     </div>
     <div class="row">
         <h2>Settings used</h2>

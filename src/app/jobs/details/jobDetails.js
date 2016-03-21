@@ -6,6 +6,7 @@ angular
             "$scope",
             "$routeParams",
             "$http",
+            "conf.paths",
             "ActiveResource",
             "baw.models.associations",
             "baw.models.AnalysisJob.progressKeys",
@@ -22,7 +23,7 @@ angular
 
 
                 class JobDetailsController extends JobsCommon {
-                    constructor($scope, $routeParams, $http, ActiveResource, modelAssociations,
+                    constructor($scope, $routeParams, $http, paths,  ActiveResource, modelAssociations,
                                 keys, statuses, AnalysisJobService,
                                 ScriptService, SavedSearchService, growl) {
                         super(keys, statuses);
@@ -30,11 +31,14 @@ angular
                         const savedSearchLinker = modelAssociations.generateLinker("AnalysisJob", "SavedSearch");
                         const scriptLinker = modelAssociations.generateLinker("AnalysisJob", "Script");
 
+                        this.showResultsRoute = paths.site.ngRoutes.analysisJobs.results;
+
                         AnalysisJobService
                             .get(Number($routeParams.analysisJobId))
                             .then(function (response) {
                                 controller.analysisJob = response.data.data[0];
                                 ActiveResource.set(controller.analysisJob);
+                                controller.chartData.columns = controller.getData();
                             })
                             .then(() => {
                                 return ScriptService.get(this.analysisJob.scriptId);
@@ -75,6 +79,48 @@ angular
                             },
                             onChange: controller.aceChanged
                         };
+
+                        this.chartOptions = {
+                            donut: {
+                                title: "Analysis Job Progress"
+                            },
+                            legend: {
+                                position: "right"
+                            }
+                        };
+
+                        this.chartWidth = 400;
+                        this.chartHeight = 300;
+
+
+                        this.chartData = {
+                            colors: this.progressKeyColorMap,
+                            columns: this.getData(),
+                            type: "donut"
+
+                        };
+                    }
+
+                    getData() {
+                        if (!this.analysisJob) {
+                            return null;
+                        }
+
+                        if (this.analysisJob.isNew || this.analysisJob.isPreparing) {
+                            return [[this.analysisJob.overallStatus, 100]];
+                        }
+                        else {
+                            let data = [];
+                            Object.keys(this.progressKeyColorMap).forEach((key) => {
+                                if (this.skipProgressKeys.indexOf(key) >= 0) {
+                                    return;
+                                }
+
+                                data.push([key, this.analysisJob.overallProgress[key] || 0]);
+                            });
+
+                            return data;
+                        }
                     }
                 }
 
