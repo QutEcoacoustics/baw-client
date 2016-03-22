@@ -698,7 +698,7 @@ module.exports = function (grunt) {
                     base: [
                         "./"
                     ],
-                    //debug: true,
+                    debug: false,
                     livereload: true,
                     middleware: function (connect, options) {
                         var buildDirectory = grunt.config("build_dir");
@@ -727,7 +727,12 @@ module.exports = function (grunt) {
                                 // with or without a querystring
                                 // if matched, the root (index.html) is sent back instead.
                                 // from there, angular deals with the route information
-                                "!(\\/[^\\.\\/\\?]+\\.\\w+) /" + buildDirectory + "/ [L]"
+                                //"!(\\/[^\\.\\/\\?]+\\.\\w+) /" + buildDirectory + "/ [L]"
+
+                                // does not match any url startng with /build, /src, or /vendor
+                                // if matched, the root (index.html) is sent back instead.
+                                // from there, angular deals with the route information
+                                "!(^(\\/build|\\/src|\\/vendor)) /" + buildDirectory + "/ [L]"
 
                             ]),
 

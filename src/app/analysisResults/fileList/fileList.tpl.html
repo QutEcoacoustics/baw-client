@@ -1,0 +1,86 @@
+<layout content-for="action-items">
+    <li>
+        <a href="{{ fileList.analysisJob.resultsUrl }}">
+            <i class="fa fa-file-archive-o"></i>
+            Download this folder
+        </a>
+    </li>
+</layout>
+<div id="content" class="analysis-job-details">
+    <div class="row">
+        <h1>Analysis Results
+            <br/>
+            <small>{{ fileList.analysisJob.name }}</small>
+        </h1>
+
+
+        <p>
+            Results are available as they are generated. There is a basic file explorer below
+            that can be used for downloading the raw data.
+        </p>
+        <p>
+            To download an entire directory as a zip file, use the <em>Download this folder</em>
+            link.
+        </p>
+    </div>
+    <div class="row">
+        <h2>Files</h2>
+
+    </div>
+    <div class="row">
+        <div>
+            <breadcrumbs crumbs="fileList.currentDirectory"></breadcrumbs>
+        </div>
+
+    </div>
+    <div class="row">
+        <table class="table table-hover" ng-if="fileList.analysisResult.children">
+            <thead>
+                <tr>
+                    <th class="col-md-0">
+                        Name
+                    </th>
+                    <th class="col-md-2">
+                        Size
+                    </th>
+                    <th class="col-md-1">
+                        Download
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!fileList.analysisResult.children || fileList.analysisResult.children.length === 0">
+                    <td colspan="4">
+                        <span class="text-muted">
+                            No files in this folder
+                            </span>
+                    </td>
+                </tr>
+                <tr ng-repeat="file in fileList.analysisResult.children"
+
+                    ng-click="$ctrl.selectedSavedSearch = savedSearch">
+                    <td ng-if="file.isDirectory">
+                        <a ng-href="{{ file.viewUrl }}">
+                            <span class="{{ file.icon }}"></span>
+                            {{ file.name }}
+                        </a>
+                    </td>
+                    <td ng-if="!file.isDirectory">
+                        <span class="{{ file.icon }}"></span>
+                        {{ file.name }}
+                    </td>
+                    <td>
+                        {{ file.friendlySize }}
+                    </td>
+                    <td>
+                        <a ng-href="{{ file.url }}">
+                            download
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

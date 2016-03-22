@@ -15,6 +15,7 @@ angular
             "Script",
             "SavedSearch",
             "growl",
+            "MimeType",
             function (JobsCommon, ...dependencies) {
 
                 // this whole jig is necessary to allow us to use extends clause.
@@ -23,9 +24,10 @@ angular
 
 
                 class JobDetailsController extends JobsCommon {
-                    constructor($scope, $routeParams, $http, paths,  ActiveResource, modelAssociations,
-                                keys, statuses, AnalysisJobService,
-                                ScriptService, SavedSearchService, growl) {
+                    constructor(
+                        $scope, $routeParams, $http, paths, ActiveResource, modelAssociations,
+                        keys, statuses, AnalysisJobService,
+                        ScriptService, SavedSearchService, growl, MimeType) {
                         super(keys, statuses);
                         let controller = this;
                         const savedSearchLinker = modelAssociations.generateLinker("AnalysisJob", "SavedSearch");
@@ -46,6 +48,9 @@ angular
                             .then((response) => {
                                 let scriptLookup = modelAssociations.arrayToMap(response.data.data);
                                 scriptLinker(this.analysisJob, {Script: scriptLookup});
+
+                                let mode = MimeType.mimeToMode(this.analysisJob.script.executableSettingsMediaType);
+                                controller.aceInstance.setMode("ace/mode/" + mode);
                             })
                             .then(() => {
                                 return SavedSearchService.get(this.analysisJob.scriptId);
@@ -68,6 +73,7 @@ angular
                             mode: "yaml",
                             firstLineNumber: 1,
                             onLoad: function (editor) {
+                                controller.aceInstance = editor.getSession();
                                 //editor.renderer.$cursorLayer.element.style.display = "none";
 
                                 editor.getSession().setUseSoftTabs(true);

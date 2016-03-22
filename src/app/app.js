@@ -96,6 +96,7 @@ angular.module("baw",
 
                              "bawApp.accounts",
                              "bawApp.annotationViewer",
+        "bawApp.analysisResults",
                              "bawApp.audioEvents",
                              "bawApp.annotationLibrary",
                              "bawApp.bookmarks",
@@ -136,6 +137,10 @@ angular.module("baw",
                 title: "Analysis Jobs",
                 href: paths.site.ngRoutes.analysisJobs.list
             };
+            const analysisJobNav = {
+                title: "Analysis Job",
+                href: paths.site.ngRoutes.analysisJobs.details
+            };
 
                  // routes
                  $routeProvider.
@@ -172,10 +177,19 @@ angular.module("baw",
                 templateUrl: paths.site.files.jobs.details,
                 controller: "JobDetailsController",
                 controllerAs: "jobDetails",
-                title: "Analysis Job",
+                title: analysisJobNav.title,
                 fullWidth: false,
                 secondaryNavigation: [ analysisJobsNav ],
                 icon: "tasks"
+            }).
+            when(paths.site.ngRoutes.analysisJobs.analysisResults.replace("{analysisJobId}", ":analysisJobId"), {
+                templateUrl: paths.site.files.analysisResults.fileList,
+                controller: "FileListController",
+                controllerAs: "fileList",
+                title: "Analysis Job Results",
+                fullWidth: false,
+                secondaryNavigation: [ analysisJobsNav, analysisJobNav ],
+                icon: "table"
             }).
             //when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title: "Jobs",
             // fullWidth: false}).
