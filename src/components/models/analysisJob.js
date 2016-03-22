@@ -106,7 +106,7 @@ angular
                 
                 get resultsUrl() {
                     return $url.formatUri(
-                        paths.site.links.analysisJobs.results,
+                        paths.site.links.analysisJobs.analysisResults,
                         {analysisJobId: this.id}
                     );
                 }

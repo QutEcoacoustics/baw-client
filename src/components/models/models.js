@@ -8,6 +8,7 @@ angular.module(
         //
         // endpoint specific
         "bawApp.models.analysisJob",
+        "bawApp.models.analysisResult",
         //"bawApp.models.bookmark",
         "bawApp.models.project",
         "bawApp.models.site",

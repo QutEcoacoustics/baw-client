@@ -127,6 +127,9 @@ module.exports = function (environment) {
                     list: "jobs/list/jobsList.tpl.html",
                     "new": "jobs/new/jobNew.tpl.html"
                 },
+                "analysisResults": {
+                    "fileList": "analysisResults/fileList/fileList.tpl.html"
+                },
                 "users": {
                     "userTile": "users/userTile.tpl.html"
                 },
@@ -156,13 +159,13 @@ module.exports = function (environment) {
                     list: "/analysis_jobs",
                     "new": "/analysis_jobs/new",
                     details: "/analysis_jobs/{analysisJobId}",
-                    results: "/analysis_jobs/{analysisJobId}/results/{path?*}"
+                    analysisResults: "/analysis_jobs/{analysisJobId}/results"
                 }
             },
             // general links for use in <a />'s
             "links": {
                 analysisJobs: {
-                    results: "/analysis_jobs/{analysisJobId}/results/"
+                    analysisResults: "/analysis_jobs/{analysisJobId}/results/"
                 }
             },
             "assets": {
