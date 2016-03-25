@@ -9,12 +9,14 @@ angular
         "humanize-duration",
         "filesize",
         "moment",
-        function (associations, ApiBase, paths, $url, humanizeDuration, filesize, moment) {
+        "MimeType",
+        function (associations, ApiBase, paths, $url, humanizeDuration, filesize, moment, MimeType) {
 
             class AnalysisResult extends ApiBase {
-                constructor(resource) {
+                constructor(resource, parent) {
                     super(resource);
 
+                    this._parent = parent;
                     this.path = this.path || null;
                     this.name = this.name || null;
                     this.type = this.type || null;
@@ -40,11 +42,15 @@ angular
 
                 get friendlySize() {
                     if (this.sizeBytes) {
-                        return filesize(this.overallSizeBytes, {round: 0});
+                        return filesize(this.sizeBytes, {round: 0});
                     }
                     else {
                         return "unknown";
                     }
+                }
+                
+                get icon() {
+                    return MimeType.mimeToFaIcon(this.mime);
                 }
 
                 //
@@ -54,6 +60,16 @@ angular
                 //         {analysisJobId: this.id}
                 //     );
                 // }
+
+                // url to the resource
+                get url() {
+                    let url = paths.site.links.analysisJobs.analysisResults + this.path;
+
+                    return $url.formatUri(
+                        url,
+                        {analysisJobId: this.id}
+                    );
+                }
 
                 get viewUrl() {
                     let url = paths.site.links.analysisJobs.analysisResults + this.path;

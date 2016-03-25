@@ -1,7 +1,7 @@
 const jobNewControllerSymbol = Symbol("JobNewControllerPrivates");
 
 class JobNewController {
-    constructor($scope, $routeParams, $timeout, paths, AnalysisJobService, AnalysisJobModel, ScriptService) {
+    constructor($scope, $routeParams, $timeout, paths, AnalysisJobService, AnalysisJobModel, ScriptService, MimeType) {
         this[jobNewControllerSymbol] = {};
         let privates = this[jobNewControllerSymbol];
         
@@ -49,7 +49,7 @@ class JobNewController {
                 this.analysisJob.customSettings = currentScript.executableSettings;
                 this.analysisJob.script = currentScript;
 
-                let mode = mimeToMode(currentScript.executableSettingsMediaType);
+                let mode = MimeType.mimeToMode(currentScript.executableSettingsMediaType);
                 this[jobNewControllerSymbol].aceInstance.setMode("ace/mode/" + mode);
             }
         );
@@ -66,18 +66,6 @@ class JobNewController {
                 }
             }
         );
-
-        function mimeToMode(mimeType) {
-            if (["application/x-yaml", "text/yaml "].indexOf(mimeType) >= 0) {
-                return "yaml";
-            }
-            else if (["application/xml", "text/xml",  "application/x-xml"].indexOf(mimeType) >= 0) {
-                return "xml";
-            }
-            else if ([ "application/json", "text/x-json"].indexOf(mimeType) >= 0) {
-                return "json";
-            }
-        }
     }
 
     aceLoaded(editor) {
@@ -148,6 +136,7 @@ angular
             "AnalysisJob",
             "baw.models.AnalysisJob",
             "Script",
+            "MimeType",
             JobNewController
         ]);
 

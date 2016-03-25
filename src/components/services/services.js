@@ -24,6 +24,7 @@ angular.module(
         "bawApp.services.audioEvent",
         "bawApp.services.taggings",
         "bawApp.services.tag",
+        "bawApp.services.mime",
         "bawApp.services.media",
         "bawApp.services.savedSearch",
         "bawApp.services.script",

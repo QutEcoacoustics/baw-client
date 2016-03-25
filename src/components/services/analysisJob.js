@@ -79,8 +79,8 @@ angular
                         "started_at": "2016-02-18 06:03:10.028024",
                         "overall_status": "processing",
                         "overall_status_modified_at": "2016-02-18 06:03:10.028276",
-                        "overall_progress": {"queued":10,"working":1,"successful":35,"failed":4,"total":0},
-                        "overall_progress_modified_at": (new Date()).setMinutes(0,0,0),
+                        "overall_progress": {"queued": 10, "working": 1, "successful": 35, "failed": 4, "total": 0},
+                        "overall_progress_modified_at": (new Date()).setMinutes(0, 0, 0),
                         "overall_count": 50,
                         "overall_duration_seconds": 88888,
                         "overall_size_bytes": 123456789
@@ -102,7 +102,7 @@ angular
                         "started_at": "2016-02-18 06:03:10.028024",
                         "overall_status": "completed",
                         "overall_status_modified_at": "2016-02-18 06:03:10.028276",
-                        "overall_progress": {"queued":0,"working":0,"successful":90,"failed":10,"total":100},
+                        "overall_progress": {"queued": 0, "working": 0, "successful": 90, "failed": 10, "total": 100},
                         "overall_progress_modified_at": "2016-02-18 06:03:10.028776",
                         "overall_count": 100,
                         "overall_duration_seconds": 100 * 3600 * 2,
@@ -127,7 +127,7 @@ angular
                         "started_at": "2016-02-18 06:03:10.028024",
                         "overall_status": "suspended",
                         "overall_status_modified_at": "2016-02-18 06:03:10.028276",
-                        "overall_progress": {"queued":10,"working":0,"successful":80,"failed":10,"total":100},
+                        "overall_progress": {"queued": 10, "working": 0, "successful": 80, "failed": 10, "total": 100},
                         "overall_progress_modified_at": "2016-02-18 06:03:10.028776",
                         "overall_count": 99,
                         "overall_duration_seconds": 99999
@@ -148,8 +148,22 @@ angular
                         .then(x => AnalysisJobModel.makeFromApi(x));
                 }
 
+                function getName(id) {
+                    let fake = fakedData.find(x => x.id === id);
+                    return $q.when({
+                            data: {
+                                data: {
+                                    id: fake.id,
+                                    name: fake.name
+                                }
+                            }
+                        })
+                        .then(x => AnalysisJobModel.makeFromApi(x));
+                }
+
                 return {
                     query,
-                    get
+                    get,
+                    getName
                 };
             }]);

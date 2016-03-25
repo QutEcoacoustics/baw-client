@@ -159,7 +159,7 @@ module.exports = function (environment) {
                     list: "/analysis_jobs",
                     "new": "/analysis_jobs/new",
                     details: "/analysis_jobs/{analysisJobId}",
-                    analysisResults: "/analysis_jobs/{analysisJobId}/results"
+                    analysisResults: "/analysis_jobs/{analysisJobId}/results:path*?"
                 }
             },
             // general links for use in <a />'s

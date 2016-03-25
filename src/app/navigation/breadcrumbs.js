@@ -1,19 +1,30 @@
-angular.module("bawApp.navigation.breadcrumbs", [])
+class BreadcrumbsController {
+    constructor($scope, $resource, $route, $routeParams, $location) {
+        //this.$location = $location;
+        //this.$route = $route;
+    }
+}
 
-    .directive("navigation", ["conf.paths", function (paths) {
 
-        return {
-            restrict: "E",
-            templateUrl: paths.site.files.navigation.crumbs
-        };
-    }])
-
+angular
+    .module("bawApp.navigation.breadcrumbs", [])
     .controller(
-        "NavigationCtrl",
-        ["$scope", "$resource", "$route", "$routeParams", "$location", "breadcrumbs",
-            function NavigationCtrl($scope, $resource, $route, $routeParams, $location, breadcrumbs) {
-                $scope.$location = $location;
-                $scope.$route = $route;
-                $scope.breadcrumbs = breadcrumbs;
-            }
-        ]);
+        "BreadcrumbsController",
+        [
+            "$scope",
+            "$resource",
+            "$route",
+            "$routeParams",
+            "$location",
+            BreadcrumbsController
+        ])
+    .component("breadcrumbs",
+        {
+            bindings: {
+                crumbs: "<"
+            },
+            controller: "BreadcrumbsController",
+            templateUrl: ["conf.paths", function (paths) {
+                return paths.site.files.navigation.crumbs;
+            }]
+        });
