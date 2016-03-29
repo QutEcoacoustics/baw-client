@@ -165,7 +165,7 @@ module.exports = function (environment) {
             // general links for use in <a />'s
             "links": {
                 analysisJobs: {
-                    analysisResults: "/analysis_jobs/{analysisJobId}/results/"
+                    analysisResults: "/analysis_jobs/{analysisJobId}/results/{recordingId}"
                 }
             },
             "assets": {

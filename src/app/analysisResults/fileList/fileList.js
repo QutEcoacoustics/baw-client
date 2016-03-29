@@ -13,16 +13,10 @@ class FileListController {
                 controller.analysisJob = response.data.data[0];
                 controller.updateCurrentDirectory();
             })
-            .catch((error) => {
-                console.error("AnalysisJobs::details::error: ", error);
-                growl.error(
-                    "There was a problem loading this page. Please refresh the page. If you see this message often please let us know.");
-            });
-
-        AnalysisResultService
-            .get($routeParams.path)
+            .then(() => AnalysisResultService.get($routeParams.path))
             .then(function (response) {
                 controller.analysisResult = response.data.data[0];
+                controller.analysisResult.analysisJob = controller.analysisJob;
                 controller.updateCurrentDirectory();
             })
             .catch((error) => {
