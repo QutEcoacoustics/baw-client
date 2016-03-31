@@ -4,9 +4,17 @@ angular.module(
     .run([
         "$templateCache",
         function($templateCache) {
-            // override bootstrap-ui's default template
-            var newTemplate = $templateCache.get("components/directives/angular-ui/bootstrap/pagination/pagination.tpl.html");
-            $templateCache.put("template/pagination/pagination.html", newTemplate);
+            // add ng-href and remove ng-click
+            const
+                targetTemplate = "uib/template/pagination/pagination.html",
+                pageRegex = /(href).*(?:ng-click="selectPage\(([^,]+), \$event\)")/gm,
+                replaceString = `ng-href="{{ $parent.$parent.getPaginationLink($2) }}" href`;
+
+            var oldTemplate = $templateCache.get(targetTemplate);
+
+            var newTemplate = oldTemplate.replace(pageRegex, replaceString);
+
+            $templateCache.put(targetTemplate, newTemplate);
         }]);
 
 
