@@ -31,34 +31,93 @@ angular
             if (angular.isUndefined(val) || val === null) {
                 return "";
             }
+
             return encodeURIComponent(val).
-                replace(/%40/gi, "@").
-                replace(/%3A/gi, ":").
-                replace(/%24/g, "$").
-                replace(/%2C/gi, ",").
-                replace(/%20/g, (pctEncodeSpaces ? "%20" : "+"));
+            replace(/%40/gi, "@").
+            replace(/%3A/gi, ":").
+            replace(/%24/g, "$").
+            replace(/%2C/gi, ",").
+            replace(/%3B/gi, ";").
+            replace(/%20/g, (pctEncodeSpaces ? "%20" : "+"));
         }
+        
 
         function toKeyValue(obj, validateKeys, _tokenRenamer) {
             var tokenRenamer = _tokenRenamer || _renamerFunc;
             var parts = [];
-            angular.forEach(obj, function (value, key) {
+            angular.forEach(obj, function(value, key) {
                 if (validateKeys) {
                     // only add key value pair if value is not undefined, not null, and is not an empty string
-                    var valueIsEmptyString = angular.isString(value) && value.length < 1;
-                    if (angular.isUndefined(value) || value === null || valueIsEmptyString || value === false) {
+                    var valueIsEmptyString = value === "";
+                    if (value === undefined || value === null || valueIsEmptyString || value === false) {
                         return;
                     }
                 }
 
-                var encodedKey = encodeUriQuery(tokenRenamer(key), /* encode spaces */ true);
+                // apply casing transforms
+                key = tokenRenamer(key);
 
-                // Angular does this: if value is true, just include the key without a value
-                var encodedValue = value === true ? "" : "=" + encodeUriQuery(value, /* encode spaces */ true);
-
-                parts.push(encodedKey + encodedValue);
+                // Angular encodes `true` as just the key without a value - like a flag
+                if (angular.isArray(value)) {
+                    angular.forEach(value, function(arrayValue) {
+                        parts.push(encodeUriQuery(key, true) +
+                            (arrayValue === true ? "" : "=" + encodeUriQuery(arrayValue, true)));
+                    });
+                } else {
+                    parts.push(encodeUriQuery(key, true) +
+                        (value === true ? "" : "=" + encodeUriQuery(value, true)));
+                }
             });
             return parts.length ? parts.join("&") : "";
+        }
+
+        /**
+         * Tries to decode the URI component without throwing an exception.
+         *
+         * @private
+         * @param str value potential URI component to check.
+         * @returns {boolean} True if `value` can be decoded
+         * with the decodeURIComponent function.
+         */
+        function tryDecodeURIComponent(value) {
+            try {
+                return decodeURIComponent(value);
+            } catch (e) {
+                // Ignore any invalid uri component
+            }
+        }
+
+
+        /**
+         * Parses an escaped url query string into key-value pairs.
+         * Lifted from https://github.com/angular/angular.js/blob/0ece2d5e0b34a27baa6238c3c2dcb4f92ccfa805/src/Angular.js#L1289
+         * @returns {Object.<string,boolean|Array>}
+         */
+        function parseKeyValue(/**string*/keyValue) {
+            var obj = {};
+            angular.forEach((keyValue || "").split("&"), function(keyValue) {
+                var splitPoint, key, val;
+                if (keyValue) {
+                    key = keyValue = keyValue.replace(/\+/g,"%20");
+                    splitPoint = keyValue.indexOf("=");
+                    if (splitPoint !== -1) {
+                        key = keyValue.substring(0, splitPoint);
+                        val = keyValue.substring(splitPoint + 1);
+                    }
+                    key = tryDecodeURIComponent(key);
+                    if (angular.isDefined(key)) {
+                        val = angular.isDefined(val) ? tryDecodeURIComponent(val) : true;
+                        if (!hasOwnProperty.call(obj, key)) {
+                            obj[key] = val;
+                        } else if (angular.isArray(obj[key])) {
+                            obj[key].push(val);
+                        } else {
+                            obj[key] = [obj[key],val];
+                        }
+                    }
+                }
+            });
+            return obj;
         }
 
         function formatUri(uri, values, tokenRenamer) {
@@ -111,7 +170,8 @@ angular
             encodeUriQuery,
             toKeyValue,
             formatUri,
-            formatUriFast
+            formatUriFast,
+            parseKeyValue
         };
 
         this.registerRenamer = function(suffix, renamerFunc) {
