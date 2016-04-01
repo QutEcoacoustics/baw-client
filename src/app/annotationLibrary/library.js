@@ -184,7 +184,6 @@ angular
                         {page, items: $scope.paging.items})
                 );
             }
-
             function getPagingSettings(page, items, total) {
                 var paging = {
                     maxPageLinks: 7,
