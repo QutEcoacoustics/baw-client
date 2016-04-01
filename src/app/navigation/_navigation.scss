@@ -5,7 +5,7 @@ left-nav-bar, right-nav-bar {
 }
 
 right-nav-bar {
-  .fa, .glyphicon {
+  a>.fa, a>.glyphicon {
     color: $text-color
   }
 }
