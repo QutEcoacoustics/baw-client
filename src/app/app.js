@@ -375,27 +375,6 @@ angular.module("baw",
             };
             UserProfile.listen(eventCallbacks);
 
-            // helper function for printing scope objects
-            /*baw.exports.print = $rootScope.print = function () {
-             var seen = [];
-             var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling",
-             "$$prevSibling", "$root", "this", "$parent"];
-             var str = JSON.stringify(this,
-             function (key, val) {
-             if (badKeys.indexOf(key) >= 0) {
-             return "[Can't do that]";
-             }
-             if (typeof val === "object") {
-             if (seen.indexOf(val) >= 0) {
-             return "";
-             }
-             seen.push(val);
-             }
-             return val;
-             }, 4);
-             return str;
-             };*/
-
 
             // http://www.yearofmoo.com/2012/10/more-angularjs-magic-to-supercharge-your-webapp.html#apply-digest-and-phase
             $rootScope.$safeApply = function ($scope, fn) {
@@ -438,7 +417,7 @@ angular.module("baw",
             // https://docs.angularjs.org/api/ngRoute/service/$route
             $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
                 
-                let title = $route.current && ( "|" + $route.current.title) || "";
+                let title = $route.current && ( " | " + $route.current.title) || "";
                 document.title = appEnvironment.brand.title + title;
                 $rootScope.fullWidth = $route.current.$$route.fullWidth;
             });
