@@ -12,26 +12,48 @@ angular
             "casingTransformers",
             "QueryBuilder",
             "baw.models.AnalysisResult",
-            function (
-                $resource,
-                bawResource,
-                $http,
-                $q,
-                paths,
-                _,
-                casingTransformers,
-                QueryBuilder,
-                AnalysisResultModel) {
+            function ($resource,
+                      bawResource,
+                      $http,
+                      $q,
+                      paths,
+                      _,
+                      casingTransformers,
+                      QueryBuilder,
+                      AnalysisResultModel) {
 
                 // FAKED!
                 let fakedData = [
                     {
 
                         "analysis_job_id": 1,
-                        "audio_recording_id": 1234,
+                        "audio_recording_id": null,
                         "path": "/",
                         "name": "/",
                         "type": "directory",
+                        "has_zip": false,
+                        "children": [
+                            1234,
+                            123456,
+                            124124,
+                            234234,
+                            ...(new Array(1000)).fill(1).map((x, i) => i)
+                        ].map(x => ({
+                            name: x.toString(),
+                            path: "/" + x.toString(),
+                            type: "directory",
+                            "has_children": true,
+                            has_zip: false
+                        }))
+                    },
+                    {
+
+                        "analysis_job_id": 1,
+                        "audio_recording_id": 1234,
+                        "path": "/1234",
+                        "name": "1234",
+                        "type": "directory",
+                        "has_zip": true,
                         "children": [
                             {
                                 "name": "log.txt",
@@ -47,7 +69,7 @@ angular
                                 "mime": "application/x-yaml"
                             },
                             {
-
+                                "path": "/1234/Towsey.Acoustic",
                                 "name": "Towsey.Acoustic",
                                 "type": "directory",
                                 "has_children": true
@@ -58,19 +80,28 @@ angular
                     {
                         "analysis_job_id": 1,
                         "audio_recording_id": 1234,
-                        "path": "/Towsey.Acoustic/Hello/test/bigtest/test.txt",
-                        "name": "Hello",
+                        "path": "/1234/Towsey.Acoustic/Hello/test/bigtest/test.txt",
+                        "name": "test.txt",
                         "type": "directory",
-                        "children": [
-                        ]
+                        "children": []
+                    },
+                    {
+                        "analysis_job_id": 1,
+                        "audio_recording_id": 1234,
+                        "path": "/1234/Towsey.Acoustic/ZoomingTiles",
+                        "name": "ZoomingTiles",
+                        "type": "directory",
+                        "has_zip": false,
+                        "children": []
                     },
                     {
 
                         "analysis_job_id": 1,
                         "audio_recording_id": 1234,
-                        "path": "/Towsey.Acoustic",
+                        "path": "/1234/Towsey.Acoustic",
                         "name": "Towsey.Acoustic",
                         "type": "directory",
+                        "has_zip": true,
                         "children": [
                             {
 
@@ -353,7 +384,7 @@ angular
                                 "mime": "image/png"
                             },
                             {
-                                "path": "/Towsey.Acoustic/ZoomingTiles",
+                                "path": "/1234/Towsey.Acoustic/ZoomingTiles",
                                 "name": "ZoomingTiles",
                                 "type": "directory",
                                 "has_children": true
@@ -432,8 +463,27 @@ angular
                         .then(x => AnalysisResultModel.makeFromApi(x));
                 }
 
-                function get(path) {
-                    return $q.when({data: {data: fakedData.find(x => x.path === path)}})
+                function get(path, page = 1) {
+
+                    let data = angular.copy({data: fakedData.find(x => x.path === path), meta:{}});
+                    let length = (data.data.children || []).length;
+                    if (length > 100) {
+                        let offset = (page - 1) * 100;
+                        data.meta = {
+                            paging: {
+                                "page": page,
+                                "items": 100,
+                                "total": length,
+                                "maxPage": Math.ceil(length / 100),
+                                "current": null,
+                                "previous": null,
+                                "next": null
+                            }
+                        };
+                        data.data.children = data.data.children.slice(offset, offset + 100);
+                    }
+
+                    return $q.when({data})
                         .then(x => AnalysisResultModel.makeFromApi(x));
                 }
 

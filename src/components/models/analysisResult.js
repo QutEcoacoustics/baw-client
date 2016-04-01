@@ -22,7 +22,8 @@ angular
                     this.type = this.type || null;
                     this.mime = this.mime || null;
                     this.sizeBytes = this.sizeBytes || null;
-                    this.hasChildren = this.hasChildren || false;
+                    this.hasChildren = this.hasChildren === true || false;
+                    this.hasZip = this.hasZip === true || false;
 
                     let children = [];
                     if (this.children) {
@@ -99,7 +100,16 @@ angular
                         return this._path;
                     }
 
-                    let path = (this._parent && this._parent.path);
+                    if (!this._parent) {
+                        return undefined;
+                    }
+
+                    let path = this._parent.path;
+
+                    if (!path) {
+                        return undefined;
+                    }
+
                     if (!path.endsWith("/")) {
                         path = path + "/";
                     }
@@ -115,27 +125,29 @@ angular
                 // url to the resource
                 get url() {
                     let analysisJobId = !this.analysisJob ? this.analysisJobId : this.analysisJob.id;
-                    let audioRecordingId = this.audioRecordingId;
 
-                    let url = paths.api.routes.analysisResults.jobAbsolute + this.path;
+                    let url = paths.api.routes.analysisResults.jobWithPath;
 
                     let result = $url.formatUri(
                         url,
-                        {analysisJobId, recordingId: audioRecordingId}
+                        {analysisJobId, path: this.path}
                     );
 
                     return result;
                 }
+                
+                get zipUrl() {
+                    return this.url + ".zip";
+                }
 
                 get viewUrl() {
                     let analysisJobId = !this.analysisJob ? this.analysisJobId : this.analysisJob.id;
-                    let audioRecordingId = this.audioRecordingId;
 
-                    let url = paths.site.links.analysisJobs.analysisResults + this.path;
+                    let url = paths.site.links.analysisJobs.analysisResultsWithPath;
 
                     let result = $url.formatUri(
                         url,
-                        {analysisJobId, recordingId: audioRecordingId}
+                        {analysisJobId, path: this.path}
                     );
 
                     return result;

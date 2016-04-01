@@ -1,9 +1,14 @@
 <layout content-for="action-items">
     <li>
-        <a href="{{ fileList.analysisJob.resultsUrl }}">
+        <a ng-href="{{:: fileList.analysisResult.hasZip && fileList.analysisResult.zipUrl || null}}"
+           ng-class="{disabled: !fileList.analysisResult.hasZip}"
+           uib-tooltip="Zip file is not ready to download... we're working on it."
+           tooltip-enable="!fileList.analysisResult.hasZip"
+        >
             <i class="fa fa-file-archive-o"></i>
             Download this folder
         </a>
+
     </li>
 </layout>
 <div id="content" class="analysis-job-details">
@@ -33,51 +38,63 @@
         </div>
 
     </div>
+    <div class="row" ng-if="::fileList.paging">
+        <uib-pagination class=""
+                        total-items="fileList.paging.total"
+                        ng-model="fileList.paging.page"
+                        items-per-page="fileList.paging.items"
+                        boundary-links="true"
+                        max-size="fileList.paging.maxPageLinks"
+                        num-pages="fileList.paging.numPages"
+                        rotate="false"
+                        pagination-href="fileList.getPaginationLink"
+        >
+        </uib-pagination>
+    </div>
     <div class="row">
         <table class="table table-hover" ng-if="fileList.analysisResult.children">
             <thead>
-                <tr>
-                    <th class="col-md-0">
-                        Name
-                    </th>
-                    <th class="col-md-2">
-                        Size
-                    </th>
-                    <th class="col-md-1">
-                        Download
-                    </th>
-                </tr>
+            <tr>
+                <th class="">
+                    Name
+                </th>
+                <th class="col-md-1">
+                    Size
+                </th>
+                <th class="col-md-1">
+                    Download
+                </th>
+            </tr>
             </thead>
             <tbody>
-                <tr ng-if="!fileList.analysisResult.children || fileList.analysisResult.children.length === 0">
-                    <td colspan="4">
+            <tr ng-if="!fileList.analysisResult.children || fileList.analysisResult.children.length === 0">
+                <td colspan="4">
                         <span class="text-muted">
                             No files in this folder
                             </span>
-                    </td>
-                </tr>
-                <tr ng-repeat="file in fileList.analysisResult.children"
-
-                    ng-click="$ctrl.selectedSavedSearch = savedSearch">
-                    <td ng-if="file.isDirectory">
-                        <a ng-href="{{ file.viewUrl }}">
-                            <span class="{{ file.icon }}"></span>
-                            {{ file.name }}
-                        </a>
-                    </td>
-                    <td ng-if="!file.isDirectory">
-                        <span class="{{ file.icon }}"></span>
-                        {{ file.name }}
-                    </td>
-                    <td>
-                        {{ file.friendlySize }}
-                    </td>
-                    <td>
-                        <a ng-href="{{ file.url }}">
-                            download
-                        </a>
-                    </td>
-                </tr>
+                </td>
+            </tr>
+            <tr ng-repeat="file in fileList.analysisResult.children">
+                <td ng-if="::file.isDirectory">
+                    <span class="{{:: file.icon }}"></span>
+                    <a ng-href="{{:: file.viewUrl }}">
+                        {{:: file.name }}
+                    </a>
+                </td>
+                <td ng-if="::!file.isDirectory">
+                    <span class="{{:: file.icon }}"></span>
+                    {{:: file.name }}
+                </td>
+                <td>
+                    {{:: file.friendlySize }}
+                </td>
+                <td>
+                    <a ng-href="{{:: file.url }}"
+                       ng-if="::file.isFile">
+                        download
+                    </a>
+                </td>
+            </tr>
             </tbody>
         </table>
 
