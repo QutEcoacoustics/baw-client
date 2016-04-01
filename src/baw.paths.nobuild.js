@@ -58,6 +58,7 @@ module.exports = function (environment) {
                 "analysisResults": {
                     "system": "/analysis_jobs/system/audio_recordings/{recordingId}",
                     "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}",
+                    "jobWithPath": "/analysis_jobs/{analysisJobId}/audio_recordings{path}"
                 }
             },
             "links": {
@@ -165,7 +166,8 @@ module.exports = function (environment) {
             // general links for use in <a />'s
             "links": {
                 analysisJobs: {
-                    analysisResults: "/analysis_jobs/{analysisJobId}/results/{recordingId}"
+                    analysisResults: "/analysis_jobs/{analysisJobId}/results",
+                    analysisResultsWithPath: "/analysis_jobs/{analysisJobId}/results{path}"
                 }
             },
             "assets": {

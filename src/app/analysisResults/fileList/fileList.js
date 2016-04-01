@@ -1,10 +1,19 @@
 class FileListController {
-    constructor($scope, $routeParams, growl, AnalysisJobService, AnalysisResultService) {
+    constructor($scope, $location, $routeParams, $url, growl, AnalysisJobService, AnalysisResultService) {
         let controller = this;
 
         this.analysisJob = null;
         this.analysisResult = null;
+        this.paging = undefined;
+        this._$location = $location;
+        this._$url = $url;
+
         $routeParams.path = $routeParams.path || "/";
+        $routeParams.page = Number($routeParams.page);
+        if (isNaN($routeParams.page)) {
+            $routeParams.page = undefined;
+        }
+        
 
         // download metadata
         AnalysisJobService
@@ -13,9 +22,15 @@ class FileListController {
                 controller.analysisJob = response.data.data[0];
                 controller.updateCurrentDirectory();
             })
-            .then(() => AnalysisResultService.get($routeParams.path))
+            .then(() => AnalysisResultService.get($routeParams.path, $routeParams.page))
             .then(function (response) {
                 controller.analysisResult = response.data.data[0];
+
+                controller.paging = response.data.meta.paging;
+                if (controller.paging) {
+                    controller.paging.maxPageLinks = 10;
+                }
+
                 controller.analysisResult.analysisJob = controller.analysisJob;
                 controller.updateCurrentDirectory();
             })
@@ -37,7 +52,7 @@ class FileListController {
                 title: !this.analysisJob ? "" : (this.analysisJob.name.substring(0, 12) + "…")
             },
             {
-                path: !this.analysisResult ? "" : this.analysisResult.viewUrl,
+                path: !this.analysisJob ? "" : this.analysisJob.resultsUrl,
                 title: "results"
             }
         ];
@@ -58,7 +73,11 @@ class FileListController {
     }
 
     getPath(fragment, i, fragments) {
-        return this.analysisJob.resultsUrl + fragments.slice(0, i + 1).join("/");
+        return this.analysisJob.resultsUrl + "/" + fragments.slice(0, i + 1).join("/");
+    }
+
+    getPaginationLink(page) {
+        return this._$url.formatUri(this._$location.path(), {page});
     }
 }
 
@@ -68,7 +87,9 @@ angular
         "FileListController",
         [
             "$scope",
+            "$location",
             "$routeParams",
+            "$url",
             "growl",
             "AnalysisJob",
             "AnalysisResult",
