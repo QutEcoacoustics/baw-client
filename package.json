@@ -60,7 +60,7 @@
     "watch-verbose": "grunt watch --verbose",
     "watch-force": "grunt watch --force",
     "build": "grunt",
-    "postinstall": "bower install",
+    "postinstall": "bower update",
     "start": "npm run watch",
     "test": "npm run build"
   },
