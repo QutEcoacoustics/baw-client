@@ -1026,16 +1026,18 @@ angular
                             xDomain = xScale.domain(),
                             x1 = +xDomain[1],
                             x0 = +xDomain[0],
-                            halfDomainDuration = (x1 - x0) / 2.0;
+                            halfDomainDuration = (x1 - x0) / 2.0,
+                            dataMinimum = +self.minimum,
+                            dataMaximum = +self.maximum;
 
                         // extent allowable pan range by half of the current on-screen visible domain
-                        var panExtent0 = self.minimum - halfDomainDuration,
-                            panExtent1 = self.maximum + halfDomainDuration;
+                        var panExtent0 = dataMinimum - halfDomainDuration,
+                            panExtent1 = dataMaximum + halfDomainDuration;
 
                         if (x0 < panExtent0) {
-                            tx = xScale(self.minimum - (panExtent0 - x0));
+                            tx = xScale(dataMinimum - (panExtent0 - x0));
                         } else if (x1 > panExtent1) {
-                            tx = xScale((panExtent1 - self.maximum) + x1 - (panExtent1 - panExtent0));
+                            tx = xScale((panExtent1 - dataMaximum) + x1 - (panExtent1 - panExtent0));
                         } else {
                             tx = zoom.translate()[0];
                         }
