@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         path = require("path"),
         slash = require("slash"),
         _ = require("lodash"),
-        sass = require("./node_modules/grunt-sass/node_modules/node-sass");
+        sass = require("./node_modules/node-sass");
 
     var _invalidateRequireCacheForFile = function(filePath){
         delete require.cache[path.resolve(filePath)];
