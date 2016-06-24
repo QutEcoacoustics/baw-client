@@ -36,6 +36,16 @@ angular
                 }
             }
 
+            // also lodash (as of version 4)
+            if (window._) {
+                delete window._;
+            }
+            else {
+                if (!window.jasmine) {
+                    console.warn("_ not on window, hack not required");
+                }
+            }
+
             // augment d3
             var d3 = d3Provider.configureVendorInstance();
             const coordinatesRegex = /translate\((.*)\)/;

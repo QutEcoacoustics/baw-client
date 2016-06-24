@@ -1,6 +1,7 @@
 angular.module(
     "bawApp.services",
     [
+        "rails",
         "url",
 
         // general helpers
@@ -11,6 +12,7 @@ angular.module(
         "bawApp.services.unitConverter",
         "bawApp.services.queryBuilder",
         "bawApp.services.predictiveCache",
+        "bawApp.services.resultPager",
 
         // endpoint specific
         "bawApp.services.analysisResult",

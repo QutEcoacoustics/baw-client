@@ -19,7 +19,7 @@
     "humanize-duration": "^3.4",
     "jasmine-expect": "1.x",
     "jquery-ui": "~1.11.x",
-    "lodash": "3.7",
+    "lodash": "4.0",
     "momentjs": "^2.10",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "round-date": "^1.1",
