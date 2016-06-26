@@ -1,3 +1,17 @@
+<a name="0.19.0"></a>
+# [0.19.0](https://github.com/QutBioacoustics/baw-client/compare/v0.18.1...v0.19.0) (2016-06-26)
+
+
+### Bug Fixes
+
+* **bookmark:** fixes bookmark querying bug ([ba2a8fb](https://github.com/QutBioacoustics/baw-client/commit/ba2a8fb))
+* **listen:** Implemented auto paging code ([736cf3b](https://github.com/QutBioacoustics/baw-client/commit/736cf3b)), closes [#269](https://github.com/QutBioacoustics/baw-client/issues/269)
+* **visualize:** Unrestricted pan-right bug ([42dac1a](https://github.com/QutBioacoustics/baw-client/commit/42dac1a)), closes [#271](https://github.com/QutBioacoustics/baw-client/issues/271)
+* **Visualize:** Fix year-long date format case ([d4878ea](https://github.com/QutBioacoustics/baw-client/commit/d4878ea)), closes [#267](https://github.com/QutBioacoustics/baw-client/issues/267)
+* **Visualize:** SVG clips now work again, fixes #272 ([e2c4b1c](https://github.com/QutBioacoustics/baw-client/commit/e2c4b1c)), closes [#272](https://github.com/QutBioacoustics/baw-client/issues/272) [#272](https://github.com/QutBioacoustics/baw-client/issues/272)
+
+
+
 <a name="0.18.1"></a>
 ## [0.18.1](https://github.com/QutBioacoustics/baw-client/compare/v0.18.0...v0.18.1) (2016-02-16)
 
@@ -1050,6 +1064,8 @@ Build related fixes.
 * Worked on Virtual Bird Tour. ([bed0e47](https://github.com/QutBioacoustics/baw-client/commit/bed0e47))
 * working on media controller and tests ([f396088](https://github.com/QutBioacoustics/baw-client/commit/f396088))
 * Wrote *a lot* of unit tests. ([829d366](https://github.com/QutBioacoustics/baw-client/commit/829d366))
+
+
 
 
 
