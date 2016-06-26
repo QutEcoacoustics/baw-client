@@ -1,3 +1,9 @@
+<a name="0.19.1"></a>
+## [0.19.1](https://github.com/QutBioacoustics/baw-client/compare/v0.19.0...v0.19.1) (2016-06-26)
+
+* Build fixes
+
+
 <a name="0.19.0"></a>
 # [0.19.0](https://github.com/QutBioacoustics/baw-client/compare/v0.18.1...v0.19.0) (2016-06-26)
 
@@ -1064,6 +1070,8 @@ Build related fixes.
 * Worked on Virtual Bird Tour. ([bed0e47](https://github.com/QutBioacoustics/baw-client/commit/bed0e47))
 * working on media controller and tests ([f396088](https://github.com/QutBioacoustics/baw-client/commit/f396088))
 * Wrote *a lot* of unit tests. ([829d366](https://github.com/QutBioacoustics/baw-client/commit/829d366))
+
+
 
 
 
