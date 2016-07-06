@@ -139,6 +139,7 @@ angular
                         getCategoryName: function (d) {
                             return d && sitesMap.get(d).name;
                         },
+                        getCategoryIndex: siteId => $scope.sites.findIndex(s => s.id ===siteId),
                         getLow: function (d) {
                             return d.recordedDateMilliseconds;
                         },

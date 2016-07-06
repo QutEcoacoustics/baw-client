@@ -10,7 +10,8 @@ angular
             "moment",
             "roundDate",
             "rbush",
-            function distributionController($scope, $element, $attrs, d3, moment, roundDate, rbush) {
+            "lodash",
+            function distributionController($scope, $element, $attrs, d3, moment, roundDate, rbush, _) {
                 console.debug("event distribution controller:init");
                 var self = this,
                     defaultFunctions = {
@@ -23,6 +24,7 @@ angular
                         getCategoryName: function (d) {
                             return d;
                         },
+                        getCategoryIndex: categoryId => categoryId,
                         getLow: function (d) {
                             return d.min;
                         },
@@ -176,7 +178,7 @@ angular
                         data.itemsTree.load(data.items);
 
                         let unique = new Set(data.items.map(functions.getCategory));
-                        data.lanes = Array.from(unique);
+                        data.lanes = _.sortBy(Array.from(unique), functions.getCategoryIndex);
                         if (data.items.length > 0) {
                             data.minimum = Math.min(...data.items.map(functions.getLow, functions));
                             data.maximum = Math.max(...data.items.map(functions.getHigh, functions));
