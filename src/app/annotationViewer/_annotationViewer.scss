@@ -1,7 +1,7 @@
 //@import 'base';
 
 // color-swatch
-$spectrogramProgressLine: #FF0000;
+$spectrogramProgressLine: rgba(255, 0, 0, 1.0);
 $spectrogramBorder: #8c8c8c;
 $tagAlignmentLine: #ffa73c;
 
@@ -134,7 +134,7 @@ baw-annotation-viewer {
     }
 
     & .positionLine {
-      //border-left: solid 1px $spectrogramProgressLine;
+      border-right: solid 1px $spectrogramProgressLine;
       background-color: $spectrogramProgressLine;
       height: 100%;
       width: 1px;
