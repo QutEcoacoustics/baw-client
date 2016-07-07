@@ -1,3 +1,14 @@
+<a name="0.19.2"></a>
+## [0.19.2](https://github.com/QutBioacoustics/baw-client/compare/v0.19.1...v0.19.2) (2016-07-07)
+
+
+### Bug Fixes
+
+* **annotationViewer:** progress line no longer disappears when page zoomed out ([618a96e](https://github.com/QutBioacoustics/baw-client/commit/618a96e)), closes [#274](https://github.com/QutBioacoustics/baw-client/issues/274)
+* **visualize:** Legend and y-axis are now sorted the same way ([9f010fc](https://github.com/QutBioacoustics/baw-client/commit/9f010fc)), closes [#273](https://github.com/QutBioacoustics/baw-client/issues/273)
+
+
+
 <a name="0.19.1"></a>
 ## [0.19.1](https://github.com/QutBioacoustics/baw-client/compare/v0.19.0...v0.19.1) (2016-06-26)
 
@@ -1070,6 +1081,8 @@ Build related fixes.
 * Worked on Virtual Bird Tour. ([bed0e47](https://github.com/QutBioacoustics/baw-client/commit/bed0e47))
 * working on media controller and tests ([f396088](https://github.com/QutBioacoustics/baw-client/commit/f396088))
 * Wrote *a lot* of unit tests. ([829d366](https://github.com/QutBioacoustics/baw-client/commit/829d366))
+
+
 
 
 
