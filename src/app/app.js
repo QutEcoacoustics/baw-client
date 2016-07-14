@@ -118,7 +118,8 @@ angular.module("baw",
         "bawApp.tags",
         "bawApp.users",
         "bawApp.birdWalks",
-        "bawApp.visualize"
+        "bawApp.visualize",
+        "bawApp.citizenScience"
     ])
 
     .config(["$provide", "$routeProvider", "$locationProvider", "$httpProvider", "conf.paths", "conf.constants", "$sceDelegateProvider", "growlProvider", "localStorageServiceProvider", "cfpLoadingBarProvider", "$urlProvider", "casingTransformers",
@@ -285,7 +286,18 @@ angular.module("baw",
                 fullWidth: true,
                 reloadOnSearch: false
             }).
-
+            when("/citsci", {
+                templateUrl: "citizenScience/citizenScience.tpl.html",
+                controller: "CitizenScienceController",
+                title: "Citizen Science Page",
+                fullWidth: true
+            }).
+            when("/citsci/bristlebird", {
+                templateUrl: "citizenScience/bristlebird/bristlebird.tpl.html",
+                controller: "BristlebirdController",
+                title: "Bristlebird Citizen Science",
+                fullWidth: true
+            }).
             // missing route page
             when("/", {
                 templateUrl: paths.site.files.home,

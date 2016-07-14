@@ -92,18 +92,19 @@ $line-tip: "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org
 
 }
 
+@mixin inner($size) {
+  content: url("data:image/svg+xml;utf8,#{$pen-tip}");
+  position: absolute;
+  width: $size;
+  height: $size;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: -1px;
+  //background-image: url("data:image/svg+xml;utf8,#{$pen-tip}");
+}
+
 @mixin curved-tail($size, $both) {
-  @mixin inner($size) {
-    content: url("data:image/svg+xml;utf8,#{$pen-tip}");
-    position: absolute;
-    width: $size;
-    height: $size;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    left: -1px;
-    //background-image: url("data:image/svg+xml;utf8,#{$pen-tip}");
-  }
 
   &:hover:before {
     content: url("data:image/svg+xml;utf8,#{$pen-tip-hover}");

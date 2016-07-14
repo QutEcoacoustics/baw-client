@@ -1,0 +1,39 @@
+<div class="bristlebird">
+
+
+        <nav class="cs-progress">
+            <ul>
+
+                <li ng-repeat="(key, sample) in samples"  ng-class="{done : sample.done,  cur : currentSample === key}" ng-click="goToSample(key)">
+
+                    {{ key + 1 }}
+
+                </li>
+            </ul>
+        </nav>
+
+    <dataset-progress></dataset-progress>
+
+
+    <div class="cs-main-container">
+        <div class="main wrapper clearfix">
+
+            <div id="audio_wrapper">
+
+                <p>Currently viewing: Sample {{ currentSample }}</p>
+                <p>Audio id: {{ samples[currentSample].recordingId }}</p>
+                <p>Start Offset: {{ samples[currentSample].startOffset }}</p>
+
+                <div id="main_buttons">
+                    <a id="found" href="#" ng-click="found(true)"> I found an Eastern Bristlebird!</a>
+                    <a id="not_found" href="#" ng-click="found(false)"> No bristlebird :-( </a>
+                </div>
+            </p>
+
+            <div id="loading"></div>
+
+
+        </div> <!-- #main -->
+    </div> <!-- #main-container -->
+
+</div>
