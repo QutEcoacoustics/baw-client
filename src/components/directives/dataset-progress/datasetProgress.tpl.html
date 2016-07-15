@@ -1,0 +1,9 @@
+<nav class="cs-progress">
+    <ul>
+        <li ng-repeat="(key, item) in $ctrl.items"  ng-class="{done : item.done,  cur : $ctrl.selected === key}" ng-click="selectItem(key)">
+
+            {{ key + 1 }}
+
+        </li>
+    </ul>
+</nav>

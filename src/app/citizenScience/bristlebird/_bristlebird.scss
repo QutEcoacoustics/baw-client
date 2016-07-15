@@ -1,3 +1,8 @@
+$bristlebirdIcon: image-url('citizen-science/ebbicon.png');
+$noBristlebirdIcon: image-url('citizen-science/noebbicon.png');
+
+
+
 .bristlebird {
 
   .cs-progress {
@@ -94,7 +99,7 @@
     a#found {
       background: #8cc967;
       &:before {
-        background-image: url('../img/ebbicon.png');
+        background-image: $bristlebirdIcon;
       }
 
       &:hover {
@@ -106,7 +111,7 @@
     a#not_found {
       background: #dd4b2e;
       &:before {
-        background-image: url('../img/noebbicon.png');
+        background-image: $noBristlebirdIcon;
       }
       &:hover {
         background: #ed5b3e;

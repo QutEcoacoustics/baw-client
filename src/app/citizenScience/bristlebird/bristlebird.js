@@ -1,6 +1,8 @@
 class BristlebirdController {
     constructor($scope, $routeParams) {
 
+        var self = this;
+
         $scope.samples = [
             {
                 "recordingId": "0123456",
@@ -32,25 +34,42 @@ class BristlebirdController {
         $scope.sampleDuration = 10;
 
         /**
-         * Sets th
+         * Sets the current sample to sampleNum
          * @param sample_num int the index of the samples array of json objects
          */
         $scope.goToSample = function (sampleNum) {
-
             $scope.currentSample = sampleNum;
-            console.log(sampleNum);
-
         };
+
+        $scope.$watch("currentSample", function () {
+
+            console.log("load audio for sample "+ $scope.currentSample);
+
+        });
 
 
 
         /**
-         * Sets whether a bird was found in the current sample
-         * increments the current sample
-         * @param found boolean
+         * Sets the current sample found to true then moves to the next sample
          */
-        $scope.found = function (found) {
-            $scope.samples[$scope.currentSample].found = found;
+        $scope.found = function () {
+            $scope.samples[$scope.currentSample].found = true;
+            self.done();
+
+        };
+
+        /**
+         * Sets the current sample found to false then moves to the next sample
+         */
+        $scope.notFound = function () {
+            $scope.samples[$scope.currentSample].found = false;
+            self.done();
+        };
+
+        /**
+         * Sets the current sample to 'done' and moves to the next sample
+         */
+        this.done = function () {
             $scope.samples[$scope.currentSample].done = true;
             $scope.goToSample($scope.currentSample + 1);
         };
@@ -66,7 +85,7 @@ class BristlebirdController {
 }
 
 angular
-    .module("bawApp.citizenScience.bristlebird", [])
+    .module("bawApp.citizenScience.bristlebird", ["bawApp.components.progress"])
     .controller(
         "BristlebirdController",
         [
