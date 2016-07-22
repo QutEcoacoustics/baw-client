@@ -292,7 +292,7 @@ angular.module("baw",
                 title: "Citizen Science Page",
                 fullWidth: true
             }).
-            when("/citsci/bristlebird", {
+            when("/citsci/bristlebird/:name", {
                 templateUrl: "citizenScience/bristlebird/bristlebird.tpl.html",
                 controller: "BristlebirdController",
                 title: "Bristlebird Citizen Science",
