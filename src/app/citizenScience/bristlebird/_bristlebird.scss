@@ -62,6 +62,11 @@ $noBristlebirdIcon: image-url('citizen-science/noebbicon.png');
 
   }
 
+  .audio-wrapper .spectrogram {
+    display: block;
+    margin: 20px auto 20px auto;
+  }
+
 
   #main_buttons {
 
@@ -117,6 +122,13 @@ $noBristlebirdIcon: image-url('citizen-science/noebbicon.png');
         background: #ed5b3e;
       }
     }
+
+  }
+
+  .citsci-debug {
+
+    position: absolute;
+    opacity: 0.3;
 
   }
 

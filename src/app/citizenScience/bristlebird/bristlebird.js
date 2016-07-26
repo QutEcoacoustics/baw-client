@@ -1,5 +1,5 @@
 class BristlebirdController {
-    constructor($scope, $routeParams, $http) {
+    constructor($scope, $routeParams, $http, AudioRecording, Media, MediaModel) {
 
         var self = this;
         self.sheets_api_url = "http://localhost:8081";
@@ -8,8 +8,10 @@ class BristlebirdController {
         $scope.samples = [];
         $scope.citizenScientistName = $routeParams.name;
 
+        $scope.media = null;
+
         // currently all samples will be the same duration (not set per sample in the dataset)
-        $scope.sampleDuration = 10;
+        self.sampleDuration = 10;
 
         /**
          * Sets the current sample to 'done'
@@ -38,6 +40,32 @@ class BristlebirdController {
             return [self.sheets_api_url].concat(args).join("/");
         };
 
+
+        this.showAudio = function (recordingId, startOffset, duration) {
+
+            var mediaParams = {
+                recordingId: recordingId,
+                startOffset: startOffset,
+                endOffset: startOffset + duration,
+                format: "json"};
+
+
+                Media.get(
+                    mediaParams,
+                    function (mediaValue) {
+                        $scope.media = new MediaModel(mediaValue.data);
+
+
+
+                    },
+                    function () { console.log("fail"); } // failure
+                );
+
+                // do not block, do not wait for Media requests to finish
+                return;
+
+        };
+
         /**
          *  makes a request to the external sheets api to get the data
          *  is formatted in the following way:
@@ -63,8 +91,8 @@ class BristlebirdController {
         $http.get(url).then(function (response) {
             //console.log(response.data);
             var samples = response.data;
-            console.log(samples);
             $scope.samples = samples;
+            $scope.goToSample(0);
         });
 
 
@@ -77,13 +105,14 @@ class BristlebirdController {
         };
 
         $scope.$watch("currentSample", function () {
-
             console.log("load audio for sample "+ $scope.currentSample);
+            var currentSample = $scope.samples[$scope.currentSample];
+            self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
+        });
 
-            // var audioItem = {}; // TODO: add relevant audio item info e.g. recording id
-
-            //libraryCommon.addCalculatedProperties(audioItem); // adds in things like the url to the audio item. See app/AnnotationLibrary/item.js
-
+        $scope.$watch("media", function () {
+            document.querySelector("audio").load();
+            document.querySelector("audio").play();
         });
 
 
@@ -103,7 +132,7 @@ class BristlebirdController {
         };
 
 
-        $scope.goToSample(0);
+
 
     }
 
@@ -117,5 +146,8 @@ angular
             "$scope",
             "$routeParams",
             "$http",
+            "AudioRecording",
+            "Media",
+            "baw.models.Media",
             BristlebirdController
         ]);
