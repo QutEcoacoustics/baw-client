@@ -153,7 +153,8 @@
                                 ng-click="searchFilter()">Filter
                         </button>
                         <button type="submit" class="btn btn-warning"
-                                ng-click="clearFilter()">Clear</button>
+                                ng-click="clearFilter()">Clear
+                        </button>
                     </div>
 
 
@@ -165,15 +166,16 @@
         <h3 class="col-sm-4">Results</h3>
 
         <div class="col-sm-4 text-center">
-            <pagination class="annotation-paging"
-                        total-items="paging.total"
-                        ng-model="paging.page"
-                        items-per-page="paging.items"
-                        boundary-links="true"
-                        max-size="paging.maxPageLinks"
-                        num-pages="numPages"
-                        rotate="false">
-            </pagination>
+            <uib-pagination class="annotation-paging"
+                            total-items="paging.total"
+                            ng-model="paging.page"
+                            items-per-page="paging.items"
+                            boundary-links="true"
+                            max-size="paging.maxPageLinks"
+                            num-pages="numPages"
+                            rotate="false"
+                            pagination-href="getPaginationLink">
+            </uib-pagination>
         </div>
         <h3 class="col-sm-4 text-right">
             &nbsp;
@@ -238,15 +240,16 @@
 
     </div>
     <div class="row clearfix text-center">
-        <pagination ng-hide="paging.total < 1"
-                    class="annotation-paging center-block"
-                    total-items="paging.total"
-                    ng-model="paging.page"
-                    items-per-page="paging.items"
-                    boundary-links="true"
-                    max-size="paging.maxPageLinks"
-                    num-pages="numPages"
-                    rotate="false">
-        </pagination>
+        <uib-pagination ng-hide="paging.total < 1"
+                        class="annotation-paging center-block"
+                        total-items="paging.total"
+                        ng-model="paging.page"
+                        items-per-page="paging.items"
+                        boundary-links="true"
+                        max-size="paging.maxPageLinks"
+                        num-pages="numPages"
+                        rotate="false"
+                        pagination-href="getPaginationLink">
+        </uib-pagination>
     </div>
 </div>

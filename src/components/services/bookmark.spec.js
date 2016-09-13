@@ -13,9 +13,9 @@ describe("The bookmark service", function () {
     it("will return a promise for retrieving application bookmarks", function() {
 
         expect(bawResource.applicationBookmarksPromise).toImplement({
-            catch: null,
-            finally: null,
-            then: null
+            catch: Function,
+            finally: Function,
+            then: Function
         });
     });
 });

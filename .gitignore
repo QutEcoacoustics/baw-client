@@ -42,26 +42,6 @@ doc/
 # rubymine stuff
 /.idea
 
-
-# media folder
-/media/original/*
-/media/cachedimages/*
-/media/cachedaudio/*
-/media/experiments/*
-=======
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-
-pids
-logs
-results
-
 npm-debug.log
 node_modules/
 build/

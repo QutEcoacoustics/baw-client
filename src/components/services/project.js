@@ -26,13 +26,15 @@ angular
                     {projectId: "@projectId"}
                 );
 
-                var gapUrl = paths.api.routes.project.filterAbsolute;
-                var gapQuery = QueryBuilder.create(function (q) {
-                    return q.project({"include": ["id", "name"]});
-                });
-                resource.getAllProjects = function () {
+
+                resource.getAllProjectNames = function () {
+                    const gapUrl = paths.api.routes.project.filterAbsolute;
+                    const gapQuery = QueryBuilder.create(function (q) {
+                        return q.project({"include": ["id", "name"]});
+                    });
+
                     return $http
-                        .post(gapUrl, gapQuery.toJSON())
+                        .post(gapUrl, gapQuery.toJSONString())
                         .then(x => ProjectModel.makeFromApi(x));
                 };
 
@@ -47,7 +49,7 @@ angular
                     });
 
                     return $http
-                        .post(gpbiUrl, query.toJSON())
+                        .post(gpbiUrl, query.toJSONString())
                         .then(x => ProjectModel.makeFromApi(x));
 
                 };
@@ -61,7 +63,7 @@ angular
                     });
 
                     return $http
-                        .post(gpbsiUrl, query.toJSON())
+                        .post(gpbsiUrl, query.toJSONString())
                         .then(x => ProjectModel.makeFromApi(x));
                 };
 

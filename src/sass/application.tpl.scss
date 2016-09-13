@@ -19,6 +19,11 @@ $DEBUG: "<%= build_configs.current.key === 'development' %>" == "true";
 @import "../../vendor/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 
 /**
+* Next, we include Font-awesome's Bootstrap SCSS files.
+*/
+@import "../../vendor/font-awesome/scss/font-awesome.scss";
+
+/**
  * Now import all partials.
  * Partials in src/sass/** will be added first
  */

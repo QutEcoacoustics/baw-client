@@ -1,0 +1,11 @@
+left-nav-bar, right-nav-bar {
+  ul.nav-pills > li > a {
+    padding: 5px 10px;
+  }
+}
+
+right-nav-bar {
+  a>.fa, a>.glyphicon {
+    color: $text-color
+  }
+}

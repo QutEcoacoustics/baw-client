@@ -1,0 +1,126 @@
+<layout content-for="action-items">
+    <!--<li>-->
+    <!--<a href="{{ jobsList.newAnalysisJobRoute }}">-->
+    <!--<span class="fa fa-pencil"></span>-->
+    <!--Edit this analysis job-->
+    <!--</a>-->
+    <!--</li>-->
+    <!--<li>-->
+    <!--<a href="{{ jobsList.newAnalysisJobRoute }}">-->
+    <!--<span class="fa fa-trash"></span>-->
+    <!--Delete analysis job-->
+    <!--</a>-->
+    <!--</li>-->
+    <li>
+        <a href="{{ jobDetails.analysisJob.resultsUrl }}">
+            <i class="fa fa-table"></i>
+            Show results
+        </a>
+    </li>
+</layout>
+<div id="content" class="analysis-job-details">
+    <div class="row">
+        <h1>{{ jobDetails.analysisJob.name }}</h1>
+
+        <p>
+            {{ jobDetails.analysisJob.description }}
+        <span class="text-muted" ng-if="!jobDetails.analysisJob.description">
+            No description entered.
+        </span>
+        </p>
+        <p>
+            Results are available as they are generated. Click
+            <a href="{{ jobDetails.analysisJob.resultsUrl }}">
+                <i class="fa fa-table default-color"></i>
+                Show results
+            </a>
+            to see them.
+        </p>
+    </div>
+    <div class="row">
+
+        <h2>Overview</h2>
+        <ul class="list-group col-md-6">
+            <li class="list-group-item">
+                Status
+            <span class="label pull-right"
+                  ng-class="'label-' + jobDetails.getOverallStatusType(jobDetails.analysisJob.overallStatus)">
+                <i ng-if="jobDetails.analysisJob.isActive"
+                   class="fa fa-spinner fa-spin"></i>
+                    {{ jobDetails.analysisJob.overallStatus }}
+            </span>
+
+            </li>
+            <li class="list-group-item">
+                Last updated
+                <span class="badge">{{ jobDetails.analysisJob.friendlyUpdated }}</span>
+
+            </li>
+            <li class="list-group-item">
+                Running time
+                <span class="badge">{{ jobDetails.analysisJob.friendlyRunningTime }}</span>
+
+            </li>
+            <li class="list-group-item">
+                Completed
+                <span class="badge">{{ jobDetails.analysisJob.completedRatio | percentage}}</span>
+
+            </li>
+
+        </ul>
+
+        <ul class="list-group col-md-6">
+            <li class="list-group-item">
+                <span class="fa fa-file-audio-o"></span>
+                Recordings
+                <span class="badge">{{ jobDetails.analysisJob.overallCount }}</span>
+            </li>
+            <li class="list-group-item">
+                <span class="fa fa-file-audio-o"></span>
+                Size
+                <span class="badge">{{ jobDetails.analysisJob.friendlySize }}</span>
+            </li>
+            <li class="list-group-item">
+                <span class="fa fa-clock-o"></span>
+                Duration
+                <span class="badge">{{ jobDetails.analysisJob.friendlyDuration }}</span>
+
+            </li>
+            <li class="list-group-item">
+                Sucessful
+                <span class="badge">{{ jobDetails.analysisJob.successfulRatio | percentage}}</span>
+
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <h2>Progress</h2>
+        <c3-chart class="col-md-12"
+                  width="jobDetails.chartWidth"
+                  height="jobDetails.chartHeight"
+                  data="jobDetails.chartData"
+                  options="jobDetails.chartOptions"
+        ></c3-chart>
+    </div>
+    <div class="row">
+        <h2>Settings used</h2>
+
+
+        <h3>Data</h3>
+        <show-saved-search saved-search="jobDetails.analysisJob.savedSearch"></show-saved-search>
+
+        <h3>Analysis</h3>
+        <show-script baw-script="jobDetails.analysisJob.script"></show-script>
+
+        <h3>Customised Analysis Settings</h3>
+        <div class="col-md-12 ">
+            <div class="custom-settings-panel"
+                 ui-ace="jobDetails.aceConfig"
+                 ng-model="jobDetails.analysisJob.customSettings"
+                 readonly>
+            </div>
+        </div>
+
+
+    </div>
+</div>

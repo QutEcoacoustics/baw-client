@@ -1,0 +1,62 @@
+.analysis-jobs-list {
+
+  .actions .media-list > * {
+    display: inline-block;
+    // effectively col-md-2
+    width: ($container-md / $grid-columns) * 2
+  }
+
+  .list-item-header-a {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    & > h4 {
+      flex-grow: 1;
+    }
+    & > div {
+      flex-grow: 1;
+    }
+  }
+}
+
+.analysis-job-new, .analysis-job-details {
+
+  .custom-settings-panel {
+    min-height: 20 * 12px;
+    width: 100%;
+    resize: vertical;
+
+    border: 1px solid $input-border;
+    border-radius: $input-border-radius;
+
+    &[disabled] {
+      cursor: $cursor-disabled !important;
+
+      background: $list-group-disabled-bg;
+
+      & * {
+        pointer-events: none;
+      }
+
+      & .ace_cursor {
+        display: none;
+      }
+    }
+
+    &[readonly] {
+      background: lighten($input-bg-disabled, 3%);
+
+      & .ace_cursor {
+        display: none;
+      }
+    }
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+}

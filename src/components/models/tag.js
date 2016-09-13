@@ -3,11 +3,11 @@ angular
     .factory(
     "baw.models.Tag",
     [
-        "baw.models.associations",
+        "baw.models.ApiBase",
         "conf.paths",
         "Authenticator",
         "$url",
-        function (associations, paths, Authenticator, url) {
+        function (ApiBase, paths, Authenticator, url) {
 
             function Tag(resourceOrNewTag) {
 
@@ -95,7 +95,7 @@ angular
                 return new Tag(value);
             };
 
-            Tag.makeFromApi = associations.makeFromApi(Tag);
+            Tag.makeFromApi = ApiBase.makeFromApiWithType(Tag);
 
             return Tag;
         }]);

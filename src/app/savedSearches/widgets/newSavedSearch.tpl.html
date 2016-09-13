@@ -1,0 +1,165 @@
+<ng-form class="form-horizontal" role="form" name="newSavedSearchForm">
+    <!-- TODO: feature, advanced mode -->
+    <h4>Which audio data?</h4>
+    <div class="form-group">
+        <label class="string required col-sm-3 control-label" for="projectSelection">
+            <small>(required)</small>
+            Project
+        </label>
+        <div class="col-sm-9">
+            <select name="projectSelection"
+                    class="form-control"
+                    ng-required="true"
+                    ng-model="$ctrl.newSavedSearch.basicFilter.projectId"
+                    ng-options="p.id as p.name for p in $ctrl.projects">
+                <option value="" disabled selected hidden>Choose a project...</option>
+            </select>
+            <ng-messages for="newSavedSearchForm.projectSelection.$error" class="help-block" role="alert"
+                         ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.projectSelection.$dirty">
+                <ng-message when="required">A project must be selected for this job. Please choose one from the list.
+                </ng-message>
+            </ng-messages>
+        </div>
+    </div>
+    <div class="form-group" ng-disabled="!$ctrl.newSavedSearch.basicFilter.projectId">
+        <label class="string required col-sm-3 control-label" for="siteSelection">
+            <small>(select one or more)</small>
+            Sites
+        </label>
+        <div class="col-sm-9">
+            <p>
+                <select name="siteSelection"
+                        class="form-control"
+                        ng-required="true"
+                        multiple
+                        ng-disabled="!$ctrl.newSavedSearch.basicFilter.projectId"
+                        ng-model="$ctrl.newSavedSearch.basicFilter.siteIds"
+                        ng-options="s.id as s.name for s in $ctrl.sites">
+                </select>
+            </p>
+            <p class="text-right">
+                <button type="button"
+                        class="btn btn-default btn-xs"
+                        ng-disabled="!$ctrl.newSavedSearch.basicFilter.projectId"
+                        ng-click="$ctrl.selectAllSites(newSavedSearchForm.siteSelection)">
+                    Select all sites
+                </button>
+            </p>
+            <ng-messages for="newSavedSearchForm.siteSelection.$error" class="help-block" role="alert"
+                         ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.siteSelection.$dirty">
+                <ng-message when="required">Sites are required to be selected. You can select all sites with the button
+                    above.
+                </ng-message>
+            </ng-messages>
+        </div>
+    </div>
+
+    <h4>Which dates?</h4>
+    <div class="form-group">
+        <label class="string required col-sm-3 control-label" for="startDate">
+            Start date
+        </label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input name="startDate"
+                       type="text"
+                       class="form-control"
+                       placeholder="YYYY-MM-DD"
+                       uib-datepicker-popup
+                       ng-model="$ctrl.newSavedSearch.basicFilter.minimumDate"
+                       is-open="startDateOpened"
+                       close-text="Close"
+                       datepicker-options="$ctrl.dateSettingsStart"
+                       baw-max-date="$ctrl.newSavedSearch.basicFilter.maximumDate"
+                />
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" ng-click="startDateOpened = true">
+                      <i class="fa fa-calendar"></i>
+                  </button>
+                </span>
+            </div>
+            <ng-messages for="newSavedSearchForm.startDate.$error" class="help-block" role="alert"
+                         ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.startDate.$dirty">
+                <ng-message when="date">The date entered is in an invalid format. Must match the pattern YYYY-MM-DD.
+                </ng-message>
+                <ng-message when="maxDate">The start date must be less than the end date.</ng-message>
+            </ng-messages>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="string required col-sm-3 control-label" for="endDate">
+            End date
+        </label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input name="endDate"
+                       type="text"
+                       class="form-control"
+                       placeholder="YYYY-MM-DD"
+                       uib-datepicker-popup
+                       ng-model="$ctrl.newSavedSearch.basicFilter.maximumDate"
+                       is-open="endDateopened"
+                       close-text="Close"
+                       datepicker-options="$ctrl.dateSettingsEnd"
+                       baw-min-date="$ctrl.newSavedSearch.basicFilter.minimumDate"
+                />
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" ng-click="endDateopened = true">
+                      <i class="fa fa-calendar"></i>
+                  </button>
+                </span>
+            </div>
+            <ng-messages for="newSavedSearchForm.endDate.$error" class="help-block" role="alert"
+                         ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.endDate.$dirty">
+                <ng-message when="date">The date entered is in an invalid format. Must match the pattern YYYY-MM-DD.
+                </ng-message>
+                <ng-message when="minDate">The end date must be greater than the start date.</ng-message>
+            </ng-messages>
+        </div>
+    </div>
+
+    <h4>Name and description</h4>
+    <div class="form-group">
+        <label class="string required col-sm-3 control-label" for="savedSearchName">
+            <small>(required)</small>
+            Name
+        </label>
+        <div class="col-sm-9">
+            <p>
+                <input name="savedSearchName"
+                       class="form-control"
+                       type="text"
+                       ng-required="true"
+                       ng-minlength="3"
+
+                       ng-model="$ctrl.newSavedSearch.name">
+            </p>
+            <div class="text-right">
+                <button type="button"
+                        class="btn btn-default btn-xs"
+                        ng-click="$ctrl.suggestName()">
+                    <i class="fa fa-question-circle text-info"></i>
+                    Use a suggested name
+                </button>
+            </div>
+            <ng-messages for="newSavedSearchForm.savedSearchName.$error" class="help-block" role="alert"
+                         ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.savedSearchName.$dirty">
+                <ng-message when="required">A name is required for this saved search.</ng-message>
+                <ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>
+            </ng-messages>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="text optional col-sm-3 control-label" for="savedSearchDescription">Description</label>
+        <div class="col-sm-9">
+            <textarea name="savedSearchDescription"
+                      rows="3"
+                      class="text optional form-control"
+                      ng-model="$ctrl.newSavedSearch.description">
+            </textarea>
+        </div>
+    </div>
+
+</ng-form>

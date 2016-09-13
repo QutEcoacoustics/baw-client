@@ -58,6 +58,7 @@ module.exports = function (environment) {
                 "analysisResults": {
                     "system": "/analysis_jobs/system/audio_recordings/{recordingId}",
                     "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}",
+                    "jobWithPath": "/analysis_jobs/{analysisJobId}/audio_recordings{path}"
                 }
             },
             "links": {
@@ -83,11 +84,10 @@ module.exports = function (environment) {
             // The following intentionally are not prefixed with a '/'
             // static files
             "files": {
-                "error404": "error/error_404.tpl.html",
+                "error404": "error/error404.tpl.html",
                 "home": "home/home.tpl.html",
                 "login": {
-                    "loginWidget": "login/widget/loginWidget.tpl.html",
-                    "defaultImage": "assets/img/user_spanhalf.png"
+                    "loginWidget": "login/widget/loginWidget.tpl.html"
                 },
                 "listen": "listen/listen.tpl.html",
                 "annotationViewer": "annotationViewer/annotationViewer.tpl.html",
@@ -97,7 +97,11 @@ module.exports = function (environment) {
                     "list": "annotationLibrary/annotationLibrary.tpl.html",
                     "item": "annotationLibrary/annotationItem.tpl.html"
                 },
-                "navigation": "navigation/navigation.tpl.html",
+                "navigation": {
+                    "crumbs": "navigation/navigation.tpl.html",
+                    "left": "navigation/leftNavBar.tpl.html",
+                    "right": "navigation/rightNavBar.tpl.html"
+                },
                 "birdWalk": {
                     "list": "birdWalks/birdWalks.tpl.html",
                     "detail": "birdWalks/birdWalk.tpl.html",
@@ -118,7 +122,26 @@ module.exports = function (environment) {
                         "distributionVisualisation": "d3Bindings/eventDistribution/distributionVisualisation.tpl.html"
                     }
                 },
-                "visualize": "visualize/visualize.tpl.html"
+                "visualize": "visualize/visualize.tpl.html",
+                "jobs": {
+                    details: "jobs/details/jobDetails.tpl.html",
+                    list: "jobs/list/jobsList.tpl.html",
+                    "new": "jobs/new/jobNew.tpl.html"
+                },
+                "analysisResults": {
+                    "fileList": "analysisResults/fileList/fileList.tpl.html"
+                },
+                "users": {
+                    "userTile": "users/userTile.tpl.html"
+                },
+                "savedSearches": {
+                    "new": "savedSearches/widgets/newSavedSearch.tpl.html",
+                    "list": "savedSearches/widgets/listSavedSearches.tpl.html",
+                    "show": "savedSearches/widgets/showSavedSearch.tpl.html"
+                },
+                "scripts": {
+                    "show": "scripts/widgets/showScript.tpl.html"
+                }
             },
             // routes used by angular
             "ngRoutes": {
@@ -132,10 +155,26 @@ module.exports = function (environment) {
                     "d3": "/demo/d3",
                     "rendering": "/demo/rendering",
                     "bdCloud": "/demo/BDCloud2014"
+                },
+                analysisJobs: {
+                    list: "/analysis_jobs",
+                    "new": "/analysis_jobs/new",
+                    details: "/analysis_jobs/{analysisJobId}",
+                    analysisResults: "/analysis_jobs/{analysisJobId}/results:path*?"
                 }
             },
             // general links for use in <a />'s
-            "links": {}
+            "links": {
+                analysisJobs: {
+                    analysisResults: "/analysis_jobs/{analysisJobId}/results",
+                    analysisResultsWithPath: "/analysis_jobs/{analysisJobId}/results{path}"
+                }
+            },
+            "assets": {
+                "users": {
+                    "defaultImage": "assets/img/user_spanhalf.png"
+                }
+            }
         }
     };
 
@@ -187,9 +226,9 @@ module.exports = function (environment) {
 
                 var isArray = f instanceof Array;
                 if (isArray) {
-                   wasAnyArray = true;
-                    f.forEach(function(item, index) {
-                        path.push(processFragment(item,  i === (fragments.length - 1)));
+                    wasAnyArray = true;
+                    f.forEach(function (item, index) {
+                        path.push(processFragment(item, i === (fragments.length - 1)));
                     });
                 }
                 else {
@@ -229,6 +268,8 @@ module.exports = function (environment) {
     recursivePath(paths.api.links, paths.api.root);
     recursivePath(paths.site.files, paths.site.root);
     recursivePath(paths.site.ngRoutes, paths.api.root);
+    recursivePath(paths.site.assets, joinPathFragments(environment.siteRoot, environment.siteDir));
 
     return paths;
-};
+}
+;

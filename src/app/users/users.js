@@ -1,8 +1,10 @@
-angular.module("bawApp.users", [])
-
-    .controller("UsersCtrl", ["$scope", "$location", "$resource", "$routeParams", "moment",  "User",
-
-
+angular
+    .module("bawApp.users", [
+        "bawApp.users.userTile"
+    ]).controller(
+    "UsersCtrl",
+    [
+        "$scope", "$location", "$resource", "$routeParams", "moment", "User",
         function UsersCtrl($scope, $location, $resource, $routeParams, moment, User) {
             var userResource = User;
             var routeArgs = {userId: $routeParams.userId};

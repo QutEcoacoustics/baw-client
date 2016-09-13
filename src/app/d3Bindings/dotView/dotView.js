@@ -35,6 +35,7 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
                         if (valueItem.year === startYear) {
                             foundYear = true;
                             var foundHour = false;
+                            /* jshint loopfunc:true */
                             angular.forEach(valueItem.hoursOfDay, (valueHours, keyHours) => {
                                 var existingHour = valueHours[0];
                                 if (hour === existingHour) {
@@ -156,6 +157,7 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
                         .attr("r", getRadius)
                         .style("fill", getFill);
 
+                    /* jshint loopfunc:true */
                     text
                         .attr("y", j * 20 + 25)
                         .attr("x", (d, i) =>  xScale(d[0]) - 5)
@@ -166,6 +168,7 @@ angular.module("bawApp.d3.dotView", ["bawApp.vendorServices.auto"])
                         .style("fill", (d) => c(dataIndex))
                         .style("display", "none");
 
+                    /* jshint loopfunc:true */
                     g.append("text")
                         .attr("y", j * 20 + 25)
                         .attr("x", width + 20)

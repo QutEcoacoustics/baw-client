@@ -355,6 +355,7 @@ angular
                                 // delay generation of url
                                 // url extremely expensive
                                 // beside, only need to generate width/tileSize urls at a time
+                                /* jshint loopfunc:true */
                                 get tileImageUrl() {
                                     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters
                                     delete this.tileImageUrl;

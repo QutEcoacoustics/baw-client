@@ -82,9 +82,11 @@ module.exports = {
     vendor_files: {
         jsWrapWithModule: [
             "vendor/d3/d3.js",
+            "vendor/c3/c3.js",
             "vendor/momentjs/moment.js",
             "vendor/lodash/lodash.js",
             "vendor/bowser/bowser.js",
+            "vendor/filesize/lib/filesize.js",
             "vendor/humanize-duration/humanize-duration.js",
             "vendor/round-date/roundDate.js",
             "node_modules/rbush/rbush.js"
@@ -93,6 +95,7 @@ module.exports = {
             "node_modules/babel-polyfill/dist/polyfill.js",
             "vendor/jquery/dist/jquery.js",
             "vendor/angular/angular.js",
+            "vendor/angular-messages/angular-messages.js",
 
             "buildConfig/externalModule.js",
 
@@ -110,6 +113,7 @@ module.exports = {
             "vendor/momentjs/moment.js",
             "vendor/humanize-duration/humanize-duration.js",
             "vendor/round-date/roundDate.js",
+            "vendor/filesize/lib/filesize.js",
 
             "vendor/angular-route/angular-route.js",
 
@@ -127,15 +131,10 @@ module.exports = {
             "vendor/angular-sanitize/angular-sanitize.js",
 
             // draggabilly
-            "vendor/classie/classie.js",
-            "vendor/eventEmitter/EventEmitter.js",
-            "vendor/eventie/eventie.js",
-            "vendor/get-style-property/get-style-property.js",
-            // get-size depends on get-style-property... it has to come after it
-            "vendor/get-size/get-size.js",
-            "vendor/draggabilly/draggabilly.js",
+            "vendor/draggabilly/dist/draggabilly.pkgd.js",
 
             "vendor/d3/d3.js",
+            "vendor/c3/c3.js",
             "node_modules/rbush/rbush.js",
 
             "vendor/bowser/bowser.js",
@@ -144,7 +143,16 @@ module.exports = {
 
             "vendor/angular-local-storage/dist/angular-local-storage.js",
 
-            "vendor/angular-loading-bar/build/loading-bar.js"
+            "vendor/angular-loading-bar/build/loading-bar.js",
+
+            // https://github.com/angular-ui/ui-ace
+            "vendor/ace-builds/src-min-noconflict/ace.js",
+            "vendor/ace-builds/src-min-noconflict/ext-whitespace.js",
+            "vendor/ace-builds/src-min-noconflict/mode-json.js",
+            "vendor/ace-builds/src-min-noconflict/mode-yaml.js",
+            "vendor/ace-builds/src-min-noconflict/mode-xml.js",
+            "vendor/ace-builds/src-min-noconflict/theme-xcode.js",
+            "vendor/angular-ui-ace/ui-ace.js"
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss
@@ -157,7 +165,9 @@ module.exports = {
 
             "vendor/angular-growl-v2/build/angular-growl.css",
 
-            "vendor/angular-loading-bar/build/loading-bar.css"
+            "vendor/angular-loading-bar/build/loading-bar.css",
+
+            "vendor/c3/c3.css"
         ],
         assets: [
             // jquery-ui is stoopid, special case
@@ -171,6 +181,11 @@ module.exports = {
                 template.src = "vendor/bootstrap-sass/assets/fonts/bootstrap/**";
                 template.dest += "fonts/bootstrap/";
 
+                return template;
+            },
+            function (template) {
+                template.src = "vendor/font-awesome/fonts/**";
+                template.dest += "fonts/";
 
                 return template;
             }

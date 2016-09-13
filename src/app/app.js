@@ -52,10 +52,12 @@ angular.module("baw",
                              "ngRoute",
                              "ngResource",
                              "ngSanitize",
+        "ngMessages",
                              //'ui.select2',
                              "ui.bootstrap",
                              "ui.bootstrap.typeahead",
                              "ui.bootstrap.tpls",
+        "ui.ace", // code-editor! used for analysis jobs config
                              "ng-form-group", // connects angular form validation with bootstrap classes
                              "decipher.tags",
                              "angular-growl",
@@ -94,11 +96,13 @@ angular.module("baw",
 
                              "bawApp.accounts",
                              "bawApp.annotationViewer",
+        "bawApp.analysisResults",
                              "bawApp.audioEvents",
                              "bawApp.annotationLibrary",
                              "bawApp.bookmarks",
                              "bawApp.demo",
                              "bawApp.error",
+        "bawApp.jobs",
                              "bawApp.home",
                              "bawApp.listen",
                              "bawApp.login",
@@ -108,6 +112,8 @@ angular.module("baw",
                              "bawApp.recordInformation",
                              "bawApp.recordings",
                              "bawApp.recordings.recentRecordings",
+        "bawApp.savedSearches",
+        "bawApp.scripts",
                              "bawApp.search",
                              "bawApp.tags",
                              "bawApp.users",
@@ -119,12 +125,22 @@ angular.module("baw",
              function ($provide, $routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, cfpLoadingBarProvider, $urlProvider, casingTransformers) {
                  // adjust security whitelist for resource urls
                  var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
-                 currentWhitelist.push(paths.api.root+"/**");
+            currentWhitelist.push(paths.api.root + "/**");
                  $sceDelegateProvider.resourceUrlWhitelist(currentWhitelist);
 
 
                  $routeProvider.whenDefaults = whenDefaults;
                  $routeProvider.fluidIf = baw.fluidIf;
+
+            // secondary navs
+            const analysisJobsNav = {
+                title: "Analysis Jobs",
+                href: paths.site.ngRoutes.analysisJobs.list
+            };
+            const analysisJobNav = {
+                title: "Analysis Job",
+                href: paths.site.ngRoutes.analysisJobs.details
+            };
 
                  // routes
                  $routeProvider.
@@ -139,14 +155,63 @@ angular.module("baw",
                      //whenDefaults("audioEvents", "audioEvent", ":audioEventId", 'AudioEventsCtrl', 'AudioEventCtrl').
                      //whenDefaults("users", "user", ":userId", 'UsersCtrl', 'UserCtrl').
 
-                     when("/recordings", {templateUrl: "/assets/recordings.html", controller: "RecordingsCtrl" }).
+            when(paths.site.ngRoutes.analysisJobs.list, {
+                templateUrl: paths.site.files.jobs.list,
+                controller: "JobsListController",
+                controllerAs: "jobsList",
+                title: analysisJobsNav.title,
+                fullWidth: false,
+                secondaryNavigation: [],
+                icon: "tasks"
+            }).
+            when(paths.site.ngRoutes.analysisJobs.new, {
+                templateUrl: paths.site.files.jobs.new,
+                controller: "JobNewController",
+                controllerAs: "jobNew",
+                title: "New Analysis Job",
+                fullWidth: false,
+                secondaryNavigation: [ analysisJobsNav ],
+                icon: "tasks"
+            }).
+            when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
+                templateUrl: paths.site.files.jobs.details,
+                controller: "JobDetailsController",
+                controllerAs: "jobDetails",
+                title: analysisJobNav.title,
+                fullWidth: false,
+                secondaryNavigation: [ analysisJobsNav ],
+                icon: "tasks"
+            }).
+            when(paths.site.ngRoutes.analysisJobs.analysisResults.replace("{analysisJobId}", ":analysisJobId"), {
+                templateUrl: paths.site.files.analysisResults.fileList,
+                controller: "FileListController",
+                controllerAs: "fileList",
+                title: "Analysis Job Results",
+                fullWidth: false,
+                secondaryNavigation: [ analysisJobsNav, analysisJobNav ],
+                icon: "table"
+            }).
+            //when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title: "Jobs",
+            // fullWidth: false}).
+
+            when("/recordings", {templateUrl: "/assets/recordings.html", controller: "RecordingsCtrl"}).
                      when("/recordings/:recordingId",
-                          {templateUrl: "/assets/recording.html", controller: "RecordingCtrl" }).
+                {templateUrl: "/assets/recording.html", controller: "RecordingCtrl"}).
 
-                     when("/listen", {templateUrl: paths.site.files.recordings.recentRecordings, controller: "RecentRecordingsCtrl", title: "Listen"}).
-                     when("/listen/:recordingId", {templateUrl: paths.site.files.listen, controller: "ListenCtrl", title: ":recordingId",  fullWidth: true}).
+            when("/listen", {
+                templateUrl: paths.site.files.recordings.recentRecordings,
+                controller: "RecentRecordingsCtrl",
+                title: "Listen"
+            }).
+            when("/listen/:recordingId", {
+                templateUrl: paths.site.files.listen,
+                controller: "ListenCtrl",
+                title: ":recordingId",
+                fullWidth: true
+            }).
 
-                     //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller: 'ListenController'}).
+            //when('/listen/:recordingId/start=:start/end=:end', {templateUrl: paths.site.files.listen, controller:
+            // 'ListenController'}).
 
                      when("/accounts", {templateUrl: "/assets/accounts_sign_in.html", controller: "AccountsCtrl"}).
                      when("/accounts/:action",
@@ -154,26 +219,64 @@ angular.module("baw",
 
                      when("/attribution", {templateUrl: "/assets/attributions.html"}).
 
-                     when("/birdWalks", {templateUrl: paths.site.files.birdWalk.list, controller: "BirdWalksCtrl", title: "Bird Walks"}).
-                     when("/birdWalks/:birdWalkId", {templateUrl: paths.site.files.birdWalk.detail, controller: "BirdWalkCtrl", title: ":birdWalkId"}).
+            when("/birdWalks", {
+                templateUrl: paths.site.files.birdWalk.list,
+                controller: "BirdWalksCtrl",
+                title: "Bird Walks"
+            }).
+            when("/birdWalks/:birdWalkId", {
+                templateUrl: paths.site.files.birdWalk.detail,
+                controller: "BirdWalkCtrl",
+                title: ":birdWalkId"
+            }).
 
                      // experiments
                      when("/experiments/:experiment",
                           {templateUrl: "/assets/experiment_base.html", controller: "ExperimentsCtrl"}).
 
-                     when("/library", {templateUrl: paths.site.files.library.list, controller: "AnnotationLibraryCtrl", title: "Annotation Library" , fullWidth: true}).
+            when("/library", {
+                templateUrl: paths.site.files.library.list,
+                controller: "AnnotationLibraryCtrl",
+                title: "Annotation Library",
+                fullWidth: true
+            }).
                      when("/library/:recordingId", {
-                         redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
+                redirectTo: function (routeParams, path, search) {
+                    return "/library?audioRecordingId=" + routeParams.recordingId;
+                },
                          templateUrl: paths.site.files.library.list,
-                         title: ":recordingId" , fullWidth: true}).
+                title: ":recordingId",
+                fullWidth: true
+            }).
                      when("/library/:recordingId/audio_events", {
-                         redirectTo: function (routeParams, path, search) { return "/library?audioRecordingId="+routeParams.recordingId;},
-                         title: "Audio Events" }).
-                     when("/library/:recordingId/audio_events/:audioEventId", {templateUrl: paths.site.files.library.item, controller: "AnnotationItemCtrl", title: "Annotation :audioEventId"}).
+                redirectTo: function (routeParams, path, search) {
+                    return "/library?audioRecordingId=" + routeParams.recordingId;
+                },
+                title: "Audio Events"
+            }).
+            when("/library/:recordingId/audio_events/:audioEventId", {
+                templateUrl: paths.site.files.library.item,
+                controller: "AnnotationItemCtrl",
+                title: "Annotations"
+            }).
 
-                     when(paths.site.ngRoutes.demo.d3, {templateUrl: paths.site.files.demo.d3, controller: "D3TestPageCtrl", title: "D3 Test Page" }).
-                     when(paths.site.ngRoutes.demo.rendering, {templateUrl: paths.site.files.demo.rendering, controller: "RenderingCtrl", title: "Rendering" , fullWidth: true }).
-                     when(paths.site.ngRoutes.demo.bdCloud, {templateUrl: paths.site.files.demo.bdCloud2014, controller: "BdCloud2014Ctrl", title: "BDCloud2014 demo" , fullWidth: true }).
+            when(paths.site.ngRoutes.demo.d3, {
+                templateUrl: paths.site.files.demo.d3,
+                controller: "D3TestPageCtrl",
+                title: "D3 Test Page"
+            }).
+            when(paths.site.ngRoutes.demo.rendering, {
+                templateUrl: paths.site.files.demo.rendering,
+                controller: "RenderingCtrl",
+                title: "Rendering",
+                fullWidth: true
+            }).
+            when(paths.site.ngRoutes.demo.bdCloud, {
+                templateUrl: paths.site.files.demo.bdCloud2014,
+                controller: "BdCloud2014Ctrl",
+                title: "BDCloud2014 demo",
+                fullWidth: true
+            }).
 
                      when(paths.site.ngRoutes.visualize, {
                          templateUrl: paths.site.files.visualize,
@@ -184,9 +287,24 @@ angular.module("baw",
                      }).
 
                      // missing route page
-                     when("/", {templateUrl: paths.site.files.home, controller: "HomeCtrl"}).
-                     when("/404", {templateUrl: paths.site.files.error404, controller: "ErrorCtrl"}).
-                     when("/404?path=:errorPath", {templateUrl: paths.site.files.error404, controller: "ErrorCtrl"}).
+            when("/", {
+                templateUrl: paths.site.files.home,
+                controller: "HomeCtrl",
+                title: "Home",
+                fullWidth: false
+            }).
+            when("/404", {
+                templateUrl: paths.site.files.error404,
+                controller: "ErrorController",
+                title: "Not found",
+                fullWidth: false
+            }).
+            when("/404?path=:errorPath", {
+                templateUrl: paths.site.files.error404,
+                controller: "ErrorController",
+                title: "Not found",
+                fullWidth: false
+            }).
                      otherwise({
                                    redirectTo: function (params, location, search) {
                                        return "/404?path=" + location;
@@ -213,10 +331,10 @@ angular.module("baw",
                  localStorageServiceProvider.setPrefix(constants.namespace);
 
                  // for compatibility with rails api
-                 $urlProvider.registerRenamer("Server", function(key) {
+            $urlProvider.registerRenamer("Server", function (key) {
                      return casingTransformers.underscore(key);
                  });
-                 $urlProvider.registerRenamer("Client", function(key) {
+            $urlProvider.registerRenamer("Client", function (key) {
                      return casingTransformers.camelize(key);
                  });
 
@@ -234,51 +352,30 @@ angular.module("baw",
              }])
 
 
-    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "predictiveCacheDefaultProfiles",
-          function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, predictiveCacheDefaultProfiles) {
+    .run(["$rootScope", "$location", "$route", "$http", "Authenticator", "AudioEvent", "conf.paths", "UserProfile", "ngAudioEvents", "$url", "predictiveCache", "conf.constants", "conf.environment", "predictiveCacheDefaultProfiles",
+        function ($rootScope, $location, $route, $http, Authenticator, AudioEvent, paths, UserProfile, ngAudioEvents, $url, predictiveCache, constant, appEnvironment, predictiveCacheDefaultProfiles) {
 
               // user profile - update user preferences when they change
               var eventCallbacks = {};
-              eventCallbacks[ngAudioEvents.volumeChanged] = function(event, api, value) {
+            eventCallbacks[ngAudioEvents.volumeChanged] = function (event, api, value) {
                   if (api.profile.preferences.volume !== value) {
                       api.profile.preferences.volume = value;
                       api.updatePreferences();
                   }
               };
-              eventCallbacks[ngAudioEvents.muteChanged] = function(event, api, value) {
+            eventCallbacks[ngAudioEvents.muteChanged] = function (event, api, value) {
                   if (api.profile.preferences.muted !== value) {
                       api.profile.preferences.muted = value;
                       api.updatePreferences();
                   }
               };
-              eventCallbacks.autoPlay = function(event, api, value) {
-                  if(api.profile.preferences.autoPlay !== value) {
+            eventCallbacks.autoPlay = function (event, api, value) {
+                if (api.profile.preferences.autoPlay !== value) {
                       api.profile.preferences.autoPlay = value;
                       api.updatePreferences();
                   }
               };
               UserProfile.listen(eventCallbacks);
-
-              // helper function for printing scope objects
-              /*baw.exports.print = $rootScope.print = function () {
-                  var seen = [];
-                  var badKeys = ["$digest", "$$watchers", "$$childHead", "$$childTail", "$$listeners", "$$nextSibling",
-                                 "$$prevSibling", "$root", "this", "$parent"];
-                  var str = JSON.stringify(this,
-                                           function (key, val) {
-                                               if (badKeys.indexOf(key) >= 0) {
-                                                   return "[Can't do that]";
-                                               }
-                                               if (typeof val === "object") {
-                                                   if (seen.indexOf(val) >= 0) {
-                                                       return "";
-                                                   }
-                                                   seen.push(val);
-                                               }
-                                               return val;
-                                           }, 4);
-                  return str;
-              };*/
 
 
               // http://www.yearofmoo.com/2012/10/more-angularjs-magic-to-supercharge-your-webapp.html#apply-digest-and-phase
@@ -319,8 +416,11 @@ angular.module("baw",
                   $location.path("/404?path=");
               });
 
-              //https://docs.angularjs.org/api/ngRoute/service/$route
+            // https://docs.angularjs.org/api/ngRoute/service/$route
               $rootScope.$on("$routeChangeSuccess", function (event, current, previous, rejection) {
+                
+                let title = $route.current && ( " | " + $route.current.title) || "";
+                document.title = appEnvironment.brand.title + title;
                   $rootScope.fullWidth = $route.current.$$route.fullWidth;
               });
 
@@ -386,9 +486,9 @@ angular.module("baw",
                      // only do it once - we best not be too annoying
                      var supported = constants.browserSupport;
                      var isSupportedBrowser = false;
-                     var version = parseFloat(bowser.browser.version);
+                var version = parseFloat(bowser.version);
                      angular.forEach(supported.optimum, function (value, key) {
-                         if (isSupportedBrowser || (bowser.browser[key] && version >= value)) {
+                    if (isSupportedBrowser || (bowser[key] && version >= value)) {
                              isSupportedBrowser = true;
                          }
                      });
@@ -399,11 +499,11 @@ angular.module("baw",
 
                                  var supportedBrowser = false;
                                  angular.forEach(supported.supported, function (value, key) {
-                                     if (bowser.browser[key]) {
+                                if (bowser[key]) {
                                          if (version >= value) {
                                              growl.info(supported.baseMessage.format({
-                                                 name: bowser.browser.name,
-                                                 version: bowser.browser.version,
+                                            name: bowser.name,
+                                            version: bowser.version,
                                                  reason: "not well tested"
                                              }));
                                              supportedBrowser = true;
@@ -417,8 +517,8 @@ angular.module("baw",
 
                                  if (!supportedBrowser) {
                                      growl.warning(supported.baseMessage.format({
-                                         name: bowser.browser.name,
-                                         version: bowser.browser.version,
+                                    name: bowser.name,
+                                    version: bowser.version,
                                          reason: "not supported"
                                      }));
                                  }

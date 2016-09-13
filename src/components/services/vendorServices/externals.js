@@ -1,13 +1,13 @@
 angular
     .module("bawApp.vendorServices", [
-        "bawApp.vendorServices.auto"
+        "bawApp.vendorServices.auto",
         //"bawApp.services.core.mySillyLibrary"
 
 
     ])
     .config(["humanize-durationProvider", "momentProvider",
-        "$windowProvider", "d3Provider",
-        function (humanizeDurationProvider, momentProvider, $windowProvider, d3Provider) {
+        "$windowProvider", "d3Provider", "c3Provider",
+        function (humanizeDurationProvider, momentProvider, $windowProvider, d3Provider, c3Provider) {
 
             // HACK: add real duration formatting onto moment object!
             var moment = momentProvider.configureVendorInstance();
@@ -143,5 +143,17 @@ angular
                 else {
                     return this.attr("clip-path");
                 }
+            };
+
+            // augment c3
+            var c3 = c3Provider.configureVendorInstance();
+            let originalC3Generate = c3.generate;
+            c3.generate = function(...args) {
+                window.d3 = d3;
+
+                let result =  originalC3Generate.apply(c3.chart.internal, args);
+
+                delete window.d3;
+                return result;
             };
         }]);
