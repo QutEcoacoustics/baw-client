@@ -40,7 +40,6 @@ class BristlebirdController {
             return [self.sheets_api_url].concat(args).join("/");
         };
 
-
         this.showAudio = function (recordingId, startOffset, duration) {
 
             var mediaParams = {
@@ -49,14 +48,10 @@ class BristlebirdController {
                 endOffset: startOffset + duration,
                 format: "json"};
 
-
                 Media.get(
                     mediaParams,
                     function (mediaValue) {
                         $scope.media = new MediaModel(mediaValue.data);
-
-
-
                     },
                     function () { console.log("fail"); } // failure
                 );
@@ -110,6 +105,8 @@ class BristlebirdController {
             self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
         });
 
+        // reload audio when the source changes. Without this it won't change the audio
+        // even though the src attribute changes
         $scope.$watch("media", function () {
             document.querySelector("audio").load();
             document.querySelector("audio").play();
@@ -130,9 +127,6 @@ class BristlebirdController {
         $scope.notFound = function () {
             self.done(false);
         };
-
-
-
 
     }
 
