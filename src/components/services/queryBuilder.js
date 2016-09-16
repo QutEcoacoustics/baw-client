@@ -401,7 +401,7 @@ angular
                 const queryStringWhiteList = {
                     filter: filterToQueryString,
                     paging: (pagingObject) => Object.entries(pagingObject),
-                    projection: (projectionObject) => Object.entries(projectionObject).map(([k,v]) => ["projection_" + k, v]),
+                    projection: (projectionObject) => Object.entries(projectionObject).map(([k,v]) => ["projection_" + k, v.join(",")]),
                     sorting: (sortObject) => Object.entries(sortObject)
                 };
 

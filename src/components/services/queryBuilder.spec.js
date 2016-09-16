@@ -924,7 +924,7 @@ describe("The QueryBuilder", function () {
     it("should be able to load a very complex query", function () {
         var actual = queryBuilder.load(complexExpected);
         
-        expect(actual.toJSON(spaces)).toBe(j(complexExpected));
+        expect(j(actual.toJSON())).toBe(j(complexExpected));
     });
 
     describe("URL subset", function () {
@@ -979,7 +979,7 @@ describe("The QueryBuilder", function () {
                     {page: 1, items: 10}
                 ).end();
 
-            expect(actual.toJSON(spaces)).toBe(j(expectedFilter));
+            expect(j(actual.toJSON())).toBe(j(expectedFilter));
 
             let qsObj = actual.toQueryString();
             let url = $url.formatUri("www.test.com/index.html", qsObj);
