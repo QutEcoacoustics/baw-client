@@ -67,6 +67,7 @@ module.exports = function (environment) {
                 "project": "/projects/{projectId}",
                 "site": "/projects/{projectId}/sites/{siteId}",
                 "userAccounts": "/user_accounts/{userId}",
+                "myAnnotations": "user_accounts/{userId}/audio_events",
                 "websiteStatus": "/website_status",
                 "contactUs": "/contact_us",
                 "disclaimers": "/disclaimers",
@@ -76,7 +77,11 @@ module.exports = function (environment) {
                 "loginActual": "/my_account/sign_in",
                 "logout": "/my_account/sign_out",
                 "register": "/my_account/sign_up",
-                "admin": "/admin"
+                "admin": "/admin",
+                "myAccount": "/my_account",
+                "dataUpload": "/data_upload",
+                "dataRequest": "/data_request",
+                "bugReport": "/bug_report"
             }
         },
         "site": {

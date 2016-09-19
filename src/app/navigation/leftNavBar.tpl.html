@@ -1,14 +1,21 @@
 <nav role="navigation">
     <h6>
         <strong class="text-uppercase text-muted">
-            {{ $ctrl.title }}
+            Menu
         </strong>
     </h6>
     <ul class="nav nav-pills nav-stacked">
         <li ng-repeat="link in $ctrl.links"
-            ng-class="{ active: link.isActive }">
-            <a title="" data-toggle="tooltip" data-placement="right" ng-href="{{ link.href }}"
-               data-original-title="View your projects">{{ link.title }}</a>
+            ng-class="['indentation-' + link.indentation || 0, { active: link.isActive}]">
+            <a title="{{ link.title }}"
+               data-toggle="tooltip"
+               data-placement="right"
+               ng-href="{{ link.href }}"
+               target="{{ link.target}}"
+               data-original-title="{{ link.title }}">
+                <i class="fa fa-fw default-color" ng-class="'fa-' + link.icon"></i>
+                {{ link.title }}
+            </a>
         </li>
     </ul>
 </nav>

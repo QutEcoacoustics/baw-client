@@ -6,6 +6,17 @@ left-nav-bar, right-nav-bar {
 
 right-nav-bar {
   a>.fa, a>.glyphicon {
-    color: $text-color
+    color: $text-color;
+  }
+}
+
+left-nav-bar {
+  @for $i from 0 through 4 {
+    .indentation-#{$i} {
+      $step: ($i * 5%);
+      width: 100% - $step;
+      margin-left: $step !important;
+      font-size: 100% - $step;
+    }
   }
 }

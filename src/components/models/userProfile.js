@@ -44,6 +44,13 @@ angular
                     // Related to: https://github.com/QutBioacoustics/baw-server/issues/235
                     return this.rolesMask === 1 || /^admin$/i.test(this.userName);
                 }
+
+                get annotationUrl() {
+                    return $url.formatUri(
+                        paths.api.links.myAnnotationsAbsolute,
+                        {userId: this.id}
+                    );
+                }
             }
 
             return UserProfile;

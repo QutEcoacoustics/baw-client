@@ -14,20 +14,24 @@ angular
         return activeResource;
     })
     .controller("SecondaryNavigationController", [
-        "$rootScope", "$location", "$route", "conf.paths", "ActiveResource",
-        function ($rootScope, $location, $route, paths, ActiveResource) {
+        "lodash",
+        "$rootScope",
+        "$location",
+        "$route",
+        "conf.paths",
+        "ActiveResource",
+        "MenuDefinition",
+        "UserProfile",
+        function (_, $rootScope, $location, $route, paths, ActiveResource, MenuDefinition, UserProfile) {
             var controller = this;
 
-            const omnipresentLinks = [
-                {
-                    title: "Home",
-                    href: paths.api.links.homeAbsolute
-                },
-                {
-                    title: "Projects",
-                    href: paths.api.links.projectsAbsolute
-                }
-            ];
+            const omnipresentLinks = MenuDefinition;
+
+            var userModel = null;
+            UserProfile.get.then(() => {
+                userModel = UserProfile.profile;
+                onRouteChangeSuccess(null, $route.current, null, null);
+            });
 
             this.title = "";
             this.links = omnipresentLinks;
@@ -49,14 +53,37 @@ angular
                 controller.icon = current.$$route.icon;
                 controller.actionItemsTemplate = current.$$route.actionsTemplateUrl;
 
-                let currentLink = {title: controller.title, href: $location.$$path};
+                let currentLink = {title: controller.title, href: $location.$$path, icon: controller.icon};
                 let extraLinks = current.$$route.secondaryNavigation || [];
+                let contextualLinks = extraLinks.concat(currentLink).map((link, index) => {
+                    link.indentation = index;
+                    return link;
+                });
 
-                controller.links = omnipresentLinks
-                    .concat(extraLinks)
-                    .concat(currentLink)
+                let omniLinks = omnipresentLinks
+                    .filter((link) => !link.condition || link.condition.call(link, userModel))
+                    .map(link => {
+                        link.href = _.isFunction(link.href) ? link.href.call(link, userModel) : link.href;
+                        return link;
+                    });
+
+
+                // insert contextual links under omninode, or stick at bottom
+                let parentIndex = omniLinks.findIndex(link => link.href === contextualLinks[0].href);
+                if (parentIndex >= 0) {
+
+                    contextualLinks.shift();
+                    omniLinks.splice(parentIndex + 1, 0, ...contextualLinks);
+                }
+                else {
+                    omniLinks.push(...contextualLinks);
+                }
+
+
+                controller.links = omniLinks
                     .map(activePath.bind(null, current.$$route));
             }
+
 
             let activePath = function (route, link) {
                 link.isActive = route.regexp.test(link.href);
@@ -100,18 +127,20 @@ angular
 
                 if (storedLayout === undefined) {
                     if (renderAttempts <= 0) {
-                        console.warn(`layout rendering failed for layoutKey '${renderer.layoutKey}' after ${maxRenderAttempts} attempts`);
+                        console.warn(
+                            `layout rendering failed for layoutKey '${renderer.layoutKey}' after ${maxRenderAttempts} attempts`);
                         return;
                     }
 
                     // try again next render loop!
-                    //console.debug(`The \`layout\` directive has no stored content for the \`render-for\` key '${renderer.layoutKey}' - trying again`);
+                    //console.debug(`The \`layout\` directive has no stored content for the \`render-for\` key
+                    // '${renderer.layoutKey}' - trying again`);
                     renderAttempts--;
                     $timeout(applyLayout, 0, true, renderer, renderAttempts);
                     return;
                 }
 
-                storedLayout.transclude(function(clone, scope) {
+                storedLayout.transclude(function (clone, scope) {
                     renderer.element.append(clone);
                     renderer.source = {content: clone, scope};
                 });

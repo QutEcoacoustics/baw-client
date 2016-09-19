@@ -135,12 +135,14 @@ angular.module("baw",
 
                 // secondary navs
                 const analysisJobsNav = {
-                    title: "Analysis Jobs",
-                    href: paths.site.ngRoutes.analysisJobs.list
+                    title: "Audio Analysis",
+                    href: paths.site.ngRoutes.analysisJobs.list,
+                    icon: "server"
                 };
                 const analysisJobNav = {
                     title: "Analysis Job",
-                    href: paths.site.ngRoutes.analysisJobs.details
+                    href: paths.site.ngRoutes.analysisJobs.details,
+                    icon: "tasks"
                 };
 
                 // routes
@@ -163,7 +165,7 @@ angular.module("baw",
                     title: analysisJobsNav.title,
                     fullWidth: false,
                     secondaryNavigation: [],
-                    icon: "tasks"
+                    icon: analysisJobsNav.icon
                 }).when(paths.site.ngRoutes.analysisJobs.new, {
                     templateUrl: paths.site.files.jobs.new,
                     controller: "JobNewController",
@@ -184,7 +186,7 @@ angular.module("baw",
                     templateUrl: paths.site.files.analysisResults.fileList,
                     controller: "FileListController",
                     controllerAs: "fileList",
-                    title: "Analysis Job Results",
+                    title: "Results",
                     fullWidth: false,
                     secondaryNavigation: [analysisJobsNav, analysisJobNav],
                     icon: "table"
@@ -197,7 +199,8 @@ angular.module("baw",
                     {templateUrl: "/assets/recording.html", controller: "RecordingCtrl"}).when("/listen", {
                     templateUrl: paths.site.files.recordings.recentRecordings,
                     controller: "RecentRecordingsCtrl",
-                    title: "Listen"
+                    title: "Listen",
+                    icon: "headphones"
                 }).when("/listen/:recordingId", {
                     templateUrl: paths.site.files.listen,
                     controller: "ListenCtrl",
