@@ -83,7 +83,6 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                     return target ? target.position : null;
                 }, function (newValue, oldValue) {
                     if (newValue !== null) {
-
                         // We must not forward bind constantly.
                         // This is an attempt to disable bind looping (creates jittery playback).
                         // Only a problem when playing (currentTime is constantly changing)
@@ -92,7 +91,6 @@ ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents
                         if (rafOn && (lastRafPosition === newValue || newValue === element.currentTime)) {
                             return;
                         }
-
                         element.currentTime = newValue;
                     }
                     // else ignore change

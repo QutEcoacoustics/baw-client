@@ -1,11 +1,3 @@
-// class DatasetProgressController {
-//     constructor($scope) {
-//
-//     }
-// }
-
-
-
 angular.module("bawApp.components.progress", [])
     .component("datasetProgress",{
         templateUrl: "components/directives/dataset-progress/datasetProgress.tpl.html",

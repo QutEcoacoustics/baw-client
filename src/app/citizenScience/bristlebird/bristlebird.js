@@ -1,5 +1,5 @@
 class BristlebirdController {
-    constructor($scope, $routeParams, $http, AudioRecording, Media, MediaModel) {
+    constructor($scope, $routeParams, $http, ngAudioEvents, AudioRecording, Media, MediaModel) {
 
         var self = this;
         self.sheets_api_url = "http://localhost:8081";
@@ -12,6 +12,17 @@ class BristlebirdController {
 
         // currently all samples will be the same duration (not set per sample in the dataset)
         self.sampleDuration = 10;
+
+
+        // todo: load these from user profile ?
+        // the model passed to ngAudio
+        $scope.model = {
+            audioElement: {
+                volume: 100,
+                muted: false,
+                autoPlay: true
+            }
+        };
 
         /**
          * Sets the current sample to 'done'
@@ -40,6 +51,13 @@ class BristlebirdController {
             return [self.sheets_api_url].concat(args).join("/");
         };
 
+        /**
+         * Sets the media member of the scope to the specified recording segment
+         * The watcher will then actually load it to the dom
+         * @param recordingId string
+         * @param startOffset float
+         * @param duration float
+         */
         this.showAudio = function (recordingId, startOffset, duration) {
 
             var mediaParams = {
@@ -96,7 +114,12 @@ class BristlebirdController {
          * @param sample_num int the index of the samples array of json objects
          */
         $scope.goToSample = function (sampleNum) {
-            $scope.currentSample = sampleNum;
+            if (sampleNum < $scope.samples.length) {
+                $scope.currentSample = sampleNum;
+            } else {
+                console.log("can't go to next sample because this is the last one");
+            }
+
         };
 
         $scope.$watch("currentSample", function () {
@@ -108,8 +131,8 @@ class BristlebirdController {
         // reload audio when the source changes. Without this it won't change the audio
         // even though the src attribute changes
         $scope.$watch("media", function () {
+            $scope.position = 0;
             document.querySelector("audio").load();
-            document.querySelector("audio").play();
         });
 
 
@@ -128,6 +151,26 @@ class BristlebirdController {
             self.done(false);
         };
 
+
+        /**
+         * auto play feature
+         * when the playback arrives at the end of the audio, it will assume
+         * that no bristlebirds have been found and proceed to the next segment.
+         */
+        $scope.$on(ngAudioEvents.ended, function navigate(event) {
+                console.info("Changing page to next segment...");
+                self.done(false);
+        });
+
+        // $scope.$watch(function () {
+        //     return $scope.model.audioElement.autoPlay;
+        // }, function (newValue, oldValue) {
+        //     if (UserProfile.profile && (UserProfile.profile.preferences.autoPlay !== newValue)) {
+        //         $scope.$emit("autoPlay", newValue);
+        //     }
+        // });
+
+
     }
 
 }
@@ -140,6 +183,7 @@ angular
             "$scope",
             "$routeParams",
             "$http",
+            "ngAudioEvents",
             "AudioRecording",
             "Media",
             "baw.models.Media",

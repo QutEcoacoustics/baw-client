@@ -31,7 +31,7 @@
 
                 <div class="audio-wrapper">
                     <img class="spectrogram" ng-src="{{media.available.image.png.url}}">
-                    <audio id="citsci-sample" controls>
+                    <audio id="citsci-sample" ng-audio="model.audioElement" controls>
                         <source ng-repeat="key in media.available.audioOrder"
                                 ng-src="{{media.available.audio[key].url}}" src=""
                                 type="{{media.available.audio[key].mimeType}}">
