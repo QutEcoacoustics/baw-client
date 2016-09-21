@@ -18,18 +18,16 @@
     <div class="cs-main-container">
         <div class="main wrapper clearfix">
 
-
                 <div class="citsci-debug">
                     <p>Currently viewing: Sample {{ currentSample }}</p>
                     <p>Audio id: {{ samples[currentSample].recordingId }}</p>
                     <p>Start Offset: {{ samples[currentSample].startOffset }}</p>
                 </div>
 
-
                 <div class="audio-wrapper">
                     <div class="spectrogram-wrapper">
                         <img class="spectrogram" ng-src="{{media.available.image.png.url}}">
-                        <div position-line></div>
+                        <div position-line media="media" audio-data="model.audioElement"></div>
                     </div>
                     <audio id="citsci-sample" ng-audio="model.audioElement" controls>
                         <source ng-repeat="key in media.available.audioOrder"
@@ -43,7 +41,6 @@
                     <a id="found" href="#" ng-click="found()"> I found an Eastern Bristlebird!</a>
                     <a id="not_found" href="#" ng-click="notFound()"> No bristlebird :-( </a>
                 </div>
-
 
             <div id="loading"></div>
 
