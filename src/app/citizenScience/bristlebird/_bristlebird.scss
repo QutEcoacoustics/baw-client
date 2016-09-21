@@ -62,9 +62,18 @@ $noBristlebirdIcon: image-url('citizen-science/noebbicon.png');
 
   }
 
-  .audio-wrapper .spectrogram {
-    display: block;
+
+
+  .spectrogram-wrapper {
+
+    position: relative;
     margin: 20px auto 20px auto;
+    display: inline-block;
+
+    .spectrogram {
+      display: block;
+    }
+
   }
 
 

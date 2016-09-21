@@ -20,7 +20,8 @@ class BristlebirdController {
             audioElement: {
                 volume: 100,
                 muted: false,
-                autoPlay: true
+                autoPlay: true,
+                position: 0
             }
         };
 

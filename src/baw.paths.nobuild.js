@@ -91,6 +91,7 @@ module.exports = function (environment) {
                 },
                 "listen": "listen/listen.tpl.html",
                 "annotationViewer": "annotationViewer/annotationViewer.tpl.html",
+                "positionLine": "annotationViewer/positionLine.tpl.html",
                 "gridLines": "annotationViewer/gridLines/gridLines.tpl.html",
                 "annotationComments": "annotationLibrary/comments/comments.tpl.html",
                 "library": {
