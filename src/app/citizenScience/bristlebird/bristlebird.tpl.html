@@ -26,8 +26,8 @@
 
                 <div class="audio-wrapper">
                     <div class="spectrogram-wrapper">
-                        <img class="spectrogram" ng-src="{{media.available.image.png.url}}">
-                        <div position-line media="media" audio-data="model.audioElement"></div>
+                        <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
+                        <div position-line media="media" audio-data="model.audioElement" image-selector="#spectrogram"></div>
                     </div>
                     <audio id="citsci-sample" ng-audio="model.audioElement" controls>
                         <source ng-repeat="key in media.available.audioOrder"
