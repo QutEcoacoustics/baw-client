@@ -6,6 +6,7 @@ class BristlebirdController {
 
         // list of the samples, to be retrieved from the dataset
         $scope.samples = [];
+        $scope.currentSample = -1;
         $scope.citizenScientistName = $routeParams.name;
 
         $scope.media = null;
@@ -18,7 +19,7 @@ class BristlebirdController {
         // the model passed to ngAudio
         $scope.model = {
             audioElement: {
-                volume: 100,
+                volume: 1,
                 muted: false,
                 autoPlay: true,
                 position: 0
@@ -124,9 +125,11 @@ class BristlebirdController {
         };
 
         $scope.$watch("currentSample", function () {
-            console.log("load audio for sample "+ $scope.currentSample);
-            var currentSample = $scope.samples[$scope.currentSample];
-            self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
+            if ($scope.currentSample > -1) {
+                console.log("load audio for sample "+ $scope.currentSample);
+                var currentSample = $scope.samples[$scope.currentSample];
+                self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
+            }
         });
 
         // reload audio when the source changes. Without this it won't change the audio

@@ -53,6 +53,8 @@ angular
                 errors: []
             };
 
+
+
             // HACK: use a filter endpoint because that API is newer
             // (unlike the current resource API which is using the old format).
             ////AudioEventService.get(parameters,
@@ -75,6 +77,15 @@ angular
                     libraryCommon.getSiteMediaAndProject(commonData);
                     libraryCommon.getUsers(commonData);
                     $scope.annotation = annotation;
+
+                            // todo: load these from user preferences
+                            $scope.annotation.audioElement = {
+                                volume: 1,
+                                muted: false,
+                                autoPlay: true,
+                                position: 0
+                            };
+
 
                     // comments
                     reloadComments();
