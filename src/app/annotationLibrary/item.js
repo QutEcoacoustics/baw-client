@@ -78,13 +78,13 @@ angular
                     libraryCommon.getUsers(commonData);
                     $scope.annotation = annotation;
 
-                            // todo: load these from user preferences
-                            $scope.annotation.audioElement = {
-                                volume: 1,
-                                muted: false,
-                                autoPlay: true,
-                                position: 0
-                            };
+                        //todo load these from user preferences
+                    $scope.annotation.audioElement = {
+                        volume: 1,
+                        muted: false,
+                        autoPlay: true,
+                        position: 0
+                    };
 
 
                     // comments

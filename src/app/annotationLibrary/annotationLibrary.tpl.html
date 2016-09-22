@@ -194,13 +194,15 @@
                 <img ng-src="{{item.media.available.image.png.url}}" src=""
                      ng-style="{width: item.bounds.enforcedImageWidth, height: item.bounds.enforcedImageHeight}">
                 <grid-lines configuration="item.gridConfig" class="library-spectrogram-grid"></grid-lines>
+                <div position-line media="item.media" audio-data="item.audioElement" image-selector="#spectrogram"></div>
+
                 <div class="library-spectrogram-bounds"
                      ng-style="{top: item.bounds.top, left: item.bounds.left, width: item.bounds.width, height: item.bounds.height}"></div>
             </div>
 
             <div class="library-item-info"
                  ng-style="{width:item.bounds.enforcedImageWidth}">
-                <audio controls>
+                <audio controls ng-audio="item.audioElement">
                     <source ng-repeat="key in item.media.available.audioOrder"
                             ng-src="{{item.media.available.audio[key].url}}" src=""
                             type="{{item.media.available.audio[key].mimeType}}">
