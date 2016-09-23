@@ -64,7 +64,10 @@ class NewSavedSearchController {
     loadSites() {
         this[newSavedSearchControllerSymbol].SiteService
             .getSitesByProjectIds([this.newSavedSearch.basicFilter.projectId])
-            .then((response) => this.sites = response.data.data);
+            .then((response) => {
+                this.sites = response.data.data;
+                this.newSavedSearch.basicFilter.siteCount = this.sites.length;
+            });
     }
     
     suggestName() {

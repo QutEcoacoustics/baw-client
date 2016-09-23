@@ -90,7 +90,7 @@ angular
 
 
                 get friendlySize() {
-                    if (this.overallSizeBytes) {
+                    if (this.overallSizeBytes !== undefined ) {
                         return filesize(this.overallSizeBytes, {round: 0});
                     }
                     else {
@@ -136,6 +136,7 @@ angular
 
                 set savedSearch(value) {
                     this._savedSearch = value;
+                    this.savedSearchId = value && value.id || null;
                 }
 
                 get script() {
@@ -144,6 +145,17 @@ angular
 
                 set script(value) {
                     this._script = value;
+                    this.scriptId = value && value.id || null;
+                }
+
+                toJSON() {
+                    return {
+                        name: this.name,
+                        description: this.description,
+                        customSettings: this.customSettings,
+                        scriptId: this.scriptId,
+                        savedSearchId: this.savedSearchId
+                    };
                 }
 
             }

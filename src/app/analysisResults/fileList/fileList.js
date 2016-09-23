@@ -16,13 +16,14 @@ class FileListController {
         
 
         // download metadata
+        let analysisJobId = Number($routeParams.analysisJobId);
         AnalysisJobService
-            .getName(Number($routeParams.analysisJobId))
+            .getName(analysisJobId)
             .then(function (response) {
                 controller.analysisJob = response.data.data[0];
                 controller.updateCurrentDirectory();
             })
-            .then(() => AnalysisResultService.get($routeParams.path, $routeParams.page))
+            .then(() => AnalysisResultService.get(analysisJobId, $routeParams.path, $routeParams.page))
             .then(function (response) {
                 controller.analysisResult = response.data.data[0];
 

@@ -45,7 +45,8 @@ angular
                             projectId: null,
                             siteIds: [],
                             minimumDate: null,
-                            maximumDate: null
+                            maximumDate: null,
+                            siteCount: null
                         };
 
                         this.basicFilter = basicFilterBase;
@@ -73,7 +74,15 @@ angular
 
                     let siteName = "(no sites)";
                     if (sites && this.basicFilter.siteIds.length > 0) {
-                        siteName = this.basicFilter.siteIds.length === sites.length ? "All sites" : "Sites " + chosenSites.join(", ");
+                        if (this.basicFilter.siteIds.length === sites.length) {
+                            siteName = "All sites";
+                        }
+                        else if(this.basicFilter.siteIds.length === 1) {
+                            siteName = chosenSites + " site only";
+                        }
+                        else {
+                            siteName = "Sites " + chosenSites.join(", ");
+                        }
                     }
 
                     let dates = "",
@@ -105,26 +114,31 @@ angular
                         let q = baseQuery;
 
                         if (filter.projectId) {
-                            q = q.eq("projects.id", filter.projectId);
+                            q = q.equal("projects.id", filter.projectId);
                         }
-                        
+
                         if (filter.siteIds.length > 0) {
-                            q = q.in("siteId", filter.siteIds);
+                            if (filter.siteIds.length === filter.siteCount) {
+                                // optimization, if all sites selected, just don't filter on sites
+                            }
+                            else {
+                                q = q.in("siteId", filter.siteIds);
+                            }
                         }
-                        
+
                         if (filter.minimumDate) {
-                            q = q.gt("recordedDate", filter.minimumDate);
+                            q = q.greaterThanOrEqual("recordedDate", filter.minimumDate);
                         }
 
                         if (filter.maximumDate) {
                             // NB: recordedEndDate does not currently exist.
-                            q = q.lt("recordedEndDate", filter.maximumDate);
+                            q = q.lessThanOrEqual("recordedEndDate", filter.maximumDate);
                         }
 
                         return q;
                     });
 
-                    this._storedQuery = query.toJSON();
+                    this._storedQuery = query.toJSON().filter;
                 }
 
                 get storedQuery() {
@@ -134,6 +148,14 @@ angular
                 set storedQuery(value) {
                     // TODO: querybuilder validate
                     this._storedQuery = value;
+                }
+
+                toJSON() {
+                    return {
+                        name: this.name,
+                        description: this.description,
+                        storedQuery: this.storedQuery
+                    };
                 }
 
             }

@@ -125,7 +125,7 @@ angular
                 // url to the resource
                 get url() {
                     let analysisJobId = !this.analysisJob ? this.analysisJobId : this.analysisJob.id;
-
+                    console.error("this link is broken, no data to rest on");
                     let url = paths.api.routes.analysisResults.jobWithPath;
 
                     let result = $url.formatUri(

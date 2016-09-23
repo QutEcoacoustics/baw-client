@@ -12,8 +12,9 @@ angular
             "casingTransformers",
             "QueryBuilder",
             "baw.models.Script",
-            function ($resource, bawResource, $http, $q, paths, _, casingTransformers, QueryBuilder, ScriptModel) {
-
+            "$url",
+            function ($resource, bawResource, $http, $q, paths, _, casingTransformers, QueryBuilder, ScriptModel, $url) {
+                /*
                 // FAKED!
                 let fakedData = [
 
@@ -41,15 +42,19 @@ angular
                     }
                 ];
                 fakedData = casingTransformers.transformObject(fakedData, casingTransformers.camelize);
+                */
 
                 function query() {
-                    //const path = paths.api.routes.analysisResults;
-                    return $q.when({data: {data: fakedData}})
+                    const url = paths.api.routes.scripts.listAbsolute;
+                    return $http
+                        .get(url)
                         .then(x => ScriptModel.makeFromApi(x));
                 }
 
                 function get(id) {
-                    return $q.when({data: {data: fakedData.find(x => x.id === id)}})
+                    const url = $url.formatUri(paths.api.routes.scripts.showAbsolute, {scriptId: id});
+                    return $http
+                        .get(url)
                         .then(x => ScriptModel.makeFromApi(x));
                 }
 

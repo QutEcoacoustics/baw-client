@@ -1,18 +1,21 @@
 const jobNewControllerSymbol = Symbol("JobNewControllerPrivates");
 
 class JobNewController {
-    constructor($scope, $routeParams, $timeout, paths, AnalysisJobService, AnalysisJobModel, ScriptService, MimeType) {
+    constructor($scope, $routeParams, $timeout, paths, growl,
+                AnalysisJobService, AnalysisJobModel, ScriptService, SavedSearchService, MimeType) {
         this[jobNewControllerSymbol] = {};
         let privates = this[jobNewControllerSymbol];
-        
+
         let controller = this;
 
         this.jobListPath = paths.site.ngRoutes.analysisJobs.list;
-        
+
         privates.newSavedSearch = false;
         privates.$scope = $scope;
         privates.$timeout = $timeout;
         privates.$scope.newAnalysisJobForm = null;
+        privates.AnalysisJobService = AnalysisJobService;
+        privates.growl = growl;
 
         // the new analysis job we are making
         this.analysisJob = new AnalysisJobModel();
@@ -117,9 +120,19 @@ class JobNewController {
         this.analysisJob.scriptId = id;
     }
 
-    submitAnalysisJob() {
+    submitAnalysisJob(form) {
         console.info("submitAnalysisJob: ", this.analysisJob);
+        if (!form.$valid) {
+            console.warn("Form invalid, not submitting");
+            return;
+        }
 
+        this[jobNewControllerSymbol].AnalysisJobService
+            .saveWithSavedSearch(this.analysisJob)
+            .catch((error) => {
+                console.error("Creating analsysis job failed", error);
+                this[jobNewControllerSymbol].growl.error("Creating the analysis job failed.");
+            });
 
     }
 }
@@ -133,9 +146,11 @@ angular
             "$routeParams",
             "$timeout",
             "conf.paths",
+            "growl",
             "AnalysisJob",
             "baw.models.AnalysisJob",
             "Script",
+            "SavedSearch",
             "MimeType",
             JobNewController
         ]);

@@ -11,6 +11,21 @@ angular
 
         function transformObject(data, transform) {
             if (data && angular.isObject(data)) {
+
+                // we'd normally leave this call up to the JSON serializer
+                // however we need to be able to rename properties before we get to the serializer
+                // and there's no point renaming properites that don't need to be renamed.
+                // Additionally, this helps avoid some cyclic referencing problems because toJSON typically produces
+                // non-cyclical results.
+                if (data.toJSON instanceof Function) {
+                    data = data.toJSON();
+
+                    // toJSON can return primitives - we don't want to forEach them
+                    if (!angular.isObject(data)) {
+                        return data;
+                    }
+                }
+
                 var newData = angular.isArray(data) ? [] : {};
                 angular.forEach(data, function (value, key) {
                     var newKey = transform(key);
@@ -92,7 +107,8 @@ angular
                 // probs only want to do this if headers contains app/json
                 // and only if object has a __railsJsonRenamer__
                 // or if request is going to our server?
-                if ((headers().Accept || "").indexOf("application/json") >= 0) {
+                let headersActual = headers();
+                if ((headersActual.accept || headersActual.Accept || "").indexOf("application/json") >= 0) {
 
                     if (data === undefined || data === null) {
                         return;

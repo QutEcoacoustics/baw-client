@@ -56,9 +56,22 @@ module.exports = function (environment) {
                     "show": "/bookmarks/{bookmarkId}"
                 },
                 "analysisResults": {
-                    "system": "/analysis_jobs/system/audio_recordings/{recordingId}",
-                    "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}",
+                    "system": "/analysis_jobs/system/audio_recordings/{recordingId}/results",
+                    "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}/results",
                     "jobWithPath": "/analysis_jobs/{analysisJobId}/audio_recordings{path}"
+                },
+                "analysisJobs": {
+                    "list": "/analysis_jobs",
+                    "show": "/analysis_jobs/{analysisJobId}",
+                    "filter": "/analysis_jobs/filter",
+                },
+                "scripts": {
+                    "list": "/scripts",
+                    "show": "/script/{scriptId}"
+                },
+                "savedSearches": {
+                    "list": "/saved_searches",
+                    "show": "/saved_searches/{savedSearchId}"
                 }
             },
             "links": {

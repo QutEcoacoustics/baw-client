@@ -36,12 +36,16 @@ angular
 
                     /**
                      * If called, auto downloads linked resources.
-                     * Since we wabt customiseable behaviour, we force an explicit call
+                     * Since we want customizable behaviour, we force an explicit call
                      * to autoDownload.
                      * @param resources
                      */
                     autoDownload(resources) {
 
+                    }
+
+                    get hasId() {
+                        return !(this.id === undefined || this.id === null);
                     }
 
                     static make(resource) {
@@ -87,6 +91,8 @@ angular
                             return ApiBase.makeFromApi.call(Type, resource);
                         };
                     }
+
+
                 }
 
                 return ApiBase;

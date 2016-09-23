@@ -12,8 +12,9 @@ angular
             "casingTransformers",
             "QueryBuilder",
             "baw.models.SavedSearch",
-            function ($resource, bawResource, $http, $q, paths, _, casingTransformers, QueryBuilder, SavedSearchModel) {
-
+            "$url",
+            function ($resource, bawResource, $http, $q, paths, _, casingTransformers, QueryBuilder, SavedSearchModel, $url) {
+                /*
                 // FAKED!
                 let fakedData = [
 
@@ -39,20 +40,32 @@ angular
                     }
                 ];
                 fakedData = casingTransformers.transformObject(fakedData, casingTransformers.camelize);
+                */
 
                 function query() {
-                    //const path = paths.api.routes.analysisResults;
-                    return $q.when({data: {data: fakedData}})
+                    const url = paths.api.routes.savedSearches.listAbsolute;
+                    return $http
+                        .get(url)
                         .then(x => SavedSearchModel.makeFromApi(x));
                 }
 
                 function get(id) {
-                    return $q.when({data: {data: fakedData.find(x => x.id === id)}})
+                    const url = $url.formatUri(paths.api.routes.savedSearches.showAbsolute, {savedSearchId: id});
+                    return $http
+                        .get(url)
+                        .then(x => SavedSearchModel.makeFromApi(x));
+                }
+
+                function save(model) {
+                    const url = paths.api.routes.savedSearches.listAbsolute;
+                    return $http
+                        .post(url, {savedSearch: model })
                         .then(x => SavedSearchModel.makeFromApi(x));
                 }
 
                 return {
                     query,
-                    get
+                    get,
+                    save
                 };
             }]);
