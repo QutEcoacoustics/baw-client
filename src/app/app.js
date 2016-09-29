@@ -298,6 +298,12 @@ angular.module("baw",
                 title: "Bristlebird Citizen Science",
                 fullWidth: true
             }).
+            when("/citsci/ipswich/:name", {
+                templateUrl: "citizenScience/ipswich/ipswich.tpl.html",
+                controller: "IpswichController",
+                title: "Ipswich School Citizen Science",
+                fullWidth: true
+            }).
             // missing route page
             when("/", {
                 templateUrl: paths.site.files.home,

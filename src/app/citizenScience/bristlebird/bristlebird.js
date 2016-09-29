@@ -1,5 +1,5 @@
 class BristlebirdController {
-    constructor($scope, $routeParams, $http, ngAudioEvents, AudioRecording, Media, MediaModel) {
+    constructor($scope, $routeParams, $http, ngAudioEvents, AudioRecording, Media, MediaModel, UserProfile, UserProfileEvents) {
 
         var self = this;
         self.sheets_api_url = "http://localhost:8081";
@@ -14,8 +14,6 @@ class BristlebirdController {
         // currently all samples will be the same duration (not set per sample in the dataset)
         self.sampleDuration = 10;
 
-
-        // todo: load these from user profile ?
         // the model passed to ngAudio
         $scope.model = {
             audioElement: {
@@ -25,6 +23,18 @@ class BristlebirdController {
                 position: 0
             }
         };
+
+        // bind user profile
+        var profileLoaded = function updateProfileSettings(event, UserProfile) {
+            $scope.model.audioElement.volume = UserProfile.profile.preferences.volume;
+            $scope.model.audioElement.muted = UserProfile.profile.preferences.muted;
+            $scope.model.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay || $routeParams.autoPlay;
+        };
+        $scope.$on(UserProfileEvents.loaded, profileLoaded);
+        if (UserProfile.profile && UserProfile.profile.preferences) {
+            profileLoaded(null, UserProfile);
+        }
+
 
         /**
          * Sets the current sample to 'done'
@@ -191,5 +201,7 @@ angular
             "AudioRecording",
             "Media",
             "baw.models.Media",
+            "UserProfile",
+            "UserProfileEvents",
             BristlebirdController
         ]);

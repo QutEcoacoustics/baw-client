@@ -16,6 +16,7 @@
                         <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
                         <div position-line media="media" audio-data="model.audioElement"></div>
                     </div>
+                    <br>
                     <audio id="citsci-sample" ng-audio="model.audioElement" controls>
                         <source ng-repeat="key in media.available.audioOrder"
                                 ng-src="{{media.available.audio[key].url}}" src=""
@@ -24,13 +25,19 @@
                     </audio>
                 </div>
 
-                <div id="main-buttons">
-                    <a id="found" href="#" ng-click="found()"> I found an Eastern Bristlebird!</a>
-                    <a id="not_found" href="#" ng-click="notFound()"> No bristlebird :-( </a>
-                </div>
+            <div id="main-buttons">
+                    <a ng-repeat="label in labels"  ng-class="{selected : (samples[currentSample].labels.indexOf(label) > -1)}" ng-click="toggleLabel(label)">
+
+                        {{label}}
+
+                    </a>
+                </ul>
+            </div>
+
+
+
 
             <div id="loading"></div>
-
 
         </div> <!-- #main -->
     </div> <!-- #main-container -->

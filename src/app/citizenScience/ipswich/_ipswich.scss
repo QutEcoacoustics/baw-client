@@ -1,0 +1,42 @@
+$bristlebirdIcon: image-url('citizen-science/ebbicon.png');
+$noBristlebirdIcon: image-url('citizen-science/noebbicon.png');
+
+
+
+.citizen-science {
+
+
+
+
+
+  #main-buttons {
+
+    a {
+      background: #dd4b2e;
+      &:hover {
+        background: #ed5b3e;
+      }
+    }
+
+    a.selected {
+      background: #8cc967;
+      &:hover {
+        background: #9cd977;
+      }
+
+    }
+
+
+
+  }
+
+  .citsci-debug {
+
+    position: absolute;
+    opacity: 0.3;
+
+  }
+
+
+}
+

@@ -93,7 +93,6 @@ angular
                     var profileLoaded = function updateProfileSettings(event, UserProfile) {
                         $scope.model.audioElement.volume = UserProfile.profile.preferences.volume;
                         $scope.model.audioElement.muted = UserProfile.profile.preferences.muted;
-
                         $scope.model.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay || $routeParams.autoPlay;
                     };
                     $scope.$on(UserProfileEvents.loaded, profileLoaded);

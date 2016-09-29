@@ -11,8 +11,7 @@ bawds.directive("positionLine", ["bawApp.unitConverter", function (unitConverter
         replace: true,
         scope: {
             media: "<media",
-            audioData: "<audioData",
-            imageSelector: "<imageId"
+            audioData: "<audioData"
         },
         link: function (scope, elements, attributes, controller) {
 
@@ -34,7 +33,6 @@ bawds.directive("positionLine", ["bawApp.unitConverter", function (unitConverter
             });
 
             scope.positionLine = function () {
-
 
                 if (scope.converters) {
                     return(scope.converters.secondsToPixels(this.audioData.position));
