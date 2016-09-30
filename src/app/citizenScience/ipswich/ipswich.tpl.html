@@ -25,15 +25,8 @@
                     </audio>
                 </div>
 
-            <div id="main-buttons">
-                    <a ng-repeat="label in labels"  ng-class="{selected : (samples[currentSample].labels.indexOf(label) > -1)}" ng-click="toggleLabel(label)">
 
-                        {{label}}
-
-                    </a>
-                </ul>
-            </div>
-
+            <citizen-science-labels labels="labels" samples="samples" currentSample="currentSample"></citizen-science-labels>
 
 
 

@@ -14,11 +14,16 @@ class IpswichController {
 
         self.csProject = "ipswich";
 
+        $scope.citizenScientistName = $routeParams.name;
+
+        // currently all samples will be the same duration (not set per sample in the dataset)
+        self.sampleDuration = 10;
+
 
         // list of the samples, to be retrieved from the dataset
         $scope.samples = [];
         $scope.currentSample = -1;
-        $scope.citizenScientistName = $routeParams.name;
+
 
         // to be populated after getting samples from dataset
         $scope.media = null;
@@ -64,53 +69,18 @@ class IpswichController {
         });
 
 
-        // currently all samples will be the same duration (not set per sample in the dataset)
-        self.sampleDuration = 10;
+
 
         // the model passed to ngAudio
         $scope.model = {
             audioElement: CitizenScienceCommon.getAudioModel()
         };
 
-        /**
-         * returns the indexes of an array whose values are truthy
-         * @param arr
-         * @returns {*}
-         */
-        self.checkedLabelNums = function () {
-            return $scope.labelStates.map((e, i) => (e) ? i : false ).filter(e => e !== false);
-        };
 
 
 
-        /**
-         * if the label is already in the list of labels for this sample, remove it
-         * otherwise add it. Send the new set of labels to the dataset
-         * Note, we can't guarantee the order that the api calls will reach the google sheet.
-         * if the user adds and removes a label in quick succession, they might arrive out of order
-         * resulting in the wrong labels being applied.
-         * @param label string
-         */
-        $scope.toggleLabel = function (label) {
-            var index = $scope.samples[$scope.currentSample].labels.indexOf(label);
-            if (index === -1) {
-                $scope.samples[$scope.currentSample].labels.push(label);
-            } else {
-                $scope.samples[$scope.currentSample].labels.splice(index,1);
-            }
-
-            var url = CitizenScienceCommon.apiUrl("setLabels",
-                self.csProject,
-                $scope.samples[$scope.currentSample].name,
-                $scope.samples[$scope.currentSample].recordingId,
-                $scope.samples[$scope.currentSample].startOffset,
-                $scope.samples[$scope.currentSample].labels.join(","));
-            $http.get(url).then(function (response) {
-                console.log(response.data);
-            });
 
 
-        };
 
 
         /**
@@ -140,9 +110,6 @@ class IpswichController {
             return;
 
         };
-
-
-
 
 
         /**
@@ -189,12 +156,12 @@ class IpswichController {
 }
 
 
-
-
-
-
 angular
-    .module("bawApp.citizenScience.ipswich", ["bawApp.components.progress", "bawApp.citizenScience.common"])
+    .module("bawApp.citizenScience.ipswich", [
+        "bawApp.components.progress",
+        "bawApp.citizenScience.common",
+        "bawApp.components.citizenScienceLabels"
+    ])
     .controller(
         "IpswichController",
         [

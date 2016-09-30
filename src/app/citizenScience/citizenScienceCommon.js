@@ -36,11 +36,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
             self.mediaModel = null;
 
-
-
-
-
-
             return {
                 getAudioModel: function () {
                     return self.audioElement;

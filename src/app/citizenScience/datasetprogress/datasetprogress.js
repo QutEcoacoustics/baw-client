@@ -1,6 +1,6 @@
 angular.module("bawApp.components.progress", [])
     .component("datasetProgress",{
-        templateUrl: "components/directives/dataset-progress/datasetProgress.tpl.html",
+        templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
         controller: ["$scope", function ($scope) {
             //console.log("dataset progress component scope");console.log($scope);
 
