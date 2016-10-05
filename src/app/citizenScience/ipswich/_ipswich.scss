@@ -1,41 +1,40 @@
-$bristlebirdIcon: image-url('citizen-science/ebbicon.png');
-$noBristlebirdIcon: image-url('citizen-science/noebbicon.png');
+.citizen-science.ipswich {
 
-
-
-.citizen-science {
-
-
-
-
-
-  #main-buttons {
+  #label-buttons {
 
     a {
-      background: #dd4b2e;
+      background: none;
+      color: #000;
+
+
       &:hover {
-        background: #ed5b3e;
+        color: #666;
+
+        .checkbox {
+          border-color: #666;
+        }
+
       }
+
     }
 
     a.selected {
-      background: #8cc967;
-      &:hover {
-        background: #9cd977;
+      i {
+        color: #8cc967;
       }
-
     }
 
-
+    i {
+      display: inline-block;
+      width: 1.2em;
+      font-size: 2em;
+      position: relative;
+      top: 0.25em;
+    }
 
   }
 
-  .citsci-debug {
 
-    position: absolute;
-    opacity: 0.3;
-
-  }
 
 
 }

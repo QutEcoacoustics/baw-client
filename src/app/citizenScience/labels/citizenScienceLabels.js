@@ -19,19 +19,19 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
              * @param label string
              */
             $scope.toggleLabel = function (label) {
-                var index = $scope.samples[$scope.currentSample].labels.indexOf(label);
+                var index = self.samples[self.currentSample].labels.indexOf(label);
                 if (index === -1) {
-                    $scope.samples[$scope.currentSample].labels.push(label);
+                    self.samples[self.currentSample].labels.push(label);
                 } else {
-                    $scope.samples[$scope.currentSample].labels.splice(index,1);
+                    self.samples[self.currentSample].labels.splice(index,1);
                 }
 
                 var url = CitizenScienceCommon.apiUrl("setLabels",
                     self.csProject,
-                    $scope.samples[$scope.currentSample].name,
-                    $scope.samples[$scope.currentSample].recordingId,
-                    $scope.samples[$scope.currentSample].startOffset,
-                    $scope.samples[$scope.currentSample].labels.join(","));
+                    self.samples[self.currentSample].name,
+                    self.samples[self.currentSample].recordingId,
+                    self.samples[self.currentSample].startOffset,
+                    self.samples[self.currentSample].labels.join(","));
                 $http.get(url).then(function (response) {
                     console.log(response.data);
                 });
@@ -43,6 +43,7 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
         bindings: {
             labels: "=labels",
             samples: "=samples",
-            currentSample: "=currentSample"
+            currentSample: "=currentSample",
+            csProject: "=csProject"
         }
     });

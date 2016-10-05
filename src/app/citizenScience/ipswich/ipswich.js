@@ -12,7 +12,7 @@ class IpswichController {
 
         var self = this;
 
-        self.csProject = "ipswich";
+        $scope.csProject = "ipswich";
 
         $scope.citizenScientistName = $routeParams.name;
 
@@ -33,7 +33,7 @@ class IpswichController {
 
         $http.get(CitizenScienceCommon.apiUrl(
             "labels",
-            self.csProject
+            $scope.csProject
         )).then(function (response) {
             console.log(response.data);
             $scope.labels = response.data;
@@ -59,7 +59,7 @@ class IpswichController {
          *      "labels": ["frog","bird","cat"]
          *  };
          */
-        var url = CitizenScienceCommon.apiUrl("userSamples", self.csProject, $scope.citizenScientistName);
+        var url = CitizenScienceCommon.apiUrl("userSamples", $scope.csProject, $scope.citizenScientistName);
         //TODO: error handling
         $http.get(url).then(function (response) {
             //console.log(response.data);
@@ -69,17 +69,10 @@ class IpswichController {
         });
 
 
-
-
         // the model passed to ngAudio
         $scope.model = {
             audioElement: CitizenScienceCommon.getAudioModel()
         };
-
-
-
-
-
 
 
 
