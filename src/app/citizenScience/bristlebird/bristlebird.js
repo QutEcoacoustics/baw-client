@@ -14,17 +14,12 @@ class BristlebirdController {
 
         $scope.csProject = "ebb";
 
-
-        $scope.citizenScientistName = $routeParams.name;
-
         // currently all samples will be the same duration (not set per sample in the dataset)
         self.sampleDuration = 10;
-
 
         // list of the samples, to be retrieved from the dataset
         $scope.samples = [];
         $scope.currentSample = -1;
-
 
         // to be populated after getting samples from dataset
         $scope.media = null;
@@ -32,47 +27,37 @@ class BristlebirdController {
         // list of labels that can be applied to samples
         $scope.labels = [];
 
+        $scope.labels = {"ebb":"I found an Eastern Bristlebird"};
 
-        $scope.labels = ["I found an Eastern Bristlebird"];
+        self.profileLoaded = function (event, UserProfile) {
+            self.getSamples(UserProfile);
+        };
 
+        $scope.$on(UserProfileEvents.loaded, self.profileLoaded);
+        if (UserProfile.profile && UserProfile.profile.preferences) {
+            self.profileLoaded(null, UserProfile);
+        }
 
-        /**
-         *  makes a request to the external sheets api to get the data
-         *  is formatted in the following way:
-         *
-         *  samples = [
-         *  {
-         *      "name": "phil"
-         *      "recordingId": "0123456",
-         *      "startOffset": "123",
-         *      "done": 0,
-         *      "labels": ["frog","bird"]
-         *  },
-         *  {
-         *      "name": "phil",
-         *      "recordingId": "1234567",
-         *      "startOffset": "234",
-         *      "done": 0,
-         *      "labels": ["frog","bird","cat"]
-         *  };
-         */
-        var url = CitizenScienceCommon.apiUrl("userSamples", $scope.csProject, $scope.citizenScientistName);
-        //TODO: error handling
-        $http.get(url).then(function (response) {
-            //console.log(response.data);
-            var samples = response.data;
-            $scope.samples = samples;
-            $scope.goToSample(0);
-        });
-
-
-
+        self.getSamples = function (UserProfile) {
+            if ($scope.samples.length === 0) {
+                var url = CitizenScienceCommon.apiUrl(
+                    "userSamples",
+                    $scope.csProject,
+                    UserProfile.profile.userName);
+                //TODO: error handling
+                $http.get(url).then(function (response) {
+                    //console.log(response.data);
+                    var samples = response.data;
+                    $scope.samples = samples;
+                    $scope.goToSample(0);
+                });
+            }
+        };
 
         // the model passed to ngAudio
         $scope.model = {
             audioElement: CitizenScienceCommon.getAudioModel()
         };
-
 
         /**
          * Sets the media member of the scope to the specified recording segment
@@ -101,7 +86,6 @@ class BristlebirdController {
                 return;
 
         };
-
 
 
         /**

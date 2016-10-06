@@ -1,7 +1,7 @@
 <div id="label-buttons">
-    <a ng-repeat="label in $ctrl.labels" ng-class="{selected : ($ctrl.samples[$ctrl.currentSample].labels.indexOf(label) > -1)}" ng-click="toggleLabel(label)">
+    <a ng-repeat="(label, displayLabel) in $ctrl.labels" ng-class="{selected : ($ctrl.samples[$ctrl.currentSample].labels.indexOf(label) > -1)}" ng-click="toggleLabel(label)">
         <i class="fa" ng-class="{true: 'fa-check-square-o', false : 'fa-square-o'}[$ctrl.samples[$ctrl.currentSample].labels.indexOf(label) > -1]" aria-hidden="true"></i>
-        {{label}}
+        {{displayLabel}}
 
     </a>
     </ul>

@@ -14,34 +14,15 @@ class IpswichController {
 
         $scope.csProject = "ipswich";
 
-        $scope.citizenScientistName = $routeParams.name;
+        //$scope.citizenScientistName = $routeParams.name;
 
         // currently all samples will be the same duration (not set per sample in the dataset)
         self.sampleDuration = 10;
 
-
-        // list of the samples, to be retrieved from the dataset
-        $scope.samples = [];
-        $scope.currentSample = -1;
-
-
-        // to be populated after getting samples from dataset
-        $scope.media = null;
-
-        // list of labels that can be applied to samples
-        $scope.labels = [];
-
-        $http.get(CitizenScienceCommon.apiUrl(
-            "labels",
-            $scope.csProject
-        )).then(function (response) {
-            console.log(response.data);
-            $scope.labels = response.data;
-        });
-
         /**
-         *  makes a request to the external sheets api to get the data
-         *  is formatted in the following way:
+         *
+         *  samples is retrieved from the google sheet via the api
+         *  and will come back in the following format:
          *
          *  samples = [
          *  {
@@ -59,21 +40,64 @@ class IpswichController {
          *      "labels": ["frog","bird","cat"]
          *  };
          */
-        var url = CitizenScienceCommon.apiUrl("userSamples", $scope.csProject, $scope.citizenScientistName);
-        //TODO: error handling
-        $http.get(url).then(function (response) {
-            //console.log(response.data);
-            var samples = response.data;
-            $scope.samples = samples;
-            $scope.goToSample(0);
+        $scope.samples = [];
+        $scope.currentSample = -1;
+
+        // to be populated after getting samples from dataset
+        $scope.media = null;
+
+
+        // list of possible labels to be retrieved from the dataset
+        $scope.labels = [];
+
+        $http.get(CitizenScienceCommon.apiUrl(
+            "labels",
+            $scope.csProject
+        )).then(function (response) {
+            console.log(response.data);
+            if (Array.isArray(response.data)) {
+                $scope.labels = CitizenScienceCommon.labelArrayToObject(response.data);
+            } else {
+                $scope.labels = [];
+            }
+
         });
+
+
+        self.profileLoaded = function (event, UserProfile) {
+            self.getSamples(UserProfile);
+        };
+
+        $scope.$on(UserProfileEvents.loaded, self.profileLoaded);
+        if (UserProfile.profile && UserProfile.profile.preferences) {
+            self.profileLoaded(null, UserProfile);
+        }
+
+
+
+        self.getSamples = function (UserProfile) {
+            if ($scope.samples.length === 0) {
+                var url = CitizenScienceCommon.apiUrl(
+                    "userSamples",
+                    $scope.csProject,
+                    UserProfile.profile.userName);
+                //TODO: error handling
+                $http.get(url).then(function (response) {
+                    //console.log(response.data);
+                    var samples = response.data;
+                    $scope.samples = samples;
+                    $scope.goToSample(0);
+                });
+            }
+        };
+
+
 
 
         // the model passed to ngAudio
         $scope.model = {
             audioElement: CitizenScienceCommon.getAudioModel()
         };
-
 
 
         /**
@@ -133,7 +157,6 @@ class IpswichController {
         });
 
 
-
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will assume
@@ -153,7 +176,8 @@ angular
     .module("bawApp.citizenScience.ipswich", [
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
-        "bawApp.components.citizenScienceLabels"
+        "bawApp.components.citizenScienceLabels",
+        "bawApp.directives.toggleSwitch"
     ])
     .controller(
         "IpswichController",

@@ -1,67 +1,48 @@
 $bristlebirdIcon: image-url('citizen-science/ebbicon.png');
 $noBristlebirdIcon: image-url('citizen-science/noebbicon.png');
 
-
 .citizen-science.bristlebird {
 
   #label-buttons {
 
     a {
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
-      color: white;
-      text-decoration: none;
-
-      padding: 20px 10px 20px 50px;
-      border-radius: 11px;
-      box-shadow: inset 0 -5px 15px rgba(0, 0, 0, 0.2),
-      inset 0 5px 15px rgba(255, 255, 255, 0.3),
-      0 5px 15px rgba(0, 0, 0, 0.3);
-
-      font-size: 18px;
-      margin-top: 50px;
-
-      &:before {
-        content: '';
-        background: no-repeat top left;
-        width: 70px;
-        height: 43px;
-        display: block;
-        float: left;
-        padding-right: 10px;
-        margin-top: -8px;
-
-      }
-
-    }
-
-    a#selected {
-      background: #8cc967;
-      &:before {
-        background-image: $bristlebirdIcon;
-      }
+      background: none;
+      color: #000;
 
       &:hover {
-        background: #9cd977;
+        color: #666;
+
+        .checkbox {
+          border-color: #666;
+        }
+
       }
 
     }
 
-    a#not_found {
-      background: #dd4b2e;
-      &:before {
-        background-image: $noBristlebirdIcon;
-      }
-      &:hover {
-        background: #ed5b3e;
+    a.selected {
+      i {
+        color: #8cc967;
       }
     }
+
+    i {
+      display: inline-block;
+      width: 1.2em;
+      font-size: 2em;
+      position: relative;
+      top: 0.25em;
+    }
+
 
   }
 
-
-
-
 }
+
+
+
+
+
+
+
 

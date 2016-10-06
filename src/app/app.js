@@ -292,13 +292,13 @@ angular.module("baw",
                 title: "Citizen Science Page",
                 fullWidth: true
             }).
-            when("/citsci/bristlebird/:name", {
+            when("/citsci/bristlebird", {
                 templateUrl: "citizenScience/bristlebird/bristlebird.tpl.html",
                 controller: "BristlebirdController",
                 title: "Bristlebird Citizen Science",
                 fullWidth: true
             }).
-            when("/citsci/ipswich/:name", {
+            when("/citsci/ipswich", {
                 templateUrl: "citizenScience/ipswich/ipswich.tpl.html",
                 controller: "IpswichController",
                 title: "Ipswich School Citizen Science",
