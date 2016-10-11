@@ -1,7 +1,9 @@
 
 
+
 .citizen-science {
 
+  max-width:100%;
 
 
   .cs-progress {
@@ -23,7 +25,6 @@
 
         display: table-cell;
 
-        width: 50px;
         box-shadow: inset -3px 0px 1px 0px rgba(0,0,0,0.1), inset 3px 0px 1px 0px rgba(255,255,255,0.2);
 
         text-align: center;
@@ -57,6 +58,35 @@
 
       }
 
+      .prev-clip, .next-clip {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .next-clip:before {
+        content:"\f051";
+        font-family: FontAwesome;
+      }
+
+      .prev-clip:before {
+        content:"\f048";
+        font-family: FontAwesome;
+      }
+
+      .progress-counter {
+        width: 75px;
+      }
+
+
+      .disabled:before {
+        opacity: 0.5;
+      }
+
+      .disabled:hover, .progress-counter:hover {
+        background-color: inherit;
+        cursor: inherit;
+      }
+
     }
 
   }
@@ -66,11 +96,15 @@
   .spectrogram-wrapper {
 
     position: relative;
-    margin: 20px auto 20px auto;
+    margin: 10px auto 20px auto;
     display: inline-block;
+    border: 10px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    max-width:100%;
 
     .spectrogram {
       display: block;
+      max-width:100%;
     }
 
   }
@@ -99,6 +133,14 @@
     opacity: 0.3;
     display:none;
 
+  }
+
+  audio {
+    width: 50%;
+    min-width:400px;
+    min-height: 40px;
+    display: inline-block;
+    visibility: visible;
   }
 
 

@@ -1,17 +1,38 @@
 .citizen-science.ipswich {
 
+  z-index:10;
+
+  .spectrogram-wrapper {
+    margin-top:2px;
+    margin-bottom: 2px;
+  }
+
   #label-buttons {
 
-    a {
-      background: none;
-      color: #000;
+    background: rgba(0, 0, 0, 0.6);
+    width: 400px;
+    margin: 0px auto 0px auto;
+    text-align: center;
+    border-radius: 8px;
+    padding: 0px 20px 20px 20px;
 
+
+    a {
+
+      display: inline-block;
+      width:auto;
+      line-height: 1em;
+
+      color: #fff;
+      padding: 0px;
+      margin-right:20px;
+      margin-top: 5px;
 
       &:hover {
-        color: #666;
+        color: #eee;
 
         .checkbox {
-          border-color: #666;
+          border-color: #eee;
         }
 
       }
@@ -26,6 +47,7 @@
 
     i {
       display: inline-block;
+      text-align: left;
       width: 1.2em;
       font-size: 2em;
       position: relative;
@@ -33,6 +55,19 @@
     }
 
   }
+
+}
+
+.csBackgroundIpswich {
+  background: url("http://gdurl.com/e0_R") center top no-repeat #000000;
+  height: 200%;
+  width: 100%;
+  position: absolute;
+  top:-20px;
+  left:0px;
+  z-index: -20;
+
+
 
 }
 

@@ -19,21 +19,26 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
                  * @param label string
                  */
                 $scope.toggleLabel = function (label) {
-                    var index = self.samples[self.currentSample].labels.indexOf(label);
+                    var index = self.samples[self.currentSampleNum].labels.indexOf(label);
+
+                    var currentSample = self.samples[self.currentSampleNum];
+
                     if (index === -1) {
-                        self.samples[self.currentSample].labels.push(label);
+                        currentSample.labels.push(label);
                     } else {
-                        self.samples[self.currentSample].labels.splice(index, 1);
+                        currentSample.labels.splice(index, 1);
                     }
 
-                    self.samples[self.currentSample].done = true;
+                    currentSample.done = true;
+
+
 
                     var url = CitizenScienceCommon.apiUrl("setLabels",
                         self.csProject,
-                        self.samples[self.currentSample].name,
-                        self.samples[self.currentSample].recordingId,
-                        self.samples[self.currentSample].startOffset,
-                        CitizenScienceCommon.labelsAsString(self.samples[self.currentSample].labels));
+                        currentSample.name,
+                        currentSample.recordingId,
+                        currentSample.startOffset,
+                        CitizenScienceCommon.labelsAsString(currentSample.labels));
                     $http.get(url).then(function (response) {
                         console.log(response.data);
                     });
@@ -44,7 +49,7 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
         bindings: {
             labels: "=labels",
             samples: "=samples",
-            currentSample: "=currentSample",
+            currentSampleNum: "=currentSampleNum",
             csProject: "=csProject"
         }
     });

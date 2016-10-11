@@ -1,3 +1,24 @@
+class IpswichAboutController {
+    constructor($scope,
+                $location) {
+
+        $scope.citizenScientistName = "";
+
+        $scope.getStarted = function () {
+
+            console.log("get started");
+            localStorage.setItem("citizenScientistName", $scope.citizenScientistName);
+            $location.path("/citsci/ipswich/listen");
+
+
+        };
+
+    }
+
+}
+
+
+
 class IpswichController {
     constructor($scope,
                 $routeParams,
@@ -14,10 +35,8 @@ class IpswichController {
 
         $scope.csProject = "ipswich";
 
-        //$scope.citizenScientistName = $routeParams.name;
-
         // currently all samples will be the same duration (not set per sample in the dataset)
-        self.sampleDuration = 10;
+        self.sampleDuration = 20;
 
         /**
          *
@@ -41,14 +60,14 @@ class IpswichController {
          *  };
          */
         $scope.samples = [];
-        $scope.currentSample = -1;
+        $scope.currentSampleNum = -1;
 
         // to be populated after getting samples from dataset
         $scope.media = null;
 
 
         // list of possible labels to be retrieved from the dataset
-        $scope.labels = [];
+        $scope.labels = {};
 
         $http.get(CitizenScienceCommon.apiUrl(
             "labels",
@@ -58,75 +77,19 @@ class IpswichController {
             if (Array.isArray(response.data)) {
                 $scope.labels = CitizenScienceCommon.labelArrayToObject(response.data);
             } else {
-                $scope.labels = [];
+                $scope.labels = {};
             }
 
         });
 
-
-        self.profileLoaded = function (event, UserProfile) {
-            self.getSamples(UserProfile);
-        };
-
-        $scope.$on(UserProfileEvents.loaded, self.profileLoaded);
-        if (UserProfile.profile && UserProfile.profile.preferences) {
-            self.profileLoaded(null, UserProfile);
-        }
-
-
-
-        self.getSamples = function (UserProfile) {
-            if ($scope.samples.length === 0) {
-                var url = CitizenScienceCommon.apiUrl(
-                    "userSamples",
-                    $scope.csProject,
-                    UserProfile.profile.userName);
-                //TODO: error handling
-                $http.get(url).then(function (response) {
-                    //console.log(response.data);
-                    var samples = response.data;
-                    $scope.samples = samples;
-                    $scope.goToSample(0);
-                });
-            }
-        };
-
-
-
+        self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
 
         // the model passed to ngAudio
         $scope.model = {
             audioElement: CitizenScienceCommon.getAudioModel()
         };
 
-
-        /**
-         * Sets the media member of the scope to the specified recording segment
-         * The watcher will then actually load it to the dom
-         * @param recordingId string
-         * @param startOffset float
-         * @param duration float
-         */
-        this.showAudio = function (recordingId, startOffset, duration) {
-
-            var mediaParams = {
-                recordingId: recordingId,
-                startOffset: startOffset,
-                endOffset: startOffset + duration,
-                format: "json"};
-
-            Media.get(
-                mediaParams,
-                function (mediaValue) {
-                    $scope.media = new MediaModel(mediaValue.data);
-                },
-                function () { console.log("fail"); } // failure
-            );
-
-            // do not block, do not wait for Media requests to finish
-            return;
-
-        };
+        this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
 
         /**
@@ -135,17 +98,17 @@ class IpswichController {
          */
         $scope.goToSample = function (sampleNum) {
             if (sampleNum < $scope.samples.length) {
-                $scope.currentSample = sampleNum;
+                $scope.currentSampleNum = sampleNum;
             } else {
                 console.log("can't go to next sample because this is the last one");
             }
 
         };
 
-        $scope.$watch("currentSample", function () {
-            if ($scope.currentSample > -1) {
-                console.log("load audio for sample " + $scope.currentSample);
-                var currentSample = $scope.samples[$scope.currentSample];
+        $scope.$watch("currentSampleNum", function () {
+            if ($scope.currentSampleNum > -1) {
+                console.log("load audio for sample " + $scope.currentSampleNum);
+                var currentSample = $scope.samples[$scope.currentSampleNum];
                 self.showAudio(currentSample.recordingId,currentSample.startOffset, self.sampleDuration);
             }
         });
@@ -159,12 +122,18 @@ class IpswichController {
 
         /**
          * auto play feature
-         * when the playback arrives at the end of the audio, it will assume
-         * that nothing of interest has been found and proceed to the next segment.
+         * when the playback arrives at the end of the audio, it will proceed to the next segment.
          */
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
-            console.info("Changing page to next segment...");
-            self.done(false);
+            var nextSampleNum = $scope.currentSampleNum + 1;
+            console.info("Changing page to next segment, which is segment " + nextSampleNum);
+
+
+            $scope.$safeApply($scope, function () {
+                $scope.goToSample(nextSampleNum);
+            });
+
+
         });
 
     }
@@ -176,8 +145,7 @@ angular
     .module("bawApp.citizenScience.ipswich", [
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
-        "bawApp.components.citizenScienceLabels",
-        "bawApp.directives.toggleSwitch"
+        "bawApp.components.citizenScienceLabels"
     ])
     .controller(
         "IpswichController",
@@ -193,4 +161,11 @@ angular
             "UserProfileEvents",
             "CitizenScienceCommon",
             IpswichController
+        ])
+    .controller(
+        "IpswichAboutController",
+        [
+            "$scope",
+            "$location",
+            IpswichAboutController
         ]);

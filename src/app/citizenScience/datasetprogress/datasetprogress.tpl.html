@@ -1,9 +1,26 @@
-<nav class="cs-progress">
+<nav class="cs-progress" >
     <ul>
-        <li ng-repeat="(key, item) in $ctrl.items"  ng-class="{done : item.done,  cur : $ctrl.selected === key}" ng-click="selectItem(key)">
+        <li ng-if="progressNav" ng-repeat="(key, item) in $ctrl.items"  ng-class="{done : item.done,  cur : $ctrl.selected === key}" ng-click="selectItem(key)">
 
             {{ key + 1 }}
 
         </li>
+
+        <li class="progress-counter">{{ ($ctrl.selected > -1 && $ctrl.items.length > 0) ? (($ctrl.selected + 1) + " / " + $ctrl.items.length) : "" }}</li>
+        <li class="prev-clip" ng-class="{disabled : $ctrl.selected < 1}" ng-click="prevItem()"></li>
+        <li class="next-clip" ng-class="{disabled : $ctrl.selected > $ctrl.items.length - 2}" ng-click="nextItem()"></li>
+        <li class="autoplay">
+            <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"
+                           title="Enable/disable autoplay">
+                <toggle-switch-state switch-state="on">
+                    <span class="glyphicon glyphicon-play-circle"></span>
+                </toggle-switch-state>
+                <toggle-switch-state switch-state="off">
+                    <span class="glyphicon glyphicon-play-circle"></span>
+                </toggle-switch-state>
+            </toggle-switch>
+        </li>
+
     </ul>
 </nav>
+

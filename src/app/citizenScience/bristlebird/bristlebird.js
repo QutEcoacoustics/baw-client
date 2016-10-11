@@ -19,7 +19,7 @@ class BristlebirdController {
 
         // list of the samples, to be retrieved from the dataset
         $scope.samples = [];
-        $scope.currentSample = -1;
+        $scope.currentSampleNum = -1;
 
         // to be populated after getting samples from dataset
         $scope.media = null;
@@ -29,63 +29,15 @@ class BristlebirdController {
 
         $scope.labels = {"ebb":"I found an Eastern Bristlebird"};
 
-        self.profileLoaded = function (event, UserProfile) {
-            self.getSamples(UserProfile);
-        };
-
-        $scope.$on(UserProfileEvents.loaded, self.profileLoaded);
-        if (UserProfile.profile && UserProfile.profile.preferences) {
-            self.profileLoaded(null, UserProfile);
-        }
-
-        self.getSamples = function (UserProfile) {
-            if ($scope.samples.length === 0) {
-                var url = CitizenScienceCommon.apiUrl(
-                    "userSamples",
-                    $scope.csProject,
-                    UserProfile.profile.userName);
-                //TODO: error handling
-                $http.get(url).then(function (response) {
-                    //console.log(response.data);
-                    var samples = response.data;
-                    $scope.samples = samples;
-                    $scope.goToSample(0);
-                });
-            }
-        };
+        self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
 
         // the model passed to ngAudio
         $scope.model = {
             audioElement: CitizenScienceCommon.getAudioModel()
         };
 
-        /**
-         * Sets the media member of the scope to the specified recording segment
-         * The watcher will then actually load it to the dom
-         * @param recordingId string
-         * @param startOffset float
-         * @param duration float
-         */
-        this.showAudio = function (recordingId, startOffset, duration) {
 
-            var mediaParams = {
-                recordingId: recordingId,
-                startOffset: startOffset,
-                endOffset: startOffset + duration,
-                format: "json"};
-
-                Media.get(
-                    mediaParams,
-                    function (mediaValue) {
-                        $scope.media = new MediaModel(mediaValue.data);
-                    },
-                    function () { console.log("fail"); } // failure
-                );
-
-                // do not block, do not wait for Media requests to finish
-                return;
-
-        };
+        this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
 
         /**
@@ -94,17 +46,17 @@ class BristlebirdController {
          */
         $scope.goToSample = function (sampleNum) {
             if (sampleNum < $scope.samples.length) {
-                $scope.currentSample = sampleNum;
+                $scope.currentSampleNum = sampleNum;
             } else {
                 console.log("can't go to next sample because this is the last one");
             }
 
         };
 
-        $scope.$watch("currentSample", function () {
-            if ($scope.currentSample > -1) {
-                console.log("load audio for sample "+ $scope.currentSample);
-                var currentSample = $scope.samples[$scope.currentSample];
+        $scope.$watch("currentSampleNum", function () {
+            if ($scope.currentSampleNum > -1) {
+                console.log("load audio for sample "+ $scope.currentSampleNum);
+                var currentSample = $scope.samples[$scope.currentSampleNum];
                 self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
             }
         });

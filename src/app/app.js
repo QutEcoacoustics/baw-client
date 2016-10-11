@@ -299,7 +299,13 @@ angular.module("baw",
                 fullWidth: true
             }).
             when("/citsci/ipswich", {
-                templateUrl: "citizenScience/ipswich/ipswich.tpl.html",
+                templateUrl: "citizenScience/ipswich/about.tpl.html",
+                controller: "IpswichAboutController",
+                title: "Ipswich School Citizen Science",
+                fullWidth: true
+            }).
+            when("/citsci/ipswich/listen", {
+                templateUrl: "citizenScience/ipswich/listen.tpl.html",
                 controller: "IpswichController",
                 title: "Ipswich School Citizen Science",
                 fullWidth: true
