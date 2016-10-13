@@ -6,7 +6,7 @@
 
         </li>
 
-        <li class="progress-counter">{{ ($ctrl.selected > -1 && $ctrl.items.length > 0) ? (($ctrl.selected + 1) + " / " + $ctrl.items.length) : "" }}</li>
+        <li class="progress-counter">{{ ($ctrl.selected > -1 && $ctrl.items.length > 0) ? (($ctrl.selected + 1) + "&nbsp;/&nbsp;" + $ctrl.items.length) : "" }}</li>
         <li class="prev-clip" ng-class="{disabled : $ctrl.selected < 1}" ng-click="prevItem()"></li>
         <li class="next-clip" ng-class="{disabled : $ctrl.selected > $ctrl.items.length - 2}" ng-click="nextItem()"></li>
         <li class="autoplay">

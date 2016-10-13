@@ -1,5 +1,9 @@
-<div class="csBackgroundIpswich" /></div>
+<!--<div class="csBackground" style="background-image:url({{currentBackground}});" /></div>-->
+<cs-backgrounds backgrounds="['1.jpg','2.jpg','3.jpg','4.jpg']"></cs-backgrounds>
+<!--<img cs-background class="csBackground"  ng-src="{{currentBackground}}"></img>-->
 <div class="citizen-science ipswich">
+
+    <h2>Ipswich Citizen Science Bird Hunt</h2>
 
     <div class="cs-main-container">
         <div class="main wrapper clearfix">
@@ -10,22 +14,22 @@
                     <p>Start Offset: {{ samples[currentSample].startOffset }}</p>
                 </div>
 
-                <div class="audio-wrapper">
+                <div class="audio-outer">
+                <div class="audio-inner">
                     <div class="spectrogram-wrapper">
                         <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
                         <div position-line media="media" audio-data="model.audioElement" image-id="'spectrogram'"></div>
                     </div>
-                    <br>
                     <audio id="citsci-sample" ng-audio="model.audioElement" controls>
                         <source ng-repeat="key in media.available.audioOrder"
                                 ng-src="{{media.available.audio[key].url}}" src=""
                                 ng-type="{{media.available.audio[key].mimeType}}">
                         Your browser does not support the audio element.
                     </audio>
-                    <dataset-progress items="samples" selected="currentSampleNum"></dataset-progress>
-
+                  </div>
                 </div>
 
+            <dataset-progress items="samples" selected="currentSampleNum"></dataset-progress>
 
             <citizen-science-labels labels="labels" samples="samples" current-sample-num="currentSampleNum" cs-project="csProject"></citizen-science-labels>
 

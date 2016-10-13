@@ -293,7 +293,13 @@ angular.module("baw",
                 fullWidth: true
             }).
             when("/citsci/bristlebird", {
-                templateUrl: "citizenScience/bristlebird/bristlebird.tpl.html",
+                templateUrl: "citizenScience/bristlebird/about.tpl.html",
+                controller: "BristlebirdAboutController",
+                title: "Bristlebird Citizen Science",
+                fullWidth: true
+            }).
+            when("/citsci/bristlebird/listen", {
+                templateUrl: "citizenScience/bristlebird/listen.tpl.html",
                 controller: "BristlebirdController",
                 title: "Bristlebird Citizen Science",
                 fullWidth: true

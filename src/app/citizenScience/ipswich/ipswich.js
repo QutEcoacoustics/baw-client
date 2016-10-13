@@ -5,18 +5,11 @@ class IpswichAboutController {
         $scope.citizenScientistName = "";
 
         $scope.getStarted = function () {
-
-            console.log("get started");
             localStorage.setItem("citizenScientistName", $scope.citizenScientistName);
             $location.path("/citsci/ipswich/listen");
-
-
         };
-
     }
-
 }
-
 
 
 class IpswichController {
@@ -66,7 +59,7 @@ class IpswichController {
         $scope.media = null;
 
 
-        // list of possible labels to be retrieved from the dataset
+        // list of possible labels to be retrieved from the dataset sheet
         $scope.labels = {};
 
         $http.get(CitizenScienceCommon.apiUrl(
@@ -99,6 +92,7 @@ class IpswichController {
         $scope.goToSample = function (sampleNum) {
             if (sampleNum < $scope.samples.length) {
                 $scope.currentSampleNum = sampleNum;
+
             } else {
                 console.log("can't go to next sample because this is the last one");
             }
@@ -110,6 +104,7 @@ class IpswichController {
                 console.log("load audio for sample " + $scope.currentSampleNum);
                 var currentSample = $scope.samples[$scope.currentSampleNum];
                 self.showAudio(currentSample.recordingId,currentSample.startOffset, self.sampleDuration);
+                //self.changeBackground();
             }
         });
 
@@ -136,6 +131,19 @@ class IpswichController {
 
         });
 
+        /**
+         * backgrounds
+         */
+        // self.backgrounds = ["1.jpg","2.jpg","3.jpg","4.jpg"];
+        // self.currentBackgroundNum = 0;
+        // $scope.currentBackground = null;
+        // self.changeBackground = function () {
+        //     self.currentBackgroundNum = (self.currentBackgroundNum+1) % self.backgrounds.length;
+        //     $scope.currentBackground = "/build/assets/img/citizen-science/backgrounds/" + self.backgrounds[self.currentBackgroundNum];
+        // };
+        // self.changeBackground();
+        //
+
     }
 
 }
@@ -144,6 +152,7 @@ class IpswichController {
 angular
     .module("bawApp.citizenScience.ipswich", [
         "bawApp.components.progress",
+        "bawApp.components.background",
         "bawApp.citizenScience.common",
         "bawApp.components.citizenScienceLabels"
     ])

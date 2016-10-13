@@ -1,3 +1,17 @@
+class BristlebirdAboutController {
+    constructor($scope,
+                $location) {
+
+        $scope.citizenScientistName = "";
+
+        $scope.getStarted = function () {
+            localStorage.setItem("citizenScientistName", $scope.citizenScientistName);
+            $location.path("/citsci/bristlebird/listen");
+        };
+    }
+}
+
+
 class BristlebirdController {
     constructor($scope,
                 $routeParams,
@@ -25,8 +39,8 @@ class BristlebirdController {
         $scope.media = null;
 
         // list of labels that can be applied to samples
-        $scope.labels = [];
-
+        // hardcoded here instead of retrieving from sheet to save a round trip
+        // label key must exist the list in the sheet to be accepted
         $scope.labels = {"ebb":"I found an Eastern Bristlebird"};
 
         self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
@@ -70,12 +84,18 @@ class BristlebirdController {
 
         /**
          * auto play feature
-         * when the playback arrives at the end of the audio, it will assume
-         * that no bristlebirds have been found and proceed to the next segment.
+         * when the playback arrives at the end of the audio, it will proceed to the next segment.
          */
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
-                console.info("Changing page to next segment...");
-                self.done(false);
+            var nextSampleNum = $scope.currentSampleNum + 1;
+            console.info("Changing page to next segment, which is segment " + nextSampleNum);
+
+
+            $scope.$safeApply($scope, function () {
+                $scope.goToSample(nextSampleNum);
+            });
+
+
         });
 
     }
@@ -102,4 +122,11 @@ angular
             "UserProfileEvents",
             "CitizenScienceCommon",
             BristlebirdController
+        ])
+    .controller(
+        "BristlebirdAboutController",
+        [
+            "$scope",
+            "$location",
+            BristlebirdAboutController
         ]);
