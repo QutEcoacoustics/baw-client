@@ -36,6 +36,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             self.audioElement.volume = UserProfile.profile.preferences.volume;
             self.audioElement.muted = UserProfile.profile.preferences.muted;
             self.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay;
+            console.log("UserProfile.profile.preferences.autoPlay", UserProfile.profile.preferences.autoPlay);
         };
         $rootScope.$on(UserProfileEvents.loaded, self.profileLoaded);
         if (UserProfile.profile && UserProfile.profile.preferences) {

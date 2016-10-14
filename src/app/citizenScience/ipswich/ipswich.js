@@ -29,7 +29,7 @@ class IpswichController {
         $scope.csProject = "ipswich";
 
         // currently all samples will be the same duration (not set per sample in the dataset)
-        self.sampleDuration = 20;
+        self.sampleDuration = 5;
 
         /**
          *
@@ -114,6 +114,9 @@ class IpswichController {
             document.querySelector("audio").load();
         });
 
+        $scope.$watch("model", function (oldval, newval) {
+            console.log("model changed", oldval, newval);
+        }, true);
 
         /**
          * auto play feature

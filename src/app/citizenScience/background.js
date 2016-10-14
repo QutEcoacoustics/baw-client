@@ -1,13 +1,21 @@
 angular.module("bawApp.components.background", [])
     .component("csBackgrounds",{
-        template: "<div fill-window class='csBackgroundWrapper'><img cs-background ng-repeat='background in $ctrl.backgroundPaths' class='csBackground'  ng-src='{{background}}' /></div>",
-        controller: ["$scope", "$window", "$element", function ($scope, $window, $element) {
+        template: "<div fill-window class='csBackgroundWrapper'>" +
+        "<div " +
+        "ng-repeat='(num, background) in $ctrl.backgroundPaths' " +
+        "ng-class=\"{bgActive : $ctrl.curBackgroundNum===num}\" " +
+        "class='csBackground'  " +
+        "style='background-image:url({{background}});' /></div>" +
+        "</div>",
+        controller: ["$scope", "$window", "$element", "$interval", function ($scope, $window, $element, $interval) {
             //console.log("dataset progress component scope");console.log($scope);
 
             var self = this;
 
             self.pathToBackgrounds = "/build/assets/img/citizen-science/backgrounds/";
             self.backgroundPaths = [];
+
+            self.curBackgroundNum = 0;
 
             self.setBackgrounds = function () {
                 for (var b = 0; b < self.backgrounds.length; b++) {
@@ -16,20 +24,21 @@ angular.module("bawApp.components.background", [])
             };
             self.setBackgrounds();
 
-
-
-
-            // self.currentBackgroundNum = 0;
-            // self.changeBackground = function () {
-            //     self.currentBackgroundNum++;
-            //     self.currentBackground = "/build/assets/img/citizen-science/backgrounds/" + self.backgrounds[self.currentBackgroundNum % self.backgrounds.length];
-            // };
-            // self.changeBackground();
-
-            self.$onInit = function () {
-                //self.resize();
-                console.log("start");
+            self.cycleChange = function () {
+                self.curBackgroundNum = (self.curBackgroundNum + 1) % self.backgrounds.length;
             };
+
+
+            if (self.changeEveryMS > 0) {
+                self.cycleInterval = $interval(self.cycleChange, self.changeEveryMS);
+            } else if (self.changeOn !== undefined) {
+                $scope.$watch(function () { return self.changeOn; }, function (oldval, newval) {
+                    self.cycleChange();
+                });
+            }
+
+
+
 
 
 
@@ -38,64 +47,13 @@ angular.module("bawApp.components.background", [])
         }],
         bindings: {
             backgrounds: "<",
+            // if set will watch for changes to this variable and cycle background image then
+            changeOn: "<",
+            // if set will cycle background image every this many seconds
+            changeEveryMS: "<"
         }
     })
-    .directive("csBackground", ["$window", function ($window) {
-        return {
-            restrict: "A",
-            link: function (scope, element, attrs) {
 
-                var self = this;
-
-                self.element = element[0];
-
-
-                element.bind("load", function () {
-                    self.resize();
-                });
-                element.bind("error", function () {
-                    console.log("background image could not be loaded");
-                });
-
-
-                self.resize = function () {
-
-                    // if aspect ratio (width/height) of image is larger (wider) than window"s, match height
-                    // otherwise match width
-
-                    if (self.element.naturalHeight === 0) {
-                        return;
-                    }
-
-                    var imgAspectRatio = self.element.naturalWidth / self.element.naturalHeight;
-                    var windowAspectRatio = $window.innerWidth / $window.innerHeight;
-                    var newHeight, newWidth;
-
-                    if (imgAspectRatio > windowAspectRatio) {
-                        // image is wider ratio than window, match height
-                        newHeight = $window.innerHeight;
-                        newWidth = newHeight * imgAspectRatio;
-                    } else {
-                        newWidth = $window.innerWidth;
-                        newHeight = newWidth / imgAspectRatio;
-                    }
-
-                    angular.element(self.element).css("height", newHeight + "px");
-                    angular.element(self.element).css("width", newWidth + "px");
-
-
-                };
-
-                angular.element($window).bind("resize", function () {
-                    self.resize();
-                    console.log(
-                        "window resized"
-                    );
-                });
-
-            }
-        };
-    }])
     .directive("fillWindow", ["$window", function ($window) {
         return {
             restrict: "A",
@@ -106,17 +64,29 @@ angular.module("bawApp.components.background", [])
                     self.resize();
                 });
                 self.resize = function () {
-                    var newHeight = $window.innerHeight - 20;
-                    var newWidth = $window.innerWidth - 20;
-                    angular.element(self.element).css("height", newHeight + "px");
-                    angular.element(self.element).css("width", newWidth + "px");
-                    // todo: position top left to top left of window
+                    var newHeight = $window.innerHeight - 5;
+                    var newWidth = $window.innerWidth - 5;
+
+                    angular.element(self.element.parentElement).css("position","relative");
+
+                    var css = {
+                        "height": newHeight + "px",
+                        "width": newWidth + "px",
+                        "top": (2-self.element.parentElement.getBoundingClientRect().top) + "px",
+                        "left": (2-self.element.parentElement.getBoundingClientRect().left) + "px"
+                    };
+
+                      angular.element(self.element).css(css);
+
                 };
+                scope.$watch(function () {
+                    return self.element.parentElement.getBoundingClientRect().right;
+                }, function (oldVal, newVal) {
+                    self.resize();
+                });
+                self.resize();
                 angular.element($window).bind("resize", function () {
                     self.resize();
-                    console.log(
-                        "window resized"
-                    );
                 });
             }
         };
