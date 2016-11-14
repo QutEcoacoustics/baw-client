@@ -1,9 +1,7 @@
-var bawds = bawds || angular.module("bawApp.directives", [
-        "bawApp.configuration", 
-        "bawApp.directives.ui.bootstrap",
-        "bawApp.directives.formChildrenHack"]);
+angular
+    .module("bawApp.directives.annotationViewer", [])
 
-bawds.directive("bawAnnotationViewer",
+    .directive("bawAnnotationViewer",
     [   "conf.paths",
         "bawApp.unitConverter",
         "AudioEvent",

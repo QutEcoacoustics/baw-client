@@ -1,14 +1,13 @@
-var ngAudio = ngAudio || angular.module("bawApp.directives.ngAudio", [
-        "bawApp.configuration", 
-        "bawApp.directives.ui.bootstrap",
-        "bawApp.directives.formChildrenHack"]);
+angular.module("bawApp.directives.ngAudio", [
+        "bawApp.configuration"
+])
 
 
-ngAudio.constant("ngAudioEvents", {
+.constant("ngAudioEvents", {
     volumeChanged: "ngAudio:volumeChanged",
     muteChanged: "ngAudio:muted",
     ended: "ended"
-});
+})
 
 /**
  * A directive for binding the model to data off an audio element.
@@ -18,7 +17,7 @@ ngAudio.constant("ngAudioEvents", {
  * like a "isBuffering" binding.
  */
 
-ngAudio.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents, $parse) {
+.directive("ngAudio", ["ngAudioEvents", "$parse", function (ngAudioEvents, $parse) {
 
     /* const */ var readyStates = {
         "haveNothing": 0,
