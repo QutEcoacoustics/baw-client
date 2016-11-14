@@ -80,8 +80,6 @@ angular.module("baw",
 
         "bawApp.services.resource", // a custom wrapped around ngResource
         "bawApp.directives", /* our directives.js  */
-        "bawApp.directives.ngAudio", /* our directives.js  */
-        "bawApp.directives.toggleSwitch",
 
         "bawApp.filters", /* our filters.js     */
 
@@ -301,6 +299,7 @@ angular.module("baw",
 
                 // configure angular-growl
                 growlProvider.globalPosition("top-center");
+                growlProvider.globalTimeToLive(10000);
 
                 // configure local storage provider with our own namespace
                 localStorageServiceProvider.setPrefix(constants.namespace);

@@ -61,9 +61,10 @@ class FileListController {
         let fragments = [];
 
         if (this.analysisResult) {
+
             fragments = this
                 .analysisResult
-                .path
+                .viewPath
                 .split("/")
                 .filter(s => s !== "")
                 .map((fragment, i, all) => ({path: this.getPath(fragment, i, all), title: fragment}));
@@ -78,6 +79,13 @@ class FileListController {
     }
 
     getPaginationLink(page) {
+        if (page < 1) {
+            return null;
+        }
+        else if (page > this.paging.maxPage) {
+            return null;
+        }
+
         return this._$url.formatUri(this._$location.path(), {page});
     }
 }

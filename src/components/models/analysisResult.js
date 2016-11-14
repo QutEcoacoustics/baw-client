@@ -17,9 +17,9 @@ angular
                     super(resource);
 
                     this._parent = parent;
-                    this.path = this.path || null;
-                    this.name = this.name || null;
-                    this.type = this.type || null;
+                    this.path = this.path || "/";
+                    this.name = this.name || "/";
+                    this.type = this.type || "directory";
                     this.mime = this.mime || null;
                     this.sizeBytes = this.sizeBytes || null;
                     this.hasChildren = this.hasChildren === true || false;
@@ -123,34 +123,42 @@ angular
 
 
                 // url to the resource
+                // also used to download the resource
                 get url() {
-                    let analysisJobId = !this.analysisJob ? this.analysisJobId : this.analysisJob.id;
-                    console.error("this link is broken, no data to rest on");
-                    let url = paths.api.routes.analysisResults.jobWithPath;
+                    var root = paths.api.root;
 
-                    let result = $url.formatUri(
-                        url,
-                        {analysisJobId, path: this.path}
-                    );
-
-                    return result;
+                    return root + this.path;
                 }
                 
                 get zipUrl() {
-                    return this.url + ".zip";
+                    if (this.isDirectory) {
+                        return this.url + ".zip";
+                    }
                 }
 
                 get viewUrl() {
-                    let analysisJobId = !this.analysisJob ? this.analysisJobId : this.analysisJob.id;
+                    let analysisJobId = this.analysisJobId;
+
+                    // modify the path to strip the first few segments
+                    var pathFragment = this.viewPath;
 
                     let url = paths.site.links.analysisJobs.analysisResultsWithPath;
-
                     let result = $url.formatUri(
                         url,
-                        {analysisJobId, path: this.path}
+                        {analysisJobId, path:  pathFragment}
                     );
 
                     return result;
+                }
+
+                get viewPath() {
+                    let analysisJobId = this.analysisJobId;
+
+                    // modify the path to strip the first few segments
+                    var baseUrl = $url.formatUri(paths.api.routes.analysisResults.jobPrefix, {analysisJobId});
+                    var pathFragment = this.path.replace(baseUrl, "");
+
+                    return "/" + pathFragment;
                 }
 
                 static sort(a, b) {

@@ -37,7 +37,7 @@ describe("The resultPager factory", function () {
                 if (index !== 0) {
                     data = {
                         "paging": {"items": 25, "page": index + 1},
-                        "sorting": {"orderBy": "created_at", "direction": "desc"}
+                        "sorting": {"order_by": "created_at", "direction": "desc"}
                     };
                 } else {
                     data = {filter: {}};

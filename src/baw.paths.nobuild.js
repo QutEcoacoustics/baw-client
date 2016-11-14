@@ -56,9 +56,9 @@ module.exports = function (environment) {
                     "show": "/bookmarks/{bookmarkId}"
                 },
                 "analysisResults": {
-                    "system": "/analysis_jobs/system/audio_recordings/{recordingId}/results",
-                    "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}/results",
-                    "jobWithPath": "/analysis_jobs/{analysisJobId}/audio_recordings{path}"
+                    "system": "/analysis_jobs/system/results/{recordingId}",
+                    "jobPrefix": "/analysis_jobs/{analysisJobId}/results/",
+                    "jobWithPath": "/analysis_jobs/{analysisJobId}/results{path}"
                 },
                 "analysisJobs": {
                     "list": "/analysis_jobs",
@@ -67,7 +67,7 @@ module.exports = function (environment) {
                 },
                 "scripts": {
                     "list": "/scripts",
-                    "show": "/script/{scriptId}"
+                    "show": "/scripts/{scriptId}"
                 },
                 "savedSearches": {
                     "list": "/saved_searches",

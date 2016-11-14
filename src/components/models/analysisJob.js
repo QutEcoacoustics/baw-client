@@ -1,10 +1,14 @@
 angular
     .module("bawApp.models.analysisJob", [])
     .constant("baw.models.AnalysisJob.progressKeys", {
+        "new":"new",
         "queued": "queued",
         "working": "working",
         "successful": "successful",
         "failed": "failed",
+        "timedOut": "timedOut",
+        "cancelling": "cancelling",
+        "cancelled": "cancelled",
         "total": "total"
     })
     .constant("baw.models.AnalysisJob.statusKeys", {
@@ -36,7 +40,7 @@ angular
                     this.overallProgressModifiedAt = new Date(this.overallProgressModifiedAt);
                     this.overallCount = Number(this.overallCount);
                     this.overallDurationSeconds = Number(this.overallDurationSeconds);
-                    this.overallSizeBytes = this.overallSizeBytes || null;
+                    this.overallDataLengthBytes = this.overallDataLengthBytes || null;
                     this.overallStatus = this.overallStatus || null;
                     this.overallProgress = this.overallProgress || null;
                     this.savedSearchId = Number(this.savedSearchId);
@@ -90,8 +94,8 @@ angular
 
 
                 get friendlySize() {
-                    if (this.overallSizeBytes !== undefined ) {
-                        return filesize(this.overallSizeBytes, {round: 0});
+                    if (this.overallDataLengthBytes !== undefined ) {
+                        return filesize(this.overallDataLengthBytes, {round: 0});
                     }
                     else {
                         return "unknown";
@@ -102,6 +106,20 @@ angular
                     var lastUpdate = Math.max(this.overallProgressModifiedAt, this.overallStatusModifiedAt);
 
                     return  moment(lastUpdate).fromNow();
+                }
+
+                /*
+                 * used when creating model for server side validation error
+                 */
+                get validations() {
+                    if (!this._validations) {
+                        this._validations = {
+                            name: {
+                                taken: []
+                            }
+                        };
+                    }
+                    return this._validations;
                 }
                 
                 get resultsUrl() {

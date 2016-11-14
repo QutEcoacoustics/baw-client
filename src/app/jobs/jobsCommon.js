@@ -1,6 +1,6 @@
 class JobsCommon { // jshint ignore:line
     constructor(keys, statuses) {
-        this.skipProgressKeys = ["total", "preparing"];
+        this.skipProgressKeys = ["total"];
         this.progressKeyClassMap = {
             [keys.queued]: "warning",
             [keys.working]: "info",
@@ -10,11 +10,20 @@ class JobsCommon { // jshint ignore:line
 
         // .../baw-client/vendor/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss#18
         this.progressKeyColorMap = {
+            // [keys.successful]: "#5cb85c",
+            // [keys.failed]: "#d9534f",
+            // [keys.cancelled]: "#e67b48",
+            // [keys.cancelling]: "#e67b48",
+            // [keys.working]: "#5bc0de",
+            // [keys.queued]: "#f0ad4e",
+            // [keys.new]: "#337ab7",
+            [keys.new]: "#337ab7",
             [keys.queued]: "#f0ad4e",
             [keys.working]: "#5bc0de",
-            [keys.successful]: "#5cb85c",
+            [keys.cancelling]: "#e67b48",
+            [keys.cancelled]: "#e67b48",
             [keys.failed]: "#d9534f",
-            ["preparing"]: "#337ab7"
+            [keys.successful]: "#5cb85c",
         };
 
         this.statusKeyClassMap = {

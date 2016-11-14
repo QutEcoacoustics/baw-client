@@ -175,7 +175,7 @@
                                    type="text"
                                    ng-required="true"
                                    ng-minlength="3"
-
+                                   not-in-list="jobNew.analysisJob.validations.name.taken"
                                    ng-model="jobNew.analysisJob.name">
                         </p>
                         <div class="text-right">
@@ -189,7 +189,11 @@
                         <ng-messages for="newAnalysisJobForm.analysisJobName.$error" class="help-block" role="alert"
                                      ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.analysisJobName.$dirty">
                             <ng-message when="required">A name is required for this job.</ng-message>
-                            <ng-message when="minlength">The name entered is too short (3 character minimum)>
+                            <ng-message when="minlength">The name entered is too short (3 character minimum)</ng-message>
+                            <ng-message when="notInList">The name must be unique and can't be any of:
+                                <ul ng-repeat="name in jobNew.analysisJob.validations.name.taken">
+                                    <li>{{ name }}</li>
+                                </ul>
                             </ng-message>
                         </ng-messages>
                     </div>
@@ -225,11 +229,13 @@
                     <i class="fa fa-exclamation-triangle"></i>
                     There are errors on the page. Please fix them to continue.
                 </ng-message>
+
             </ng-messages>
 
             <div class="col-md-offset-8 col-md-4 text-right">
                 <a ng-href="{{ jobNew.jobListPath }}" class="btn btn-default">Cancel</a>
-                <input type="submit" name="submit" value="Submit" class="btn btn-default btn-primary">
+                <input type="submit" name="submit" value="Submit" class="btn btn-default btn-primary"
+                        ng-disabled="newAnalysisJobForm.submitting">
             </div>
 
         </div>

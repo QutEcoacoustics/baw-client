@@ -28,7 +28,7 @@
   margin-right: -0.6em;
 }
 
-a.disabled {
+.disabled>a, a.disabled {
   @extend .btn.disabled;
   @extend .text-muted;
   // allow the title to still show
