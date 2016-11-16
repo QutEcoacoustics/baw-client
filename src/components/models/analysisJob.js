@@ -11,6 +11,17 @@ angular
         "cancelled": "cancelled",
         "total": "total"
     })
+    .constant("baw.models.AnalysisJob.progressKeysFriendly", {
+        "new":"new",
+        "queued": "queued",
+        "working": "working",
+        "successful": "successful",
+        "failed": "failed",
+        "timedOut": "timed out",
+        "cancelling": "cancelling",
+        "cancelled": "cancelled",
+        "total": "total"
+    })
     .constant("baw.models.AnalysisJob.statusKeys", {
         "new": "new",
         "preparing": "preparing",
@@ -22,6 +33,7 @@ angular
         "baw.models.associations",
         "baw.models.ApiBase",
         "baw.models.AnalysisJob.progressKeys",
+        "baw.models.AnalysisJob.progressKeysFriendly",
         "baw.models.AnalysisJob.statusKeys",
         "UserProfile",
         "conf.paths",
@@ -29,7 +41,7 @@ angular
         "humanize-duration",
         "filesize",
         "moment",
-        function (associations, ApiBase, keys, statusKeys, UserProfile, paths, $url, humanizeDuration, filesize, moment) {
+        function (associations, ApiBase, progressKeys, friendlyKeys, statusKeys, UserProfile, paths, $url, humanizeDuration, filesize, moment) {
 
             class AnalysisJob extends ApiBase {
                 constructor(resource) {
@@ -72,12 +84,21 @@ angular
                     return this.isNew || this.isPreparing || this.isProcessing;
                 }
 
+                get canRetry() {
+                    return this.isCompleted && this.successfulRatio < 1.0;
+                }
+
                 get completedRatio() {
-                    return ((this.overallProgress.successful || 0) + (this.overallProgress.failed || 0)) / this.overallCount;
+                    return (
+                            (this.overallProgress[progressKeys.successful] || 0) +
+                            (this.overallProgress[progressKeys.failed] || 0) +
+                            (this.overallProgress[progressKeys.timedOut] || 0) +
+                            (this.overallProgress[progressKeys.cancelled] || 0)
+                        ) / this.overallCount;
                 }
 
                 get successfulRatio() {
-                    return (this.overallProgress.successful || 0) / this.overallCount;
+                    return (this.overallProgress[progressKeys.successful] || 0) / this.overallCount;
                 }
 
 
@@ -140,6 +161,9 @@ angular
                     return $url.formatUri(paths.site.ngRoutes.analysisJobs.list);
                 }
 
+                friendlyProgressString(key) {
+                    return friendlyKeys[key];
+                }
 
                 generateSuggestedName() {
                     //let currentUserName =  !!UserProfile.profile ? UserProfile.profile.userName : "(unknown user)";
@@ -147,6 +171,7 @@ angular
                     let savedSearchName = !!this.savedSearch && !!this.savedSearch.name ? this.savedSearch.name : "(not chosen)";
                     return `"${scriptName}" analysis run on the "${savedSearchName}" data`;
                 }
+
 
                 get savedSearch() {
                     return this._savedSearch || null;

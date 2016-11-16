@@ -16,6 +16,7 @@
                 <i class="fa fa-fw default-color" ng-class="'fa-' + link.icon"></i>
                 {{ link.title }}
             </a>
+            <ribbon ng-if="link.ribbon" type="{{ link.ribbon }}"/>
         </li>
     </ul>
 </nav>

@@ -13,9 +13,44 @@
     <!--</li>-->
     <li>
         <a href="{{ jobDetails.analysisJob.resultsUrl }}">
-            <i class="fa fa-table"></i>
+            <i class="fa fa-fw fa-table"></i>
             Show results
         </a>
+    </li>
+    <li>
+        <hr />
+    </li>
+    <li>
+
+        <button class="btn btn-block btn-default" type="button"
+                uib-tooltip="Attempt to run all failed items again."
+                ng-click="jobDetails.analysisJob.retry()" ng-disabled="!jobDetails.analysisJob.canRetry">
+            <i class="fa fa-fw fa-repeat"></i>
+            Retry failed items
+        </button>
+        <ribbon type="beta"></ribbon>
+
+    </li>
+    <li>
+
+        <button class="btn btn-block btn-default" type="button"
+                uib-tooltip="Attempt to run all failed items again."
+                ng-click="jobDetails.analysisJob.retry()" ng-disabled="!jobDetails.analysisJob.canRetry">
+            <i class="fa fa-fw fa-pause"></i>
+            Pause processing
+        </button>
+
+        <ribbon type="building"></ribbon>
+    </li>
+    <li>
+
+        <button class="btn btn-block btn-default" type="button"
+                uib-tooltip="Attempt to run all failed items again."
+                ng-click="jobDetails.analysisJob.retry()" ng-disabled="!jobDetails.analysisJob.canRetry">
+            <i class="fa fa-fw fa-trash"></i>
+            Delete this job
+        </button>
+        <ribbon type="new"></ribbon>
     </li>
 </layout>
 <div id="content" class="analysis-job-details">
@@ -87,7 +122,7 @@
 
             </li>
             <li class="list-group-item">
-                Sucessful
+                Successful
                 <span class="badge">{{ jobDetails.analysisJob.successfulRatio | percentage}}</span>
 
             </li>

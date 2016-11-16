@@ -1,6 +1,7 @@
 class JobsCommon { // jshint ignore:line
-    constructor(keys, statuses) {
+    constructor(keys, friendlyKeys, statuses) {
         this.skipProgressKeys = ["total"];
+
         this.progressKeyClassMap = {
             [keys.queued]: "warning",
             [keys.working]: "info",
@@ -8,21 +9,17 @@ class JobsCommon { // jshint ignore:line
             [keys.failed]: "danger"
         };
 
+        this.progressKeyFriendlyMap = friendlyKeys;
+
         // .../baw-client/vendor/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss#18
         this.progressKeyColorMap = {
-            // [keys.successful]: "#5cb85c",
-            // [keys.failed]: "#d9534f",
-            // [keys.cancelled]: "#e67b48",
-            // [keys.cancelling]: "#e67b48",
-            // [keys.working]: "#5bc0de",
-            // [keys.queued]: "#f0ad4e",
-            // [keys.new]: "#337ab7",
             [keys.new]: "#337ab7",
             [keys.queued]: "#f0ad4e",
             [keys.working]: "#5bc0de",
             [keys.cancelling]: "#e67b48",
             [keys.cancelled]: "#e67b48",
             [keys.failed]: "#d9534f",
+            [keys.timedOut]: "#592221",
             [keys.successful]: "#5cb85c",
         };
 
@@ -38,6 +35,10 @@ class JobsCommon { // jshint ignore:line
 
     getType(key) {
         return this.progressKeyClassMap[key];
+    }
+
+    getColor(key) {
+        return this.progressKeyColorMap[key];
     }
 
     isProgressKeyVisible(key) {
@@ -57,6 +58,7 @@ angular
         "JobsCommon",
         [
             "baw.models.AnalysisJob.progressKeys",
+            "baw.models.AnalysisJob.progressKeysFriendly",
             "baw.models.AnalysisJob.statusKeys",
             function (...dependencies) {
                 return JobsCommon;

@@ -7,9 +7,9 @@
     </li>
 </layout>
 <div id="content" class="analysis-jobs-list">
-    <h1>Analysis Jobs</h1>
+    <h1>Audio Analysis</h1>
     <p>
-        Analysis jobs can be used to analyze subsets of audio data.
+        Audio analysis jobs can be used to analyze subsets of audio data.
     </p>
     <p>
         This is a list of analysis jobs you have access to.
@@ -82,9 +82,9 @@
                                     ng-repeat="(key, bar) in analysisJob.overallProgress track by $index"
                                     ng-if="jobsList.isProgressKeyVisible(key)"
                                     value="bar"
-                                    type="{{ jobsList.getType(key) }}"
+                                    style="background-color:{{ jobsList.getColor(key)}}"
                                     tooltip-placement="auto bottom"
-                                    uib-tooltip="{{ key }}"
+                                    uib-tooltip="{{ analysisJob.friendlyProgressString(key) }}"
 
                                     tooltip-enable="bar != 0">
                                 <span ng-hide="bar / analysisJob.overallCount < 0.05">{{bar}}%</span>

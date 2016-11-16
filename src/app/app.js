@@ -114,6 +114,7 @@ angular.module("baw",
         "bawApp.scripts",
         "bawApp.search",
         "bawApp.tags",
+        "bawApp.uiHints",
         "bawApp.users",
         "bawApp.birdWalks",
         "bawApp.visualize"
@@ -139,8 +140,9 @@ angular.module("baw",
                 };
                 const analysisJobNav = {
                     title: "Analysis Job",
-                    href: paths.site.ngRoutes.analysisJobs.details,
-                    icon: "tasks"
+                    href: (user, analysisJob) => analysisJob && analysisJob.viewUrl,
+                    icon: "tasks",
+                    indentation: 1
                 };
 
                 // routes
@@ -179,7 +181,8 @@ angular.module("baw",
                     title: analysisJobNav.title,
                     fullWidth: false,
                     secondaryNavigation: [analysisJobsNav],
-                    icon: "tasks"
+                    icon: "tasks",
+                    indentation: 1
                 }).when(paths.site.ngRoutes.analysisJobs.analysisResults.replace("{analysisJobId}", ":analysisJobId"), {
                     templateUrl: paths.site.files.analysisResults.fileList,
                     controller: "FileListController",
@@ -187,7 +190,8 @@ angular.module("baw",
                     title: "Results",
                     fullWidth: false,
                     secondaryNavigation: [analysisJobsNav, analysisJobNav],
-                    icon: "table"
+                    icon: "table",
+                    indentation: 2
                 }).//when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title:
                    // "Jobs",
                 // fullWidth: false}).
@@ -262,13 +266,13 @@ angular.module("baw",
                     title: "Visualize audio distribution",
                     fullWidth: true,
                     reloadOnSearch: false
-                }).// missing route page
-                when("/", {
+                }).when("/", {
                     templateUrl: paths.site.files.home,
                     controller: "HomeCtrl",
                     title: "Home",
                     fullWidth: false
                 }).when("/404", {
+                    // missing route page
                     templateUrl: paths.site.files.error404,
                     controller: "ErrorController",
                     title: "Not found",

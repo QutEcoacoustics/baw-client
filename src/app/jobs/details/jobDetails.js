@@ -11,6 +11,7 @@ angular
             "ActiveResource",
             "baw.models.associations",
             "baw.models.AnalysisJob.progressKeys",
+            "baw.models.AnalysisJob.progressKeysFriendly",
             "baw.models.AnalysisJob.statusKeys",
             "AnalysisJob",
             "Script",
@@ -27,9 +28,9 @@ angular
                 class JobDetailsController extends JobsCommon {
                     constructor(
                         $scope, $routeParams, $http, $timeout, paths, ActiveResource, modelAssociations,
-                        keys, statuses, AnalysisJobService,
+                        keys, friendlyKeys, statuses, AnalysisJobService,
                         ScriptService, SavedSearchService, growl, MimeType) {
-                        super(keys, statuses);
+                        super(keys, friendlyKeys, statuses);
                         let controller = this;
                         const savedSearchLinker = modelAssociations.generateLinker("AnalysisJob", "SavedSearch");
                         const scriptLinker = modelAssociations.generateLinker("AnalysisJob", "Script");
@@ -103,6 +104,7 @@ angular
                         this.chartData = {
                             colors: this.progressKeyColorMap,
                             columns: this.getData(),
+                            names: this.progressKeyFriendlyMap,
                             type: "donut",
                             // order is currently broken - see https://github.com/c3js/c3/pull/1814
                             order: null
@@ -124,7 +126,10 @@ angular
                                     return;
                                 }
 
-                                data.push([key, this.analysisJob.overallProgress[key] || 0]);
+                                data.push([
+                                    key,
+                                    this.analysisJob.overallProgress[key] || 0
+                                ]);
                             });
 
                             return data;

@@ -30,7 +30,7 @@ angular
             var userModel = null;
             UserProfile.get.then(() => {
                 userModel = UserProfile.profile;
-                onRouteChangeSuccess(null, $route.current, null, null);
+                prepareLinks($route.current);
             });
 
             this.title = "";
@@ -46,27 +46,29 @@ angular
             );
 
             function onRouteChangeSuccess(event, current, previous, rejection) {
+                //console.log("routeChangeSuccess", event, current, previous, rejection);
+
                 // reset the active resource
                 ActiveResource.set(null);
 
+                prepareLinks(current);
+            }
+
+            function prepareLinks(current) {
                 controller.title = current.$$route.title;
                 controller.icon = current.$$route.icon;
                 controller.actionItemsTemplate = current.$$route.actionsTemplateUrl;
 
-                let currentLink = {title: controller.title, href: $location.$$path, icon: controller.icon};
-                let extraLinks = current.$$route.secondaryNavigation || [];
-                let contextualLinks = extraLinks.concat(currentLink).map((link, index) => {
-                    link.indentation = index;
-                    return link;
-                });
+                let currentLink = {
+                    title: controller.title,
+                    href: $location.$$path,
+                    icon: controller.icon,
+                    indentation: current.$$route.indentation
+                };
+                let extraLinks = transformLinks(current.$$route.secondaryNavigation || []);
 
-                let omniLinks = omnipresentLinks
-                    .filter((link) => !link.condition || link.condition.call(link, userModel))
-                    .map(link => {
-                        link.href = _.isFunction(link.href) ? link.href.call(link, userModel) : link.href;
-                        return link;
-                    });
-
+                let contextualLinks = extraLinks.concat(currentLink);
+                let omniLinks = transformLinks(omnipresentLinks);
 
                 // insert contextual links under omninode, or stick at bottom
                 let parentIndex = omniLinks.findIndex(link => link.href === contextualLinks[0].href);
@@ -79,11 +81,20 @@ angular
                     omniLinks.push(...contextualLinks);
                 }
 
-
                 controller.links = omniLinks
                     .map(activePath.bind(null, current.$$route));
             }
 
+            // allows for dynamic filtering or generation of links
+            let transformLinks = function(links) {
+                return links
+                    .filter((link) => !link.condition || link.condition.call(link, userModel, controller.activeResource))
+                    .map(link => {
+                        link.href = _.isFunction(link.href) ? link.href.call(link, userModel, controller.activeResource) : link.href;
+                        link.indentation = link.indentation || 0;
+                        return link;
+                    });
+            };
 
             let activePath = function (route, link) {
                 link.isActive = route.regexp.test(link.href);

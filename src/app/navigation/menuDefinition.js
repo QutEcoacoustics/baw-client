@@ -47,7 +47,8 @@ angular
                 {
                     title: "Audio Analysis",
                     href: paths.site.ngRoutes.analysisJobs.list,
-                    icon: "server"
+                    icon: "server",
+                    ribbon: "beta"
                 },
                 {
                     title: "Library",

@@ -1,0 +1,105 @@
+
+
+$banner-font-size: 10px;
+$banner-width: 5em;
+$darken-amount: 13.5%;
+$ribbon-angle: 45deg;
+
+$ribbon-offset: 8px;
+
+ribbon, .ribbon-box {
+  & .tooltip-arrow {
+    right: #{2.5 * $ribbon-offset} !important;
+    left: auto !important;
+  }
+}
+
+.ribbon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  overflow: hidden;
+  height: 100%;
+
+  width: 100%;
+
+  pointer-events: none;
+}
+
+
+.ribbon {
+  & > * {
+
+    pointer-events: all;
+    top: 0;
+    right: calc(-50% + #{$ribbon-offset});
+    margin-top: $ribbon-offset;
+
+    position: relative;
+
+    font-size: $banner-font-size;;
+    line-height: 1em;
+    padding: 3px 0;
+
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+
+    @include vendor-prefix(transform, rotate3d(0, 0, 1, $ribbon-angle));
+    @include vendor-prefix(transform-origin, 50% 0%);
+
+    width: 100%;
+
+    display: block;
+
+    $color: $brand-primary;
+    background: $color;
+    background: linear-gradient($color 0%, darken($color, $darken-amount) 100%);
+    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  }
+}
+
+.ribbon {
+  &.success>* {
+    $color: $brand-success;
+    background: $color;
+    background: linear-gradient($color 0%, darken($color, $darken-amount) 100%);
+  }
+
+  &.warning>* {
+    $color: $brand-warning;
+    background: $color;
+    background: linear-gradient($color 0%, darken($color, $darken-amount) 100%);
+  }
+
+  &.building>* {
+    $color: $brand-warning;
+    background: $color;
+    $strip-width: 5px;
+
+    background: linear-gradient(
+                    to bottom,
+                    transparent,
+                    rgba(0, 0, 0, $darken-amount / 100%)
+                ),
+                repeating-linear-gradient(
+                                90deg,
+                                #000   #{0 * $strip-width},
+                                #000   #{1 * $strip-width},
+                                $color #{1 * $strip-width},
+                                $color #{2 * $strip-width}
+                );
+  }
+
+  &.info>* {
+    $color: $brand-info;
+    background: $color;
+    background: linear-gradient($color 0%, darken($color, $darken-amount) 100%);
+  }
+
+}
+
+
+

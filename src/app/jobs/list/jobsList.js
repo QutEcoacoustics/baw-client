@@ -8,11 +8,12 @@ angular
             "AnalysisJob",
             "conf.paths",
             "baw.models.AnalysisJob.progressKeys",
+            "baw.models.AnalysisJob.progressKeysFriendly",
             "baw.models.AnalysisJob.statusKeys",
             function (JobsCommon, ...dependencies) {
                 class JobsListController extends JobsCommon{ // jshint ignore:line
-                    constructor($scope, AnalysisJobService, paths, keys, statuses) {
-                        super(keys, statuses);
+                    constructor($scope, AnalysisJobService, paths, keys, friendlyKeys, statuses) {
+                        super(keys, friendlyKeys, statuses);
                         let controller = this;
 
 
