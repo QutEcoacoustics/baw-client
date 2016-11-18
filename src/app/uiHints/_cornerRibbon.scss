@@ -82,6 +82,7 @@ ribbon, .ribbon-box {
     background: linear-gradient(
                     to bottom,
                     transparent,
+                    rgba(256, 256, 256, $darken-amount / 100%),
                     rgba(0, 0, 0, $darken-amount / 100%)
                 ),
                 repeating-linear-gradient(

@@ -84,9 +84,7 @@ angular
                     return this.isNew || this.isPreparing || this.isProcessing;
                 }
 
-                get canRetry() {
-                    return this.isCompleted && this.successfulRatio < 1.0;
-                }
+
 
                 get completedRatio() {
                     return (
@@ -190,6 +188,32 @@ angular
                     this._script = value;
                     this.scriptId = value && value.id || null;
                 }
+
+                // capabilities (mocked here until API capabilities are real
+                static get capabilities() {
+                    //return this.isCompleted && this.successfulRatio < 1.0;
+                    return {
+                        "update": {
+                            can: true
+                        },
+                        "destroy": {
+                            can: true
+                        },
+                        "create": {
+                            can: true
+                        },
+                        "pause": {
+                            can: false
+                        },
+                        "resume": {
+                            can: true
+                        },
+                        "retry": {
+                            can: false
+                        }
+                    };
+                }
+
 
                 toJSON() {
                     return {

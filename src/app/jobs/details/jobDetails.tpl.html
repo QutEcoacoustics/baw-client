@@ -1,4 +1,4 @@
-<layout content-for="action-items">
+<layout content-for="action-items"  >
     <!--<li>-->
     <!--<a href="{{ jobsList.newAnalysisJobRoute }}">-->
     <!--<span class="fa fa-pencil"></span>-->
@@ -20,37 +20,38 @@
     <li>
         <hr />
     </li>
-    <li>
-
+    <li capability-if="update">
         <button class="btn btn-block btn-default" type="button"
                 uib-tooltip="Attempt to run all failed items again."
-                ng-click="jobDetails.analysisJob.retry()" ng-disabled="!jobDetails.analysisJob.canRetry">
+                ng-click="jobDetails.analysisJob.retry()"
+                capability-enabled="retry" >
             <i class="fa fa-fw fa-repeat"></i>
             Retry failed items
         </button>
-        <ribbon type="beta"></ribbon>
+        <ribbon type="building"></ribbon>
 
     </li>
-    <li>
+    <li capability-if="update"  >
 
         <button class="btn btn-block btn-default" type="button"
                 uib-tooltip="Attempt to run all failed items again."
-                ng-click="jobDetails.analysisJob.retry()" ng-disabled="!jobDetails.analysisJob.canRetry">
-            <i class="fa fa-fw fa-pause"></i>
+                ng-click="jobDetails.analysisJob.retry()"
+                capability-enabled="can('pause') || can('resume')" >
+            <i class="fa fa-fw fa-pause-circle"></i>
+            <!--<i class="fa fa-fw fa-play-circle"></i>-->
             Pause processing
         </button>
-
         <ribbon type="building"></ribbon>
     </li>
-    <li>
+    <li capability-if="destroy">
 
         <button class="btn btn-block btn-default" type="button"
                 uib-tooltip="Attempt to run all failed items again."
-                ng-click="jobDetails.analysisJob.retry()" ng-disabled="!jobDetails.analysisJob.canRetry">
+                ng-click="jobDetails.analysisJob.retry()" >
             <i class="fa fa-fw fa-trash"></i>
             Delete this job
         </button>
-        <ribbon type="new"></ribbon>
+        <ribbon type="building"></ribbon>
     </li>
 </layout>
 <div id="content" class="analysis-job-details">

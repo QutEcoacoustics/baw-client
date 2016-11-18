@@ -70,6 +70,7 @@ angular.module("baw",
         "bawApp.configuration", /* a mapping of all static path configurations
      and a module that contains all app configuration */
         "bawApp.predictiveCacheDefaultProfiles",
+        "bawApp.diagnostics",
 
         "http-auth-interceptor", /* the auth module    */
         "angular-auth", /* the auth module    */

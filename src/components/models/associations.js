@@ -8,9 +8,67 @@
 angular
     .module("bawApp.models.associations", [])
     .factory(
-        "baw.models.ApiBase",
+        "baw.models.Capabilities",
         [
             function () {
+                let missingCapability = Object.freeze({
+                    can: null,
+                    details: "No reason is available",
+                    message: null
+                });
+
+                class Capabilities {
+                    constructor(capabilityObject) {
+                        this.actions = capabilityObject;
+
+                    }
+
+                    can(source, actionName) {
+                        return this.get(source, actionName, "can");
+                    }
+
+                    details(source, actionName) {
+                        return this.get(source, actionName, "details");
+                    }
+
+                    message(source, actionName) {
+                        return this.get(source, actionName, "message");
+                    }
+
+                    get(source, actionName, selector) {
+                        let action = this.actions[actionName];
+                        if (action) {
+                            if (selector) {
+                                let value = action[selector];
+                                if (angular.isFunction(value)) {
+                                    return value.call(action, action, source);
+                                }
+                                else {
+                                    return value;
+                                }
+                            }
+                            return action;
+                        }
+                        else {
+                            return missingCapability;
+                        }
+                    }
+
+                    static get missing() {
+                        return missingCapability;
+                    }
+                }
+
+                return Capabilities;
+            }
+        ]
+    ).factory(
+        "baw.models.ApiBase",
+        [
+            "baw.models.Capabilities",
+            function (Capabilities) {
+                let metaKey = Symbol("meta");
+
                 class ApiBase {
 
                     constructor(resource) {
@@ -48,6 +106,21 @@ angular
                         return !(this.id === undefined || this.id === null);
                     }
 
+                    /**
+                     * Holds the meta object from an API response.
+                     * @returns {*}
+                     */
+                    get meta() {
+                        return this[metaKey];
+                    }
+
+                    /**
+                     * Capability tester. Can an action be implemented?
+                     */
+                    can(actionName) {
+                        return this[metaKey].capabilities.can(this, actionName);
+                    }
+
                     static make(resource) {
                         //noinspection JSValidateTypes
                         if (this === window) {
@@ -80,6 +153,26 @@ angular
                             //noinspection JSUnresolvedFunction
                             items[0] = this.make(response.data.data);
                         }
+
+                        // allow all object to get and set their meta data object
+                        let meta = response.data.meta;
+
+                        // setup capabilities
+
+                        // HACK: while capabilities not supported by API we instead draw them from the client Models
+                        if (meta.capabilities === undefined) {
+                            if (this.capabilities) {
+                                console.warn(`Capabilities for ${this.name} are drawn from client model`);
+                                meta.capabilities = this.capabilities;
+                            }
+                            else {
+                                meta.capabilities = {};
+                            }
+                        }
+                        meta.capabilities = new Capabilities(meta.capabilities);
+
+                        // give each object a reference to meta
+                        items.forEach((a) => a[metaKey] = meta);
 
                         response.data.data = items;
 
