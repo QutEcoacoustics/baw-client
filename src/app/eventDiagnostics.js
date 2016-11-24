@@ -1,6 +1,6 @@
 //http://plnkr.co/edit/cn3MZynbpTYIcKUWmsBi?p=preview
 angular
-    .module("bawApp.diagnostics", []);
+    .module("bawApp.diagnostics", []).constant("justomakethiswork");
     // .config(["$provide", function($provide) {
     //     $provide.decorator("$rootScope", ["$delegate", function($delegate) {
     //         var scope = $delegate.constructor;

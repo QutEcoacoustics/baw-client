@@ -3,7 +3,8 @@ angular
     .directive(
         "capabilityModel",
         [
-            function() {
+            "$parse",
+            function($parse) {
                 return {
                     restrict: "EA",
                     multiElement: true,
@@ -11,9 +12,15 @@ angular
                         "$scope",
                         "$element",
                         "$attrs",
-                        function CapabilityController(scope, element, attributes) {
-                            this.model = undefined;
-                            this.modelUpdateEvent = "bawApp.uiHints.capability.capabilityModelUpdate";
+                        "baw.models.Capabilities",
+                        function CapabilityController(scope, element, attributes, CapabilitiesModel) {
+                            const error = "The capability evaluator must return a value, not a function. Have you done `canUpdate` instead of `canUpdate{}`";
+
+                            var controller = this;
+                            controller.model = undefined;
+                            controller.modelUpdateEvent = "bawApp.uiHints.capability.capabilityModelUpdate";
+
+                            var modifiedLocals = {};
 
                             // we need root scope because sometimes elements can be transcluded and
                             // the event hierarchy breaks - i think!
@@ -22,20 +29,66 @@ angular
                                     throw new Error("The capability-model must have a `can` method.");
                                 }
 
-                                this.model = newValue;
-                                scope.$root.$broadcast(this.modelUpdateEvent, this.model);
+                                controller.model = newValue;
+
+                                modifiedLocals = createCanMethods();
+
+                                scope.$root.$broadcast(controller.modelUpdateEvent, controller.model);
                             });
 
-                            this.createEvaluator = function(action) {
-                                if (this.model) {
-                                    var model = this.model;
-                                    return function() {
-                                        return model.can(action);
-                                    };
-                                } else {
-                                    return () => {};
-                                }
+
+                            /**
+                             * Evaluate all current capabilities, useful for debugging.
+                             * @returns {*}
+                             */
+                            controller.evaluateAllCapabilities = function () {
+                                return Object.keys(modifiedLocals).reduce((out, key) => {
+                                    // force evaluate getters
+                                    out[key] = modifiedLocals[key];
+                                    return out;
+                                }, {});
                             };
+
+                            controller.createEvaluator = function(expression) {
+                                var compiled = $parse(expression);
+
+                                //console.warn("capability evaluator for `" + expression + "`", scope, modifiedLocals);
+                                return () => {
+                                    let result = compiled(scope, modifiedLocals);
+                                    //console.debug("capability evaluation for: `" + expression+ "`", result, controller.evaluateAllCapabilities());
+                                    if (typeof result === "function") {
+                                        throw new Error(error);
+                                    }
+                                    return result;
+                                };
+                            };
+
+                            function createCanMethods() {
+                                let methods = {
+                                    reason: CapabilitiesModel.reasons
+                                };
+
+                                if(controller.model) {
+                                    Object.keys(controller.model.meta.capabilities.actions).forEach((key) => {
+                                        var can = function (reason) {
+                                            return controller.model.can(key, reason);
+                                        };
+
+                                        // this is a bit of a hack
+                                        // add a property getter for each capability
+                                        Object.defineProperty(methods, key, {get: can, enumerable: true});
+
+                                        // and add can methods (neater than the getters)
+                                        methods[getCanKey(key)] = can;
+                                    });
+                                }
+
+                                return methods;
+                            }
+
+                            function getCanKey(action) {
+                                return "can" + action.charAt(0).toUpperCase() + action.slice(1);
+                            }
                         }
                     ]
                 };
@@ -114,41 +167,28 @@ angular
 
                     scope.$watch(attributes.capabilityEnabled, update);
                     scope.$on(capabilityController.modelUpdateEvent, update);
-                    attributes.$observe("class", function(value) {
-                        update(scope.$eval(attributes.capabilityEnabled));
+                    attributes.$observe("class", update);
+
+
+                    function toClasses(result) {
+                        let newString = !!result ? capabilityEnabled  : capabilityDisabled;
+                        let oldString = !!result ? capabilityDisabled : capabilityEnabled ;
+
+                        return [newString , oldString];
+                    }
+
+                    let capability = () => {};
+                    function update() {
+                         capability = capabilityController.createEvaluator(attributes.capabilityEnabled);
+                    }
+
+                    // the function forces the value to be evaluated on every scope iteration (this ensures
+                    // capability-enabled matches behaviour of capability-if and also prevents async race conditions
+                    scope.$watch(() => {return capability();}, function (newValue) {
+                        var [newClasses, oldClasses] = toClasses(newValue);
+                        attributes.$updateClass(newClasses, oldClasses);
                     });
-
-                    var oldVal;
-
-                    function addClasses(classes) {
-                        classes.forEach(attributes.$addClass, attributes);
-                    }
-
-                    function toClasses(expression) {
-                        // can is defined on the ApiBase class
-                        let capability = capabilityController.createEvaluator(expression);
-
-                        var result = capability();
-                        if (result) {
-                            return [capabilityEnabled];
-                        }
-                        else {
-                            return [capabilityDisabled];
-                        }
-                    }
-
-                    function update(newVal) {
-                        var newClasses = toClasses(newVal || "");
-                        if (!oldVal) {
-                            addClasses(newClasses);
-                        } else if (!angular.equals(newVal,oldVal)) {
-                            attributes.$updateClass(newClasses, oldVal);
-                        }
-
-                        oldVal = newVal;
-                    }
                 }
-                
             };
         }]
 );

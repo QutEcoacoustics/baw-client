@@ -24,30 +24,29 @@
         <button class="btn btn-block btn-default" type="button"
                 uib-tooltip="Attempt to run all failed items again."
                 ng-click="jobDetails.analysisJob.retry()"
-                capability-enabled="retry" >
+                capability-enabled="false && retry" >
             <i class="fa fa-fw fa-repeat"></i>
             Retry failed items
         </button>
         <ribbon type="building"></ribbon>
 
     </li>
-    <li capability-if="update"  >
-
+    <li capability-if="update" >
         <button class="btn btn-block btn-default" type="button"
                 uib-tooltip="Attempt to run all failed items again."
                 ng-click="jobDetails.analysisJob.retry()"
-                capability-enabled="can('pause') || can('resume')" >
+                capability-enabled="false && (pause || resume)" >
             <i class="fa fa-fw fa-pause-circle"></i>
             <!--<i class="fa fa-fw fa-play-circle"></i>-->
             Pause processing
         </button>
         <ribbon type="building"></ribbon>
     </li>
-    <li capability-if="destroy">
-
+    <li capability-if="canDestroy(reason.ifAuthorized)">
         <button class="btn btn-block btn-default" type="button"
                 uib-tooltip="Attempt to run all failed items again."
-                ng-click="jobDetails.analysisJob.retry()" >
+                ng-click="jobDetails.analysisJob.retry()"
+                capability-enabled="false && destroy" >
             <i class="fa fa-fw fa-trash"></i>
             Delete this job
         </button>

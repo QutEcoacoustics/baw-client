@@ -35,13 +35,15 @@ angular
         "baw.models.AnalysisJob.progressKeys",
         "baw.models.AnalysisJob.progressKeysFriendly",
         "baw.models.AnalysisJob.statusKeys",
+        "baw.models.Capabilities",
         "UserProfile",
         "conf.paths",
         "$url",
         "humanize-duration",
         "filesize",
         "moment",
-        function (associations, ApiBase, progressKeys, friendlyKeys, statusKeys, UserProfile, paths, $url, humanizeDuration, filesize, moment) {
+        function (associations, ApiBase, progressKeys, friendlyKeys, statusKeys, Capabilities, UserProfile, paths, $url,
+                  humanizeDuration, filesize, moment) {
 
             class AnalysisJob extends ApiBase {
                 constructor(resource) {
@@ -191,29 +193,50 @@ angular
 
                 // capabilities (mocked here until API capabilities are real
                 static get capabilities() {
-                    //return this.isCompleted && this.successfulRatio < 1.0;
                     return {
                         "update": {
-                            can: true
+                            can: (action, source) => source.isOwnedBy(UserProfile.profile)
                         },
                         "destroy": {
-                            can: true
+                            _hasPermission(source) {
+                                return source.isOwnedBy(UserProfile.profile);
+                            },
+                            _validWorkflowState(source) {
+                                return source.isSuspended || source.isCompleted || source.isProcessing;
+                            },
+                            can(action, source) {
+                                return action._hasPermission(source) && action._validWorkflowState(source);
+                            },
+                            details: "",
+                            message(action, source) {
+                                if (!action._hasPermission(source)) {
+                                    return Capabilities.reasons.unauthorized;
+                                }
+                                else {
+                                    if (!action._validWorkflowState(source)) {
+                                        return Capabilities.reasons.conflict;
+                                    }
+                                }
+
+                                return null;
+                            }
                         },
                         "create": {
                             can: true
                         },
                         "pause": {
-                            can: false
+                            can: (action, source) => source.isOwnedBy(UserProfile.profile) && source.isProcessing
                         },
                         "resume": {
-                            can: true
+                            can: (action, source) => source.isOwnedBy(UserProfile.profile) && source.isSuspended
                         },
                         "retry": {
-                            can: false
+                            can(action, source) {
+                                return source.isOwnedBy(UserProfile.profile) && source.isCompleted && source.successfulRatio < 1.0;
+                            }
                         }
                     };
                 }
-
 
                 toJSON() {
                     return {

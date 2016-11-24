@@ -17,14 +17,38 @@ angular
                     message: null
                 });
 
+
+
+                const messages = {
+                    ifAuthorized(message){
+                        return message !== messages.unauthorized;
+                    },
+                    forbidden: "forbidden",
+                    unauthorized: "unauthorized",
+                    conflict: "conflict"
+                };
+
                 class Capabilities {
                     constructor(capabilityObject) {
-                        this.actions = capabilityObject;
+                        this.actions = capabilityObject || {};
 
                     }
 
-                    can(source, actionName) {
-                        return this.get(source, actionName, "can");
+                    can(source, actionName, reason) {
+                        let result;
+                        // if reason is defined then we want to return a result based on that reason only
+                        if (!reason) {
+                            result = this.get(source, actionName, "can");
+                        } else {
+                            if (angular.isFunction(reason)) {
+                                result = reason(this.message(source, actionName));
+                            }
+                            else {
+                                result = reason === this.message(source, actionName);
+                            }
+                        }
+
+                        return result;
                     }
 
                     details(source, actionName) {
@@ -56,6 +80,10 @@ angular
 
                     static get missing() {
                         return missingCapability;
+                    }
+
+                    static get reasons() {
+                        return messages;
                     }
                 }
 
@@ -117,9 +145,29 @@ angular
                     /**
                      * Capability tester. Can an action be implemented?
                      */
-                    can(actionName) {
-                        return this[metaKey].capabilities.can(this, actionName);
+                    can(actionName, reason) {
+                        return this[metaKey].capabilities.can(this, actionName, reason);
                     }
+
+                    // security related helpers
+                    // note: ideally these should not be needed once capabilities are developed for the REST API
+                    isOwnedBy(user) {
+                        if (!user) {
+                            return null;
+                        }
+
+                        if (user.isAdmin) {
+                            return true;
+                        }
+
+                        if (this.creatorId) {
+                            return this.creatorId === user.id || this.updaterId === user.id;
+                        }
+
+                        return null;
+                    }
+
+
 
                     static make(resource) {
                         //noinspection JSValidateTypes

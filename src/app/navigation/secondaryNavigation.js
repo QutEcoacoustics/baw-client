@@ -159,11 +159,18 @@ angular
 
             function onRouteChangeStart(event, current, previous, rejection) {
                 renderers.forEach((renderer) => {
+                    // try a nice cleanup
                     if (renderer.source) {
-                        renderer.source.content.remove();
                         renderer.source.scope.$destroy();
+                        renderer.source.content.remove();
                         renderer.source = null;
                     }
+
+                    // unfortunately the above clean does not always work, especially for transcluded elements
+                    // that change their definition or insert extra DOM (e.g. ng-if)
+                    renderer.element.children().toArray().forEach(element => {
+                        element.remove();
+                    });
                 });
 
                 layoutCache.removeAll();

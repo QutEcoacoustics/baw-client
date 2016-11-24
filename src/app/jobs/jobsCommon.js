@@ -18,8 +18,9 @@ class JobsCommon { // jshint ignore:line
             [keys.working]: "#5bc0de",
             [keys.cancelling]: "#e67b48",
             [keys.cancelled]: "#e67b48",
+            //https://color.adobe.com/create/color-wheel/?base=2&rule=Shades&selected=4&name=My%20Color%20Theme&mode=rgb&rgbvalues=0.6009803921568627,0.22986807626280595,0.2187900966838348,0.3509803921568627,0.13424595644711995,0.1277762717990422,0.8509803921568627,0.3254901960784314,0.30980392156862746,0.9009803921568628,0.3446146200416291,0.32800668654558596,0.7509803921568627,0.2872413481522175,0.27339839161471036&swatchOrder=0,1,2,3,4
             [keys.failed]: "#d9534f",
-            [keys.timedOut]: "#592221",
+            [keys.timedOut]: "#BF4946",
             [keys.successful]: "#5cb85c",
         };
 
