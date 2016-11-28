@@ -1,13 +1,9 @@
 
-
-
 .citizen-science {
 
-  max-width:100%;
+  max-width: 100%;
 
-  z-index:10;
-
-
+  z-index: 10;
 
   .cs-progress {
 
@@ -16,110 +12,97 @@
     margin-right: auto;
     border-radius: 15px;
     background: #eee;
-    box-shadow: inset 0 -5px 15px rgba(0,0,0,0.1), inset 0 5px 15px rgba(255,255,255,0.2), 0 1px 1px rgba(0,0,0,0.3);
+    box-shadow: inset 0 -5px 15px rgba(0, 0, 0, 0.1), inset 0 5px 15px rgba(255, 255, 255, 0.2), 0 1px 1px rgba(0, 0, 0, 0.3);
     padding-left: 20px;
     padding-right: 20px;
     margin-bottom: 20px;
-    margin-top:20px;
+    margin-top: 20px;
 
-    ul {
+    .progressCell {
 
-      display: table-row;
+      display: table-cell;
 
+      box-shadow: inset -3px 0px 1px 0px rgba(0, 0, 0, 0.1), inset 3px 0px 1px 0px rgba(255, 255, 255, 0.2);
 
-      li {
+      text-align: center;
+      font-size: 1.8em;
+      padding: 10px 15px 10px 15px;
+      cursor: pointer;
 
-        display: table-cell;
+      &:first-child {
+        box-shadow: inset -3px 0px 1px 0px rgba(0, 0, 0, 0.1);
+      }
+      &:last-child {
+        box-shadow: inset 3px 0px 1px 0px rgba(255, 255, 255, 0.2);
+      }
 
-        box-shadow: inset -3px 0px 1px 0px rgba(0,0,0,0.1), inset 3px 0px 1px 0px rgba(255,255,255,0.2);
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
 
-        text-align: center;
-        font-size: 1.8em;
-        padding: 10px 15px 10px 15px;
-        cursor: pointer;
+      &.cur, &.cur.done {
+        background-color: #0c95be;
+        color: #fff;
+      }
 
-
-        &:first-child {
-          box-shadow: inset -3px 0px 1px 0px rgba(0,0,0,0.1);
-        }
-        &:last-child {
-          box-shadow: inset 3px 0px 1px 0px rgba(255,255,255,0.2);
-        }
-
-        &:hover {
-          background-color: rgba(255,255,255,0.3);
-        }
-
-        &.cur, &.cur.done {
-          background-color: #0c95be;
-          color: #fff;
-        }
-
-        &.done {
-          background-color: #8bc435;
-          color: #fff;
-
-        }
-
-        &.next-clip:before {
-          content:"\f051";
-          font-family: FontAwesome;
-        }
-
-        &.prev-clip:before {
-          content:"\f048";
-          font-family: FontAwesome;
-        }
-
-
-        &.disabled:before {
-          opacity: 0.5;
-        }
-
-        &.disabled:hover, &.progress-counter:hover {
-          background-color: inherit;
-          cursor: inherit;
-        }
-
+      &.done {
+        background-color: #8bc435;
+        color: #fff;
 
       }
 
+      &.next-clip:before {
+        content: "\f051";
+        font-family: FontAwesome;
+      }
 
+      &.prev-clip:before {
+        content: "\f048";
+        font-family: FontAwesome;
+      }
+
+      &.disabled:before {
+        opacity: 0.5;
+      }
+
+      &.disabled:hover, &.progress-counter:hover {
+        background-color: inherit;
+        cursor: inherit;
+      }
 
     }
 
   }
 
   .audio-outer {
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: 20px;
-    text-align:center;
+    text-align: center;
 
     .audio-inner {
       display: inline-block;
-      max-width:100%;
-      box-shadow: 0px 0px 0px 10px rgba(0,0,0,0.4);
-      background-color: rgba(0,0,0,0.9);
+      max-width: 100%;
+      box-shadow: 0px 0px 0px 10px rgba(0, 0, 0, 0.4);
+      background-color: rgba(0, 0, 0, 0.9);
     }
   }
 
-
   .spectrogram-wrapper {
-    margin-top:0px;
+    margin-top: 0px;
     margin-bottom: 0px;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
 
     display: inline-block;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
-    max-width:100%;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
 
     .spectrogram {
       display: block;
-      max-width:100%;
+      max-width: 100%;
     }
 
   }
@@ -127,8 +110,8 @@
   audio {
     width: 90%;
     height: 26px;
-    margin-top:0px;
-    padding-top:0px;
+    margin-top: 0px;
+    padding-top: 0px;
     display: inline-block;
     visibility: visible;
   }
@@ -142,13 +125,12 @@
     border-radius: 8px;
     padding: 0px 20px 20px 20px;
 
-
     a {
       display: inline-block;
       margin-left: auto;
       margin-right: auto;
       margin-top: 5px;
-      width:auto;
+      width: auto;
       padding: 5px 8px 5px 8px;
       font-size: 18px;
 
@@ -188,20 +170,17 @@
 
     position: absolute;
     opacity: 0.3;
-    display:none;
+    display: none;
 
   }
-
-
-
 
   h2 {
     font-weight: 100;
     text-align: center;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     color: #fff;
     padding: 10px 10px 0px 10px;
-    box-shadow: 0 20px 20px 0px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 20px 0px rgba(0, 0, 0, 0.5);
     margin-top: -20px;
     margin-bottom: 10px;
     text-shadow: 0px 0px 10px #000;
@@ -223,9 +202,7 @@
 
     }
 
-
   }
-
 
 }
 
@@ -243,18 +220,16 @@
   //width:auto;
 
   position: absolute;
-  top:-20px;
-  left:0px;
+  top: -20px;
+  left: 0px;
   z-index: -20;
   opacity: 0;
   transition: opacity .5s ease-in-out;
   -moz-transition: opacity .5s ease-in-out;
   -webkit-transition: opacity .5s ease-in-out;
 
-
-
   &.bgActive {
-    opacity:1;
+    opacity: 1;
   }
 }
 
@@ -262,6 +237,6 @@
   overflow: hidden;
   z-index: -20;
   position: absolute;
-  top:0px;
-  left:0px;
+  top: 0px;
+  left: 0px;
 }

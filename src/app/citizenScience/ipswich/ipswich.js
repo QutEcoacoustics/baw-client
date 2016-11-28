@@ -29,7 +29,7 @@ class IpswichController {
         $scope.csProject = "ipswich";
 
         // currently all samples will be the same duration (not set per sample in the dataset)
-        self.sampleDuration = 5;
+        self.sampleDuration = 20;
 
         /**
          *

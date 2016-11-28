@@ -1,20 +1,19 @@
-<!--<div class="csBackground" style="background-image:url({{currentBackground}});" /></div>-->
 <cs-backgrounds backgrounds="['1.jpg','2.jpg','3.jpg','4.jpg',]" change-on="currentSampleNum"></cs-backgrounds>
-<!--<img cs-background class="csBackground"  ng-src="{{currentBackground}}"></img>-->
+
 <div class="citizen-science ipswich">
 
-    <h2>Ipswich Citizen Science Bird Hunt</h2>
+    <h2>Ipswich Citizen Science Bird Search</h2>
 
     <div class="cs-main-container">
         <div class="main wrapper clearfix">
 
-                <div class="citsci-debug">
-                    <p>Currently viewing: Sample {{ currentSample }}</p>
-                    <p>Audio id: {{ samples[currentSample].recordingId }}</p>
-                    <p>Start Offset: {{ samples[currentSample].startOffset }}</p>
-                </div>
+            <div class="citsci-debug">
+                <p>Currently viewing: Sample {{ currentSample }}</p>
+                <p>Audio id: {{ samples[currentSample].recordingId }}</p>
+                <p>Start Offset: {{ samples[currentSample].startOffset }}</p>
+            </div>
 
-                <div class="audio-outer">
+            <div class="audio-outer">
                 <div class="audio-inner">
                     <div class="spectrogram-wrapper">
                         <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
@@ -26,15 +25,33 @@
                                 ng-type="{{media.available.audio[key].mimeType}}">
                         Your browser does not support the audio element.
                     </audio>
-                  </div>
+                </div>
+            </div>
+
+            <nav class="cs-progress">
+
+                <dataset-progress items="samples" selected="currentSampleNum"></dataset-progress>
+
+                <div class="autoplay progressCell">
+                    <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"
+                                   title="Enable/disable autoplay">
+                        <toggle-switch-state switch-state="on">
+                            <span class="glyphicon glyphicon-play-circle"></span>
+                        </toggle-switch-state>
+                        <toggle-switch-state switch-state="off">
+                            <span class="glyphicon glyphicon-play-circle"></span>
+                        </toggle-switch-state>
+                    </toggle-switch>
                 </div>
 
-            <dataset-progress items="samples" selected="currentSampleNum"></dataset-progress>
-
-            <citizen-science-labels labels="labels" samples="samples" current-sample-num="currentSampleNum" cs-project="csProject"></citizen-science-labels>
+            </nav>
 
 
-            <div id="loading"></div>
+            <citizen-science-labels labels="labels"
+                                    samples="samples"
+                                    current-sample-num="currentSampleNum"
+                                    cs-project="csProject"></citizen-science-labels>
+
 
         </div> <!-- #main -->
     </div> <!-- #main-container -->
