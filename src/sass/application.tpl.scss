@@ -14,13 +14,13 @@ $DEBUG: "<%= build_configs.current.key === 'development' %>" == "true";
 @namespace xlink 'http://www.w3.org/1999/xlink';
 
 /**
-* First, we include Twitter's Bootstrap SCSS files.
-*/
+ * First, we include Twitter's Bootstrap SCSS files.
+ */
 @import "../../vendor/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 
 /**
-* Next, we include Font-awesome's Bootstrap SCSS files.
-*/
+ * Next, we include Font-awesome's Bootstrap SCSS files.
+ */
 @import "../../vendor/font-awesome/scss/font-awesome.scss";
 
 /**

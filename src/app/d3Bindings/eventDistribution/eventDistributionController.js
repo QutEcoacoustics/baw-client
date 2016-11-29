@@ -10,7 +10,8 @@ angular
             "moment",
             "roundDate",
             "rbush",
-            function distributionController($scope, $element, $attrs, d3, moment, roundDate, rbush) {
+            "lodash",
+            function distributionController($scope, $element, $attrs, d3, moment, roundDate, rbush, _) {
                 console.debug("event distribution controller:init");
                 var self = this,
                     defaultFunctions = {
@@ -23,6 +24,7 @@ angular
                         getCategoryName: function (d) {
                             return d;
                         },
+                        getCategoryIndex: categoryId => categoryId,
                         getLow: function (d) {
                             return d.min;
                         },
@@ -42,7 +44,7 @@ angular
 
                 // object reference!
                 let defaults = Object.assign({
-                    initialExtent: null,
+                    initialSelection: null,
                     visualizationYMax: 1000,
                     visualizationTileHeight: 100
                 }, $scope.options);
@@ -79,7 +81,7 @@ angular
                             visualizationMiddles.map(x => moment.duration(x, "seconds").humanize()) || "";
                     }
 
-                    $scope.options.functions.extentUpdated(newExtent);
+                    $scope.options.functions.extentUpdated(newExtent, selectedLane);
 
                     function update() {
                         // object reference!
@@ -135,16 +137,21 @@ angular
 
                         // new behaviour, set default extent to full width of data
                         if (self.data.items.length > 0) {
-                            let extent = [self.data.minimum, self.data.maximum];
+                            let extent = [self.data.minimum, self.data.maximum],
+                                category = null;
 
                             // additionally, support setting initial extent for deep linking scenarios
-                            if ($scope.options.initialExtent) {
-                                extent = $scope.options.initialExtent;
+                            if ($scope.options.initialSelection) {
+
+                                ({extent, category} = $scope.options.initialSelection); // jshint ignore:line
 
                                 // only set initial extent once
-                                $scope.options.initialExtent = null;
+                                $scope.options.initialSelection = null;
                             }
 
+                            if (category) {
+                                self.detail.selectedCategory = category;
+                            }
                             $scope.options.functions.extentUpdate(extent);
                         }
                     }
@@ -171,7 +178,7 @@ angular
                         data.itemsTree.load(data.items);
 
                         let unique = new Set(data.items.map(functions.getCategory));
-                        data.lanes = Array.from(unique);
+                        data.lanes = _.sortBy(Array.from(unique), functions.getCategoryIndex);
                         if (data.items.length > 0) {
                             data.minimum = Math.min(...data.items.map(functions.getLow, functions));
                             data.maximum = Math.max(...data.items.map(functions.getHigh, functions));

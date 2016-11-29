@@ -69,9 +69,9 @@
                     Hide images
                     <input type="checkbox" ng-model="visualizeOptions.hideImages"/>
                 </label>,
-                <label class="">
-                    Hide fixed resolution
-                    <input type="checkbox" ng-model="visualizeOptions.hideFixed"/>
+                <label class="" title="The fixed visualization will be removed in a future release.">
+                    Show fixed resolution
+                    <input type="checkbox" ng-true-value="false" ng-false-value="true" ng-model="visualizeOptions.hideFixed"/>
                 </label>
             </small>
         </section>

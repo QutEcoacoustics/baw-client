@@ -69,7 +69,7 @@ angular
                          */
                         _isZooming = null,
                         _hasMouseMoved = null,
-                        _navigateTimeoutPromise = null,
+                        //_navigateTimeoutPromise = null,
                         laneLinesGroup,
                         laneLabelsGroup,
                         labels,
@@ -148,9 +148,9 @@ angular
                          * A cache of tiles generated from items.
                          * @type {WeakMap<item, Map<resolution, Array<tiles>>>}
                          */
-                        tileCache = new WeakMap(),
-                        clickOrDblTimeoutMilliseconds = 300,
-                        clickOrDragThresholdPixels = 1;
+                        tileCache = new WeakMap();
+                        //clickOrDblTimeoutMilliseconds = 300,
+                        //clickOrDragThresholdPixels = 1;
 
                     // exports
                     self.updateData = updateData;
@@ -368,9 +368,6 @@ angular
                          tilesGroup.attr(attrs);
                          tilesBackground.attr(attrs);
                          datasetBoundsRect.attr("height", tilesHeightPixels);
-
-                         focusLine.attr("height", tilesHeightPixels + focusStemPath.root);
-                         focusTextGroup.translate(() => [0, -(focusStemPath.root + focusStemPath.stems)]);
                          */
                     }
 
@@ -838,7 +835,7 @@ angular
                                         return visibleTiles[0].resolution;
                                     }
                                 },
-                                tileResolutionRatio: () => () => {
+                                tileResolutionRatio: () => {
                                     if (visibleTiles.length > 0) {
                                         return (visibleTiles[0].resolution / self.resolution).toFixed(4);
                                     }
@@ -981,7 +978,8 @@ angular
                             domain = xScale.domain();
                         }
 
-                        updateFocusDate(false);
+                        // if it is a manual event just go back to the middle
+                        updateFocusDate(isManual);
 
 
                         //mainItemsGroup.translateAndScale(zoom.translate(), [zoom.scale(), 1]);
@@ -1028,16 +1026,18 @@ angular
                             xDomain = xScale.domain(),
                             x1 = +xDomain[1],
                             x0 = +xDomain[0],
-                            halfDomainDuration = (x1 - x0) / 2.0;
+                            halfDomainDuration = (x1 - x0) / 2.0,
+                            dataMinimum = +self.minimum,
+                            dataMaximum = +self.maximum;
 
                         // extent allowable pan range by half of the current on-screen visible domain
-                        var panExtent0 = self.minimum - halfDomainDuration,
-                            panExtent1 = self.maximum + halfDomainDuration;
+                        var panExtent0 = dataMinimum - halfDomainDuration,
+                            panExtent1 = dataMaximum + halfDomainDuration;
 
                         if (x0 < panExtent0) {
-                            tx = xScale(self.minimum - (panExtent0 - x0));
+                            tx = xScale(dataMinimum - (panExtent0 - x0));
                         } else if (x1 > panExtent1) {
-                            tx = xScale((panExtent1 - self.maximum) + x1 - (panExtent1 - panExtent0));
+                            tx = xScale((panExtent1 - dataMaximum) + x1 - (panExtent1 - panExtent0));
                         } else {
                             tx = zoom.translate()[0];
                         }
@@ -1258,22 +1258,25 @@ angular
                         return yScale(self.lanes.indexOf(self.selectedCategory)) + focusStemHeight + lanePaddingTop;
                     }
 
-                    function distance(pointA, pointB) {
-                        return Math.sqrt(
-                            Math.pow(pointA[0] - pointB[0], 2) +
-                            Math.pow(pointA[1] - pointB[1], 2)
-                        );
-                    }
+                    // function distance(pointA, pointB) {
+                    //     return Math.sqrt(
+                    //         Math.pow(pointA[0] - pointB[0], 2) +
+                    //         Math.pow(pointA[1] - pointB[1], 2)
+                    //     );
+                    // }
 
                     function onMouseDown() {
                         console.debug("distributionDetail::onMouseDown:");
                         // HACK: disambiguate between clicks and pans
                         _isZooming = $window.performance.now();
                         _hasMouseMoved = d3.mouse(main.node());
+
+                        updateFocusDate(false);
+                        renderFocusGroup();
                     }
 
                     function onClickNavigate() {
-                        let now = $window.performance.now(),
+                        /*let now = $window.performance.now(),
                             deltaTime = now - _isZooming,
                             newPosition = d3.mouse(main.node()),
                             deltaPosition = distance(newPosition, _hasMouseMoved);
@@ -1309,7 +1312,7 @@ angular
                         }
 
                         _isZooming = null;
-                        _hasMouseMoved = null;
+                        _hasMouseMoved = null;*/
                     }
 
                     /**
@@ -1320,7 +1323,7 @@ angular
                         console.debug("distributionDetail::onDblClick: Cancelling navigate");
 
                         // cancel the navigate from a single click
-                        $timeout.cancel(_navigateTimeoutPromise);
+                        //$timeout.cancel(_navigateTimeoutPromise);
                     }
 
                     function updateFocusDate(fromMiddle) {
@@ -1328,6 +1331,9 @@ angular
                             self.focus = common.middle(self.visibleExtent);
                         }
                         else {
+                            // doing this outside of a d3 triggered event will cause an error!
+                            // In FF, SVGPoint.x/y cannot be assigned undefined which is what
+                            // happens when d3.event is null.
                             let position = d3.mouse(main.node())[0];
 
                             if (isNaN(position)) {

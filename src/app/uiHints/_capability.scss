@@ -1,0 +1,22 @@
+.capability-enabled{
+
+}
+
+.capability-disabled{
+  pointer-events: none;
+  cursor: not-allowed;
+  text-decoration: none;
+
+  // opacity .65
+  // box shadow none
+  @extend .btn.disabled;
+
+  // color: $gray-light !default;
+  @extend .text-muted;
+
+  ribbon, .ribbon-box  {
+    pointer-events: auto;
+    cursor: auto;
+  }
+
+}

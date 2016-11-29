@@ -25,7 +25,7 @@ angular
                 // todo: replace with queryBuilder
                 resource.query({
                                    filter_category: bc.appCategory,
-                                   filter_userId: userProfile.id
+                                   filter_creator_id: userProfile.id
                                },
                                function appBookmarksQuerySuccess(values, headers) {
                                    console.info("Application bookmarks received", values);

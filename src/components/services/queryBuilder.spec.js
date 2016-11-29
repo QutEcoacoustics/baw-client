@@ -1,6 +1,6 @@
 describe("The QueryBuilder", function () {
 
-    var queryBuilder, q;
+    var queryBuilder, q, $url;
 
     var validCombinators = ["and", "or", "not"];
     var validOperators = [
@@ -20,11 +20,12 @@ describe("The QueryBuilder", function () {
     }
 
     beforeEach(module("bawApp.services.queryBuilder"));
+    beforeEach(module("url"));
 
-    beforeEach(inject(["QueryBuilder", function (QueryBuilder) {
+    beforeEach(inject(["QueryBuilder", "$url", function (QueryBuilder, _$url) {
         queryBuilder = QueryBuilder;
         q = queryBuilder.create();
-
+        $url = _$url;
     }]));
 
 
@@ -799,84 +800,84 @@ describe("The QueryBuilder", function () {
     });
 
 
-    it("should handle a very complex query", function () {
-        var expected = {
-            "filter": {
-                "and": {
-                    "siteId": {
-                        "lessThan": 123456,
-                        "greaterThan": 9876,
-                        "in": [
-                            1,
-                            2,
-                            3
-                        ],
-                        "range": {
-                            "from": 100,
-                            "to": 200
-                        }
-                    },
-                    "status": {
-                        "greaterThanOrEqual": 4567,
-                        "contains": "contain text",
-                        "startsWith": "starts with text",
-                        "endsWith": "ends with text",
-                        "range": {
-                            "interval": "[123,128]"
-                        }
-                    },
-                    "or": {
-                        "durationSeconds": {
-                            "notEq": 40
-                        },
-                        "not": {
-                            "channels": {
-                                "lessThanOrEqual": 9999
-                            }
-                        }
+    var complexExpected = {
+        "filter": {
+            "and": {
+                "siteId": {
+                    "lessThan": 123456,
+                    "greaterThan": 9876,
+                    "in": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "range": {
+                        "from": 100,
+                        "to": 200
+                    }
+                },
+                "status": {
+                    "greaterThanOrEqual": 4567,
+                    "contains": "contain text",
+                    "startsWith": "starts with text",
+                    "endsWith": "ends with text",
+                    "range": {
+                        "interval": "[123,128]"
                     }
                 },
                 "or": {
-                    "recordedDate": {
-                        "contains": "Hello"
-                    },
-                    "mediaType": {
-                        "endsWith": "world"
-                    },
                     "durationSeconds": {
-                        "eq": 60,
-                        "lteq": 70,
-                        "equal": 50,
-                        "gteq": 80
+                        "notEq": 40
                     },
-                    "channels": {
-                        "eq": 1,
-                        "lessThanOrEqual": 8888
-                    }
-                },
-                "not": {
-                    "durationSeconds": {
-                        "notEq": 140
+                    "not": {
+                        "channels": {
+                            "lessThanOrEqual": 9999
+                        }
                     }
                 }
-            }/*,
-             "projection": {
-             "include": [
-             "recordedDate",
-             "siteId",
-             "durationSeconds",
-             "mediaType"
-             ]
-             },
-             "sort": {
-             "orderBy": "duration_seconds",
-             "direction": "desc"
-             },
-             "paging": {
-             "page": 1,
-             "items": 10
-             }*/
-        };
+            },
+            "or": {
+                "recordedDate": {
+                    "contains": "Hello"
+                },
+                "mediaType": {
+                    "endsWith": "world"
+                },
+                "durationSeconds": {
+                    "eq": 60,
+                    "lteq": 70,
+                    "equal": 50,
+                    "gteq": 80
+                },
+                "channels": {
+                    "eq": 1,
+                    "lessThanOrEqual": 8888
+                }
+            },
+            "not": {
+                "durationSeconds": {
+                    "notEq": 140
+                }
+            }
+        },
+        "paging": {
+            "items": 10,
+            "page": 1
+        },
+        "projection": {
+            "include": [
+                "recordedDate",
+                "siteId",
+                "durationSeconds",
+                "mediaType"
+            ]
+        },
+        "sorting": {
+            "orderBy": "duration_seconds",
+            "direction": "desc"
+        }
+    };
+    it("should handle a very complex query", function () {
 
         var actual = q.and(
             q.lessThan("siteId", 123456)
@@ -906,8 +907,95 @@ describe("The QueryBuilder", function () {
             q.eq("channels", 1).lessThanOrEqual(8888)
         ).not(
             q.notEq("durationSeconds", 140)
+        ).project({
+            include: ["recordedDate",
+                "siteId",
+                "durationSeconds",
+                "mediaType"]
+        }).sort(
+            {orderBy: "duration_seconds", direction: "desc"}
+        ).page(
+            {page: 1, items: 10}
         ).end();
 
-        expect(actual.toJSONString(spaces)).toBe(j(expected));
+        expect(actual.toJSONString(spaces)).toBe(j(complexExpected));
     });
+
+    it("should be able to load a very complex query", function () {
+        var actual = queryBuilder.load(complexExpected);
+        
+        expect(j(actual.toJSON())).toBe(j(complexExpected));
+    });
+
+    describe("URL subset", function () {
+        it("should be able to format a query as a querystring", function () {
+            var expectedFilter = {
+                "filter": {
+                    "siteId": {
+                        "eq": 1
+                    },
+                    "status": {
+                        "equal": "hello"
+                    }
+                },
+                "paging": {
+                    "items": 10,
+                    "page": 1
+                },
+                "projection": {
+                    "include": [
+                        "recordedDate",
+                        "siteId",
+                        "durationSeconds",
+                        "mediaType"
+                    ]
+                },
+                "sorting": {
+                    "orderBy": "duration_seconds",
+                    "direction": "desc"
+                }
+            };
+
+            var expectedQueryString = "www.test.com/index.html?" + [
+                ["filter_siteId", 1],
+                ["filter_status", "hello"],
+                ["items", 10],
+                ["page", 1],
+                ["projection_include", "recordedDate,siteId,durationSeconds,mediaType"],
+                ["orderBy", "duration_seconds"],
+                ["direction", "desc"]
+            ].reduce((prev, current) => prev + "&" + current[0] + "=" + current[1], "").slice(1);
+
+            var actual = q.eq("siteId", 1)
+                .equal("status","hello")
+                .project({
+                    include: ["recordedDate",
+                        "siteId",
+                        "durationSeconds",
+                        "mediaType"]
+                }).sort(
+                    {orderBy: "duration_seconds", direction: "desc"}
+                ).page(
+                    {page: 1, items: 10}
+                ).end();
+
+            expect(j(actual.toJSON())).toBe(j(expectedFilter));
+
+            let qsObj = actual.toQueryString();
+            let url = $url.formatUri("www.test.com/index.html", qsObj);
+            expect(url).toBe(expectedQueryString);
+        });
+
+        it("should only allow eq filter operators", function () {
+            // should work without exception
+            var q = queryBuilder.create();
+
+            var actual = q.in("siteId", [1, 2]).end();
+
+            expect(function () {
+                actual.toQueryString();
+            }).toThrowError(Error);
+        });
+    });
+
 });

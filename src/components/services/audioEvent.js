@@ -3,9 +3,9 @@ angular
     .factory(
         "AudioEvent",
         [
-            "$resource", "$http", "bawResource", "$url", "conf.paths", "QueryBuilder",
+            "$resource", "$http", "bawResource", "$url", "conf.paths", "QueryBuilder", "ResultPager",
             "baw.models.AudioEvent",
-            function ($resource, $http, bawResource, $url, paths, QueryBuilder, AudioEventModel) {
+            function ($resource, $http, bawResource, $url, paths, QueryBuilder, resultPager, AudioEventModel) {
                 var baseCsvUri = paths.api.routes.audioEvent.csvAbsolute;
 
                 var csvOptions = {
@@ -101,6 +101,7 @@ angular
                     });
 
                     return $http.post(filterUrl, query.toJSONString())
+                        .then(resultPager.loadAll)
                         .then(x => AudioEventModel.makeFromApi(x));
                 };
 

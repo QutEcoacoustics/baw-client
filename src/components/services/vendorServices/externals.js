@@ -36,6 +36,16 @@ angular
                 }
             }
 
+            // also lodash (as of version 4)
+            if (window._) {
+                delete window._;
+            }
+            else {
+                if (!window.jasmine) {
+                    console.warn("_ not on window, hack not required");
+                }
+            }
+
             // augment d3
             var d3 = d3Provider.configureVendorInstance();
             const coordinatesRegex = /translate\((.*)\)/;
@@ -115,16 +125,18 @@ angular
             };
 
             d3.selection.prototype.clipPath = function (clipUrl) {
-                var funcIriRegex = /url\(#(.*)\)/;
+                var funcUriRegex = /url\(#(.*)\)/;
                 if (arguments.length === 1) {
-                    var match = funcIriRegex.exec(clipUrl),
+                    var match = funcUriRegex.exec(clipUrl),
                         newUrl = clipUrl;
                     if (match) {
                         // angular's HTML 5 mode breaks relative links for the clip-path attribute
                         // See: https://github.com/angular/angular.js/issues/8934
                         // This function take a normal clip url and absolutifies it so it will work.
-                        var absoluteUrl = window.location.href;
-                        newUrl = "url(" + absoluteUrl + "#" + match[1] + ")";
+                        // UPDATE: https://github.com/angular/angular.js/issues/8934#issuecomment-56568466
+                        // Now removing base tag and deprecating support for IE9
+                        //var absoluteUrl = window.location.href;
+                        newUrl = "url(#" + match[1] + ")";
                     }
                     return this.attr("clip-path", newUrl);
                 }

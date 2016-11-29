@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= build_configs.values.brand.title %></title>
 
-    <base href="/">
+    <%
+    // https://github.com/angular/angular.js/issues/8934#issuecomment-56568466
+    // Now removing base tag and deprecating support for IE9
+    // <base href="/">
+    %>
 
     <!-- compiled CSS -->
     <link rel="stylesheet" type="text/css" href="<%= build_configs.current.siteDir %><%= mainStyle %>"/>

@@ -7,9 +7,11 @@ The AngularJS client for the bioacoustic workbench
 ---
 ## Install instructions
 
-`npm` is required.
+`node` and `npm` are required to build this project.
 
-Run:
+Before you get started make sure you have at least version 4 or above of node.js. We also require `npm` version 3 or above.
+
+To install project dependecies run:
 
     $ npm install
     

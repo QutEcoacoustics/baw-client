@@ -12,6 +12,7 @@ angular
             "casingTransformers",
             "QueryBuilder",
             "baw.models.AnalysisResult",
+            "$url",
             function ($resource,
                       bawResource,
                       $http,
@@ -20,61 +21,42 @@ angular
                       _,
                       casingTransformers,
                       QueryBuilder,
-                      AnalysisResultModel) {
+                      AnalysisResultModel,
+                      $url) {
 
-                // FAKED!
-                let fakedData = [
-                    {
+                function query(analysisJobId, recordingId) {
+                    const url = $url.formatUri(
+                        paths.api.routes.analysisResults.jobAbsolute,
+                        {analysisJobId, recordingId}
+                    );
+                    return $http
+                        .get(url)
+                        .then(x => AnalysisResultModel.makeFromApi(x));
+                }
 
-                        "analysis_job_id": 1,
-                        "audio_recording_id": null,
-                        "path": "/",
-                        "name": "/",
-                        "type": "directory",
-                        "has_zip": false,
-                        "children": [
-                            1234,
-                            123456,
-                            124124,
-                            234234,
-                            ...(new Array(1000)).fill(1).map((x, i) => i)
-                        ].map(x => ({
-                            name: x.toString(),
-                            path: "/" + x.toString(),
-                            type: "directory",
-                            "has_children": true,
-                            has_zip: false
-                        }))
-                    },
-                    {
+                function get(analysisJobId, path, page = 1) {
+                    const url = $url.formatUri(
+                        paths.api.routes.analysisResults.jobWithPathAbsolute,
+                        {analysisJobId, path}
+                    );
 
-                        "analysis_job_id": 1,
-                        "audio_recording_id": 1234,
-                        "path": "/1234",
-                        "name": "1234",
-                        "type": "directory",
-                        "has_zip": true,
-                        "children": [
-                            {
-                                "name": "log.txt",
-                                "type": "file",
-                                "size_bytes": 196054,
-                                "mime": "text/plain"
-                            },
-                            {
+                    let pageParams = QueryBuilder.create(function (baseQuery) {
+                        let q = baseQuery.page({page: page, items: 100});
 
-                                "name": "Towsey.Acoustic.yml",
-                                "type": "file",
-                                "size_bytes": 1968,
-                                "mime": "application/x-yaml"
-                            },
-                            {
-                                "path": "/1234/Towsey.Acoustic",
-                                "name": "Towsey.Acoustic",
-                                "type": "directory",
-                                "has_children": true
-                            }
-                        ]
+                        return q;
+                    }).toQueryString();
+
+                    return $http
+                        .get(url, {params: pageParams})
+                        .then(x => AnalysisResultModel.makeFromApi(x));
+                }
+
+                return {
+                    query,
+                    get
+                };
+            }
+        ]
 
                     },
                     {

@@ -29,7 +29,7 @@ describe("The analysis result file service", function () {
     it("can return a long duration image", function () {
         var actual = AnalysisResultFile.getLongDurationImage(audioRecording);
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.png";
 
         expect(actual).toBe(url);
     });
@@ -90,7 +90,7 @@ describe("The analysis result file service", function () {
     it("can return a long duration image - of a different type", function () {
         var actual = AnalysisResultFile.getLongDurationImage(audioRecording, "BGN-POW-CVR");
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BGN-POW-CVR.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BGN-POW-CVR.png";
 
         expect(actual).toBe(url);
     });
@@ -98,7 +98,7 @@ describe("The analysis result file service", function () {
     it("ensures the subfolder argument works", function () {
         var actual = AnalysisResultFile.getLongDurationImage(audioRecording, "BGN-POW-CVR", "ARBITRARY_PATH_FRAGMENT");
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/ARBITRARY_PATH_FRAGMENT/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BGN-POW-CVR.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/ARBITRARY_PATH_FRAGMENT/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BGN-POW-CVR.png";
 
         expect(actual).toBe(url);
     });
@@ -132,7 +132,7 @@ describe("The analysis result file service", function () {
         var tileDate = new Date("2010-10-14T12:00:00.000+10:00");
         var actual = AnalysisResultFile.getLongDurationImageTile(audioRecording, tileDate);
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000Z_60.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000Z_60.png";
 
         expect(actual).toBe(url);
     });
@@ -141,7 +141,7 @@ describe("The analysis result file service", function () {
         var tileDate = new Date("2010-10-14T12:00:00.123+10:00");
         var actual = AnalysisResultFile.getLongDurationImageTile(audioRecording, tileDate);
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000.123Z_60.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000.123Z_60.png";
 
         expect(actual).toBe(url);
     });
@@ -150,7 +150,7 @@ describe("The analysis result file service", function () {
         var tileDate = new Date("2010-10-14T12:00:00.120+10:00");
         var actual = AnalysisResultFile.getLongDurationImageTile(audioRecording, tileDate);
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000.12Z_60.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000.12Z_60.png";
 
         expect(actual).toBe(url);
     });
@@ -166,7 +166,7 @@ describe("The analysis result file service", function () {
         var tileDate = new Date("2010-10-14T12:00:00.000+10:00");
         var actual = AnalysisResultFile.getLongDurationImageTile(audioRecording, tileDate, 0.02);
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000Z_0.02.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__ACI-ENT-EVN.Tile_20101014-020000Z_0.02.png";
 
         expect(actual).toBe(url);
     });
@@ -175,7 +175,7 @@ describe("The analysis result file service", function () {
         var tileDate = new Date("2010-10-14T12:00:00.000+10:00");
         var actual = AnalysisResultFile.getLongDurationImageTile(audioRecording, tileDate, undefined, "BGN-POW-CVR");
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BGN-POW-CVR.Tile_20101014-020000Z_60.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BGN-POW-CVR.Tile_20101014-020000Z_60.png";
 
         expect(actual).toBe(url);
     });
@@ -184,7 +184,7 @@ describe("The analysis result file service", function () {
         var tileDate = new Date("2010-10-14T12:00:00.000+10:00");
         var actual = AnalysisResultFile.getLongDurationImageTile(audioRecording, tileDate, 0.02, "BGN-POW-CVR", true);
 
-        var url = root + "/analysis_jobs/system/audio_recordings/188263/Towsey.Acoustic/ZoomingTiles/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BLENDED.Tile_20101014-020000Z_0.02.png";
+        var url = root + "/analysis_jobs/system/results/188263/Towsey.Acoustic/ZoomingTiles/b03685fe-6ad5-4776-90b7-e2c271dad3fb_20101013-140000Z__BLENDED.Tile_20101014-020000Z_0.02.png";
 
         expect(actual).toBe(url);
     });

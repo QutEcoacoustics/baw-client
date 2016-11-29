@@ -56,9 +56,22 @@ module.exports = function (environment) {
                     "show": "/bookmarks/{bookmarkId}"
                 },
                 "analysisResults": {
-                    "system": "/analysis_jobs/system/audio_recordings/{recordingId}",
-                    "job": "/analysis_jobs/{analysisJobId}/audio_recordings/{recordingId}",
-                    "jobWithPath": "/analysis_jobs/{analysisJobId}/audio_recordings{path}"
+                    "system": "/analysis_jobs/system/results/{recordingId}",
+                    "jobPrefix": "/analysis_jobs/{analysisJobId}/results/",
+                    "jobWithPath": "/analysis_jobs/{analysisJobId}/results{path}"
+                },
+                "analysisJobs": {
+                    "list": "/analysis_jobs",
+                    "show": "/analysis_jobs/{analysisJobId}",
+                    "filter": "/analysis_jobs/filter",
+                },
+                "scripts": {
+                    "list": "/scripts",
+                    "show": "/scripts/{scriptId}"
+                },
+                "savedSearches": {
+                    "list": "/saved_searches",
+                    "show": "/saved_searches/{savedSearchId}"
                 }
             },
             "links": {
@@ -67,6 +80,7 @@ module.exports = function (environment) {
                 "project": "/projects/{projectId}",
                 "site": "/projects/{projectId}/sites/{siteId}",
                 "userAccounts": "/user_accounts/{userId}",
+                "myAnnotations": "user_accounts/{userId}/audio_events",
                 "websiteStatus": "/website_status",
                 "contactUs": "/contact_us",
                 "disclaimers": "/disclaimers",
@@ -76,7 +90,11 @@ module.exports = function (environment) {
                 "loginActual": "/my_account/sign_in",
                 "logout": "/my_account/sign_out",
                 "register": "/my_account/sign_up",
-                "admin": "/admin"
+                "admin": "/admin",
+                "myAccount": "/my_account",
+                "dataUpload": "/data_upload",
+                "dataRequest": "/data_request",
+                "bugReport": "/bug_report"
             }
         },
         "site": {

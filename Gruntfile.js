@@ -418,7 +418,7 @@ module.exports = function (grunt) {
             options: {
                 sourceMap: true,
                 retainLines: true,
-
+                plugins: ["transform-class-properties"],
                 presets: "es2015"
             },
             transpile_appjs: {

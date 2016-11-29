@@ -1,6 +1,6 @@
 {
   "name": "baw-client",
-  "version": "0.18.0",
+  "version": "0.19.2",
   "devDependencies": {
     "angular": "1.5.x",
     "angular-bootstrap": "1.1.x",
@@ -19,7 +19,7 @@
     "humanize-duration": "^3.4",
     "jasmine-expect": "2.x",
     "jquery-ui": "~1.11.x",
-    "lodash": "3.7",
+    "lodash": "4.0",
     "momentjs": "^2.10",
     "objectdiff": "https://github.com/NV/objectDiff.js.git",
     "round-date": "^1.1",

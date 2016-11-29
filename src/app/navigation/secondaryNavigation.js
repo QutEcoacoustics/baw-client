@@ -14,20 +14,24 @@ angular
         return activeResource;
     })
     .controller("SecondaryNavigationController", [
-        "$rootScope", "$location", "$route", "conf.paths", "ActiveResource",
-        function ($rootScope, $location, $route, paths, ActiveResource) {
+        "lodash",
+        "$rootScope",
+        "$location",
+        "$route",
+        "conf.paths",
+        "ActiveResource",
+        "MenuDefinition",
+        "UserProfile",
+        function (_, $rootScope, $location, $route, paths, ActiveResource, MenuDefinition, UserProfile) {
             var controller = this;
 
-            const omnipresentLinks = [
-                {
-                    title: "Home",
-                    href: paths.api.links.homeAbsolute
-                },
-                {
-                    title: "Projects",
-                    href: paths.api.links.projectsAbsolute
-                }
-            ];
+            const omnipresentLinks = MenuDefinition;
+
+            var userModel = null;
+            UserProfile.get.then(() => {
+                userModel = UserProfile.profile;
+                prepareLinks($route.current);
+            });
 
             this.title = "";
             this.links = omnipresentLinks;
@@ -42,21 +46,55 @@ angular
             );
 
             function onRouteChangeSuccess(event, current, previous, rejection) {
+                //console.log("routeChangeSuccess", event, current, previous, rejection);
+
                 // reset the active resource
                 ActiveResource.set(null);
 
+                prepareLinks(current);
+            }
+
+            function prepareLinks(current) {
                 controller.title = current.$$route.title;
                 controller.icon = current.$$route.icon;
                 controller.actionItemsTemplate = current.$$route.actionsTemplateUrl;
 
-                let currentLink = {title: controller.title, href: $location.$$path};
-                let extraLinks = current.$$route.secondaryNavigation || [];
+                let currentLink = {
+                    title: controller.title,
+                    href: $location.$$path,
+                    icon: controller.icon,
+                    indentation: current.$$route.indentation
+                };
+                let extraLinks = transformLinks(current.$$route.secondaryNavigation || []);
 
-                controller.links = omnipresentLinks
-                    .concat(extraLinks)
-                    .concat(currentLink)
+                let contextualLinks = extraLinks.concat(currentLink);
+                let omniLinks = transformLinks(omnipresentLinks);
+
+                // insert contextual links under omninode, or stick at bottom
+                let parentIndex = omniLinks.findIndex(link => link.href === contextualLinks[0].href);
+                if (parentIndex >= 0) {
+
+                    contextualLinks.shift();
+                    omniLinks.splice(parentIndex + 1, 0, ...contextualLinks);
+                }
+                else {
+                    omniLinks.push(...contextualLinks);
+                }
+
+                controller.links = omniLinks
                     .map(activePath.bind(null, current.$$route));
             }
+
+            // allows for dynamic filtering or generation of links
+            let transformLinks = function(links) {
+                return links
+                    .filter((link) => !link.condition || link.condition.call(link, userModel, controller.activeResource))
+                    .map(link => {
+                        link.href = _.isFunction(link.href) ? link.href.call(link, userModel, controller.activeResource) : link.href;
+                        link.indentation = link.indentation || 0;
+                        return link;
+                    });
+            };
 
             let activePath = function (route, link) {
                 link.isActive = route.regexp.test(link.href);
@@ -100,18 +138,20 @@ angular
 
                 if (storedLayout === undefined) {
                     if (renderAttempts <= 0) {
-                        console.warn(`layout rendering failed for layoutKey '${renderer.layoutKey}' after ${maxRenderAttempts} attempts`);
+                        console.warn(
+                            `layout rendering failed for layoutKey '${renderer.layoutKey}' after ${maxRenderAttempts} attempts`);
                         return;
                     }
 
                     // try again next render loop!
-                    //console.debug(`The \`layout\` directive has no stored content for the \`render-for\` key '${renderer.layoutKey}' - trying again`);
+                    //console.debug(`The \`layout\` directive has no stored content for the \`render-for\` key
+                    // '${renderer.layoutKey}' - trying again`);
                     renderAttempts--;
                     $timeout(applyLayout, 0, true, renderer, renderAttempts);
                     return;
                 }
 
-                storedLayout.transclude(function(clone, scope) {
+                storedLayout.transclude(function (clone, scope) {
                     renderer.element.append(clone);
                     renderer.source = {content: clone, scope};
                 });
@@ -119,11 +159,18 @@ angular
 
             function onRouteChangeStart(event, current, previous, rejection) {
                 renderers.forEach((renderer) => {
+                    // try a nice cleanup
                     if (renderer.source) {
-                        renderer.source.content.remove();
                         renderer.source.scope.$destroy();
+                        renderer.source.content.remove();
                         renderer.source = null;
                     }
+
+                    // unfortunately the above clean does not always work, especially for transcluded elements
+                    // that change their definition or insert extra DOM (e.g. ng-if)
+                    renderer.element.children().toArray().forEach(element => {
+                        element.remove();
+                    });
                 });
 
                 layoutCache.removeAll();

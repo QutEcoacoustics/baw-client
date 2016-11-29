@@ -20,7 +20,7 @@ angular
                 return d.getDay() && d.getDate() !== 1;
             }],
             ["%b-%d", function (d) {
-                return d.getDate();
+                return d.getDate() && d.getMonth() !== 0;
             }],
             ["%Y-%b", function (d) {
                 return d.getMonth();

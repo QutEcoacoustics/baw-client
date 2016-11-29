@@ -6,10 +6,12 @@ angular
             "$scope",
             "$routeParams",
             "$http",
+            "$timeout",
             "conf.paths",
             "ActiveResource",
             "baw.models.associations",
             "baw.models.AnalysisJob.progressKeys",
+            "baw.models.AnalysisJob.progressKeysFriendly",
             "baw.models.AnalysisJob.statusKeys",
             "AnalysisJob",
             "Script",
@@ -25,10 +27,10 @@ angular
 
                 class JobDetailsController extends JobsCommon {
                     constructor(
-                        $scope, $routeParams, $http, paths, ActiveResource, modelAssociations,
-                        keys, statuses, AnalysisJobService,
+                        $scope, $routeParams, $http, $timeout, paths, ActiveResource, modelAssociations,
+                        keys, friendlyKeys, statuses, AnalysisJobService,
                         ScriptService, SavedSearchService, growl, MimeType) {
-                        super(keys, statuses);
+                        super(keys, friendlyKeys, statuses);
                         let controller = this;
                         const savedSearchLinker = modelAssociations.generateLinker("AnalysisJob", "SavedSearch");
                         const scriptLinker = modelAssociations.generateLinker("AnalysisJob", "Script");
@@ -53,7 +55,7 @@ angular
                                 controller.aceInstance.setMode("ace/mode/" + mode);
                             })
                             .then(() => {
-                                return SavedSearchService.get(this.analysisJob.scriptId);
+                                return SavedSearchService.get(this.analysisJob.savedSearchId);
                             })
                             .then((response) => {
                                 let savedSearchLookup = modelAssociations.arrayToMap(response.data.data);
@@ -102,8 +104,10 @@ angular
                         this.chartData = {
                             colors: this.progressKeyColorMap,
                             columns: this.getData(),
-                            type: "donut"
-
+                            names: this.progressKeyFriendlyMap,
+                            type: "donut",
+                            // order is currently broken - see https://github.com/c3js/c3/pull/1814
+                            order: null
                         };
                     }
 
@@ -122,7 +126,10 @@ angular
                                     return;
                                 }
 
-                                data.push([key, this.analysisJob.overallProgress[key] || 0]);
+                                data.push([
+                                    key,
+                                    this.analysisJob.overallProgress[key] || 0
+                                ]);
                             });
 
                             return data;

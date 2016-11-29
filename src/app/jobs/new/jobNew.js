@@ -1,18 +1,22 @@
 const jobNewControllerSymbol = Symbol("JobNewControllerPrivates");
 
 class JobNewController {
-    constructor($scope, $routeParams, $timeout, paths, AnalysisJobService, AnalysisJobModel, ScriptService, MimeType) {
+    constructor($scope, $routeParams, $timeout, $location, paths, growl,
+                AnalysisJobService, AnalysisJobModel, ScriptService, SavedSearchService, MimeType) {
         this[jobNewControllerSymbol] = {};
         let privates = this[jobNewControllerSymbol];
-        
+
         let controller = this;
 
         this.jobListPath = paths.site.ngRoutes.analysisJobs.list;
-        
+
         privates.newSavedSearch = false;
         privates.$scope = $scope;
         privates.$timeout = $timeout;
         privates.$scope.newAnalysisJobForm = null;
+        privates.AnalysisJobService = AnalysisJobService;
+        privates.growl = growl;
+        privates.$location = $location;
 
         // the new analysis job we are making
         this.analysisJob = new AnalysisJobModel();
@@ -117,10 +121,55 @@ class JobNewController {
         this.analysisJob.scriptId = id;
     }
 
-    submitAnalysisJob() {
-        console.info("submitAnalysisJob: ", this.analysisJob);
+    submitAnalysisJob(form) {
+        var analysisJob = this.analysisJob;
+        console.info("submitAnalysisJob: ", analysisJob);
+        if (!form.$valid) {
+            console.warn("Form invalid, not submitting");
+            return;
+        }
+
+        form.submitting = true;
+
+        // TODO: redirect
+        // TODO: deal with validation errors!
+
+        this[jobNewControllerSymbol].AnalysisJobService
+            .saveWithSavedSearch(analysisJob)
+            .then((response) => {
+                var analysisJob = response.data.data[0];
+                console.log("Submit success, navigating to details...", analysisJob);
+                this[jobNewControllerSymbol].$location.path(analysisJob.viewUrl);
+            })
+            .catch((response) => {
+                // TODO: generalize this
+                var handled = false;
+                if (response.data.meta.error) {
+                    handled = this.processRailsValidations(response.data.meta.error, analysisJob);
+
+                    // custom form extension from directives/ngForm.js
+                    form.$validateChildren();
+                }
+
+                var message = "Creating analysis job failed" + (handled ? ", please check the form" : "and we don't know why - please let us know");
+                console.error(message, response);
+                this[jobNewControllerSymbol].growl.error(message);
 
 
+            })
+            .finally(() => {
+                form.submitting = false;
+            });
+
+    }
+
+    processRailsValidations(error, analysisJob) {
+        if (error.info && error.info.name) {
+            analysisJob.validations.name.taken.push(analysisJob.name);
+            return true;
+        }
+
+        return false;
     }
 }
 
@@ -132,10 +181,13 @@ angular
             "$scope",
             "$routeParams",
             "$timeout",
+            "$location",
             "conf.paths",
+            "growl",
             "AnalysisJob",
             "baw.models.AnalysisJob",
             "Script",
+            "SavedSearch",
             "MimeType",
             JobNewController
         ]);

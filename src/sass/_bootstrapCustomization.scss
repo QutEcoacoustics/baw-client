@@ -28,14 +28,13 @@
   margin-right: -0.6em;
 }
 
-a.disabled {
+.disabled>a, a.disabled {
   @extend .btn.disabled;
   @extend .text-muted;
   // allow the title to still show
   pointer-events: auto;
   cursor: default;
   text-decoration: none;
-
 }
 
 // ensure glyphicons in links retain formatting and style
@@ -50,7 +49,6 @@ a {
     display: inline;
     position: inherit;
   }
-
 }
 
 // display nav-pills without making them links
