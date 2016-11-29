@@ -1,27 +1,38 @@
 @import '_base';
 
+html {
+  height:100%;
+  position: relative;
+}
+
 // http://getbootstrap.com/components/#navbar-fixed-top
 body {
   padding-top: $header-padding;
+  height:100%;
+
 }
+
+.container, .container-fluid {
+  min-height: calc(100% - 61px);
+}
+@media (max-width: 662px) {
+  .container, .container-fluid {
+    min-height: calc(100% - 101px);
+  }
+}
+
 
 //taken from: https://github.com/QutBioacoustics/baw-server/blob/develop/app/assets/stylesheets/common.scss#L86
 footer {
   text-align: center;
   padding: $padding-large-vertical $padding-large-horizontal;
-  margin-top: $footer-padding;
   border-top: 1px solid $legend-border-color;
   background-color: $panel-footer-bg;
-
-  // sticky footer
-  bottom: 0;
   width: 100%;
-
   // the nav layout was achieved using grid classes
   .nav {
   }
 }
-
 
 
 
