@@ -173,6 +173,7 @@ angular.module("baw",
                     controllerAs: "jobNew",
                     title: "New Analysis Job",
                     fullWidth: false,
+                    indentation: 1,
                     secondaryNavigation: [analysisJobsNav],
                     icon: "tasks"
                 }).when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
@@ -193,7 +194,7 @@ angular.module("baw",
                     secondaryNavigation: [analysisJobsNav, analysisJobNav],
                     icon: "table",
                     indentation: 2
-                }).//when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title:
+                }).//when("/audio_analysis/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title:
                    // "Jobs",
                 // fullWidth: false}).
 

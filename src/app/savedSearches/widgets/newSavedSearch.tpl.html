@@ -145,7 +145,7 @@
             </div>
             <ng-messages for="newSavedSearchForm.savedSearchName.$error" class="help-block" role="alert"
                          ng-if="newSavedSearchForm.$submitted || newSavedSearchForm.savedSearchName.$dirty">
-                <ng-message when="required">A name is required for this saved search.</ng-message>
+                <ng-message when="required">A name is required for this data set.</ng-message>
                 <ng-message when="minlength">The name entered is too short (3 character minimum)></ng-message>
             </ng-messages>
         </div>
@@ -162,4 +162,9 @@
         </div>
     </div>
 
+    <p class="">
+        <help-tip>
+            Would you like extra filter options? Multiple project selection? <a baw-href="api.links.contactUs">Let us know</a>!
+        </help-tip>
+    </p>
 </ng-form>

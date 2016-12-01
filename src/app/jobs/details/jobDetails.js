@@ -122,7 +122,7 @@ angular
                         else {
                             let data = [];
                             Object.keys(this.progressKeyColorMap).forEach((key) => {
-                                if (this.skipProgressKeys.indexOf(key) >= 0) {
+                                if (!this.isProgressKeyVisible(key)) {
                                     return;
                                 }
 

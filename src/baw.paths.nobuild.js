@@ -175,17 +175,17 @@ module.exports = function (environment) {
                     "bdCloud": "/demo/BDCloud2014"
                 },
                 analysisJobs: {
-                    list: "/analysis_jobs",
-                    "new": "/analysis_jobs/new",
-                    details: "/analysis_jobs/{analysisJobId}",
-                    analysisResults: "/analysis_jobs/{analysisJobId}/results:path*?"
+                    list: "/audio_analysis",
+                    "new": "/audio_analysis/new",
+                    details: "/audio_analysis/{analysisJobId}",
+                    analysisResults: "/audio_analysis/{analysisJobId}/results:path*?"
                 }
             },
             // general links for use in <a />'s
             "links": {
                 analysisJobs: {
-                    analysisResults: "/analysis_jobs/{analysisJobId}/results",
-                    analysisResultsWithPath: "/analysis_jobs/{analysisJobId}/results{path}"
+                    analysisResults: "/audio_analysis/{analysisJobId}/results",
+                    analysisResultsWithPath: "/audio_analysis/{analysisJobId}/results{path}"
                 }
             },
             "assets": {
