@@ -442,7 +442,6 @@ angular.module("baw",
             function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService, bowser, paths, appEnvironment) {
 
                 // embed configuration for easy site-wide binding
-                $scope.paths = paths;
                 $scope.brand = constants.brand;
                 $scope.researchPages = appEnvironment.content.research;
 

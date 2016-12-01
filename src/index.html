@@ -35,8 +35,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand"
-               ng-href="{{:: paths.api.links.homeAbsolute }}" target="_self">
+            <a class="navbar-brand ng-cloak"
+               baw-href="api.links.home" >
                 {{:: brand.name }}
                 <!-- TODO: logo goes here -->
                 <!--<img alt="Brand" src="">-->
@@ -46,18 +46,19 @@
         <div class="collapse navbar-collapse" collapse="isCollapsed">
             <ul class="nav navbar-nav">
                 <li ng-class="{ active: activePath('/projects') }">
-                    <a ng-href="{{ paths.api.links.projectsAbsolute }}"
-                       target="_self">Projects</a>
+                    <a baw-href="api.links.projects">
+                        Projects</a>
                 </li>
                 <li ng-class="{ active: activePath('/listen') }">
-                    <a ng-href="{{ paths.site.ngRoutes.recentRecordings }}">Listen</a>
+                    <a baw-href="site.ngRoutes.recentRecordings">Listen</a>
                 </li>
                 <li ng-class="{ active: activePath('/library') }">
-                    <a ng-href="{{ paths.site.ngRoutes.library }}">Library</a>
+                    <a baw-href="site.ngRoutes.library">Library</a>
                 </li>
                 <li class="dropdown"
                     dropdown>
-                    <a href=""
+                    <a class="ng-cloak"
+                       href=""
                        dropdown-toggle>
                         {{:: researchPages.header_title }} <span class="caret"></span>
                     </a>
@@ -70,8 +71,8 @@
                     </ul>
                 </li>
                 <li>
-                    <a ng-href="{{paths.api.links.contactUsAbsolute}}"
-                       target="_self">Contact Us</a>
+                    <a baw-href="api.links.contactUs">
+                        Contact Us</a>
                 </li>
             </ul>
             <login-widget></login-widget>
@@ -116,11 +117,11 @@
                         v<%= version %>
                     </p>
                 </li>
-                <li><a ng-href="{{paths.api.links.websiteStatusAbsolute}}" target="_self">Statistics</a></li>
-                <li><a ng-href="{{paths.api.links.disclaimersAbsolute}}" target="_self">Disclaimers</a></li>
-                <li><a ng-href="{{paths.api.links.creditsAbsolute}}" target="_self">Credits</a></li>
-                <li><a ng-href="{{paths.api.links.ethicsStatementAbsolute}}" target="_self">Ethics</a></li>
-                <li><a ng-href="{{paths.api.links.contactUsAbsolute}}" target="_self">Contact Us</a></li>
+                <li><a baw-href="api.links.websiteStatus">Statistics</a></li>
+                <li><a baw-href="api.links.disclaimers">Disclaimers</a></li>
+                <li><a baw-href="api.links.credits">Credits</a></li>
+                <li><a baw-href="api.links.ethicsStatement">Ethics</a></li>
+                <li><a baw-href="api.links.contactUs">Contact Us</a></li>
             </ul>
         </div>
     </div>
