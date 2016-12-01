@@ -1,8 +1,9 @@
 <div id="label-buttons">
-    <a ng-repeat="(label, displayLabel) in $ctrl.labels" ng-class="{selected : ($ctrl.samples[$ctrl.currentSampleNum].labels.indexOf(label) > -1)}" ng-click="toggleLabel(label)">
+    <a ng-repeat="(key,label) in $ctrl.labels" ng-class="{selected : (labelSelected(label) > -1)}" ng-click="toggleLabel(label)">
+
         <i class="fa"
-           ng-class="{true: 'fa-check-square-o', false : 'fa-square-o'}[$ctrl.samples[$ctrl.currentSampleNum].labels.indexOf(label) > -1]"
-           aria-hidden="true"></i><span>{{displayLabel}}</span>
+           ng-class="{true: 'fa-check-square-o', false : 'fa-square-o'}[labelSelected(label)]"
+           aria-hidden="true"></i><span>{{label.label}}</span>
     </a>
     </ul>
 </div>

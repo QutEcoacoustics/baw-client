@@ -67,13 +67,14 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 return labelObject;
             },
             /**
-             * Encode the array of labels as a comma separated list or
-             * if there are no labels, "0"
+             * Encode the array of labels as json
              * @param labels array
              * @returns String
              */
             labelsAsString: function (labels) {
-                return (labels.length > 0) ? labels.join(",") : "0";
+                // changed from comma separated
+                // return (labels.length > 0) ? labels.join(",") : "0";
+                return JSON.stringify(labels);
             },
             bindGetSamples: function ($scope) {
                 var getSamples = function () {

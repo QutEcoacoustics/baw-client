@@ -41,7 +41,17 @@ class BristlebirdController {
         // list of labels that can be applied to samples
         // hardcoded here instead of retrieving from sheet to save a round trip
         // label key must exist the list in the sheet to be accepted
-        $scope.labels = {"ebb":"I found an Eastern Bristlebird"};
+        //$scope.labels = {"ebb":"I found an Eastern Bristlebird"};
+
+
+        // labels that have examples attached
+        $scope.labels = [{
+            "tags":["ebb","type1"],
+            "label": "I found an Eastern Bristlebirdy",
+            "example":{
+                "recordingId":12121
+            }
+        }];
 
         self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
 
