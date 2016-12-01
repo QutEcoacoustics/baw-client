@@ -16,10 +16,10 @@ right-nav-bar {
 left-nav-bar {
   @for $i from 0 through 4 {
     .indentation-#{$i} {
-      $step: ($i * 5%);
+      $step: ($i * 10%);
       width: 100% - $step;
       margin-left: $step !important;
-      font-size: 100% - $step;
+      font-size: 100% - ($step / 2);
     }
   }
 }

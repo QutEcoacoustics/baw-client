@@ -1,36 +1,11 @@
-<div id="content" style="position:relative;">
-    <p>
-        Welcome to a place where you can listen, learn, share your discoveries and help out the environment!
-        The Bioacoustic Workbench is a repository for audio recordings of the environment and tools that aid in
-        analysing the sounds.
-        We gather recordings from a wide range of environments, find practical ways to annotate
-        the sounds with information about what's going on in them, and then enable that
-        information to be put to use by ecologists and other parties interested in conservation.
+<div id="content">
+    <h1>Client application home page</h1>
+
+    <p class="alert alert-warning" role="alert">
+        <strong>This page is currently unused.</strong>
+        If you have been sent here it was likely by mistake.
+        Please <a baw-href="api.links.contactUs">report this bug</a> to us.
     </p>
-
-    <p ng-show="loggedIn">
-        Welcome back to the Bioacoustic Workbench, <span>{{$root.userData.userName}}</span>! We're glad you're
-        here.
-    </p>
-
-    <p ng-hide="loggedIn" ng-controller="LoginCtrl">
-        Time to get started! You can <a href ng-click="login()">sign in</a> using an account you already have!
-    </p>
-    <!--<a ng-click="populateProjectMarkers()">Show all Projects</a>
-
-    <div ui-map-info-window="myInfoWindow">
-        <h3>{{currentMarkerTitle}}</h3>
-
-        <p>Location: {{currentMarkerLat}}, {{currentMarkerLng}}</p>
-
-        <p><a ng-href="/projects/{{currentMarkerId}}">Go to Project</a></p>
-    </div>
-
-    <!-- this is the confusing part. we have to point the map marker directive at an existing google.maps.Marker object, so it can hook up events
-    <div ng-repeat="marker in myMarkers" baw-map-marker="myMarkers[$index]"
-         ui-event="{'map-click': 'openMarkerInfo(marker)', 'map-once-idle': 'loadProjects()'}"></div>
-    <div id="map_canvas" baw-map="projectMap" style="height: 500px; width: 100%;" ui-options="mapOptions"></div>-->
-
 
 
 
