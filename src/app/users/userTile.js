@@ -3,29 +3,37 @@ angular
     .controller("UserTileController", [
         "$scope", "moment", "conf.paths", "UserProfile",
         function ($scope, moment, paths, UserProfile) {
-            var self = this;
+            var $ctrl = this;
             let userKey, dateKey;
 
             this.defaultUserImage = paths.site.assets.users.defaultImageAbsolute;
             this.userProfile = null;
             this.friendlyDate = null;
+            this.show = false;
 
             $scope.$watch(
                 (scope) => scope.$ctrl.resource,
                 function () {
-                    if (!self.resource) {
+                    if (!$ctrl.resource) {
+                        $ctrl.show = false;
+                        return;
+                    }
+
+                    if(!$ctrl.resource[userKey] || $ctrl.resource[dateKey]) {
+                        $ctrl.show = false;
                         return;
                     }
 
                     // update the user profile
                     UserProfile
-                        .getUserForMetadataTile(self.resource[userKey])
+                        .getUserForMetadataTile($ctrl.resource[userKey])
                         .then((result) => {
-                            self.userProfile = result.data.data[0];
+                            $ctrl.userProfile = result.data.data[0];
+                            $ctrl.show = true;
                         });
 
                     // update the friendly date
-                    self.friendlyDate = moment(self.resource[dateKey]).fromNow();
+                    $ctrl.friendlyDate = moment($ctrl.resource[dateKey]).fromNow();
                 });
 
             this.$onInit = function () {
