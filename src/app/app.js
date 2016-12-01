@@ -402,7 +402,7 @@ angular.module("baw",
 
                     let title = $route.current && ( " | " + $route.current.title) || "";
                     document.title = appEnvironment.brand.title + title;
-                    $rootScope.fullWidth = $route.current.$$route.fullWidth;
+                    $rootScope.fullWidth = $route.current.$$route && $route.current.$$route.fullWidth;
                 });
 
                 // reload a view and controller (shortcut for full page refresh)
