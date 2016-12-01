@@ -4,5 +4,6 @@ angular
         [
             "bawApp.uiHints.ribbon",
             "bawApp.uiHints.capability",
+            "bawApp.uiHints.helpTip",
             "bawApp.uiHints.bawHref"
         ]);
