@@ -193,6 +193,14 @@ angular
                             throw new Error("This static method must be called with a bound this");
                         }
 
+                        // dirty hack: the multi-pager loader sends through an array of responses
+                        // TODO: remove this and fix the pager!
+                        let canonicalResponse = response.responses && response.responses[0] || response;
+
+                        if ((canonicalResponse.headers("content-type") || "").indexOf("application/json") < 0) {
+                            throw new Error(`The request ${canonicalResponse.config.method} ${canonicalResponse.config.url} does not contain a JSON response`);
+                        }
+
                         var items = [];
                         if (angular.isArray(response.data.data)) {
                             //noinspection JSUnresolvedVariable
@@ -203,7 +211,7 @@ angular
                         }
 
                         // allow all object to get and set their meta data object
-                        let meta = response.data.meta;
+                        let meta = canonicalResponse.data.meta;
 
                         // setup capabilities
 
