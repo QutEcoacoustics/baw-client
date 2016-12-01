@@ -42,7 +42,10 @@ angular
             $rootScope.$on("$routeChangeSuccess", onRouteChangeSuccess);
             $rootScope.$watch(
                 () => ActiveResource.resource,
-                () => controller.activeResource = ActiveResource.get()
+                () => {
+                    controller.activeResource = ActiveResource.get();
+                    prepareLinks($route.current);
+                }
             );
 
             function onRouteChangeSuccess(event, current, previous, rejection) {
@@ -90,9 +93,11 @@ angular
                 return links
                     .filter((link) => !link.condition || link.condition.call(link, userModel, controller.activeResource))
                     .map(link => {
-                        link.href = _.isFunction(link.href) ? link.href.call(link, userModel, controller.activeResource) : link.href;
-                        link.indentation = link.indentation || 0;
-                        return link;
+                        // copy object so we don't overwrite original values by reference permanently
+                        let newLink = Object.assign({}, link);
+                        newLink.href = _.isFunction(link.href) ? link.href.call(link, userModel, controller.activeResource) : link.href;
+                        newLink.indentation = link.indentation || 0;
+                        return newLink;
                     });
             };
 
