@@ -116,7 +116,8 @@ angular
     .module("bawApp.citizenScience.bristlebird", [
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
-        "bawApp.components.citizenScienceLabels"
+        "bawApp.components.citizenScienceLabels",
+        "bawApp.components.citizenScienceExamples"
     ])
     .controller(
         "BristlebirdController",
