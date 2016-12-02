@@ -113,7 +113,7 @@ module.exports = function (environment) {
                 "annotationComments": "annotationLibrary/comments/comments.tpl.html",
                 "library": {
                     "list": "annotationLibrary/annotationLibrary.tpl.html",
-                    "item": "annotationLibrary/annotationItem.tpl.html"
+                    "item": "annotationLibrary/libraryItem.tpl.html"
                 },
                 "navigation": {
                     "crumbs": "navigation/navigation.tpl.html",
