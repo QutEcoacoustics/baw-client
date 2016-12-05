@@ -1,5 +1,5 @@
 angular
-    .module("bawApp.annotationLibrary.LibraryItem", [])
+    .module("bawApp.annotationLibrary.libraryItem", ["bawApp.components.annotationItem"])
     .controller(
     "AnnotationItemCtrl",
     [
