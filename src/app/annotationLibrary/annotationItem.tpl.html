@@ -7,9 +7,9 @@
                  ng-style="{width:annotation.bounds.enforcedImageWidth + 100}">
                 <div class="library-spectrogram">
                     <img ng-src="{{annotation.media.available.image.png.url}}"
-                         ng-style="{width: annotation.bounds.enforcedImageWidth, height: annotation.bounds.enforcedImageHeight}">
+                         ng-style="{width: annotation.bounds.enforcedImageWidth, height: annotation.bounds.enforcedImageHeight}" id="spectrogram">
                     <grid-lines configuration="annotation.gridConfig" class="library-spectrogram-grid"></grid-lines>
-                    <div position-line media="annotation.media" audio-data="annotation.audioElement"></div>
+                    <div position-line media="annotation.media" audio-data="annotation.audioElement" image-id="'spectrogram'"></div>
                     <div class="marquee-clipper">
                         <div class="library-spectrogram-bounds"
                              ng-style="{top: annotation.bounds.top, left: annotation.bounds.left, width: annotation.bounds.width, height: annotation.bounds.height}"></div>
