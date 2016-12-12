@@ -110,6 +110,7 @@ module.exports = function (environment) {
                 "listen": "listen/listen.tpl.html",
                 "annotationViewer": "annotationViewer/annotationViewer.tpl.html",
                 "gridLines": "annotationViewer/gridLines/gridLines.tpl.html",
+                "positionLine": "annotationViewer/positionLine.tpl.html",
                 "annotationComments": "annotationLibrary/comments/comments.tpl.html",
                 "library": {
                     "list": "annotationLibrary/annotationLibrary.tpl.html",

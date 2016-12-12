@@ -2,9 +2,9 @@
      ng-style="{width:$ctrl.annotation.bounds.enforcedImageWidth + 100}">
     <div class="library-spectrogram">
         <img ng-src="{{$ctrl.annotation.media.available.image.png.url}}"
-             ng-style="{width: $ctrl.annotation.bounds.enforcedImageWidth, height: $ctrl.annotation.bounds.enforcedImageHeight}">
+             ng-style="{width: $ctrl.annotation.bounds.enforcedImageWidth, height: $ctrl.annotation.bounds.enforcedImageHeight}" id="spectrogram">
         <grid-lines configuration="$ctrl.annotation.gridConfig" class="library-spectrogram-grid"></grid-lines>
-        <div position-line media="$ctrl.annotation.media" audio-data="$ctrl.annotation.audioElement"></div>
+        <div position-line media="$ctrl.annotation.media" audio-data="$ctrl.audioElement" image-id="'spectrogram'"></div>
         <div class="marquee-clipper">
             <div class="library-spectrogram-bounds"
                  ng-style="{top: $ctrl.annotation.bounds.top, left: $ctrl.annotation.bounds.left, width: $ctrl.annotation.bounds.width, height: $ctrl.annotation.bounds.height}"></div>
@@ -13,10 +13,11 @@
 </div>
 <div class="audio-wrapper">
     <audio id="annoSingleAudio{{$index}}" controls
+           ng-audio="$ctrl.audioElement"
            ng-style="{width:$ctrl.annotation.bounds.enforcedImageWidth}">
         <source ng-repeat="key in $ctrl.annotation.media.available.audioOrder"
                 ng-src="{{$ctrl.annotation.media.available.audio[key].url}}" src=""
                 type="{{$ctrl.annotation.media.available.audio[key].mimeType}}">
         Your browser does not support the audio element.
     </audio>
-</div>
+</div>ß

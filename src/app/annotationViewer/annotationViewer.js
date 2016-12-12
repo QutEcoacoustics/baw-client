@@ -1,4 +1,4 @@
-var avModule = angular.module("bawApp.annotationViewer", ["bawApp.annotationViewer.gridLines"]);
+var avModule = angular.module("bawApp.annotationViewer", ["bawApp.annotationViewer.gridLines", "bawApp.annotationViewer.positionLine"]);
 
 avModule.controller("AnnotationViewerCtrl", ["$scope", "$element", "$attrs", "$transclude", "Tag", "lodash",
 
