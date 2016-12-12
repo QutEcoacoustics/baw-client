@@ -44,7 +44,12 @@ angular
             });
 
             scope.positionLine = function () {
-                return(scope.secondsToPixels(this.audioData.position));
+                if (typeof(this.audioData) === "object") {
+                    return(scope.secondsToPixels(this.audioData.position));
+                } else {
+                    return 0;
+                }
+
 
 
 
