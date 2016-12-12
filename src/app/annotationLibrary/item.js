@@ -78,7 +78,7 @@ angular
                     libraryCommon.getUsers(commonData);
                     $scope.annotation = annotation;
 
-                        //todo load these from user preferences
+                    //todo load these from user preferences
                     $scope.annotation.audioElement = {
                         volume: 1,
                         muted: false,
