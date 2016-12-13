@@ -6,19 +6,12 @@ angular.module("bawApp.components.annotationItem", [])
             "$http",
             function ($scope, $http) {
 
-                var controllerSelf = this;
-                console.log(controllerSelf);
-
-
-
-
                 this.audioElement = {
                      volume: 1,
                      muted: false,
-                     autoPlay: true,
+                     autoPlay: false,
                      position: 0
                 };
-
 
 
             }],

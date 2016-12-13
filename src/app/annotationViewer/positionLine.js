@@ -9,33 +9,68 @@ angular
             scope: {
                 media: "<media",
                 audioData: "<audioData",
-                imageId: "<imageId"
+                imageClass: "<imageClass"
             },
             link: function (scope, elements, attributes, controller) {
 
+                var image;
+
                 scope.converters = false;
 
-                var image = document.querySelector("#"+scope.imageId);
+
+
+                /**
+                 * Searches for the closest node to the position line element that has the class
+                 * scope.imageClass
+                 * @param element
+                 * @returns DOM element or NULL
+                 */
+                this.getImageElement = function (element, depth) {
+
+                    if (depth > 3 || element.tagName === "BODY") {
+                        return null;
+                    }
+
+                    var containingElement = element.parentElement;
+                    var images = containingElement.getElementsByClassName(scope.imageClass);
+                    if (images.length > 0) {
+                        return images[0];
+                    } else {
+                        return this.getImageElement(containingElement, depth + 1);
+                    }
+                };
+
+                if (scope.imageClass !== undefined) {
+                    image = this.getImageElement(elements[0], 0);
+                } else {
+                    image = null;
+                }
+
 
                 scope.secondsToPixels = function (audioPositionSeconds) {
                     var pixelPosition, imageWidth;
 
-
-                    if (scope.media && scope.media.endOffset) {
-
                         if (image.clientWidth > 0) {
                             imageWidth = image.clientWidth;
                         } else {
-                            // use number of colums of spectrogram as image width
+                            // use number of columns of spectrogram as image width
                             imageWidth = 1;
                         }
 
-                        pixelPosition = imageWidth * (audioPositionSeconds / (scope.media.endOffset - scope.media.startOffset));
-                    } else {
-                        pixelPosition = 0;
-                    }
+                        pixelPosition = imageWidth * (scope.secondsToRatio(audioPositionSeconds));
+
                     return pixelPosition;
                 };
+
+
+                scope.secondsToRatio = function (audioPositionSeconds) {
+                    if (scope.media && scope.media.endOffset) {
+                        return audioPositionSeconds / (scope.media.endOffset - scope.media.startOffset);
+                    }
+                    return 0;
+
+                };
+
 
 
                 angular.element($window).on("resize", function () {
@@ -51,11 +86,19 @@ angular
                         return 0;
                     }
 
+                };
 
+                scope.positionLinePercent = function () {
 
-
+                    if (typeof(this.audioData) === "object") {
+                        return (scope.secondsToRatio(this.audioData.position) * 100) + "%";
+                    } else {
+                        return "0%";
+                    }
 
                 };
+
+
 
             }
         };

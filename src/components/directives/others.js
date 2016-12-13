@@ -203,11 +203,27 @@ angular
                 var element = elements[0];
 
                 function leftWatcher(newValue, oldValue) {
-                    element.style[transformProperty] = "" + newValue.toFixed(3) + "px";
+                    element.style[transformProperty] = "" + translateValue(newValue);
                 }
 
                 function transformWatcher(newValue, oldValue) {
-                    element.style[transformProperty] = "translate3d(" + newValue.toFixed(3) + "px, 0, 0)";
+                    element.style[transformProperty] = "translate3d(" + translateValue(newValue) + ", 0, 0)";
+                }
+
+                /**
+                 * allows val to be either string with desired units (px or %) or number,
+                 * in which case defaults to px
+                 * @param val
+                 * @returns string
+                 */
+                function translateValue (val) {
+
+                    if (typeof(val) === "number") {
+                        return val.toFixed(3) + "px";
+                    } else {
+                        return val;
+                    }
+
                 }
 
                 var watcher = getSupportedTransform() ? transformWatcher : leftWatcher;
