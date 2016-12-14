@@ -78,25 +78,26 @@ angular
                     scope.$apply();
                 });
 
-                scope.positionLine = function () {
+                scope.getOffset = function (usePercent) {
 
                     if (typeof(this.audioData) === "object") {
-                        return(scope.secondsToPixels(this.audioData.position));
+                        if (usePercent) {
+
+                            var percent = scope.secondsToRatio(this.audioData.position) * 100;
+                            percent = percent > 100 ? 100 : percent;
+
+                            return percent + "%";
+                        } else {
+                            return(scope.secondsToPixels(this.audioData.position));
+                        }
+
                     } else {
                         return 0;
                     }
 
                 };
 
-                scope.positionLinePercent = function () {
 
-                    if (typeof(this.audioData) === "object") {
-                        return (scope.secondsToRatio(this.audioData.position) * 100) + "%";
-                    } else {
-                        return "0%";
-                    }
-
-                };
 
 
 
