@@ -109,7 +109,7 @@ angular
                 angular.element($window).on("resize", function () {
                     scope.$apply();
                 });
-                
+
             }
         };
 
