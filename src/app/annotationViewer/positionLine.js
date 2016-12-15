@@ -9,24 +9,32 @@ angular
             scope: {
                 media: "<media",
                 audioData: "<audioData",
+                // TODO: remove this binding
                 imageClass: "<imageClass"
             },
             link: function (scope, elements, attributes, controller) {
 
+                // the dom element for the spectrogram image that is used to get
+                // the width to calculate the pixel offset for the position line
+                // TODO: remove the need to reference an image element.
                 var image;
 
                 /**
-                 * Searches for the closest node to the position line element that
+                 * Searches for the closest node to the position-line element that
                  * has the class scope.imageClass
-                 * @param element
+                 * If there are multiple spectrograms on the page, for example generated in a loop,
+                 * this ensures that each position line is using the correct spectrogram image.
+                 * Searches for the class in the parent dom element, and if not found recurses up one level of dom and repeats.
+                 * @param element; the current element in the recursion that is being searched
+                 * @param depth; int, the current level of recursion, in order to limit the search
                  * @returns DOM element or NULL
+                 * @TODO: deprecated. We don't want to be searching for DOM elements here. Better to bind to data.
+                 *
                  */
                 this.getImageElement = function (element, depth) {
-
                     if (depth > 3 || element.tagName === "BODY") {
                         return null;
                     }
-
                     var containingElement = element.parentElement;
                     var images = containingElement.getElementsByClassName(scope.imageClass);
                     if (images.length > 0) {
@@ -42,6 +50,7 @@ angular
                  * based on the width of the spectrogram image.
                  * @param audioPositionSeconds number
                  * @returns number
+                 * @TODO: remove this. Better to use the unit converter, and also better if we don't need to reference the dom element
                  */
                 scope.secondsToPixels = function (audioPositionSeconds) {
                     var pixelPosition, imageWidth;

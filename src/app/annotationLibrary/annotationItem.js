@@ -8,8 +8,6 @@ angular.module("bawApp.components.annotationItem", [])
 
                 this.audioElement = {
                      volume: 1,
-                     muted: false,
-                     autoPlay: false,
                      position: 0
                 };
 

@@ -4,7 +4,6 @@
  */
 
 .positionLineContainer {
-
   height: 100%;
   width: 100%;
   position: absolute;
@@ -20,7 +19,6 @@
     width: 100%;
     width: calc(100% - 1px);
     position: absolute;
-
 
     @include vendor-prefix(transform, translate3d(0%, 0, 0));
 
