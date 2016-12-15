@@ -15,13 +15,9 @@ angular
 
                 var image;
 
-                scope.converters = false;
-
-
-
                 /**
-                 * Searches for the closest node to the position line element that has the class
-                 * scope.imageClass
+                 * Searches for the closest node to the position line element that
+                 * has the class scope.imageClass
                  * @param element
                  * @returns DOM element or NULL
                  */
@@ -40,13 +36,13 @@ angular
                     }
                 };
 
-                if (scope.imageClass !== undefined) {
-                    image = this.getImageElement(elements[0], 0);
-                } else {
-                    image = null;
-                }
 
-
+                /**
+                 * converts the proportion of elapsed audio to a pixel value,
+                 * based on the width of the spectrogram image.
+                 * @param audioPositionSeconds number
+                 * @returns number
+                 */
                 scope.secondsToPixels = function (audioPositionSeconds) {
                     var pixelPosition, imageWidth;
 
@@ -63,21 +59,28 @@ angular
                 };
 
 
+                /**
+                 * Converts a number of seconds of elapsed audio to the fraction of the audio that has elapsed
+                 * by dividing by the duration of the audio.
+                 * @param audioPositionSeconds number
+                 * @returns {number} range [0,1]
+                 */
                 scope.secondsToRatio = function (audioPositionSeconds) {
                     if (scope.media && scope.media.endOffset) {
-                        return audioPositionSeconds / (scope.media.endOffset - scope.media.startOffset);
+                        var positionRatio = audioPositionSeconds / (scope.media.endOffset - scope.media.startOffset);
+                        return (positionRatio > 1) ? 1 : positionRatio;
                     }
                     return 0;
 
                 };
 
 
-
-                angular.element($window).on("resize", function () {
-                    //scope.updateConverters(scope.media);
-                    scope.$apply();
-                });
-
+                /**
+                 * gets the offset as either percent or pixel value.
+                 * uses the ratio position of the audioData to the total duration (based on the media start and end offset)
+                 * @param boolean usePercent
+                 * @returns string if usePercent otherwise float
+                 */
                 scope.getOffset = function (usePercent) {
 
                     if (typeof(this.audioData) === "object") {
@@ -97,10 +100,16 @@ angular
 
                 };
 
+                if (scope.imageClass !== undefined) {
+                    image = this.getImageElement(elements[0], 0);
+                } else {
+                    image = null;
+                }
 
-
-
-
+                angular.element($window).on("resize", function () {
+                    scope.$apply();
+                });
+                
             }
         };
 

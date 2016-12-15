@@ -1,8 +1,8 @@
 <div class="library-single">
     <div class="library-spectrogram">
         <img ng-src="{{$ctrl.annotation.media.available.image.png.url}}"
-             ng-style="{width: $ctrl.annotation.bounds.enforcedImageWidth, height: $ctrl.annotation.bounds.enforcedImageHeight}" class="spectrogram">
-        <div position-line media="$ctrl.annotation.media" audio-data="$ctrl.audioElement" image-class="'spectrogram'"></div>
+             ng-style="{width: $ctrl.annotation.bounds.enforcedImageWidth, height: $ctrl.annotation.bounds.enforcedImageHeight}">
+        <div position-line media="$ctrl.annotation.media" audio-data="$ctrl.audioElement"></div>
         <grid-lines configuration="$ctrl.annotation.gridConfig" class="library-spectrogram-grid"></grid-lines>
 
         <div class="marquee-clipper">
