@@ -1,0 +1,31 @@
+/**
+ * copied from annotationViewer.scss
+ * as a reusable component, it shouldn't be inside annotation viewer
+ */
+
+.positionLineContainer {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+
+  .positionLine {
+    border-left: solid 1px $spectrogramProgressLine;
+    //background-color: $spectrogramProgressLine;
+    height: 100%;
+    width: 100%;
+    width: calc(100% - 1px);
+    position: absolute;
+
+    @include vendor-prefix(transform, translate3d(0%, 0, 0));
+
+    &.hidden {
+      display: none;
+    }
+
+  }
+
+}
