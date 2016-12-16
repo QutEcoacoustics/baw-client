@@ -62,6 +62,11 @@ class IpswichController {
         // list of possible labels to be retrieved from the dataset sheet
         $scope.labels = {};
 
+        /**
+         * retrieves the list of allowed labels from the dataset
+         * @TODO: update this to conform to the new format (multiple tags per label, examples)
+         * currently broken
+         */
         $http.get(CitizenScienceCommon.apiUrl(
             "labels",
             $scope.csProject
