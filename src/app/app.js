@@ -174,6 +174,7 @@ angular.module("baw",
                     controllerAs: "jobNew",
                     title: "New Analysis Job",
                     fullWidth: false,
+                    indentation: 1,
                     secondaryNavigation: [analysisJobsNav],
                     icon: "tasks"
                 }).when(paths.site.ngRoutes.analysisJobs.details.replace("{analysisJobId}", ":analysisJobId"), {
@@ -194,7 +195,7 @@ angular.module("baw",
                     secondaryNavigation: [analysisJobsNav, analysisJobNav],
                     icon: "table",
                     indentation: 2
-                }).//when("/analysis_jobs/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title:
+                }).//when("/audio_analysis/:analysisJobsId/edit", {templateUrl: , controller: JobListController, title:
                    // "Jobs",
                 // fullWidth: false}).
 
@@ -433,7 +434,7 @@ angular.module("baw",
 
                     let title = $route.current && ( " | " + $route.current.title) || "";
                     document.title = appEnvironment.brand.title + title;
-                    $rootScope.fullWidth = $route.current.$$route.fullWidth;
+                    $rootScope.fullWidth = $route.current.$$route && $route.current.$$route.fullWidth;
                 });
 
                 // reload a view and controller (shortcut for full page refresh)
@@ -474,7 +475,6 @@ angular.module("baw",
             function AppCtrl($scope, $location, constants, growl, $timeout, localStorageService, bowser, paths, appEnvironment) {
 
                 // embed configuration for easy site-wide binding
-                $scope.paths = paths;
                 $scope.brand = constants.brand;
                 $scope.researchPages = appEnvironment.content.research;
 

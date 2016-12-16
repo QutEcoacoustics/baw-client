@@ -21,7 +21,7 @@ angular
                     this.name = this.name || "/";
                     this.type = this.type || "directory";
                     this.mime = this.mime || null;
-                    this.sizeBytes = this.sizeBytes || null;
+                    this.sizeBytes = Number.isFinite(this.sizeBytes) ? this.sizeBytes : null;
                     this.hasChildren = this.hasChildren === true || false;
                     this.hasZip = this.hasZip === true || false;
 
@@ -76,7 +76,7 @@ angular
                 }
 
                 get friendlySize() {
-                    if (this.sizeBytes) {
+                    if (Number.isFinite(this.sizeBytes)) {
                         return filesize(this.sizeBytes, {round: 0});
                     }
                     else {

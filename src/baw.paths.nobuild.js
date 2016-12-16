@@ -111,10 +111,11 @@ module.exports = function (environment) {
                 "annotationViewer": "annotationViewer/annotationViewer.tpl.html",
                 "positionLine": "annotationViewer/positionLine.tpl.html",
                 "gridLines": "annotationViewer/gridLines/gridLines.tpl.html",
+                "positionLine": "annotationViewer/positionLine.tpl.html",
                 "annotationComments": "annotationLibrary/comments/comments.tpl.html",
                 "library": {
                     "list": "annotationLibrary/annotationLibrary.tpl.html",
-                    "item": "annotationLibrary/annotationItem.tpl.html"
+                    "item": "annotationLibrary/libraryItem.tpl.html"
                 },
                 "navigation": {
                     "crumbs": "navigation/navigation.tpl.html",
@@ -176,17 +177,17 @@ module.exports = function (environment) {
                     "bdCloud": "/demo/BDCloud2014"
                 },
                 analysisJobs: {
-                    list: "/analysis_jobs",
-                    "new": "/analysis_jobs/new",
-                    details: "/analysis_jobs/{analysisJobId}",
-                    analysisResults: "/analysis_jobs/{analysisJobId}/results:path*?"
+                    list: "/audio_analysis",
+                    "new": "/audio_analysis/new",
+                    details: "/audio_analysis/{analysisJobId}",
+                    analysisResults: "/audio_analysis/{analysisJobId}/results:path*?"
                 }
             },
             // general links for use in <a />'s
             "links": {
                 analysisJobs: {
-                    analysisResults: "/analysis_jobs/{analysisJobId}/results",
-                    analysisResultsWithPath: "/analysis_jobs/{analysisJobId}/results{path}"
+                    analysisResults: "/audio_analysis/{analysisJobId}/results",
+                    analysisResultsWithPath: "/audio_analysis/{analysisJobId}/results{path}"
                 }
             },
             "assets": {

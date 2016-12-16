@@ -23,10 +23,10 @@
             <h2>1. Select data</h2>
             <p>What audio data do you want to analyze?</p>
             <p ng-hide="jobNew.isCreatingNewSavedSearch">
-                <strong>Choose a saved search</strong>
+                <strong>Choose an existing data set</strong>
             </p>
             <p ng-show="jobNew.isCreatingNewSavedSearch">
-                <strong>Creating a saved search...</strong>
+                <strong>Creating a data set...</strong>
             </p>
             <div ng-hide="jobNew.isCreatingNewSavedSearch">
                 <list-saved-searches selected="jobNew.selectedSavedSearch"></list-saved-searches>
@@ -38,13 +38,13 @@
                         class="btn btn-default"
                         ng-click="jobNew.isCreatingNewSavedSearch = true">
                     <span class="fa fa-plus"></span>
-                    New saved search
+                    New data set
                 </button>
             </p>
             <div ng-if="jobNew.isCreatingNewSavedSearch">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4>New saved search</h4>
+                        <h4>New data set</h4>
                     </div>
                     <div class="panel-body">
                         <new-saved-search model="jobNew.selectedSavedSearch"></new-saved-search>
@@ -57,7 +57,7 @@
                             ng-click="jobNew.isCreatingNewSavedSearch = false">
                         cancel
                     </button>
-                    creating a saved search.
+                    creating a data set.
                 </p>
             </div>
             <div class="form-group">
@@ -69,7 +69,7 @@
                        name="selectedSavedSearch">
                 <ng-messages for="newAnalysisJobForm.selectedSavedSearch.$error" class="help-block" role="alert"
                              ng-if="newAnalysisJobForm.$submitted || newAnalysisJobForm.selectedSavedSearch.$dirty">
-                    <ng-message when="required">A saved search needs to be selected.</ng-message>
+                    <ng-message when="required">A data set needs to be selected.</ng-message>
                 </ng-messages>
             </div>
         </div>

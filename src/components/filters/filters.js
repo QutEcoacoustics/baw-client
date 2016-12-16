@@ -103,7 +103,10 @@ bawfs.filter("format", function () {
 });
 
 bawfs.filter("percentage", ["$filter", function ($filter) {
-    return function (input, decimals = 2) {
+    return function (input, decimals = 2, denominator = null) {
+        if (Number.isFinite(denominator)) {
+            input = input / denominator;
+        }
         return $filter("number")(input * 100, decimals) + "%";
     };
 }]);

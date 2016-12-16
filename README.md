@@ -56,6 +56,12 @@ repository's copy when you do a production build.
 Additionally, the grunt command will accept a `--use-phantomjs` JS options which will switch the default `karma` test runner
 from Chrome to PhantomJS.
 
+## Commits and CHANGELOG
+
+Our changelog is automatically generated using conventional changelog.
+
+Commits must follow the conventions listed here: https://github.com/conventional-changelog/conventional-changelog-angular/blob/master/convention.md
+
 ## To make a release
 
 You'll need write permissions to this repository to make a release.

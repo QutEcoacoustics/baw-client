@@ -91,154 +91,162 @@ angular
             }
         ]
     ).factory(
-    "baw.models.ApiBase",
-    [
-        "baw.models.Capabilities",
-        function (Capabilities) {
-            let metaKey = Symbol("meta");
+        "baw.models.ApiBase",
+        [
+            "baw.models.Capabilities",
+            function (Capabilities) {
+                let metaKey = Symbol("meta");
 
-            class ApiBase {
+                class ApiBase {
 
-                constructor(resource) {
-                    Object.assign(this, resource);
+                    constructor(resource) {
+                        Object.assign(this, resource);
 
-                    // createdAt and UpdatedAt are fairly common attributes
-                    if (this.createdAt) {
-                        this.createdAt = new Date(this.createdAt);
+                        // createdAt and UpdatedAt are fairly common attributes
+                        if (this.createdAt) {
+                            this.createdAt = new Date(this.createdAt);
+                        }
+
+                        if (this.updatedAt) {
+                            this.updatedAt = new Date(this.updatedAt);
+                        }
+
+                        if (this.creatorId) {
+                            this.creatorId = Number(this.creatorId);
+                        }
+
+                        if (this.updaterId) {
+                            this.updaterId = Number(this.updaterId);
+                        }
                     }
 
-                    if (this.updatedAt) {
-                        this.updatedAt = new Date(this.updatedAt);
+                    /**
+                     * If called, auto downloads linked resources.
+                     * Since we want customizable behaviour, we force an explicit call
+                     * to autoDownload.
+                     * @param resources
+                     */
+                    autoDownload(resources) {
+
                     }
 
-                    if (this.creatorId) {
-                        this.creatorId = Number(this.creatorId);
+                    get hasId() {
+                        return !(this.id === undefined || this.id === null);
                     }
 
-                    if (this.updaterId) {
-                        this.updaterId = Number(this.updaterId);
+                    /**
+                     * Holds the meta object from an API response.
+                     * @returns {*}
+                     */
+                    get meta() {
+                        return this[metaKey];
                     }
-                }
 
-                /**
-                 * If called, auto downloads linked resources.
-                 * Since we want customizable behaviour, we force an explicit call
-                 * to autoDownload.
-                 * @param resources
-                 */
-                autoDownload(resources) {
+                    /**
+                     * Capability tester. Can an action be implemented?
+                     */
+                    can(actionName, reason) {
+                        return this[metaKey].capabilities.can(this, actionName, reason);
+                    }
 
-                }
+                    // security related helpers
+                    // note: ideally these should not be needed once capabilities are developed for the REST API
+                    isOwnedBy(user) {
+                        if (!user) {
+                            return null;
+                        }
 
-                get hasId() {
-                    return !(this.id === undefined || this.id === null);
-                }
+                        if (user.isAdmin) {
+                            return true;
+                        }
 
-                /**
-                 * Holds the meta object from an API response.
-                 * @returns {*}
-                 */
-                get meta() {
-                    return this[metaKey];
-                }
+                        if (this.creatorId) {
+                            return this.creatorId === user.id || this.updaterId === user.id;
+                        }
 
-                /**
-                 * Capability tester. Can an action be implemented?
-                 */
-                can(actionName, reason) {
-                    return this[metaKey].capabilities.can(this, actionName, reason);
-                }
-
-                // security related helpers
-                // note: ideally these should not be needed once capabilities are developed for the REST API
-                isOwnedBy(user) {
-                    if (!user) {
                         return null;
                     }
 
-                    if (user.isAdmin) {
-                        return true;
-                    }
-
-                    if (this.creatorId) {
-                        return this.creatorId === user.id || this.updaterId === user.id;
-                    }
-
-                    return null;
-                }
 
 
-
-                static make(resource) {
-                    //noinspection JSValidateTypes
-                    if (this === window) {
-                        throw new Error("This static method must be called with a bound this");
-                    }
-
-                    return new this(resource);
-                }
-
-                /**
-                 * This function generates a converter for models to use.constructor
-                 * This provided models with a function to convert API responses
-                 * into DS objects.
-                 *
-                 * TODO: remove the need to return the FULL APi object
-                 * @returns {}
-                 * @param response
-                 */
-                static makeFromApi(response) {
-                    //noinspection JSValidateTypes
-                    if (this === window) {
-                        throw new Error("This static method must be called with a bound this");
-                    }
-
-                    var items = [];
-                    if (angular.isArray(response.data.data)) {
-                        //noinspection JSUnresolvedVariable
-                        items = response.data.data.map(this.make, this);
-                    } else {
-                        //noinspection JSUnresolvedFunction
-                        items[0] = this.make(response.data.data);
-                    }
-
-                    // allow all object to get and set their meta data object
-                    let meta = response.data.meta;
-
-                    // setup capabilities
-
-                    // HACK: while capabilities not supported by API we instead draw them from the client Models
-                    if (meta.capabilities === undefined) {
-                        if (this.capabilities) {
-                            console.warn(`Capabilities for ${this.name} are drawn from client model`);
-                            meta.capabilities = this.capabilities;
+                    static make(resource) {
+                        //noinspection JSValidateTypes
+                        if (this === window) {
+                            throw new Error("This static method must be called with a bound this");
                         }
-                        else {
-                            meta.capabilities = {};
-                        }
+
+                        return new this(resource);
                     }
-                    meta.capabilities = new Capabilities(meta.capabilities);
 
-                    // give each object a reference to meta
-                    items.forEach((a) => a[metaKey] = meta);
+                    /**
+                     * This function generates a converter for models to use.constructor
+                     * This provided models with a function to convert API responses
+                     * into DS objects.
+                     *
+                     * TODO: remove the need to return the FULL APi object
+                     * @returns {}
+                     * @param response
+                     */
+                    static makeFromApi(response) {
+                        //noinspection JSValidateTypes
+                        if (this === window) {
+                            throw new Error("This static method must be called with a bound this");
+                        }
 
-                    response.data.data = items;
+                        // dirty hack: the multi-pager loader sends through an array of responses
+                        // TODO: remove this and fix the pager!
+                        let canonicalResponse = response.responses && response.responses[0] || response;
 
-                    return response;
+                        if ((canonicalResponse.headers("content-type") || "").indexOf("application/json") < 0) {
+                            throw new Error(`The request ${canonicalResponse.config.method} ${canonicalResponse.config.url} does not contain a JSON response`);
+                        }
+
+                        var items = [];
+                        if (angular.isArray(response.data.data)) {
+                            //noinspection JSUnresolvedVariable
+                            items = response.data.data.map(this.make, this);
+                        } else {
+                            //noinspection JSUnresolvedFunction
+                            items[0] = this.make(response.data.data);
+                        }
+
+                        // allow all object to get and set their meta data object
+                        let meta = canonicalResponse.data.meta;
+
+                        // setup capabilities
+
+                        // HACK: while capabilities not supported by API we instead draw them from the client Models
+                        if (meta.capabilities === undefined) {
+                            if (this.capabilities) {
+                                console.warn(`Capabilities for ${this.name} are drawn from client model`);
+                                meta.capabilities = this.capabilities;
+                            }
+                            else {
+                                meta.capabilities = {};
+                            }
+                        }
+                        meta.capabilities = new Capabilities(meta.capabilities);
+
+                        // give each object a reference to meta
+                        items.forEach((a) => a[metaKey] = meta);
+
+                        response.data.data = items;
+
+                        return response;
+                    }
+
+                    static makeFromApiWithType(Type) {
+                        return function (resource) {
+                            return ApiBase.makeFromApi.call(Type, resource);
+                        };
+                    }
+
+
                 }
 
-                static makeFromApiWithType(Type) {
-                    return function (resource) {
-                        return ApiBase.makeFromApi.call(Type, resource);
-                    };
-                }
-
-
+                return ApiBase;
             }
-
-            return ApiBase;
-        }
-    ])
+        ])
     .factory(
         "baw.models.ModelUnavailable",
         [
@@ -363,34 +371,41 @@ angular
                 function autoDownload(targetType, arity = arityOne, limit = []) {
                     throw new Error("Not Implemented");
                     /*
-                     // get associated models
-                     let targetAssociation = associations.get(targetType),
-                     models = [];
-                     if (targetAssociation.parents) {
-                     models = models.concat(targetAssociation.parents);
-                     }
-                     if (targetAssociation.children) {
-                     models = models.concat(targetAssociation.children);
-                     }
-                     models = models
-                     .filter(p => arity === arityMany || getArity(p) === arityOne)
-                     .filter(p => limit.length === 0 || limit.indexOf(getName(p)) >= 0);
-                     // get linkers
-                     let linkers = models.map( model => generateLinker(targetType, model) );
-                     // TODO: this won't work until services are expressed as Service functions
-                     let getService = () => { };
-                     for (let i = 0; i < models.length; i++) {
-                     let model = models[i],
-                     arity = getArity(model),
-                     service = getService(getName(model));
-                     if (arity === arityMany) {
-                     service.filter()
-                     }
-                     else {
-                     service.get()
-                     }
-                     }
-                     */
+                    // get associated models
+                    let targetAssociation = associations.get(targetType),
+                        models = [];
+                    if (targetAssociation.parents) {
+                        models = models.concat(targetAssociation.parents);
+                    }
+                    if (targetAssociation.children) {
+                        models = models.concat(targetAssociation.children);
+                    }
+
+                    models = models
+                        .filter(p => arity === arityMany || getArity(p) === arityOne)
+                        .filter(p => limit.length === 0 || limit.indexOf(getName(p)) >= 0);
+
+                    // get linkers
+                    let linkers = models.map( model => generateLinker(targetType, model) );
+
+                    // TODO: this won't work until services are expressed as Service functions
+                    let getService = () => { };
+
+                    for (let i = 0; i < models.length; i++) {
+
+
+                        let model = models[i],
+                            arity = getArity(model),
+                            service = getService(getName(model));
+
+                        if (arity === arityMany) {
+                            service.filter()
+                        }
+                        else {
+                            service.get()
+                        }
+                    }
+                    */
                 }
 
 
@@ -416,7 +431,7 @@ angular
 
                     let cacheKey = child + "---->" + parent;
                     if (linkerCache.has(cacheKey)) {
-                        return linkerCache.get(cacheKey);
+                       return linkerCache.get(cacheKey);
                     }
 
                     if (!associations.has(child)) {
@@ -434,11 +449,11 @@ angular
                     // select the shortest path
                     var {index} = chains.reduce(({length, index}, current, currentIndex) => {
                         if (current && current.length < length) {
-                        length = current.length;
-                        index = currentIndex;
-                    }
-                    return {length, index};
-                }, {length: +Infinity, index: -1});
+                            length = current.length;
+                            index = currentIndex;
+                        }
+                        return {length, index};
+                    }, {length: +Infinity, index: -1});
 
                     var chain = chains[index],
                         correctCase = chain.map(key => key[0].toLowerCase() + key.slice(1));
@@ -450,7 +465,7 @@ angular
                         var currentTargets = [target];
                         for (let c = 1; c < chain.length; c++) {
                             let association = chain[c],
-                                // check if the current target could have many parents or children
+                            // check if the current target could have many parents or children
                                 manyTargets = isManyAssociation(associations.get(chain[c - 1]), association),
                                 targetIdName = correctCase[c] + (manyTargets ? parentManyRelationSuffix : parentRelationSuffix),
                                 targetName = correctCase[c] + (manyTargets ? pluralitySuffix : "");
@@ -585,7 +600,7 @@ angular
                 function arrayToMap(items) {
                     return new Map(
                         items.map(item => [item[id], item])
-                );
+                    );
                 }
 
             }

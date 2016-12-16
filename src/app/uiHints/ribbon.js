@@ -23,7 +23,7 @@ angular
                     case "building":
                         this.class = "building";
                         this.text = "\xa0";
-                        this.tooltip = "This feature is still being built and is not available";
+                        this.tooltip = "This feature is still being built and is not yet available";
                         break;
                     default:
                         this.class = this.type;

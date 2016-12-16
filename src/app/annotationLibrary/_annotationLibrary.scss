@@ -21,7 +21,7 @@ $item-tile-height: 420px;
   margin-top: 0px;
 
   & .library-item {
-    padding: 10px 10px 0 40px;
+    padding: 7px 16px 0 20px;
     margin: 5px;
     position: relative;
     max-height: $item-tile-height;
@@ -31,7 +31,8 @@ $item-tile-height: 420px;
     & .library-item-info {
       display: block;
       clear: both;
-      margin-top: 20px;
+      margin-top: 2px;
+      margin-left:4px;
       min-width: 163px;
 
       & audio {
@@ -67,7 +68,7 @@ $item-tile-height: 420px;
 }
 
 .audio-wrapper {
-  margin: 30px auto 1em auto;
+  margin: 18px auto 0px auto;
   text-align: center;
 
   audio {

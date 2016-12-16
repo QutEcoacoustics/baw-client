@@ -88,7 +88,9 @@
                                     uib-tooltip="{{ analysisJob.friendlyProgressString(key) }}"
 
                                     tooltip-enable="bar != 0">
-                                <span ng-hide="bar / analysisJob.overallCount < 0.05">{{bar}}%</span>
+                                <span ng-hide="bar / analysisJob.overallCount < 0.05">
+                                    {{bar | percentage:0:analysisJob.overallCount }}
+                                </span>
                             </uib-bar>
                             <uib-bar ng-if="analysisJob.isNew || analysisJob.isPreparing">
                                 <span>{{ analysisJob.overallStatus }}</span>

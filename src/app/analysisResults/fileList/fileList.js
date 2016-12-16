@@ -1,5 +1,5 @@
 class FileListController {
-    constructor($scope, $location, $routeParams, $url, growl, AnalysisJobService, AnalysisResultService) {
+    constructor($scope, $location, $routeParams, $url, growl, ActiveResource, AnalysisJobService, AnalysisResultService) {
         let controller = this;
 
         this.analysisJob = null;
@@ -21,6 +21,9 @@ class FileListController {
             .getName(analysisJobId)
             .then(function (response) {
                 controller.analysisJob = response.data.data[0];
+
+                ActiveResource.set(controller.analysisJob);
+
                 controller.updateCurrentDirectory();
             })
             .then(() => AnalysisResultService.get(analysisJobId, $routeParams.path, $routeParams.page))
@@ -100,6 +103,7 @@ angular
             "$routeParams",
             "$url",
             "growl",
+            "ActiveResource",
             "AnalysisJob",
             "AnalysisResult",
             FileListController

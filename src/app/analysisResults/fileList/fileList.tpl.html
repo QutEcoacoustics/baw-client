@@ -1,10 +1,12 @@
 <layout content-for="action-items">
     <li>
+        <!--
+        uib-tooltip="Zip file is not ready to download... we're working on it."
+           tooltip-enable="!fileList.analysisResult.hasZip"
+           -->
         <a ng-href="{{:: fileList.analysisResult.hasZip && fileList.analysisResult.zipUrl || null}}"
            ng-class="{disabled: !fileList.analysisResult.hasZip}"
-           uib-tooltip="Zip file is not ready to download... we're working on it."
-           tooltip-enable="!fileList.analysisResult.hasZip"
-        >
+           capability-enabled="false" >
             <i class="fa fa-file-archive-o"></i>
             Download this folder
         </a>

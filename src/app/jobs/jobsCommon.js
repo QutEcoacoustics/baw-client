@@ -1,7 +1,5 @@
 class JobsCommon { // jshint ignore:line
     constructor(keys, friendlyKeys, statuses) {
-        this.skipProgressKeys = ["total"];
-
         this.progressKeyClassMap = {
             [keys.queued]: "warning",
             [keys.working]: "info",
@@ -43,9 +41,8 @@ class JobsCommon { // jshint ignore:line
     }
 
     isProgressKeyVisible(key) {
-        // if key isn't found in list of keys to skip
-        // it should be visible
-        return this.skipProgressKeys.indexOf(key) < 0;
+        // if key has a color it should be shown
+        return this.progressKeyColorMap.hasOwnProperty(key);
     }
 
     getOverallStatusType(status) {

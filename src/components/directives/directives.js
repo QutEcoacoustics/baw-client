@@ -4,7 +4,7 @@ angular.module("bawApp.directives",
         "bawApp.directives.ui.bootstrap",
         "bawApp.directives.formChildrenHack",
         "bawApp.directives.notInListValidator",
-
+        "bawApp.directives.annotationViewer",
         "bawApp.directives.others",
         "bawApp.directives.ngEval",
         "bawApp.directives.ngAudio",

@@ -118,7 +118,7 @@ angular.module("bawApp.directives.ngAudio", [
             function updateState(event) {
                 console.debug("ngAudio:audioElement:eventType: ", event ? event.type : "<unknown>", element.currentTime);
 
-                scope.$safeApply2(function () {
+                scope.$root.$safeApply(scope, function () {
                     if (attributes.ngAudio) {
                         var target = expression(scope);
                         if (!target) {
