@@ -108,7 +108,7 @@ class IpswichController {
             if ($scope.currentSampleNum > -1) {
                 console.log("load audio for sample " + $scope.currentSampleNum);
                 var currentSample = $scope.samples[$scope.currentSampleNum];
-                self.showAudio(currentSample.recordingId,currentSample.startOffset, self.sampleDuration);
+                self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
                 //self.changeBackground();
             }
         });

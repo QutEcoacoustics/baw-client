@@ -22,6 +22,10 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.sheets_api_url = "http://"+window.location.hostname+":8081";
 
+        /**
+         * Default values for audio model, to be updated when UserProfile is loaded
+         * @type {Object}
+         */
         self.audioElement = {
             volume: null,
             muted: null,
@@ -31,12 +35,15 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.username = null;
 
-        // bind user profile
+        /**
+         * Callback funtion to apply user playback settings after user profile is loaded
+         * @param event
+         * @param UserProfile
+         */
         self.profileLoaded = function updateProfileSettings(event, UserProfile) {
             self.audioElement.volume = UserProfile.profile.preferences.volume;
             self.audioElement.muted = UserProfile.profile.preferences.muted;
             self.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay;
-            console.log("UserProfile.profile.preferences.autoPlay", UserProfile.profile.preferences.autoPlay);
         };
         $rootScope.$on(UserProfileEvents.loaded, self.profileLoaded);
         if (UserProfile.profile && UserProfile.profile.preferences) {
@@ -45,8 +52,8 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.mediaModel = null;
 
-
         self.functions = {
+
             getAudioModel: function () {
                 return self.audioElement;
             },
@@ -59,6 +66,15 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 var args = Array.prototype.slice.call(arguments);
                 return [self.sheets_api_url].concat(args).join("/");
             },
+
+            /**
+             * Converts an array of strings to an object where each key is the same as the val
+             * Used so that a list of labels returned from the dataset can be converted to the same
+             * format as the hardcoded labels (where the key might be different from the val)
+             * @TODO: remove this as labels now use a different format
+             * @param arr Array
+             * @returns {{}}
+             */
             labelArrayToObject: function (arr) {
                 var labelObject = {};
                 arr.forEach(function (label) {
@@ -66,16 +82,23 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 });
                 return labelObject;
             },
+
             /**
              * Encode the array of labels as json
+             * @TODO: rename this to tags. Each label can have multiple tags.
+             * so this will be 2d array, outer array is labels and each label is an array of tags.
              * @param labels array
              * @returns String
              */
             labelsAsString: function (labels) {
-                // changed from comma separated
-                // return (labels.length > 0) ? labels.join(",") : "0";
                 return JSON.stringify(labels);
             },
+
+            /**
+             * Returns a function that retrieves the samples for the user and the project
+             * @param $scope
+             * @returns {function}
+             */
             bindGetSamples: function ($scope) {
                 var getSamples = function () {
                     if ($scope.samples.length === 0) {
@@ -96,8 +119,8 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 return getSamples;
             },
             /**
-             * Sets the media member of the scope to the specified recording segment
-             * The watcher will then actually load it to the dom
+             * Returns a funciton that sets the media member of the scope to the
+             * specified recording segment. The watcher will then actually load it to the dom
              * @param recordingId string
              * @param startOffset float
              * @param duration float

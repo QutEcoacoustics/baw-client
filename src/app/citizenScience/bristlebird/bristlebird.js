@@ -59,10 +59,10 @@ class BristlebirdController {
          * applies one or more tags which are not shown to the user
          */
         $scope.labels = [{
-            "tags":["ebb","type1"],
+            "tags": ["ebb", "type1"],
             "label": "I found an Eastern Bristlebirdy",
-            "example":{
-                "annotationId":12121
+            "example": {
+                "annotationId": 12121
             }
         }];
 
@@ -93,7 +93,7 @@ class BristlebirdController {
          */
         $scope.$watch("currentSampleNum", function () {
             if ($scope.currentSampleNum > -1) {
-                console.log("load audio for sample "+ $scope.currentSampleNum);
+                console.log("load audio for sample " + $scope.currentSampleNum);
                 var currentSample = $scope.samples[$scope.currentSampleNum];
                 self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
             }
