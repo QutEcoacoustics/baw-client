@@ -11,7 +11,7 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
                 var self = this;
 
                 /**
-                 * if the label is already in the list of labels for this sample, remove it
+                 * If the label is already in the list of labels for this sample, remove it
                  * otherwise add it. Send the new set of labels to the dataset
                  * Note, we can't guarantee the order that the api calls will reach the google sheet.
                  * if the user adds and removes a label in quick succession, they might arrive out of order

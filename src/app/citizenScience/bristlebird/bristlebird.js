@@ -59,12 +59,26 @@ class BristlebirdController {
          * applies one or more tags which are not shown to the user
          */
         $scope.labels = [{
-            "tags": ["ebb", "type1"],
-            "label": "I found an Eastern Bristlebirdy",
-            "example": {
-                "annotationId": 12121
-            }
-        }];
+                "tags": ["ebb", "type1"],
+                "label": "Eastern Bristlebird",
+                "example": {
+                    "annotationId": 12121
+                }
+            },
+            {
+                "tags": ["ground_parrot", "type1"],
+                "label": "Ground Parrot",
+                "example": {
+                    "annotationId": 12122
+                }
+            },
+            {
+                "tags": ["quoll", "type1"],
+                "label": "Spotted Quoll",
+                "example": {
+                    "annotationId": 12123
+                }
+            }];
 
         self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
 
