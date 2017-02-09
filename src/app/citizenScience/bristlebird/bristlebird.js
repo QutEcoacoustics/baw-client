@@ -61,23 +61,23 @@ class BristlebirdController {
         $scope.labels = [{
                 "tags": ["ebb", "type1"],
                 "label": "Eastern Bristlebird",
-                "example": {
+                "examples": [{
                     "annotationId": 12121
-                }
+                }]
             },
             {
                 "tags": ["ground_parrot", "type1"],
                 "label": "Ground Parrot",
-                "example": {
+                "examples": [{
                     "annotationId": 12122
-                }
+                }]
             },
             {
                 "tags": ["quoll", "type1"],
                 "label": "Spotted Quoll",
-                "example": {
+                "examples": [{
                     "annotationId": 12123
-                }
+                }]
             }];
 
         self.getSamples = CitizenScienceCommon.bindGetSamples($scope);

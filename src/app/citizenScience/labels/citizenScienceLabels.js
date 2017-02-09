@@ -44,20 +44,20 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
                 };
 
                 /**
-                 * given an array of arrays "containingArray", and an array "arr",
+                 * given an array of arrays "outerArray", and an array "arr",
                  * returns the index of containingArray that matches arr
                  */
-                self.indexOfArray = function (containingArray, arr) {
+                self.indexOfArray = function (outerArray, arr) {
                     var i,j,curSame;
                     arr = arr.sort();
-                    for (i = 0; i < containingArray.length; i++) {
-                        if(arr.length !== containingArray[i].length) {
+                    for (i = 0; i < outerArray.length; i++) {
+                        if(arr.length !== outerArray[i].length) {
                             continue;
                         }
-                        containingArray[i] = containingArray[i].sort();
+                        outerArray[i] = outerArray[i].sort();
                         curSame = true;
                         for(j = arr.length; j--;) {
-                            if(arr[j] !== containingArray[i][j]) {
+                            if(arr[j] !== outerArray[i][j]) {
                                 curSame = false;
                                 break;
                             }
@@ -71,7 +71,7 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
                 };
 
                 /**
-                 * Whether the all tags in the label have been attached to the current sample
+                 * Whether the label has been attached to the current sample
                  * @param label Object
                  * @returns Boolean
                  */
