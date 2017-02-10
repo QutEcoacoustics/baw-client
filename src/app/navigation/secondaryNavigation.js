@@ -91,7 +91,7 @@ angular
             // allows for dynamic filtering or generation of links
             let transformLinks = function(links) {
                 return links
-                    .filter((link) => !link.condition || link.condition.call(link, userModel, controller.activeResource))
+                    .filter((link) => !link.predicate || link.predicate.call(link, userModel, controller.activeResource))
                     .map(link => {
                         // copy object so we don't overwrite original values by reference permanently
                         let newLink = Object.assign({}, link);

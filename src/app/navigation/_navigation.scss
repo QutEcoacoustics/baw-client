@@ -1,25 +1,26 @@
 left-nav-bar, right-nav-bar {
   ul.nav-pills > li {
     & > a, & > button {
-      padding: 5px 10px;
+      padding: 5px (1em/4); // approximately 1 standard space's width
       text-align: left;
     }
   }
-}
 
-right-nav-bar {
-  a>.fa, a>.glyphicon {
+  a .fa, a>.glyphicon {
     color: $text-color;
   }
 }
 
 left-nav-bar {
+  .tooltip-wide {
+    width: 200px;
+  }
+
   @for $i from 0 through 4 {
     .indentation-#{$i} {
-      $step: ($i * 10%);
-      width: 100% - $step;
-      margin-left: $step !important;
-      font-size: 100% - ($step / 2);
+      width: calc(100% - #{1em * $i});
+      margin-left: (1em * $i) !important;
+      font-size: 100% - ($i * 3%);
     }
   }
 }

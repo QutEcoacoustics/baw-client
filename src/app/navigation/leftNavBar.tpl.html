@@ -6,14 +6,15 @@
     </h6>
     <ul class="nav nav-pills nav-stacked">
         <li ng-repeat="link in $ctrl.links"
-            ng-class="['indentation-' + link.indentation || 0, { active: link.isActive}]">
+            ng-class="['indentation-' + (link.indentation || 0), { active: link.isActive}]">
             <a title="{{ link.title }}"
-               data-toggle="tooltip"
-               data-placement="right"
+               tabindex="{{$index}}"
+               tooltip-placement="right"
+               tooltip-class="tooltip-wide"
                ng-href="{{ link.href }}"
                target="{{ link.target}}"
-               data-original-title="{{ link.title }}">
-                <i class="fa fa-fw default-color" ng-class="'fa-' + link.icon"></i>
+               uib-tooltip="{{ link.title }}">
+                <i class="fa fa-fw" ng-class="'fa-' + link.icon"></i>
                 {{ link.title }}
             </a>
             <ribbon ng-if="link.ribbon" type="{{ link.ribbon }}"/>
