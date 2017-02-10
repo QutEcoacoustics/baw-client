@@ -19,7 +19,7 @@ angular
                         return;
                     }
 
-                    if(!$ctrl.resource[userKey] || $ctrl.resource[dateKey]) {
+                    if(!$ctrl.resource[userKey] || !$ctrl.resource[dateKey]) {
                         $ctrl.show = false;
                         return;
                     }
