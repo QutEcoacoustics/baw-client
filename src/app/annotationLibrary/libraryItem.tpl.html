@@ -14,27 +14,28 @@
                 </div>
                 <div class="panel-body">
                     <div class="list-group">
-                        <a ng-if="annotation.tags.length > 0"
+                        <a ng-if="annotation.taggings.length > 0"
                            class="list-group-item"
-                           ng-repeat="tag in annotation.tags"
-                           ng-href="{{tag.similarPartial}}"
+                           ng-repeat="tagging in annotation.taggings"
+                           ng-href="{{tagging.tag.similarPartial}}"
                            title="Tag.">
                             <span class="glyphicon glyphicon-tags"></span>&nbsp;
-                            <span class="badge">{{tag.typeOfTag.replace('_',' ')}}</span>
-                            <span class="badge" ng-show="tag.retired">retired</span>
-                            <span class="badge" ng-show="tag.isTaxanomic">taxonomic</span>
-                            {{tag.text}} (ID {{tag.id}})
+                            <span class="badge">{{tagging.tag.typeOfTag.replace('_',' ')}}</span>
+                            <span class="badge" ng-show="tagging.tag.retired">retired</span>
+                            <span class="badge" ng-show="tagging.tag.isTaxanomic">taxonomic</span>
+                            {{tagging.tag.text}} (ID {{tagging.tag.id}})
                         </a>
-                        <span ng-if="annotation.tags.length == 0"
+                        <span ng-if="annotation.taggings.length == 0"
                               class="list-group-item">
-                                <span class="glyphicon glyphicon-tags"></span>&nbsp;
-                                <small class="text-muted">no tags</small>
-                            </span>
+                            <span class="glyphicon glyphicon-tags"></span>&nbsp;
+                            <small class="text-muted">no tags</small>
+                        </span>
 
                         <a ng-show="annotation.isReference"
                            ng-href="{{annotation.urls.isReference}}"
 
-                           class="list-group-item" title="Reference tag.">
+                           class="list-group-item"
+                           title="This is reference annotation - one that was nominated as an example of exceptional quality.">
                             <span class="glyphicon glyphicon-book"></span>&nbsp;
                             Reference Annotation
                         </a>
