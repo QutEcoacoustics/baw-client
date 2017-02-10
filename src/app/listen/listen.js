@@ -614,7 +614,7 @@ angular
                             function success(value, headers) {
 
                                 // possible race condition: may no longer may be selected after async
-                                $scope.model.selectedAudioEvent.taggings[index] = new baw.Tagging(value);
+                                $scope.model.selectedAudioEvent.taggings[index] = new baw.Tagging(value.data);
                                 $scope.model.selectedAudioEvent.tags[index] = addedTag.tag;
 
                                 console.assert(
