@@ -1,8 +1,7 @@
 <div id="examples">
-    <a ng-repeat="(key,label) in $ctrl.labels" ng-class="{selected : (labelSelected(label) > -1)}" ng-click="toggleLabel(label)">
-        <i class="fa"
-           ng-class="{true: 'fa-check-square-o', false : 'fa-square-o'}[labelSelected(label)]"
-           aria-hidden="true"></i>
-        <citizen-science-example label="label"></citizen-science-example>
+    <div ng-repeat="(key,label) in $ctrl.labels" ng-class="{selected : (labelSelected(label) > -1)}" ng-click="toggleLabel(label)">
+        <div ng-repeat="(key,example) in label.examples">
+            <citizen-science-example example="example"></citizen-science-example>
+        </div>
     </div>
 </div>

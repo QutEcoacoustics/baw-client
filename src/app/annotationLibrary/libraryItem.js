@@ -72,7 +72,6 @@ angular
                     };
 
                     libraryCommon.addCalculatedProperties(annotation);
-
                     libraryCommon.getTags(commonData);
                     libraryCommon.getSiteMediaAndProject(commonData);
                     libraryCommon.getUsers(commonData);
