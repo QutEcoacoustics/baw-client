@@ -11,32 +11,33 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
                 var self = this;
 
                 /**
-                 * If the label is already in the list of labels for this sample, remove it
-                 * otherwise add it. Send the new set of labels to the dataset
+                 * Add or remove the lable num to the list of selected labels for this sample
+                 * Send the new set of labels to the dataset
                  * Note, we can't guarantee the order that the api calls will reach the google sheet.
                  * if the user adds and removes a label in quick succession, they might arrive out of order
                  * resulting in the wrong labels being applied.
                  * @param label string
                  */
-                $scope.toggleLabel = function (label) {
+                $scope.toggleLabel = function (labelNum) {
 
                     var currentSample = self.samples[self.currentSampleNum];
-                    var index = self.indexOfArray(currentSample.labels, label.tags);
 
-                    if (index === -1) {
-                        currentSample.labels.push(label.tags);
-                    } else {
-                        currentSample.labels.splice(index, 1);
-                    }
+                    currentSample.labels[labelNum] = !currentSample.labels[labelNum];
 
                     currentSample.done = true;
+
+                    var tags = self.labels.filter(function (value, index) {
+                        return currentSample.labels[index];
+                    }).map(function (value) {
+                        return value.tags;
+                    });
 
                     var url = CitizenScienceCommon.apiUrl("setLabels",
                         self.csProject,
                         currentSample.name,
                         currentSample.recordingId,
                         currentSample.startOffset,
-                        CitizenScienceCommon.labelsAsString(currentSample.labels));
+                        CitizenScienceCommon.labelsAsString(tags));
                     $http.get(url).then(function (response) {
                         console.log(response.data);
                     });
@@ -44,45 +45,20 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
                 };
 
                 /**
-                 * given an array of arrays "outerArray", and an array "arr",
-                 * returns the index of containingArray that matches arr
-                 */
-                self.indexOfArray = function (outerArray, arr) {
-                    var i,j,curSame;
-                    arr = arr.sort();
-                    for (i = 0; i < outerArray.length; i++) {
-                        if(arr.length !== outerArray[i].length) {
-                            continue;
-                        }
-                        outerArray[i] = outerArray[i].sort();
-                        curSame = true;
-                        for(j = arr.length; j--;) {
-                            if(arr[j] !== outerArray[i][j]) {
-                                curSame = false;
-                                break;
-                            }
-
-                        }
-                        if (curSame) {
-                            return i;
-                        }
-                    }
-                    return -1;
-                };
-
-                /**
                  * Whether the label has been attached to the current sample
                  * @param label Object
                  * @returns Boolean
                  */
-                $scope.labelSelected = function (label) {
+                $scope.labelSelected = function (labelNum) {
                     if(self.currentSampleNum === -1) {
                         return false;
                     }
                     var currentSample = self.samples[self.currentSampleNum];
-                    var index = self.indexOfArray(currentSample.labels, label.tags);
-                    return (index > -1);
+
+                    return currentSample.labels[labelNum];
+
                 };
+
 
             }],
         bindings: {

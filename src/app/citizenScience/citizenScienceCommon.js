@@ -52,6 +52,50 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.mediaModel = null;
 
+        /**
+         * creates a labels array of boolean values in the sample object, signifying whether
+         * the current sample has the label's tags attached to it
+         * @param samples Array The samples that are being initialised
+         * @param labels array The list of possible labels
+         */
+        self.initSampleLabels = function (samples, labels) {
+
+            samples.forEach(function (sample) {
+
+                sample.labels = labels.map(function (label) {
+                    for (var i = 0; i < sample.tags.length; i++) {
+                        //TODO: make this more efficient (don't repeatedly join label tags)
+                        if (self.compareTags(sample.tags[i],label.tags)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+            });
+
+
+        };
+
+
+        /**
+         * Checks if a tag or array of tags is the same
+         * @param tags1 mixed string or array of strings
+         * @param tags2 mixed string or array of strings
+         */
+        self.compareTags = function (tags1, tags2) {
+
+            if (Array.isArray(tags1)) {
+                tags1 = tags1.sort().join("");
+            }
+            if (Array.isArray(tags2)) {
+                tags2 = tags2.sort().join("");
+            }
+
+            return tags1 === tags2;
+
+        };
+
         self.functions = {
 
             getAudioModel: function () {
@@ -111,6 +155,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                             //console.log(response.data);
                             var samples = response.data;
                             $scope.samples = samples;
+                            self.initSampleLabels($scope.samples, $scope.labels);
                             $scope.goToSample(0);
                         });
                     }
