@@ -116,56 +116,6 @@
     visibility: visible;
   }
 
-  #label-buttons {
-
-    background: rgba(0, 0, 0, 0.6);
-    width: 400px;
-    margin: 0px auto 0px auto;
-    text-align: center;
-    border-radius: 8px;
-    padding: 0px 20px 20px 20px;
-
-    a {
-      display: inline-block;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 5px;
-      width: auto;
-      padding: 5px 8px 5px 8px;
-      font-size: 18px;
-
-      cursor: pointer;
-      line-height: 1em;
-      color: #fff;
-
-      &:hover {
-        color: #eee;
-
-        .checkbox {
-          border-color: #eee;
-        }
-
-      }
-
-    }
-
-    a.selected {
-      i {
-        color: #8cc967;
-      }
-    }
-
-    i {
-      display: inline-block;
-      text-align: left;
-      width: 1.0em;
-      font-size: 2em;
-      position: relative;
-      top: 0.25em;
-    }
-
-  }
-
   .citsci-debug {
 
     position: absolute;

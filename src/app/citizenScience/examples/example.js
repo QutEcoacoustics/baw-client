@@ -53,6 +53,7 @@ angular.module("bawApp.components.citizenScienceExample", ["bawApp.citizenScienc
 
             }],
         bindings: {
-            example: "=example"
+            example: "=example",
+            selected: "=selected"
         }
     });

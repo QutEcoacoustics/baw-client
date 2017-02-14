@@ -59,6 +59,24 @@ angular.module("bawApp.components.citizenScienceLabels", ["bawApp.citizenScience
 
                 };
 
+                /**
+                 * Toggles whether the examples are showing for the given label number
+                 * hides examples from other labels.
+                 * TODO: move this into examples component
+                 * @param key int
+                 */
+                $scope.toggleShowExamples = function (key) {
+                    self.labels.forEach(function (el, index) {
+                        if (index !== key) {
+                            el.showExamples = false;
+                        } else if (el.hasOwnProperty("showExamples")) {
+                            el.showExamples = !el.showExamples;
+                        } else {
+                            el.showExamples = true;
+                        }
+                    });
+                };
+
 
             }],
         bindings: {

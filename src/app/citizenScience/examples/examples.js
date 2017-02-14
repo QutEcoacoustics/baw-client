@@ -6,30 +6,33 @@ angular.module("bawApp.components.citizenScienceExamples", ["bawApp.citizenScien
             "$http",
             "CitizenScienceCommon",
             function ($scope, $http, CitizenScienceCommon) {
-                //console.log("dataset progress component scope");console.log($scope);
+
 
                 var self = this;
 
-                /**
-                 * if the label is already in the list of labels for this sample, remove it
-                 * otherwise add it. Send the new set of labels to the dataset
-                 * Note, we can't guarantee the order that the api calls will reach the google sheet.
-                 * if the user adds and removes a label in quick succession, they might arrive out of order
-                 * resulting in the wrong labels being applied.
-                 * @param label string
-                 */
-                $scope.showExample = function (exampleNum) {
-
-                    console.log(self);
-
-
+                $scope.changeCurExample = function (labelNum, changeBy) {
+                    var l = self.labels[labelNum].examples.length;
+                    self.labels[labelNum].curExample = ((self.labels[labelNum].curExample + changeBy % l) + l) % l;
+                    console.log("changed cur example for label " + labelNum + " to " + self.labels[labelNum].curExample);
                 };
+
+
+                /**
+                 * Initialize current example for all labels
+                 */
+                self.labels.forEach(function (label, index) {
+
+                    if (label.examples.length) {
+                        label.curExample = 0;
+                    } else {
+                        label.curExample = -1;
+                    }
+
+                });
+
 
             }],
         bindings: {
             labels: "=labels",
-            samples: "=samples",
-            currentSampleNum: "=currentSampleNum",
-            csProject: "=csProject"
         }
     });

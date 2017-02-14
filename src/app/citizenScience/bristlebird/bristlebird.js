@@ -63,12 +63,16 @@ class BristlebirdController {
                 "label": "Eastern Bristlebird",
                 "examples": [{
                     "annotationId": 124730
+                },{
+                    "annotationId": 124727
                 }]
             },
             {
                 "tags": ["ground_parrot", "type1"],
                 "label": "Ground Parrot",
-                "examples": []
+                "examples": [{
+                    "annotationId": 124622
+                }]
             },
             {
                 "tags": ["quoll", "type1"],
@@ -120,6 +124,7 @@ class BristlebirdController {
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
+         * @TODO: fix bug where it goes to the next segment at the end of a label example
          */
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
             var nextSampleNum = $scope.currentSampleNum + 1;
