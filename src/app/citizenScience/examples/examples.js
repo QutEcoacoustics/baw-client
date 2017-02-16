@@ -17,16 +17,21 @@ angular.module("bawApp.components.citizenScienceExamples", ["bawApp.citizenScien
                 };
 
 
-                /**
-                 * Initialize current example for all labels
-                 */
-                self.labels.forEach(function (label, index) {
+                $scope.$watch(function () { return self.labels; }, function (newValue, oldValue) {
 
-                    if (label.examples.length) {
-                        label.curExample = 0;
-                    } else {
-                        label.curExample = -1;
+                    if (Array.isArray(newValue)) {
+                        self.labels.forEach(function (label, index) {
+
+                            if (label.examples.length) {
+                                label.curExample = 0;
+                            } else {
+                                label.curExample = -1;
+                            }
+
+                        });
                     }
+
+
 
                 });
 

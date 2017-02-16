@@ -12,6 +12,8 @@ angular.module("bawApp.components.citizenScienceExample", ["bawApp.citizenScienc
 
                 console.log("hello example");
 
+                $scope.myName = "example";
+
                 var self = this;
 
                 // based on stuff in library item. may be able to make this more DRY

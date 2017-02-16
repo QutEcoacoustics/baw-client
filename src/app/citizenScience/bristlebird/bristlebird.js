@@ -56,31 +56,34 @@ class BristlebirdController {
 
         /**
          * Labels that the user can select.
-         * applies one or more tags which are not shown to the user
+         * applies one or more tags which are not shown to the user.
+         * example response from server
+         *   [{
+         *      "tags": ["ebb", "type1"],
+         *      "label": "Eastern Bristlebird",
+         *      "examples": [{
+         *          "annotationId": 124730
+         *      },{
+         *          "annotationId": 124727
+         *      },{
+         *           "annotationId": 98378
+         *       }]
+         *   },
+         *   {
+         *       "tags": ["ground_parrot", "type1"],
+         *       "label": "Ground Parrot",
+         *       "examples": [{
+         *           "annotationId": 124622
+         *       }]
+         *   },
+         *   {
+         *       "tags": ["quoll", "type1"],
+         *       "label": "Spotted Quoll",
+         *       "examples": []
+         *   }];
          */
-        $scope.labels = [{
-                "tags": ["ebb", "type1"],
-                "label": "Eastern Bristlebird",
-                "examples": [{
-                    "annotationId": 124730
-                },{
-                    "annotationId": 124727
-                },{
-                    "annotationId": 98378
-                }]
-            },
-            {
-                "tags": ["ground_parrot", "type1"],
-                "label": "Ground Parrot",
-                "examples": [{
-                    "annotationId": 124622
-                }]
-            },
-            {
-                "tags": ["quoll", "type1"],
-                "label": "Spotted Quoll",
-                "examples": []
-            }];
+
+        $scope.labels = [];
 
         self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
 
@@ -91,7 +94,16 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-
+        $http.get(CitizenScienceCommon.apiUrl(
+            "labels",
+            $scope.csProject
+        )).then(function (response) {
+            if (Array.isArray(response.data)) {
+                $scope.labels = response.data;
+            } else {
+                $scope.labels = [];
+            }
+        });
 
 
 
