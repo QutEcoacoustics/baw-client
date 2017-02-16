@@ -1,6 +1,7 @@
 
 .examples-container {
   text-align: center;
+  margin-top: 10px;
 }
 
 
@@ -11,11 +12,11 @@
   padding: 8px;
   min-width: 410px;
 
-  background: #ffffff;
+  background: rgba(255,255,255,0.9);
   border-radius: 5px;
-  -webkit-box-shadow: 3x 3px 5px rgba(0,0,0,0.3);
-  -moz-box-shadow: 3x 3px 5px rgba(0,0,0,0.3);
-  box-shadow: 3x 3px 5px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+  -moz-box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
 
 
   &.selected {

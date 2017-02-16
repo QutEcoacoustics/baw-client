@@ -91,6 +91,10 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
+
+
+
+
         /**
          * Sets the current sample to sampleNum
          * @param sample_num int the index of the samples array of json objects
@@ -126,14 +130,15 @@ class BristlebirdController {
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
-         * @TODO: fix bug where it goes to the next segment at the end of a label example
          */
-        $scope.$on(ngAudioEvents.ended, function navigate(event) {
-            var nextSampleNum = $scope.currentSampleNum + 1;
-            console.info("Changing page to next segment, which is segment " + nextSampleNum);
-            $scope.$safeApply($scope, function () {
-                $scope.goToSample(nextSampleNum);
-            });
+        $scope.$on(ngAudioEvents.ended, function navigate(event, model) {
+            if (model === $scope.model.audioElement) {
+                var nextSampleNum = $scope.currentSampleNum + 1;
+                console.info("Changing page to next segment, which is segment " + nextSampleNum);
+                $scope.$safeApply($scope, function () {
+                    $scope.goToSample(nextSampleNum);
+                });
+            }
         });
     }
 

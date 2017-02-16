@@ -174,7 +174,7 @@ angular.module("bawApp.directives.ngAudio", [
                     updateState(event);
 
                     console.debug("ngAudio:audioEvent:ended");
-                    scope.$emit(ngAudioEvents.ended, null);
+                    scope.$emit(ngAudioEvents.ended, target);
                 },
                 "error": function (event) {
                     console.error("ngAudio:audioElement:errorEvent", event);
