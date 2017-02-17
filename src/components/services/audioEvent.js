@@ -77,7 +77,7 @@ angular
                         return q;
                     });
 
-                    return $http.post(url, qb.toJSONString());
+                    return $http.post(url, qb.toJSON());
                 };
 
                 const filterUrl = paths.api.routes.audioEvent.filterAbsolute;
@@ -87,7 +87,7 @@ angular
                     });
 
                     return $http
-                        .post(filterUrl, query.toJSONString())
+                        .post(filterUrl, query.toJSON())
                         .then(x => AudioEventModel.makeFromApi(x));
                 };
 
@@ -100,7 +100,7 @@ angular
                         );
                     });
 
-                    return $http.post(filterUrl, query.toJSONString())
+                    return $http.post(filterUrl, query.toJSON())
                         .then(resultPager.loadAll)
                         .then(x => AudioEventModel.makeFromApi(x));
                 };

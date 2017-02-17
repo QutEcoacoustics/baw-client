@@ -1,3 +1,64 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/QutBioacoustics/baw-client/compare/v0.19.2...v1.1.0) (2017-02-13)
+
+This version introduces several major features, including an analysis jobs UI.
+Important changes also include new UI for menus, fixes to the annotation library
+, and fixes to various layout bugs.
+
+### Bug Fixes
+
+* **analysisJobs:** Large batch of bug fixes and stylistic tweaks ([21b0fc8](https://github.com/QutBioacoustics/baw-client/commit/21b0fc8))
+* **API:** Fix various premature string conversions ([7a678bf](https://github.com/QutBioacoustics/baw-client/commit/7a678bf)), closes [#280](https://github.com/QutBioacoustics/baw-client/issues/280)
+* **app:** 404 route no longer throws error ([0b21747](https://github.com/QutBioacoustics/baw-client/commit/0b21747))
+* **app:** Scrolling now resets on route change ([2f91518](https://github.com/QutBioacoustics/baw-client/commit/2f91518))
+* **associations:** Fix bad reference ([8e566a1](https://github.com/QutBioacoustics/baw-client/commit/8e566a1))
+* **browser:** Fixed bowser integration ([79b36a1](https://github.com/QutBioacoustics/baw-client/commit/79b36a1))
+* **draggabilly:** Fixed draggabilly directive ([1fa7699](https://github.com/QutBioacoustics/baw-client/commit/1fa7699))
+* **general:** Minor stylstic changes ([077ce43](https://github.com/QutBioacoustics/baw-client/commit/077ce43))
+* **gmaps:** Deprecated sensor QSP removed ([8bb8c59](https://github.com/QutBioacoustics/baw-client/commit/8bb8c59))
+* **jobs:** More UI compatibility changes ([076b112](https://github.com/QutBioacoustics/baw-client/commit/076b112))
+* **layout:** fix up various visual assets ([fecd31a](https://github.com/QutBioacoustics/baw-client/commit/fecd31a))
+* **layout:** Fixed full-screen container layout padding ([fcdab83](https://github.com/QutBioacoustics/baw-client/commit/fcdab83))
+* **layout:** fixed routes and site title ([7daa9b5](https://github.com/QutBioacoustics/baw-client/commit/7daa9b5))
+* **layout:** Incorrect default width for main content ([dd87e64](https://github.com/QutBioacoustics/baw-client/commit/dd87e64))
+* **layout:** Set container minimum height to force footer to bottom of screen. Fixes #283 ([8bf5ba2](https://github.com/QutBioacoustics/baw-client/commit/8bf5ba2)), closes [#283](https://github.com/QutBioacoustics/baw-client/issues/283)
+* **layout:** Updated layout to better handle page collapsing ([f1923d7](https://github.com/QutBioacoustics/baw-client/commit/f1923d7))
+* **library:** Fixed associations bug ([035d2a8](https://github.com/QutBioacoustics/baw-client/commit/035d2a8))
+* **library:** Fixed bad binding and title ([433f917](https://github.com/QutBioacoustics/baw-client/commit/433f917))
+* **library:** Single annotation view now shows its tags again ([bed39f2](https://github.com/QutBioacoustics/baw-client/commit/bed39f2)), closes [#291](https://github.com/QutBioacoustics/baw-client/issues/291)
+* **listen:** Event tagger was broken by transient library upgrade ([6b4d616](https://github.com/QutBioacoustics/baw-client/commit/6b4d616)), closes [#292](https://github.com/QutBioacoustics/baw-client/issues/292)
+* **models:** Added hack to support malformed response object returned by page loader ([3cdbb3e](https://github.com/QutBioacoustics/baw-client/commit/3cdbb3e))
+* **navigation:** SecondaryNavigation controller no longer overwrites objects ([f040e96](https://github.com/QutBioacoustics/baw-client/commit/f040e96))
+* **navigation:** Synchronize changes from server views ([6e3750e](https://github.com/QutBioacoustics/baw-client/commit/6e3750e))
+* **pagination:** Updated pagination hack ([be1b692](https://github.com/QutBioacoustics/baw-client/commit/be1b692))
+* **queryBuilder:** Fix unit tests ([907e31f](https://github.com/QutBioacoustics/baw-client/commit/907e31f))
+* **secondaryNavigation:**  Minor fixes ([db871e5](https://github.com/QutBioacoustics/baw-client/commit/db871e5))
+* **secondaryNavigation:** Fix null reference bug ([3ea5818](https://github.com/QutBioacoustics/baw-client/commit/3ea5818))
+* **users:** Default user image was causing browser errors ([e25f96e](https://github.com/QutBioacoustics/baw-client/commit/e25f96e))
+* **users:** User tile hide condition correction ([247c2ae](https://github.com/QutBioacoustics/baw-client/commit/247c2ae))
+* **userTile:** Made userTile more robust ([10b15f0](https://github.com/QutBioacoustics/baw-client/commit/10b15f0))
+
+### Features
+
+* **$url:** Update url module ([abce970](https://github.com/QutBioacoustics/baw-client/commit/abce970))
+* **app:** Added baw-href directive ([4621305](https://github.com/QutBioacoustics/baw-client/commit/4621305))
+* **navigation:** Added custom icon for annotations ([29267b1](https://github.com/QutBioacoustics/baw-client/commit/29267b1))
+* **navigation:** Secondary navigation completed ([0097b02](https://github.com/QutBioacoustics/baw-client/commit/0097b02))
+* **navigation:** Stanardizes the left hand menu ([65ad65e](https://github.com/QutBioacoustics/baw-client/commit/65ad65e)), closes [#260](https://github.com/QutBioacoustics/baw-client/issues/260)
+* **pagination:** Introduce pagination-href directive ([ebf5f7b](https://github.com/QutBioacoustics/baw-client/commit/ebf5f7b))
+* **uiHints:** Added a tip directive ([df23dc9](https://github.com/QutBioacoustics/baw-client/commit/df23dc9))
+* **analysisJobs**: Added analysis jobs UI! [#245](https://github.com/QutBioacoustics/baw-client/pull/245)
+* **queryBuilder**: toJSON standardized ([cd00962](https://github.com/QutBioacoustics/baw-client/commit/cd00962))
+* **annotationItem:** A new standard annotation item component has been created
+    * annotation item as component, used in library item ([7088801](https://github.com/QutBioacoustics/baw-client/commit/7088801))
+    * changed annotation item audio element to use correct key to get mime type. Fixes ([43cc545](https://github.com/QutBioacoustics/baw-client/commit/43cc545)), closes [#285](https://github.com/QutBioacoustics/baw-client/issues/285)
+    * position line in annotationItem comonent ([966d290](https://github.com/QutBioacoustics/baw-client/commit/966d290))
+* **security:** Added a new capabilities feature
+    * Fleshed out capability functionality ([542890b](https://github.com/QutBioacoustics/baw-client/commit/542890b))
+    * WIP Implementing client side capabilities ([850a658](https://github.com/QutBioacoustics/baw-client/commit/850a658))
+
+
+
 <a name="0.19.2"></a>
 ## [0.19.2](https://github.com/QutBioacoustics/baw-client/compare/v0.19.1...v0.19.2) (2016-07-07)
 

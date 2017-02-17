@@ -1,0 +1,15 @@
+.fa-baw-annotation {
+  &:before {
+    content: $fa-var-square-o;
+    position: relative;
+    margin-left: 0.1em;
+  }
+
+  &:after {
+    content: $fa-var-th-large + "\00a0" !important;
+    font-size: (2/3) * 100%;
+    position: relative;
+    top: -2px;
+    left: calc(-1em - (1/3 * 1px));
+  }
+}

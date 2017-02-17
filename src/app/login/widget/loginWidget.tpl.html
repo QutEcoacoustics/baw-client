@@ -14,8 +14,7 @@
            class="loginWidgetLink"
            target="_self">
             <span class="">{{profile.userName}}</span>
-            <img src="{{::defaultUserImage}}"
-                 ng-src="{{profile.imageUrls.tiny.url}}"
+            <img ng-src="{{profile.imageUrls.tiny.url || defaultUserImage}}"
                  class="loginWidgetImage">
         </a>
         <a ng-hide="loggedIn"

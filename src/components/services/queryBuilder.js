@@ -381,7 +381,7 @@ angular
 
                 function filterToQueryString(filterObject) {
                     var results = [];
-                    for(let [key, value] of Object.entries(filterObject)) {
+                    for (let [key, value] of Object.entries(filterObject)) {
                         if (!validCombinators.hasOwnProperty(key)) {
                             if (value.hasOwnProperty("eq")) {
                                 results.push(["filter_" + key, value.eq]);
@@ -417,7 +417,7 @@ angular
                         return this.end.call(query);
                     };
 
-                this.toJSON = function() {
+                    this.toJSON = function () {
                         var compiledQuery = {},
                             that = this;
 
@@ -427,11 +427,11 @@ angular
                             }
                         });
 
-                    return compiledQuery;
-                };
+                        return compiledQuery;
+                    };
 
-                this.toJSONString = function toJSON(spaces) {
-                    return JSON.stringify(this.toJSON(), null, spaces);
+                    this.toJSONString = function toJSON(spaces) {
+                        return JSON.stringify(this.toJSON(), null, spaces);
                     };
 
                     this.toQueryString = function toQueryString() {
