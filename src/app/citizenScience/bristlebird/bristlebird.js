@@ -37,7 +37,7 @@ class BristlebirdController {
          * currently all samples will be the same duration (not set per sample in the dataset)
          * @type {number}
          */
-        self.sampleDuration = 10;
+        self.sampleDuration = 25;
 
         /**
          * list of the samples, to be retrieved from the dataset
