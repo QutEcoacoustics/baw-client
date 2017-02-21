@@ -22,7 +22,7 @@ class JobNewController {
         this.analysisJob = new AnalysisJobModel();
 
         // the available scripts
-        this.scripts = [];
+        this.scripts = null;
 
         // download available scripts
         ScriptService

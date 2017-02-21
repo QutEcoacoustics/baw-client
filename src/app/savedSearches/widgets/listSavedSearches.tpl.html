@@ -1,7 +1,13 @@
 <!-- TODO: add typeahead filter-->
 <!-- TODO: add paging -->
 <div ng-if="!$ctrl.savedSearchesExist">
-    <p class="text-muted">No data sets exist. Try creating a new one.</p>
+    <p class="text-muted text-center">
+        <small>
+            <em>
+                No data sets exist. Try creating a new one.
+            </em>
+        </small>
+    </p>
 </div>
 <table class="table table-hover" ng-if="$ctrl.savedSearchesExist">
     <caption>

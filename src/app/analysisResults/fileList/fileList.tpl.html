@@ -71,9 +71,13 @@
             <tbody>
             <tr ng-if="!fileList.analysisResult.children || fileList.analysisResult.children.length === 0">
                 <td colspan="4">
-                        <span class="text-muted">
-                            No files in this folder
-                            </span>
+                    <p class="text-muted text-center">
+                        <small>
+                            <em>
+                                No files in this folder.
+                            </em>
+                        </small>
+                    </p>
                 </td>
             </tr>
             <tr ng-repeat="file in fileList.analysisResult.children">
