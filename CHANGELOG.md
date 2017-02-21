@@ -1,3 +1,14 @@
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/QutBioacoustics/baw-client/compare/v1.1.0...v1.1.1) (2017-02-21)
+
+
+### Bug Fixes
+
+* **analysisJobs:** Adds placeholder messages for empty data templates ([5d1b28e](https://github.com/QutBioacoustics/baw-client/commit/5d1b28e)), closes [#294](https://github.com/QutBioacoustics/baw-client/issues/294)
+* **menu:** Dropdown menu now works again ([9fc507c](https://github.com/QutBioacoustics/baw-client/commit/9fc507c))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/QutBioacoustics/baw-client/compare/v0.19.2...v1.1.0) (2017-02-13)
 
