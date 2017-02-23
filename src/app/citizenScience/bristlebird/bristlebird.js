@@ -54,6 +54,22 @@ class BristlebirdController {
         // to be populated after getting samples from dataset
         $scope.media = null;
 
+
+        $scope.onboardingSteps = [
+            {
+                element: document.querySelector(".citizen-science .spectrogram-wrapper"),
+                intro: "This shows a picture of the audio as a spectrogram."
+            },
+            {
+                element: document.querySelector("dataset-progress"),
+                intro: "This shows how many clips you have listened do, and lets you navigate between clips"
+            },
+            {
+                element: document.querySelector(".autoplay"),
+                intro: "Switch this on to automatically progress to the next clip and play it."
+            }
+        ];
+
         /**
          * Labels that the user can select.
          * applies one or more tags which are not shown to the user.
@@ -105,7 +121,18 @@ class BristlebirdController {
             }
         });
 
-
+        /**
+         * Get settings from sheet
+         */
+        $http.get(CitizenScienceCommon.apiUrl(
+            "settings",
+            $scope.csProject
+        )).then(function (response) {
+            $scope.settings = response.data;
+            if ($scope.settings.hasOwnProperty("sampleDuration")) {
+                self.sampleDuration = $scope.settings.sampleDuration;
+            }
+        });
 
         /**
          * Sets the current sample to sampleNum
@@ -161,7 +188,8 @@ angular
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
         "bawApp.components.citizenScienceLabels",
-        "bawApp.components.citizenScienceExamples"
+        "bawApp.components.citizenScienceExamples",
+        "bawApp.components.onboarding"
     ])
     .controller(
         "BristlebirdController",

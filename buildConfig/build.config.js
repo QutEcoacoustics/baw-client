@@ -152,7 +152,10 @@ module.exports = {
             "vendor/ace-builds/src-min-noconflict/mode-yaml.js",
             "vendor/ace-builds/src-min-noconflict/mode-xml.js",
             "vendor/ace-builds/src-min-noconflict/theme-xcode.js",
-            "vendor/angular-ui-ace/ui-ace.js"
+            "vendor/angular-ui-ace/ui-ace.js",
+
+            "vendor/intro.js/intro.js",
+            "vendor/angular-intro.js/src/angular-intro.js"
         ],
         css: [
             // NOTE: bootstrap css imported in application.tpl.scss
@@ -167,7 +170,9 @@ module.exports = {
 
             "vendor/angular-loading-bar/build/loading-bar.css",
 
-            "vendor/c3/c3.css"
+            "vendor/c3/c3.css",
+
+            "vendor/intro.js/introjs.css"
         ],
         assets: [
             // jquery-ui is stoopid, special case
