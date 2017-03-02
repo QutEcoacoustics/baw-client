@@ -63,6 +63,7 @@ angular.module("baw",
         "angular-growl",
         "LocalStorageModule",
         "angular-loading-bar",
+        "angular-intro",
         "bawApp.vendorServices", /* Loads all vendor libraries that are automatically wrapped in a module */
 
 
@@ -118,7 +119,8 @@ angular.module("baw",
         "bawApp.uiHints",
         "bawApp.users",
         "bawApp.birdWalks",
-        "bawApp.visualize"
+        "bawApp.visualize",
+        "bawApp.citizenScience"
     ])
 
     .config(
@@ -268,7 +270,38 @@ angular.module("baw",
                     title: "Visualize audio distribution",
                     fullWidth: true,
                     reloadOnSearch: false
-                }).when("/", {
+                }).
+            when("/citsci", {
+                templateUrl: "citizenScience/citizenScience.tpl.html",
+                controller: "CitizenScienceController",
+                title: "Citizen Science Page",
+                fullWidth: true
+            }).
+            when("/citsci/bristlebird", {
+                templateUrl: "citizenScience/bristlebird/about.tpl.html",
+                controller: "BristlebirdAboutController",
+                title: "Bristlebird Citizen Science",
+                fullWidth: true
+            }).
+            when("/citsci/bristlebird/listen", {
+                templateUrl: "citizenScience/bristlebird/listen.tpl.html",
+                controller: "BristlebirdController",
+                title: "Bristlebird Citizen Science",
+                fullWidth: true
+            }).
+            when("/citsci/ipswich", {
+                templateUrl: "citizenScience/ipswich/about.tpl.html",
+                controller: "IpswichAboutController",
+                title: "Ipswich School Citizen Science",
+                fullWidth: true
+            }).
+            when("/citsci/ipswich/listen", {
+                templateUrl: "citizenScience/ipswich/listen.tpl.html",
+                controller: "IpswichController",
+                title: "Ipswich School Citizen Science",
+                fullWidth: true
+            }).
+                when("/", {
                     templateUrl: paths.site.files.home,
                     controller: "HomeCtrl",
                     title: "Home",

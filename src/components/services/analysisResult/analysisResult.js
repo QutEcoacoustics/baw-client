@@ -30,8 +30,8 @@ angular
                         {analysisJobId, recordingId}
                     );
                     return $http
-                        .get(url)
-                        .then(x => AnalysisResultModel.makeFromApi(x));
+                            .get(url)
+                            .then(x => AnalysisResultModel.makeFromApi(x));
                 }
 
                 function get(analysisJobId, path, page = 1) {
@@ -47,8 +47,8 @@ angular
                     }).toQueryString();
 
                     return $http
-                        .get(url, {params: pageParams})
-                        .then(x => AnalysisResultModel.makeFromApi(x));
+                            .get(url, {params: pageParams})
+                            .then(x => AnalysisResultModel.makeFromApi(x));
                 }
 
                 return {

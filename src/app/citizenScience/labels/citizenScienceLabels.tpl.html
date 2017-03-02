@@ -1,0 +1,9 @@
+<div id="label-buttons">
+        <span ng-repeat="(key,label) in $ctrl.labels" ng-class="{selected : (labelSelected(key) > -1)}">
+        <a  ng-click="toggleLabel(key)" class="main-button">
+        <i class="fa"
+           ng-class="{true: 'fa-check-square-o', false : 'fa-square-o'}[labelSelected(key)]"
+           aria-hidden="true"></i><span>{{label.label}}</span>
+        <a><a class="fa fa-eye example-toggle" aria-hidden="true" ng-click="toggleShowExamples(key)" ng-class="{selected : (label.showExamples)}" ng-if="label.examples.length"></a>
+    </span>
+</div>

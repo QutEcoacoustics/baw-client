@@ -100,6 +100,14 @@ angular
 
                     libraryCommon.addCalculatedProperties(audioEvent);
 
+                    // todo: add these from user preferences
+                    audioEvent.audioElement = {
+                        volume: 1,
+                        muted: false,
+                        autoPlay: false,
+                        position: 0
+                    };
+
                     $scope.annotations.push(audioEvent);
                 });
 

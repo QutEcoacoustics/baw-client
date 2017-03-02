@@ -82,7 +82,6 @@ angular.module("bawApp.directives.ngAudio", [
                     return target ? target.position : null;
                 }, function (newValue, oldValue) {
                     if (newValue !== null) {
-
                         // We must not forward bind constantly.
                         // This is an attempt to disable bind looping (creates jittery playback).
                         // Only a problem when playing (currentTime is constantly changing)
@@ -91,7 +90,6 @@ angular.module("bawApp.directives.ngAudio", [
                         if (rafOn && (lastRafPosition === newValue || newValue === element.currentTime)) {
                             return;
                         }
-
                         element.currentTime = newValue;
                     }
                     // else ignore change
@@ -176,7 +174,7 @@ angular.module("bawApp.directives.ngAudio", [
                     updateState(event);
 
                     console.debug("ngAudio:audioEvent:ended");
-                    scope.$emit(ngAudioEvents.ended, null);
+                    scope.$emit(ngAudioEvents.ended, target);
                 },
                 "error": function (event) {
                     console.error("ngAudio:audioElement:errorEvent", event);

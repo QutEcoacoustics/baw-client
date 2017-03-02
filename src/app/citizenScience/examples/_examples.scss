@@ -1,0 +1,77 @@
+
+.examples-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+
+.label-examples {
+
+  display: none;
+  position: relative;
+  padding: 8px;
+  min-width: 410px;
+
+  background: rgba(255,255,255,0.9);
+  border-radius: 5px;
+  -webkit-box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+  -moz-box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+
+
+  &.selected {
+    display: inline-block;
+  }
+
+  .citizen-science-example {
+
+    display: none;
+
+
+
+    &.selected {
+
+      display: inline-block;
+
+
+    }
+
+
+  }
+
+
+  h3 {
+    text-align: center;
+    font-size: 1.2em;
+    max-width: 350px;
+    padding-left: 50px;
+    padding-right: 50px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+
+    span {
+      max-width: calc(100% - 100px);
+    }
+
+    .arrow {
+      font-size: 1.4em;
+      position: absolute;
+
+      &.prev {
+        left: 0px;
+      }
+
+      &.next {
+        right: 0px;
+      }
+
+    }
+
+  }
+
+
+
+
+}
+
