@@ -1,0 +1,24 @@
+.info-launch {
+  cursor: pointer;
+  opacity: 0.8;
+
+  &:before {
+    /* questionmark: f059
+       information: f05a */
+    content: "\f05a";
+    font-family: FontAwesome;
+
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+
+}
+
+h1, h2, h3 {
+  .info-launch {
+    float: right;
+  }
+}
+

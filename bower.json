@@ -30,13 +30,13 @@
     "filesize": "^3.2.1",
     "angular-ui-ace": "bower",
     "angular-messages": "^1.5.0",
-    "c3": "git://github.com/masayuki0812/c3.git#98769492d07b6103bfc30a0254ccb1e1ec1cca50"
+    "c3": "git://github.com/masayuki0812/c3.git#98769492d07b6103bfc30a0254ccb1e1ec1cca50",
+    "angular-intro.js": "~3.0.1"
   },
   "dependencies": {},
   "private": true,
   "resolutions": {
     "angular": "1.5.x",
-    "get-size": "~2.0.2",
     "font-awesome": "^4.5.0"
   }
 }

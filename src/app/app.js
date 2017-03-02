@@ -63,6 +63,7 @@ angular.module("baw",
         "angular-growl",
         "LocalStorageModule",
         "angular-loading-bar",
+        "angular-intro",
         "bawApp.vendorServices", /* Loads all vendor libraries that are automatically wrapped in a module */
 
 
