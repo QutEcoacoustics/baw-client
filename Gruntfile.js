@@ -922,12 +922,12 @@ module.exports = function (grunt) {
 
     grunt.registerTask("release", "bump, changelog, commit, and publish to Github", function (type) {
 
-        if (!type) {
+        if (!type && !grunt.option("setversion")) {
             grunt.fatal(new Error("release task must have a type supplied"));
         }
 
         grunt.task.run([
-            "bump-only:" + type,
+            "bump-only" + (type && (":" + type) || ""),
             "conventionalChangelog",
             "editor:changelog",
             "bump-commit"

@@ -99,30 +99,42 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="script in jobNew.scripts"
-                    ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
-                    ng-click="jobNew.scriptSelect(script.id)">
-                    <td>
-                        <label>
+                    <tr ng-if="jobNew.scripts && jobNew.scripts.length === 0">
+                        <td colspan="5">
+                            <p class="text-muted text-center">
+                                <small>
+                                    <em>
+                                        No analysis scripts are available yet.
+                                        Please contact the site administrator and ask them to add some.
+                                    </em>
+                                </small>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="script in jobNew.scripts"
+                        ng-class="{active: jobNew.analysisJob.scriptId === script.id }"
+                        ng-click="jobNew.scriptSelect(script.id)">
+                        <td>
+                            <label>
 
-                            <input type="radio" name="analysisType"
-                                   ng-value="script.id"
-                                   ng-model="jobNew.analysisJob.scriptId">
-                        </label>
-                    </td>
-                    <td>
-                        {{ script.name }}
-                    </td>
-                    <td>
-                        {{ script.version }}
-                    </td>
-                    <td>
-                        {{ script.description }}
-                    </td>
-                    <td>
-                        <user-tile mode="created" resource="script" skinny></user-tile>
-                    </td>
-                </tr>
+                                <input type="radio" name="analysisType"
+                                       ng-value="script.id"
+                                       ng-model="jobNew.analysisJob.scriptId">
+                            </label>
+                        </td>
+                        <td>
+                            {{ script.name }}
+                        </td>
+                        <td>
+                            {{ script.version }}
+                        </td>
+                        <td>
+                            {{ script.description }}
+                        </td>
+                        <td>
+                            <user-tile mode="created" resource="script" skinny></user-tile>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

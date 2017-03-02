@@ -17,7 +17,7 @@ angular
                         let controller = this;
 
 
-                        this.analysisJobs = [];
+                        this.analysisJobs = null;
 
                         this.newAnalysisJobRoute = paths.site.ngRoutes.analysisJobs.new;
 
