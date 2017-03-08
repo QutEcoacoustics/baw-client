@@ -68,34 +68,38 @@ angular.module("bawApp.components.background", [])
                 });
 
                 /**
-                 * called after page load or resize
+                 * called after page load, resize or scroll
                  * updates the size and position of the bound element
+                 * sets top left to top left of window,
+                 * and height and width to match that of the window
                  */
                 self.resize = function () {
-                    var newHeight = $window.innerHeight - 5;
-                    var newWidth = $window.innerWidth - 5;
-
+                    var newHeight = $window.innerHeight - 20;
+                    var newWidth = $window.innerWidth - 6;
+                    var parentOffsetV = 2-self.element.parentElement.getBoundingClientRect().top;
+                    var parentOffsetH = 2-self.element.parentElement.getBoundingClientRect().left;
                     angular.element(self.element.parentElement).css("position","relative");
-
                     var css = {
                         "height": newHeight + "px",
                         "width": newWidth + "px",
-                        "top": (2-self.element.parentElement.getBoundingClientRect().top) + "px",
-                        "left": (2-self.element.parentElement.getBoundingClientRect().left) + "px"
+                        "top": parentOffsetV + "px",
+                        "left":  parentOffsetH + "px"
                     };
-
                     angular.element(self.element).css(css);
-
                 };
+
+                angular.element($window).bind("scroll", self.resize);
+                angular.element($window).bind("resize", self.resize);
+
+                // This is necessary incase other dom changes move the parent element
+                // as the page is loading.
                 scope.$watch(function () {
-                    return self.element.parentElement.getBoundingClientRect().right;
-                }, function (oldVal, newVal) {
-                    self.resize();
-                });
+                    return self.element.parentElement.getBoundingClientRect();
+                }, self.resize, true);
+
+
                 self.resize();
-                angular.element($window).bind("resize", function () {
-                    self.resize();
-                });
+
             }
         };
     }]);
