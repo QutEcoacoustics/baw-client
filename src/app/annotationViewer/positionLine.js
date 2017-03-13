@@ -12,6 +12,21 @@ angular
                 // TODO: remove this binding
                 imageClass: "<imageClass"
             },
+            controller: function () {
+                this.dragOptions = {
+                    axis: "x",
+                    containment: true,
+                    useLeftTop: false,
+                    dragMove: function dragMoveSetPosition(scope, draggie, event, pointer) {
+
+                        var position = scope.model.converters.pixelsToSeconds(draggie.position.x);
+
+                        scope.model.audioElement.position = position;
+
+                        //updateScope();
+                    }
+                };
+            },
             link: function (scope, elements, attributes, controller) {
 
                 // the dom element for the spectrogram image that is used to get
@@ -118,6 +133,10 @@ angular
                 angular.element($window).on("resize", function () {
                     scope.$apply();
                 });
+
+
+
+
 
             }
         };

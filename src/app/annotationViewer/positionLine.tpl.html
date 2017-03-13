@@ -1,6 +1,10 @@
 <div class="positionLineContainer">
-    <div class="positionLine" baw-translate-x="getOffset(true)">
-        &nbsp;
+    <div class="positionLine"
+         baw-translate-x="getOffset(true)"
+         ng-class="{hidden: !audioData.canPlay}"
+         draggie drag-options="$scrl.dragOptions">
+        <div class="grab-bottom-center grab-handle-tail grab-handle-angle-0"
+        ></div>
     </div>
 </div>
 

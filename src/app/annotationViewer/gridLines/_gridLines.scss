@@ -101,6 +101,8 @@ $scale-background:  #f5f5f5; //#7eff5f
     }
   }
 
+
+
   & .yTitle {
     @include scale-title-base;
 
@@ -125,5 +127,13 @@ $scale-background:  #f5f5f5; //#7eff5f
     height: auto;
 
 
+  }
+}
+
+
+.dark {
+  & .yScale span {
+    background-color: transparent;
+    color: #fff;
   }
 }
