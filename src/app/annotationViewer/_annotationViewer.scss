@@ -135,6 +135,20 @@ baw-annotation-viewer {
 
     & .positionLine {
 
+      right: solid 1px $spectrogramProgressLine;
+      background-color: $spectrogramProgressLine;
+      height: 100%;
+      width: 1px;
+      position: absolute;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      @include vendor-prefix(transform, translate3d(0px, 0, 0));
+
+      &.hidden {
+          display: none;
+      }
+
       > .grab-bottom-center {
         bottom: -$grab-handle-bottom-shift;
         left: 0.3px
