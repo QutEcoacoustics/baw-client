@@ -94,7 +94,9 @@ angular.module("bawApp.components.background", [])
                 // This is necessary incase other dom changes move the parent element
                 // as the page is loading.
                 scope.$watch(function () {
-                    return self.element.parentElement.getBoundingClientRect();
+                    return 0;
+                    // disabled this because it is broken
+                    //return self.element.parentElement.getBoundingClientRect();
                 }, self.resize, true);
 
 
