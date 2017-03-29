@@ -14,6 +14,7 @@ class BristlebirdAboutController {
 
 class BristlebirdController {
     constructor($scope,
+                $rootScope,
                 $routeParams,
                 $http,
                 ngAudioEvents,
@@ -155,6 +156,7 @@ class BristlebirdController {
                 console.log("load audio for sample " + $scope.currentSampleNum);
                 var currentSample = $scope.samples[$scope.currentSampleNum];
                 self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
+                $rootScope.bgImageSource = self.backgroundPaths[$scope.currentSampleNum % (self.backgroundPaths.length - 1)];
             }
         });
 
@@ -179,6 +181,14 @@ class BristlebirdController {
                 });
             }
         });
+
+
+        self.pathToBackgrounds = "/build/assets/img/citizen-science/backgrounds/";
+        self.backgroundPaths = ["1.jpg","2.jpg","3.jpg","4.jpg"].map(fn => self.pathToBackgrounds + fn);
+
+        console.log(self.backgroundPaths);
+
+
     }
 
 }
@@ -195,6 +205,7 @@ angular
         "BristlebirdController",
         [
             "$scope",
+            "$rootScope",
             "$routeParams",
             "$http",
             "ngAudioEvents",

@@ -1,0 +1,33 @@
+
+
+.background {
+  overflow: hidden;
+  z-index: -20;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  background: center top no-repeat;
+  background-size: cover;
+
+
+
+  &.preloading {
+    transition: none;
+    opacity: 1;
+  }
+
+  &.ready {
+    opacity: 0;
+    transition: opacity .5s ease-in-out;
+    -moz-transition: opacity .5s ease-in-out;
+    -webkit-transition: opacity .5s ease-in-out;
+  }
+
+
+}
+
+.bgBottom {
+  z-index: -22;
+}
