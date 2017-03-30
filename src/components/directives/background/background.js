@@ -6,10 +6,20 @@ angular.module("bawApp.components.background", [])
 
             var self = this;
 
+            /**
+             * Loads the old url into the back bg div (so, two copies of the same image one behind the other)
+             * Preloads image. When loaded, sets the state to 'ready', which is opacity 1 with transition.
+             * Then, loads the new url into the front bg div.
+             * Sets state of the front div to preloading, which is opacity 0 with no transition.
+             * This will continue to show the old bg in the bgBack div.
+             * This will fade in the new bg image infront of the old one.
+             * @param newUrl
+             * @param oldUrl
+             */
+
             self.setBg = function (newUrl, oldUrl) {
 
-                $scope.bgFront = oldUrl;
-
+                $scope.bgBack = oldUrl;
                 $scope.state = "preloading";
 
                 var preload = new Image();
@@ -20,28 +30,32 @@ angular.module("bawApp.components.background", [])
                 } else {
                     preload.addEventListener("load", function (e) {
                         self.bgLoaded(e.srcElement.src);
+                        this.remove();
                     });
                     preload.addEventListener("error", function() {
-                        console.log("Error loading background image");
+                        console.warn("Error loading background image", this);
+                        this.remove();
                     });
                 }
 
             };
 
+            /**
+             * Updates the src of the front image and sets the state to ready, which
+             * switches the opacity to 1. Called when the preloading is done.
+             * @param newUrl
+             */
             self.bgLoaded = function (newUrl) {
-
-                console.log("next bg image loaded", newUrl);
-
-                $scope.bgBack = newUrl;
-
-                $scope.state = "ready";
+                $scope.bgFront = newUrl;
+                setTimeout(function () {
+                    $scope.state = "ready";
+                }, 100);
             };
 
-
             $rootScope.$watch("bgImageSource", function (newval, oldval) {
-
-                console.log("background image source changed", newval);
-
+                if (typeof newval !== "string") {
+                    return;
+                }
                 self.setBg(newval, oldval);
 
             });
