@@ -23,7 +23,8 @@ class BristlebirdController {
                 MediaModel,
                 UserProfile,
                 UserProfileEvents,
-                CitizenScienceCommon) {
+                CitizenScienceCommon,
+                bgImage) {
 
         var self = this;
 
@@ -156,7 +157,8 @@ class BristlebirdController {
                 console.log("load audio for sample " + $scope.currentSampleNum);
                 var currentSample = $scope.samples[$scope.currentSampleNum];
                 self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
-                $rootScope.bgImageSource = self.backgroundPaths[$scope.currentSampleNum % (self.backgroundPaths.length - 1)];
+                var bgPath = self.backgroundPaths[$scope.currentSampleNum % (self.backgroundPaths.length - 1)];
+                bgImage.curBg = bgPath;
             }
         });
 
@@ -199,7 +201,8 @@ angular
         "bawApp.citizenScience.common",
         "bawApp.components.citizenScienceLabels",
         "bawApp.components.citizenScienceExamples",
-        "bawApp.components.onboarding"
+        "bawApp.components.onboarding",
+        "bawApp.components.background"
     ])
     .controller(
         "BristlebirdController",
@@ -215,6 +218,7 @@ angular
             "UserProfile",
             "UserProfileEvents",
             "CitizenScienceCommon",
+            "bgImage",
             BristlebirdController
         ])
     .controller(
