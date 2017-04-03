@@ -15,14 +15,16 @@
 
   &.preloading {
     transition: none;
+    -moz-transition: none;
+    -webkit-transition: none;
     opacity: 0;
   }
 
-  &.ready {
+  &.fadeIn, &.done {
     opacity: 1;
-    transition: opacity .5s ease-in-out;
-    -moz-transition: opacity .5s ease-in-out;
-    -webkit-transition: opacity .5s ease-in-out;
+    transition: opacity .9s ease-in-out;
+    -moz-transition: opacity .9s ease-in-out;
+    -webkit-transition: opacity .9s ease-in-out;
   }
 
 
