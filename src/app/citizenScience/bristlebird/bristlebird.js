@@ -14,7 +14,6 @@ class BristlebirdAboutController {
 
 class BristlebirdController {
     constructor($scope,
-                $rootScope,
                 $routeParams,
                 $http,
                 ngAudioEvents,
@@ -205,7 +204,6 @@ angular
         "BristlebirdController",
         [
             "$scope",
-            "$rootScope",
             "$routeParams",
             "$http",
             "ngAudioEvents",
