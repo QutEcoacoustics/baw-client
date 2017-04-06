@@ -1,3 +1,42 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/QutBioacoustics/baw-client/compare/v1.1.1...v1.2.0) (2017-03-27)
+
+
+### Bug Fixes
+
+* **app:** Scrolling now resets on route change ([7882834](https://github.com/QutBioacoustics/baw-client/commit/7882834))
+* **associations:** Fix bad reference ([5502809](https://github.com/QutBioacoustics/baw-client/commit/5502809))
+* **browser:** Fixed bowser integration ([25926ef](https://github.com/QutBioacoustics/baw-client/commit/25926ef))
+* **citizenScience:** changed ebb listen page to use bootstrap grid for reponsive layout of examples ([346257a](https://github.com/QutBioacoustics/baw-client/commit/346257a))
+* **citizenScience:** disabled background watching for change in parent client rectangle because it wa ([8584cd3](https://github.com/QutBioacoustics/baw-client/commit/8584cd3))
+* **citizenScience:** full-window background is now fixed (doesnt scroll with other page content). ([21d999b](https://github.com/QutBioacoustics/baw-client/commit/21d999b))
+* **citizenScienceExamples:** fixed bug where ended event from examples audio caused navigation to next sample ([0eb30eb](https://github.com/QutBioacoustics/baw-client/commit/0eb30eb))
+* **citizenScienceLabels:** changed labels model structure to allow multiple examples as array ([ea6683f](https://github.com/QutBioacoustics/baw-client/commit/ea6683f))
+* **draggabilly:** Fixed draggabilly directive ([2602b6d](https://github.com/QutBioacoustics/baw-client/commit/2602b6d))
+* **gmaps:** Deprecated sensor QSP removed ([a8d038a](https://github.com/QutBioacoustics/baw-client/commit/a8d038a))
+* **layout:** fix up various visual assets ([f38391c](https://github.com/QutBioacoustics/baw-client/commit/f38391c))
+* **layout:** Fixed full-screen container layout padding ([17d2b35](https://github.com/QutBioacoustics/baw-client/commit/17d2b35))
+* **layout:** fixed routes and site title ([fa31f00](https://github.com/QutBioacoustics/baw-client/commit/fa31f00))
+* **library:** Fixed associations bug ([79d72d2](https://github.com/QutBioacoustics/baw-client/commit/79d72d2))
+* **library:** Fixed bad binding and title ([3e98d08](https://github.com/QutBioacoustics/baw-client/commit/3e98d08))
+* **pagination:** Updated pagination hack ([97fa379](https://github.com/QutBioacoustics/baw-client/commit/97fa379))
+* **positionLine:** restored css so position line is not hidden ([9746142](https://github.com/QutBioacoustics/baw-client/commit/9746142))
+* **secondaryNavigation:**  Minor fixes ([0c8bc2f](https://github.com/QutBioacoustics/baw-client/commit/0c8bc2f))
+* **secondaryNavigation:** Fix null reference bug ([9759f84](https://github.com/QutBioacoustics/baw-client/commit/9759f84))
+
+### Features
+
+* **$url:** Update url module ([d752b5d](https://github.com/QutBioacoustics/baw-client/commit/d752b5d))
+* **citizenScienceExample:** citizen science example is displayed using annotation-item component ([6b1730e](https://github.com/QutBioacoustics/baw-client/commit/6b1730e))
+* **citizenScienceExamples:** add new dummy example to test layout for long duration spectrogram example ([8adbdab](https://github.com/QutBioacoustics/baw-client/commit/8adbdab))
+* **citizenScienceExamples:** load labels from google sheet, rather than hardcoded ([f1333aa](https://github.com/QutBioacoustics/baw-client/commit/f1333aa))
+* **citzenScienceExamples:** styling and interaction for examples ([aac1164](https://github.com/QutBioacoustics/baw-client/commit/aac1164))
+* **navigation:** Secondary navigation completed ([81c473f](https://github.com/QutBioacoustics/baw-client/commit/81c473f))
+* **onboarding:** Added onboarding feature. Closes #299. ([edaf3a7](https://github.com/QutBioacoustics/baw-client/commit/edaf3a7)), closes [#299](https://github.com/QutBioacoustics/baw-client/issues/299)
+* **pagination:** Introduce pagination-href directive ([f6efe48](https://github.com/QutBioacoustics/baw-client/commit/f6efe48))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/QutBioacoustics/baw-client/compare/v1.1.0...v1.1.1) (2017-02-21)
 

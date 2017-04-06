@@ -1,11 +1,12 @@
 {
   "name": "baw-client",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "devDependencies": {
     "angular": "1.5.x",
     "angular-bootstrap": "1.1.x",
     "angular-growl-v2": "~0.7.0",
     "angular-local-storage": "~0.2.x",
+    "angular-messages": "1.5.x",
     "angular-mocks": "~1.5.x",
     "angular-resource": "~1.5.x",
     "angular-route": "~1.5.x",
@@ -29,7 +30,7 @@
     "font-awesome": "^4.5.0",
     "filesize": "^3.2.1",
     "angular-ui-ace": "bower",
-    "angular-messages": "^1.5.0",
+
     "c3": "git://github.com/masayuki0812/c3.git#98769492d07b6103bfc30a0254ccb1e1ec1cca50",
     "angular-intro.js": "~3.0.1"
   },
