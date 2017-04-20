@@ -16,14 +16,18 @@
     border-left: solid 1px $spectrogramProgressLine;
     //background-color: $spectrogramProgressLine;
     height: 100%;
-    width: 100%;
-    width: calc(100% - 1px);
+    width: 1px;
     position: absolute;
 
     @include vendor-prefix(transform, translate3d(0%, 0, 0));
 
     &.hidden {
       display: none;
+    }
+
+    .grab-bottom-center {
+      left: 0px;
+      bottom: 0px;
     }
 
   }
