@@ -44,8 +44,6 @@ ngDragabilly.directive("draggie",
                 },
                 link: function (scope, $element, attributes/*, controller, transcludeFunction*/) {
 
-                    console.log("drag's positionline scope id (startlink)", scope.options.positionLineScopeId);
-
                     var element = $element[0];
                     const transformProperty = typeof element.style.transform === "string" ? "transform" : "WebkitTransform";
 
@@ -75,8 +73,6 @@ ngDragabilly.directive("draggie",
                     };
 
                     draggie.on("dragEnd", function (event, pointer) {
-                        console.log("drag scope id", scope.$id);
-                        console.log("drag's positionline scope id (end drag)", scope.options.positionLineScopeId);
                         if (!scope.options.useLeftTop) {
                             reposition(draggie.element, draggie.position);
                         }
