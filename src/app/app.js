@@ -34,7 +34,7 @@ function whenDefaults(resourceName, singularResourceName, id, controllerMany, co
     return this
     // list
         .when(pathList, {templateUrl: assetList, controller: controllerMany})
-        // managenpm
+        // manage
         //.fluidIf(addManageView, function () {
         //    this.when(listPath, {templateUrl: assetManage, controller: controllerMany})
         //})

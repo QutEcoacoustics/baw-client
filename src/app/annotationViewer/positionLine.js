@@ -10,22 +10,30 @@ angular
                 media: "=media",
                 audioData: "=audioData"
             },
-            controller: ["$scope", "$element", "lodash", function (scope, element, _) {
+            controller: ["$scope", "$element", "lodash", function (scope, $element, _) {
 
                 var self = this;
                 self.containerWidth = 0;
 
                 self.updateContainerWidth = function () {
-                    var container = element[0].parentElement;
-                    self.containerWidth = (container.clientWidth > 0) ? container.clientWidth : 1;
-
+                    var container = $element[0].parentElement;
+                    self.containerWidth = container.clientWidth;
                 };
 
+
+                /**
+                 * Returns the cached clientWidth of the containing element: self.containerWidth
+                 * If the cached value is less than 1 it means that either it has never been set or it was set while the containing element
+                 * was not initialised. If this is the case, update the cached width.
+                 * @returns {number} 1 or greater
+                 */
                 self.getWidth = function () {
-                    if (self.containerWidth < 2) {
+
+                    if (self.containerWidth < 1) {
                         self.updateContainerWidth();
                     }
-                    return self.containerWidth;
+                    // don't return zero to avoid division by zero
+                    return Math.max(self.containerWidth, 1);
                 };
 
                 /**
@@ -36,8 +44,8 @@ angular
                  * @TODO: can we use the unit converter for this?
                  */
                 self.secondsToPixels = function (audioPositionSeconds) {
-                    var width = self.getWidth() * (self.secondsToRatio(audioPositionSeconds));
-                    return Math.min(width, self.getWidth());
+                    var offset = self.getWidth() * self.secondsToRatio(audioPositionSeconds);
+                    return offset;
                 };
 
                 self.pixelsToSeconds = function (numPixels) {
@@ -51,27 +59,28 @@ angular
                  * @returns {number} range [0,1]
                  */
                 self.secondsToRatio = function (audioPositionSeconds) {
-                    var positionRatio = audioPositionSeconds / self.audioDuration();
-                    return Math.min(1, positionRatio);
+
+                    var duration = self.audioDuration();
+                    var audioPositionRatio = (duration > 0) ? audioPositionSeconds / duration : 0;
+                    return Math.min(1, audioPositionRatio);
                 };
 
-                self.ratioToSeconds = function (ratio) {
-                    return self.audioDuration() * ratio;
-                };
-
+                /**
+                 * Returns the audio duration if it's available, otherwise 0
+                 * @returns {number}
+                 */
                 self.audioDuration = function () {
                     if (scope.media && scope.media.endOffset) {
                         return scope.media.endOffset - scope.media.startOffset;
                     } else {
-                        return 0.001;
+                        return 0;
                     }
                 };
 
                 /**
-                 * gets the offset as either percent or pixel value.
+                 * Gets the offset as a pixel value.
                  * uses the ratio position of the audioData to the total duration (based on the media start and end offset)
-                 * @param boolean usePercent
-                 * @returns string if usePercent otherwise float
+                 * @returns number
                  */
                 self.getOffset = function () {
                     if (typeof(this.audioData) === "object") {
