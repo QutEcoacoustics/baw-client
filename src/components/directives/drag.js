@@ -43,10 +43,11 @@ ngDragabilly.directive("draggie",
                     options: "=dragOptions"
                 },
                 link: function (scope, $element, attributes/*, controller, transcludeFunction*/) {
+
                     var element = $element[0];
                     const transformProperty = typeof element.style.transform === "string" ? "transform" : "WebkitTransform";
 
-                    scope.options = angular.extend(defaultOptions, scope.options);
+                    scope.options = angular.extend({}, defaultOptions, scope.options);
 
                     var draggie = new Draggabilly(element, scope.options);
 
@@ -60,7 +61,6 @@ ngDragabilly.directive("draggie",
 
                     draggie.on("dragMove", function (event, pointer) {
                         scope.options.dragMove(scope, draggie, event, pointer);
-
                         if (scope.options.raiseAngularEvents) {
                             scope.$emit("draggabilly:draggie:dragMove", scope, draggie, event, pointer);
                         }
@@ -68,7 +68,7 @@ ngDragabilly.directive("draggie",
 
                     var reposition = function useTransformPositioning(element, position) {
                         element.style.left = 0;
-                        element.style.left = 0;
+                        element.style.top = 0;
                         element.style[transformProperty] = "translate3d( " + position.x + "px, " + position.y + "px, 0)";
                     };
 
@@ -76,10 +76,7 @@ ngDragabilly.directive("draggie",
                         if (!scope.options.useLeftTop) {
                             reposition(draggie.element, draggie.position);
                         }
-
-
                         scope.options.dragEnd(scope, draggie, event, pointer);
-
                         if (scope.options.raiseAngularEvents) {
                             scope.$emit("draggabilly:draggie:dragEnd", scope, draggie, event, pointer);
                         }

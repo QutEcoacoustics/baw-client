@@ -5,68 +5,52 @@ angular
         return {
             restrict: "A",
             templateUrl: "annotationViewer/positionLine.tpl.html",
-            replace: true,
+            replace: false,
             scope: {
-                media: "<media",
-                audioData: "<audioData",
-                // TODO: remove this binding
-                imageClass: "<imageClass"
+                media: "=media",
+                audioData: "=audioData"
             },
-            link: function (scope, elements, attributes, controller) {
+            controller: ["$scope", "$element", "lodash", function (scope, $element, _) {
 
-                // the dom element for the spectrogram image that is used to get
-                // the width to calculate the pixel offset for the position line
-                // TODO: remove the need to reference an image element.
-                var image;
+                var self = this;
+                self.containerWidth = 0;
 
-                /**
-                 * Searches for the closest node to the position-line element that
-                 * has the class scope.imageClass
-                 * If there are multiple spectrograms on the page, for example generated in a loop,
-                 * this ensures that each position line is using the correct spectrogram image.
-                 * Searches for the class in the parent dom element, and if not found recurses up one level of dom and repeats.
-                 * @param element; the current element in the recursion that is being searched
-                 * @param depth; int, the current level of recursion, in order to limit the search
-                 * @returns DOM element or NULL
-                 * @TODO: deprecated. We don't want to be searching for DOM elements here. Better to bind to data.
-                 *
-                 */
-                this.getImageElement = function (element, depth) {
-                    if (depth > 3 || element.tagName === "BODY") {
-                        return null;
-                    }
-                    var containingElement = element.parentElement;
-                    var images = containingElement.getElementsByClassName(scope.imageClass);
-                    if (images.length > 0) {
-                        return images[0];
-                    } else {
-                        return this.getImageElement(containingElement, depth + 1);
-                    }
+                self.updateContainerWidth = function () {
+                    var container = $element[0].parentElement;
+                    self.containerWidth = container.clientWidth;
                 };
 
+
+                /**
+                 * Returns the cached clientWidth of the containing element: self.containerWidth
+                 * If the cached value is less than 1 it means that either it has never been set or it was set while the containing element
+                 * was not initialised. If this is the case, update the cached width.
+                 * @returns {number} 1 or greater
+                 */
+                self.getWidth = function () {
+
+                    if (self.containerWidth < 1) {
+                        self.updateContainerWidth();
+                    }
+                    // don't return zero to avoid division by zero
+                    return Math.max(self.containerWidth, 1);
+                };
 
                 /**
                  * converts the proportion of elapsed audio to a pixel value,
-                 * based on the width of the spectrogram image.
+                 * based on the width of the containing element of the position line, which should match the width of the spectrogram image.
                  * @param audioPositionSeconds number
                  * @returns number
-                 * @TODO: remove this. Better to use the unit converter, and also better if we don't need to reference the dom element
+                 * @TODO: can we use the unit converter for this?
                  */
-                scope.secondsToPixels = function (audioPositionSeconds) {
-                    var pixelPosition, imageWidth;
-
-                        if (image.clientWidth > 0) {
-                            imageWidth = image.clientWidth;
-                        } else {
-                            // use number of columns of spectrogram as image width
-                            imageWidth = 1;
-                        }
-
-                        pixelPosition = imageWidth * (scope.secondsToRatio(audioPositionSeconds));
-
-                    return pixelPosition;
+                self.secondsToPixels = function (audioPositionSeconds) {
+                    var offset = self.getWidth() * self.secondsToRatio(audioPositionSeconds);
+                    return offset;
                 };
 
+                self.pixelsToSeconds = function (numPixels) {
+                    return (numPixels / self.getWidth()) * self.audioDuration();
+                };
 
                 /**
                  * Converts a number of seconds of elapsed audio to the fraction of the audio that has elapsed
@@ -74,52 +58,79 @@ angular
                  * @param audioPositionSeconds number
                  * @returns {number} range [0,1]
                  */
-                scope.secondsToRatio = function (audioPositionSeconds) {
-                    if (scope.media && scope.media.endOffset) {
-                        var positionRatio = audioPositionSeconds / (scope.media.endOffset - scope.media.startOffset);
-                        return (positionRatio > 1) ? 1 : positionRatio;
-                    }
-                    return 0;
+                self.secondsToRatio = function (audioPositionSeconds) {
 
+                    var duration = self.audioDuration();
+                    var audioPositionRatio = (duration > 0) ? audioPositionSeconds / duration : 0;
+                    return Math.min(1, audioPositionRatio);
                 };
 
-
                 /**
-                 * gets the offset as either percent or pixel value.
-                 * uses the ratio position of the audioData to the total duration (based on the media start and end offset)
-                 * @param boolean usePercent
-                 * @returns string if usePercent otherwise float
+                 * Returns the audio duration if it's available, otherwise 0
+                 * @returns {number}
                  */
-                scope.getOffset = function (usePercent) {
-
-                    if (typeof(this.audioData) === "object") {
-                        if (usePercent) {
-
-                            var percent = scope.secondsToRatio(this.audioData.position) * 100;
-                            percent = percent > 100 ? 100 : percent;
-
-                            return percent + "%";
-                        } else {
-                            return(scope.secondsToPixels(this.audioData.position));
-                        }
-
+                self.audioDuration = function () {
+                    if (scope.media && scope.media.endOffset) {
+                        return scope.media.endOffset - scope.media.startOffset;
                     } else {
                         return 0;
                     }
-
                 };
 
-                if (scope.imageClass !== undefined) {
-                    image = this.getImageElement(elements[0], 0);
-                } else {
-                    image = null;
+                /**
+                 * Gets the offset as a pixel value.
+                 * uses the ratio position of the audioData to the total duration (based on the media start and end offset)
+                 * @returns number
+                 */
+                self.getOffset = function () {
+                    if (typeof(this.audioData) === "object") {
+                        return(self.secondsToPixels(this.audioData.position));
+                    } else {
+                        return 0;
+                    }
+                };
+
+                self.updateScope = _.throttle(function updateScope() {
+                    if (scope.$parent.$parent.$$phase) {
+                        return;
+                    }
+                    scope.$parent.$parent.$digest();
+                }, 250);
+
+                scope.getOffset = self.getOffset;
+
+            }],
+            link: {
+                pre: function (scope, elements, attributes, controller) {
+
+                    scope.dragOptions = {
+                        axis: "x",
+                        containment: true,
+                        useLeftTop: false,
+                        dragEnd: function dragEndSetPosition (dragscope, draggie, event, pointer) {
+                            scope.audioData.position = controller.pixelsToSeconds(draggie.position.x);
+                            controller.updateScope();
+                        },
+                        dragMove: function dragMoveSetPosition(dragscope, draggie, event, pointer) {
+                            scope.audioData.position = controller.pixelsToSeconds(draggie.position.x);
+                            controller.updateScope();
+                        }
+                    };
+                },
+                post: function (scope, elements, attributes, controller) {
+
+                    angular.element($window).on("resize", function () {
+                        controller.updateContainerWidth();
+                        scope.$apply();
+                    });
+
                 }
 
-                angular.element($window).on("resize", function () {
-                    scope.$apply();
-                });
 
             }
+
+
+
         };
 
 
