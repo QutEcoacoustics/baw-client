@@ -1,0 +1,57 @@
+
+.thumb-labels-container {
+  text-align: center;
+  margin-top: 10px;
+  background: rgba(0,0,0,0.3);
+
+  .thumb {
+
+    .citizen-science-thumb {
+      height: 150px;
+
+      .img {
+        height: 100%;
+      }
+
+    }
+
+  }
+
+  .label-examples-annotations {
+
+    background: #fff;
+
+
+    h3 {
+      text-align: center;
+      font-size: 1.2em;
+      max-width: 350px;
+      padding-left: 50px;
+      padding-right: 50px;
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+
+      span {
+        max-width: calc(100% - 100px);
+      }
+
+      .arrow {
+        font-size: 1.4em;
+        position: absolute;
+
+        &.prev {
+          left: 0px;
+        }
+
+        &.next {
+          right: 0px;
+        }
+
+      }
+
+    }
+
+  }
+
+}

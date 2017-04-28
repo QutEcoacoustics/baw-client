@@ -1,0 +1,17 @@
+
+<div class="label-examples-annotations">
+
+    <h3>
+        <i class="fa fa-arrow-left arrow prev" aria-hidden="true" ng-click="changeCurExample(key, -1)"  ng-if="annotations.length>1"></i>
+        <span>{{label}} example{{(annotations.length) > 1 ? 's' : ''}}</span>
+        <i class="fa fa-arrow-right arrow next" aria-hidden="true" ng-click="changeCurExample(key, 1)" ng-if="annotations.length>1"></i>
+    </h3>
+
+
+    <div ng-repeat="(key,annotation) in annotations">
+        <div class="citizen-science-thumb-example" ng-class="{selected : (key === $ctrl.curExample)}">
+            <annotation-item annotation="annotation"></annotation-item>
+        </div>
+    </div>
+
+</div>

@@ -195,8 +195,9 @@ angular
     .module("bawApp.citizenScience.bristlebird", [
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
-        "bawApp.components.citizenScienceLabels",
-        "bawApp.components.citizenScienceExamples",
+//        "bawApp.components.citizenScienceTextLabels",
+//        "bawApp.components.citizenScienceExamples",
+        "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
         "bawApp.components.background"
     ])

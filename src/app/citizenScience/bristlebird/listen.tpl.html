@@ -1,6 +1,8 @@
 <div class="citizen-science bristlebird">
 
-    <h2>Eastern Bristlebird Search <onboarding steps="onboardingSteps"></onboarding></h2>
+    <h2>Eastern Bristlebird Search
+        <onboarding steps="onboardingSteps"></onboarding>
+    </h2>
 
     <div class="cs-main-container">
 
@@ -27,43 +29,47 @@
                 </div>
             </div>
 
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <nav class="cs-progress">
-
-                        <dataset-progress items="samples" selected="currentSampleNum"></dataset-progress>
-
-                        <div class="autoplay progressCell">
-                            <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"
-                                           title="Enable/disable autoplay">
-                                <toggle-switch-state switch-state="on">
-                                    <span class="glyphicon glyphicon-play-circle"></span>
-                                </toggle-switch-state>
-                                <toggle-switch-state switch-state="off">
-                                    <span class="glyphicon glyphicon-play-circle"></span>
-                                </toggle-switch-state>
-                            </toggle-switch>
-                        </div>
-
-                    </nav>
-
-                    <citizen-science-labels labels="labels"
-                                            samples="samples"
-                                            current-sample-num="currentSampleNum"
-                                            cs-project="csProject"></citizen-science-labels>
 
 
-                </div>
-                <div class="col-md-6">
 
-                    <!--<citizen-science-examples labels="labels"></citizen-science-examples>-->
+                <nav class="cs-progress">
 
-                </div>
+                    <dataset-progress items="samples" selected="currentSampleNum"></dataset-progress>
+
+                    <div class="autoplay progressCell">
+                        <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"
+                                       title="Enable/disable autoplay">
+                            <toggle-switch-state switch-state="on">
+                                <span class="glyphicon glyphicon-play-circle"></span>
+                            </toggle-switch-state>
+                            <toggle-switch-state switch-state="off">
+                                <span class="glyphicon glyphicon-play-circle"></span>
+                            </toggle-switch-state>
+                        </toggle-switch>
+                    </div>
+
+                </nav>
 
 
-            </div>
+                thumbs
+                <citizen-science-labels labels="labels"></citizen-science-labels>
+
+
+                <!-- text-only labels
+                <citizen-science-text-labels labels="labels"
+                                        samples="samples"
+                                        current-sample-num="currentSampleNum"
+                                        cs-project="csProject"></citizen-science-labels>
+
+                -->
+
+
+                <!-- examples not used as labels
+                <citizen-science-examples labels="labels"></citizen-science-examples>
+                -->
+
+
+
 
         </div> <!-- #main -->
     </div> <!-- #main-container -->

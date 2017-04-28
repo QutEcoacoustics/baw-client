@@ -162,7 +162,7 @@ angular
         "bawApp.components.progress",
         "bawApp.components.background",
         "bawApp.citizenScience.common",
-        "bawApp.components.citizenScienceLabels"
+        "bawApp.components.citizenScienceTextLabels"
     ])
     .controller(
         "IpswichController",
