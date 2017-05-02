@@ -118,10 +118,30 @@ class BristlebirdController {
         )).then(function (response) {
             if (Array.isArray(response.data)) {
                 $scope.labels = response.data;
+
+                self.fetchAnnotationData($scope.labels);
+
+
             } else {
                 $scope.labels = [];
             }
         });
+
+
+        /**
+         * fetches site/project/media data for all label examples
+         * updates the labels' examples array
+         * @param labels Object
+         * @TODO
+         */
+        self.fetchAnnotationData = function (labels) {
+
+
+
+        };
+
+
+
 
         /**
          * Get settings from sheet

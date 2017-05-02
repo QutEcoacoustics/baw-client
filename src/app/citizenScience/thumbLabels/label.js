@@ -41,29 +41,22 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                                     recordingIds: new Set([annotation.audioRecordingId])
                                 };
 
-                                return new Promise(function (resolve, reject) {
 
-                                    // do we need this stuff? if so, need more dependencies
-                                    libraryCommon.addCalculatedProperties(annotation);
-                                    libraryCommon.getSiteMediaAndProject(commonData);
-                                    libraryCommon.getUsers(commonData);
+                                // do we need this stuff? if so, need more dependencies
+                                libraryCommon.addCalculatedProperties(annotation);
+                                libraryCommon.getSiteMediaAndProject(commonData).then(function (result) {
 
-                                    resolve(annotation);
+                                    $scope.thumbSrc = annotation.media.available.image.png.url;
+                                    console.log("got the annotation", annotation);
 
                                 });
+                                libraryCommon.getUsers(commonData);
 
 
                             },
                             function annotationShowError(httpResponse) {
                                 console.error("Failed to load citizen science example item response.", httpResponse);
-                            })
-                        .then(function (annotation) {
-
-                            $scope.thumbSrc = "success!";
-                            console.log("got the annotation", annotation);
-
-
-                        });
+                            });
 
                 };
 

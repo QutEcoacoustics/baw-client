@@ -15,9 +15,10 @@ angular
         "Site",
         "Project",
         "UserProfile",
+        "$q",
         function ($url, paths,
                   constants, unitConverter, modelAssociations,
-                  Media, MediaModel, Tag, AudioRecording, Site, Project, UserService) {
+                  Media, MediaModel, Tag, AudioRecording, Site, Project, UserService, $q) {
 
             var annotationToProjectLinker = modelAssociations.generateLinker("AudioEvent", "Project");
             var annotationToTagLinker = modelAssociations.generateLinker("AudioEvent", "Tag");
@@ -27,17 +28,33 @@ angular
                 return $url.formatUri(paths.site.ngRoutes.library, paramObj);
             }
 
+            // function getMedia(annotation) {
+            //     // modify annotation by reference
+            //     // async
+            //     Media.get(
+            //         getMediaParameters(annotation),
+            //         mediaGetSuccess.bind(null, annotation),
+            //         mediaGetFailure
+            //     );
+            //
+            //     // do not block, do not wait for Media requests to finish
+            //     return;
+            // }
+
             function getMedia(annotation) {
                 // modify annotation by reference
                 // async
-                Media.get(
-                    getMediaParameters(annotation),
-                    mediaGetSuccess.bind(null, annotation),
-                    mediaGetFailure
-                );
 
-                // do not block, do not wait for Media requests to finish
-                return;
+
+                    var x = Media.get(
+                        getMediaParameters(annotation),
+                        mediaGetSuccess.bind(null,annotation),
+                        mediaGetFailure
+                    );
+
+                    return x.$promise;
+
+
             }
 
             function getMediaParameters(audioEvent) {
@@ -236,6 +253,8 @@ angular
                             sites = toMap(arspData.sites),
                             audioRecordings = toMap(arspData.audioRecordings);
 
+                        var mediaPromises = [];
+
                         // modify annotations by reference
                         annotations.forEach(annotation => {
                             annotationToProjectLinker(annotation, {
@@ -244,10 +263,14 @@ angular
                                 AudioRecording: audioRecordings
                             });
 
-                            getMedia(annotation);
+                            mediaPromises.push(getMedia(annotation));
                         });
 
-                        return arspData;
+                        return $q.all(mediaPromises).then(function () {
+                            return arspData;
+                        });
+
+
                     }
                 },
                 addCalculatedProperties: function addCalculatedProperties(audioEvent) {
