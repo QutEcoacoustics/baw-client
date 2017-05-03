@@ -1,6 +1,14 @@
 
 <div class="thumb-labels-container">
-    <div ng-repeat="(key,label) in $ctrl.labels" class="label-thumbs" ng-if="label.examples.length" ng-class="{selected : label.showExamples}">
-        <citizen-science-label tags="label.tags" examples="label.examples" label="label.label" selected="label.showExamples"></citizen-science-label>
-    </div>
+
+    <citizen-science-label
+            ng-repeat="(key,label) in $ctrl.labels"
+            class="label-thumbs"
+            ng-if="label.examples.length"
+            tags="label.tags"
+            examples="label.examples"
+            label="label.label"
+            selected="label.showExamples"
+            ng-class="{selected : label.showExamples}"></citizen-science-label>
+
 </div>

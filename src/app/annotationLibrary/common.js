@@ -255,7 +255,7 @@ angular
 
                         var mediaPromises = [];
 
-                        // modify annotations by reference
+                        // modify annotations by reference and include them in the returned object
                         annotations.forEach(annotation => {
                             annotationToProjectLinker(annotation, {
                                 Project: projects,
@@ -265,6 +265,8 @@ angular
 
                             mediaPromises.push(getMedia(annotation));
                         });
+
+                        arspData.annotations = annotations;
 
                         return $q.all(mediaPromises).then(function () {
                             return arspData;

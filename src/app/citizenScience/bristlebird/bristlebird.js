@@ -118,27 +118,14 @@ class BristlebirdController {
         )).then(function (response) {
             if (Array.isArray(response.data)) {
                 $scope.labels = response.data;
-
-                self.fetchAnnotationData($scope.labels);
-
-
             } else {
                 $scope.labels = [];
             }
         });
 
-
-        /**
-         * fetches site/project/media data for all label examples
-         * updates the labels' examples array
-         * @param labels Object
-         * @TODO
-         */
-        self.fetchAnnotationData = function (labels) {
+        //$scope.labels = JSON.parse(`[{"label":"Eastern Bristlebird click","tags":["ebb","type 1"],"examples":[{"annotationId":124730},{"annotationId":124727}]},{"label":"Eastern Bristlebird whistle","tags":["ebb","type 2"],"examples":[{"annotationId":124622}]},{"label":"Ground Parrot","tags":["ground parrot","type 1"],"examples":[]},{"label":"Spotted Quoll","tags":["quoll","type1"],"examples":[]},{"label":"Rufus Bristlebird","tags":["rbb","type1"],"examples":[]}]`);
 
 
-
-        };
 
 
 
