@@ -13,24 +13,29 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
             "baw.models.AudioEvent",
             function ($scope, $http, CitizenScienceCommon, libraryCommon, AudioEventService, AudioEvent) {
 
+                var self = this;
 
-
-
+                $scope.toggleSelected = function () {
+                    var newVal = !self.showInfo;
+                    self.onToggleShowInfo(self.labelNum);
+                    self.showInfo = newVal;
+                };
 
             }],
         bindings: {
 
-            // example annotations of this event-type
-            // in the form [{annotationId:123},{annotationId:456}, ... ]
-            examples: "=examples",
-
             // tags that this event type are associated with
             tags: "=tags",
 
-            // the label for this thumb
-            label: "=label",
+            // the label for this thumb (friendly name for label)
+            name: "=",
 
-            // whether this thumb is currently selected
-            selected: "=selected"
+            labelNum: "<",
+
+            // whether this thumb is currently selected for more info
+            showInfo: "=",
+
+            onToggleShowInfo: "<"
+
         }
     });

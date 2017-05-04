@@ -1,10 +1,10 @@
-<div class="citizen-science-thumb-label" ng-class="{selected : ($ctrl.selected)}">
+<div class="citizen-science-thumb-label" ng-class="{selected : ($ctrl.showInfo)}">
 
     <!-- stuff to show thumb image -->
-    <div class="citizen-science-thumb">
+    <div class="citizen-science-thumb" ng-click="toggleSelected()">
         <img ng-src="{{$ctrl.examples[0].annotation.media.available.image.png.url}}" alt="{{$ctrl.label}}">
     </div>
 
 
-    <!-- <citizen-science-label-examples examples="$ctrl.examples"></citizen-science-label-examples> -->
+
 </div>

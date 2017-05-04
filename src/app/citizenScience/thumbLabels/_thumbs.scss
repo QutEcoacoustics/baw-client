@@ -1,21 +1,72 @@
+$thumb-height: 100;
+
 
 .thumb-labels-container {
   text-align: center;
   margin-top: 10px;
   background: rgba(0,0,0,0.3);
 
-  .thumb {
+  /* flexbox layout of thumbs */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+
+  .citizen-science-thumb-label {
+
+    position: relative;
+
+    &.selected {
+
+      /* make room under the row for the info */
+      padding-bottom: 400px;
+
+
+      .citizen-science-thumb {
+
+        outline: rgba(255,255,255,0.5) solid 2px;
+
+      }
+
+    }
+
 
     .citizen-science-thumb {
-      height: 150px;
+      height: $thumb-height + px;
+      margin: 5px;
 
-      .img {
+      img {
         height: 100%;
       }
 
     }
 
+
+    citizen-science-label-examples {
+
+      position: absolute;
+      z-index: 100;
+      box-shadow: 5px 5px 10px 10px rgba(0,0,0,0.3);
+      border-radius: 5px;
+      background: #fff;
+      padding: 5px;
+      top: ($thumb-height + 20) + px;
+
+
+
+    }
+
+
+
   }
+
+
+
+
+
+
+
+
 
   .label-examples-annotations {
 

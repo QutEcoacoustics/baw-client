@@ -27,7 +27,12 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                     return self.labels;
                 }, function (newVal, oldVal) {
                     self.fetchAnnotationData(newVal);
+
+                    self.hideAllLabelInfos();
+
                 });
+
+
 
 
                 /**

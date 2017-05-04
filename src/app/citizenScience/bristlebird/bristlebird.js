@@ -78,7 +78,7 @@ class BristlebirdController {
          * example response from server
          *   [{
          *      "tags": ["ebb", "type1"],
-         *      "label": "Eastern Bristlebird",
+         *      "name": "Eastern Bristlebird",
          *      "examples": [{
          *          "annotationId": 124730
          *      },{
@@ -89,7 +89,7 @@ class BristlebirdController {
          *   },
          *   {
          *       "tags": ["ground_parrot", "type1"],
-         *       "label": "Ground Parrot",
+         *       "name": "Ground Parrot",
          *       "examples": [{
          *           "annotationId": 124622
          *       }]
@@ -122,8 +122,6 @@ class BristlebirdController {
                 $scope.labels = [];
             }
         });
-
-        //$scope.labels = JSON.parse(`[{"label":"Eastern Bristlebird click","tags":["ebb","type 1"],"examples":[{"annotationId":124730},{"annotationId":124727}]},{"label":"Eastern Bristlebird whistle","tags":["ebb","type 2"],"examples":[{"annotationId":124622}]},{"label":"Ground Parrot","tags":["ground parrot","type 1"],"examples":[]},{"label":"Spotted Quoll","tags":["quoll","type1"],"examples":[]},{"label":"Rufus Bristlebird","tags":["rbb","type1"],"examples":[]}]`);
 
 
 

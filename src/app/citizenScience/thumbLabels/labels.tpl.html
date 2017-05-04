@@ -6,9 +6,13 @@
             class="label-thumbs"
             ng-if="label.examples.length"
             tags="label.tags"
-            examples="label.examples"
-            label="label.label"
-            selected="label.showExamples"
-            ng-class="{selected : label.showExamples}"></citizen-science-label>
+            name="label.name"
+            label-num="key"
+            show-info="label.showInfo"
+            on-toggle-show-info="$ctrl.hideAllLabelInfos"></citizen-science-label>
+
+
+    <citizen-science-label-examples
+            examples="$ctrl.labels[selectedLabel].examples" ng-if="selectedLabel > -1" ></citizen-science-label-examples>
 
 </div>

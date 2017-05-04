@@ -15,11 +15,13 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
                 var self = this;
 
-                $scope.changeCurExample = function (labelNum, changeBy) {
+                $scope.currentExample = -1;
+
+                $scope.changeCurrentExample = function (labelNum, changeBy) {
                     var l = self.examples.length;
                     // add changeBy and wrap if the result is larger than length
-                    self.curExample = ((self.curExample + changeBy % l) + l) % l;
-                    console.log("changed cur example for label " + self.label + " to " + self.curExample);
+                    $scope.currentExample = (($scope.currentExample + changeBy % l) + l) % l;
+                    console.log("changed cur example for label " + self.label + " to " + $scope.currentExample);
                 };
 
 
@@ -32,54 +34,31 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
                     if (Array.isArray(newValue)) {
                         if (newValue.length) {
-                            self.curExample = 0;
+                            $scope.currentExample = 0;
                         } else {
-                            self.curExample = -1;
+                            $scope.currentExample = -1;
                         }
                     }
 
                 });
 
-                $scope.annotations = [];
 
-                self.examples.forEach(function (example, index) {
-
-                    // based on stuff in library item. may be able to make this more DRY
-                    AudioEventService
-                        .getAudioEventsByIds([example.annotationId])
-                        .then(function annotationShowSuccess(response, responseHeaders) {
-                                var audioEvents = response.data.data;
-
-                                var annotation = new AudioEvent(audioEvents[0]);
-
-                                var commonData = {
-                                    annotations: [annotation],
-                                    annotationIds: new Set([annotation.id]),
-                                    recordingIds: new Set([annotation.audioRecordingId])
-                                };
-
-                                // do we need this stuff? if so, need more dependencies
-                                libraryCommon.addCalculatedProperties(annotation);
-                                libraryCommon.getSiteMediaAndProject(commonData);
-                                libraryCommon.getUsers(commonData);
-
-                                $scope.annotations[index] = annotation;
-
-                                //todo load these from user preferences
-                                $scope.annotations[index].audioElement = {
-                                    volume: 1,
-                                    muted: false,
-                                    autoPlay: false,
-                                    position: 0
-                                };
+                $scope.$watch("currentExample", function (newVal, oldVal) {
 
 
-                            },
-                            function annotationShowError(httpResponse) {
-                                console.error("Failed to load citizen science example item response.", httpResponse);
-                            });
+
+                    console.log("self.examples[$scope.currentExample].annotation",self.examples[$scope.currentExample].annotation);
+
+
+
+
+
 
                 });
+
+
+
+
 
 
             }],
