@@ -993,6 +993,10 @@ module.exports = function (grunt) {
     grunt.renameTask("sass", "sassReal");
     grunt.registerTask("sassTemplate", "Transforming sass file", function () {
         var mainScss = grunt.config("app_files.sass");
+        if (!Array.isArray(mainScss) || mainScss.length !== 1) {
+            throw new Error("Expected one item in app_files.sass.");
+        }
+        mainScss = mainScss[0];
         var processedScss = path.join(path.dirname(mainScss), path.basename(mainScss, ".tpl.scss")) + ".scss.processed";
         //debugger;
         var scssPartials = grunt.file.expand("src/**/_*.scss");
