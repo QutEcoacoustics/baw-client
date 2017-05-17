@@ -22,18 +22,27 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                 var self = this;
 
+                $scope.selectedLabelNum = {value: -1};
+
+                $scope.onToggleSelected = function (labelNum) {
+                    console.log("onToggleSelected", labelNum);
+
+                    if ($scope.selectedLabelNum.value === labelNum) {
+                        $scope.selectedLabelNum.value = -1;
+                    } else {
+                        $scope.selectedLabelNum.value = labelNum;
+                    }
+
+                    //$scope.$broadcast('selected-label-num-changed', $scope.selectedLabelNum);
+
+                };
+
 
                 $scope.$watch(function () {
                     return self.labels;
                 }, function (newVal, oldVal) {
                     self.fetchAnnotationData(newVal);
-
-                    self.hideAllLabelInfos();
-
                 });
-
-
-
 
                 /**
                  * fetches site/project/media data for all label examples
@@ -51,7 +60,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                     }
 
                     var annotations = [];
-
 
                     AudioEventService
                         .getAudioEventsByIds(annotationIds)

@@ -45,14 +45,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
                 $scope.$watch("currentExample", function (newVal, oldVal) {
 
-
-
                     console.log("self.examples[$scope.currentExample].annotation",self.examples[$scope.currentExample].annotation);
-
-
-
-
-
 
                 });
 

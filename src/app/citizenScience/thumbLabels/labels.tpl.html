@@ -7,12 +7,13 @@
             ng-if="label.examples.length"
             tags="label.tags"
             name="label.name"
+            examples="label.examples"
             label-num="key"
-            show-info="label.showInfo"
-            on-toggle-show-info="$ctrl.hideAllLabelInfos"></citizen-science-label>
+            selected-label-num="selectedLabelNum"
+            on-toggle-selected="onToggleSelected"></citizen-science-label>
 
 
     <citizen-science-label-examples
-            examples="$ctrl.labels[selectedLabel].examples" ng-if="selectedLabel > -1" ></citizen-science-label-examples>
+            examples="$ctrl.labels[selectedLabelNum.value].examples" ng-if="selectedLabelNum > -1" ></citizen-science-label-examples>
 
 </div>
