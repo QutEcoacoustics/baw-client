@@ -33,9 +33,19 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                         $scope.selectedLabelNum.value = labelNum;
                     }
 
-                    //$scope.$broadcast('selected-label-num-changed', $scope.selectedLabelNum);
-
                 };
+
+                $scope.examplesPosition = "0px";
+
+                $scope.$on("examples-position", function (event, newPosition) {
+
+                    console.log("examples-position has changed: ", newPosition);
+
+                    $scope.examplesPosition = newPosition + "px";
+
+
+                });
+
 
 
                 $scope.$watch(function () {

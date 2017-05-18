@@ -5,15 +5,12 @@
             ng-repeat="(key,label) in $ctrl.labels"
             class="label-thumbs"
             ng-if="label.examples.length"
-            tags="label.tags"
-            name="label.name"
-            examples="label.examples"
+            label="label"
             label-num="key"
             selected-label-num="selectedLabelNum"
             on-toggle-selected="onToggleSelected"></citizen-science-label>
 
 
-    <citizen-science-label-examples
-            examples="$ctrl.labels[selectedLabelNum.value].examples" ng-if="selectedLabelNum > -1" ></citizen-science-label-examples>
+
 
 </div>

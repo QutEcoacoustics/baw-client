@@ -6,47 +6,42 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
         templateUrl: "citizenScience/thumbLabels/label.tpl.html",
         controller: [
             "$scope",
-            "$http",
-            "CitizenScienceCommon",
-            "annotationLibraryCommon",
-            "AudioEvent",
-            "baw.models.AudioEvent",
-            function ($scope, $http, CitizenScienceCommon, libraryCommon, AudioEventService, AudioEvent) {
+            "$element",
+            function ($scope, $element) {
 
                 var self = this;
 
-                $scope.selected = false;
-
+                $scope.selected = function () {
+                    return self.selectedLabelNum.value === self.labelNum;
+                };
 
 
                 $scope.toggleSelected = function () {
 
                     console.log("toggling state for label number", self.labelNum);
 
+                    console.log("old selected label num:", self.selectedLabelNum.value);
+
                     //$scope.selected = self.onToggleSelected(self.labelNum);
 
                     if (self.selectedLabelNum.value === self.labelNum) {
                         self.selectedLabelNum.value = -1;
-                        $scope.selected = false;
                     } else {
                         self.selectedLabelNum.value = self.labelNum;
-                        $scope.selected = true;
+                        $scope.$emit("examples-position", ($element[0].offsetTop));
                     }
+
+                    console.log("new selected label num:", self.selectedLabelNum.value);
+
 
                 };
 
             }],
         bindings: {
 
-            // tags that this event type are associated with
-            tags: "=",
-
-            // the label for this thumb (friendly name for label)
-            name: "=",
-
-            examples: "<",
-
             labelNum: "<",
+
+            label: "=",
 
             onToggleSelected: "<",
 
