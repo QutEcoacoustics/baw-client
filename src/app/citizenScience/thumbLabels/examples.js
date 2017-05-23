@@ -59,4 +59,32 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
             examples: "=examples",
             label: "=label"
         }
-    });
+    }).directive("centerInWindow", ["$window", function ($window) {
+
+            return {
+                restrict: "A",
+                link: function (scope, $element) {
+
+                    var el = $element[0];
+
+                    function recenter (){
+
+                        if (!el || !el.offsetParent) {
+                            return;
+                        }
+
+                        var offset = el.offsetParent.getBoundingClientRect().left;
+
+                        el.style.width = $window.innerWidth - 50 + "px";
+
+                        el.style.left = (15-offset) + "px";
+
+                    }
+
+                    recenter();
+
+                    angular.element($window).bind("resize", recenter);
+
+                }
+            };
+        }]);
