@@ -1,6 +1,7 @@
 angular.module("bawApp.components.citizenScienceThumbLabels.examples",
     [
-        "bawApp.citizenScience.common"
+        "bawApp.citizenScience.common",
+        "bawApp.directives.scaleToFit"
     ])
     .component("citizenScienceLabelExamples", {
         templateUrl: "citizenScience/thumbLabels/examples.tpl.html",
@@ -56,8 +57,8 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
             }],
         bindings: {
-            examples: "=examples",
-            label: "=label"
+            examples: "=",
+            name: "="
         }
     }).directive("centerInWindow", ["$window", function ($window) {
 

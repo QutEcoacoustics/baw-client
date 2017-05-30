@@ -3,7 +3,7 @@
 
     <h3>
         <i class="fa fa-arrow-left arrow prev" aria-hidden="true" ng-click="changeCurExample(key, -1)"  ng-if="annotations.length>1"></i>
-        <span>{{label}} example{{(annotations.length) > 1 ? 's' : ''}}</span>
+        <span>{{$ctrl.name}} example{{(annotations.length) > 1 ? 's' : ''}}</span>
         <i class="fa fa-arrow-right arrow next" aria-hidden="true" ng-click="changeCurExample(key, 1)" ng-if="annotations.length>1"></i>
     </h3>
 
