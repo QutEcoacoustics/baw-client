@@ -12,22 +12,22 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                 var self = this;
 
                 $scope.selected = function () {
-                    return self.selectedLabelNum.value === self.labelNum;
+                    return self.selectedLabelNum.value === self.label.labelNumber;
                 };
 
 
                 $scope.toggleSelected = function () {
 
-                    console.log("toggling state for label number", self.labelNum);
+                    console.log("toggling state for label number", self.label.labelNumber);
 
                     console.log("old selected label num:", self.selectedLabelNum.value);
 
                     //$scope.selected = self.onToggleSelected(self.labelNum);
 
-                    if (self.selectedLabelNum.value === self.labelNum) {
+                    if (self.selectedLabelNum.value === self.label.labelNumber) {
                         self.selectedLabelNum.value = -1;
                     } else {
-                        self.selectedLabelNum.value = self.labelNum;
+                        self.selectedLabelNum.value = self.label.labelNumber;
                         $scope.$emit("examples-position", ($element[0].offsetTop));
                     }
 
@@ -39,13 +39,13 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
             }],
         bindings: {
 
-            labelNum: "<",
-
             label: "=",
-
             onToggleSelected: "<",
+            selectedLabelNum: "=",
 
-            selectedLabelNum: "="
+            samples: "=samples",
+            currentSampleNum: "=currentSampleNum",
+            csProject: "=csProject"
 
 
         }

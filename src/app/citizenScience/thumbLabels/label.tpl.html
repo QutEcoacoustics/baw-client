@@ -7,9 +7,11 @@
 
     <citizen-science-label-examples
             center-in-window
-            name="$ctrl.label.name"
-            examples="$ctrl.label.examples"
+            label="$ctrl.label"
             ng-if="selected()"
+            samples="$ctrl.samples"
+            currentSampleNum="$ctrl.currentSampleNum"
+            csProject="$ctrl.csProject"
     ></citizen-science-label-examples>
 
 </div>

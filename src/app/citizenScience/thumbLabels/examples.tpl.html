@@ -3,7 +3,12 @@
 
     <h3>
         <i class="fa fa-arrow-left arrow prev" aria-hidden="true" ng-click="changeCurExample(key, -1)"  ng-if="annotations.length>1"></i>
-        <span>{{$ctrl.name}} example{{(annotations.length) > 1 ? 's' : ''}}</span>
+        <span>{{$ctrl.label.name}} example{{(annotations.length) > 1 ? 's' : ''}}</span>
+        <label-check label="$ctrl.label"
+                     samples="$ctrl.samples"
+                     currentSampleNum="$ctrl.currentSampleNum"
+                     csProject="$ctrl.csProject"
+                     ></label-check>
         <i class="fa fa-arrow-right arrow next" aria-hidden="true" ng-click="changeCurExample(key, 1)" ng-if="annotations.length>1"></i>
     </h3>
 
@@ -16,7 +21,7 @@
 -->
 
     <div class="citizen-science-thumb-example">
-        <annotation-item annotation="$ctrl.examples[currentExample].annotation"></annotation-item>
+        <annotation-item annotation="$ctrl.label.examples[currentExample].annotation"></annotation-item>
     </div>
 
 </div>

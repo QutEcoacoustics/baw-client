@@ -96,6 +96,22 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         };
 
+        self.initLabels = function (labels) {
+
+            // add the index (label number) to the label object
+            labels.forEach((label, index) => label.labelNumber = index);
+            return labels;
+
+        };
+
+
+        self.apiUrl = function () {
+            // convert to array
+            var args = Array.prototype.slice.call(arguments);
+            return [self.sheets_api_url].concat(args).join("/");
+        };
+
+
         self.functions = {
 
             getAudioModel: function () {
@@ -105,11 +121,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             /**
              * Constructs a url for the api by concatenating url/arg1/arg2/arg3 etc
              */
-            apiUrl: function () {
-                // convert to array
-                var args = Array.prototype.slice.call(arguments);
-                return [self.sheets_api_url].concat(args).join("/");
-            },
+            apiUrl: self.apiUrl,
 
             /**
              * Converts an array of strings to an object where each key is the same as the val
@@ -199,7 +211,28 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 return showAudio;
 
 
+            },
+
+            getLabels: function (project) {
+
+
+                return $http.get(self.apiUrl(
+                    "labels",
+                    project
+                )).then(function (response) {
+
+                    var labels = [];
+                    if (Array.isArray(response.data)) {
+                        labels = self.initLabels(response.data);
+                    }
+
+                    return labels;
+                });
+
+
             }
+
+
 
 
         };

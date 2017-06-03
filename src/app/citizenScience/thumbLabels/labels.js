@@ -126,6 +126,9 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
             }],
         bindings: {
-            labels: "=labels",
+            labels: "=",
+            samples: "=",
+            currentSampleNum: "=",
+            csProject: "="
         }
     });

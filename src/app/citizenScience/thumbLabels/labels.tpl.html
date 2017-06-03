@@ -2,13 +2,17 @@
 <div class="thumb-labels-container">
 
     <citizen-science-label
-            ng-repeat="(key,label) in $ctrl.labels"
+            ng-repeat="label in $ctrl.labels"
             class="label-thumbs"
             ng-if="label.examples.length"
             label="label"
-            label-num="key"
             selected-label-num="selectedLabelNum"
-            on-toggle-selected="onToggleSelected"></citizen-science-label>
+            on-toggle-selected="onToggleSelected"
+            samples="$ctrl.samples"
+            currentSampleNum="$ctrl.currentSampleNum"
+            csProject="$ctrl.csProject"
+
+    ></citizen-science-label>
 
 
 

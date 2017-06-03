@@ -1,7 +1,8 @@
 angular.module("bawApp.components.citizenScienceThumbLabels.examples",
     [
         "bawApp.citizenScience.common",
-        "bawApp.directives.scaleToFit"
+        "bawApp.directives.scaleToFit",
+        "bawApp.components.citizenScienceLabelCheck"
     ])
     .component("citizenScienceLabelExamples", {
         templateUrl: "citizenScience/thumbLabels/examples.tpl.html",
@@ -19,7 +20,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
                 $scope.currentExample = -1;
 
                 $scope.changeCurrentExample = function (labelNum, changeBy) {
-                    var l = self.examples.length;
+                    var l = self.label.examples.length;
                     // add changeBy and wrap if the result is larger than length
                     $scope.currentExample = (($scope.currentExample + changeBy % l) + l) % l;
                     console.log("changed cur example for label " + self.label + " to " + $scope.currentExample);
@@ -30,7 +31,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
                  * initialises curExample after examples have been loaded (they are loaded async)
                  */
                 $scope.$watch(function () {
-                    return self.examples;
+                    return self.label.examples;
                 }, function (newValue, oldValue) {
 
                     if (Array.isArray(newValue)) {
@@ -46,7 +47,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
                 $scope.$watch("currentExample", function (newVal, oldVal) {
 
-                    console.log("self.examples[$scope.currentExample].annotation",self.examples[$scope.currentExample].annotation);
+                    console.log("self.examples[$scope.currentExample].annotation",self.label.examples[$scope.currentExample].annotation);
 
                 });
 
@@ -57,8 +58,9 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
             }],
         bindings: {
-            examples: "=",
-            name: "="
+            label: "=",
+            samples: "=",
+            currentSampleNum: "="
         }
     }).directive("centerInWindow", ["$window", function ($window) {
 

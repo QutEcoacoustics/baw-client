@@ -112,20 +112,12 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-        $http.get(CitizenScienceCommon.apiUrl(
-            "labels",
-            $scope.csProject
-        )).then(function (response) {
-            if (Array.isArray(response.data)) {
-                $scope.labels = response.data;
-            } else {
-                $scope.labels = [];
-            }
+        CitizenScienceCommon.getLabels($scope.csProject).then(function (labels) {
+
+            console.log("labels received", labels);
+
+                $scope.labels = labels;
         });
-
-
-
-
 
 
         /**
