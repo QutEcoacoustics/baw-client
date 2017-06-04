@@ -168,7 +168,8 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                             var samples = response.data;
                             $scope.samples = samples;
                             self.initSampleLabels($scope.samples, $scope.labels);
-                            $scope.goToSample(0);
+                            //$scope.goToSample(0);
+                            $scope.currentSampleNum = 0;
                         });
                     }
                 };

@@ -120,6 +120,49 @@ class BristlebirdController {
         });
 
 
+        $scope.$on("label-toggle", function (e, labelNumber, value) {
+            self.toggleLabel(labelNumber, value);
+        });
+
+
+        /**
+         * applies or removes the tag-sets from the given label number
+         * to the current sample
+         * @param labelNumber
+         */
+        self.toggleLabel = function (labelNumber, value) {
+
+            console.log("toggling lable ", labelNumber, value);
+            var currentSample = $scope.samples[$scope.currentSampleNum];
+            if (typeof value === "boolean") {
+                currentSample.labels[labelNumber] = value;
+            } else {
+                currentSample.labels[labelNumber] = !currentSample.labels[labelNumber];
+            }
+
+            currentSample.done = true;
+
+            var tags = $scope.labels.filter(function (value, index) {
+                return currentSample.labels[index];
+            }).map(function (value) {
+                return value.tags;
+            });
+
+            console.log("new tags for sample: ", CitizenScienceCommon.labelsAsString(tags));
+
+            var url = CitizenScienceCommon.apiUrl("setLabels",
+                $scope.csProject,
+                currentSample.name,
+                currentSample.recordingId,
+                currentSample.startOffset,
+                CitizenScienceCommon.labelsAsString(tags));
+            $http.get(url).then(function (response) {
+                console.log(response.data);
+            });
+
+        };
+
+
         /**
          * Get settings from sheet
          */
@@ -133,18 +176,28 @@ class BristlebirdController {
             }
         });
 
-        /**
-         * Sets the current sample to sampleNum
-         * @param sample_num int the index of the samples array of json objects
-         */
-        $scope.goToSample = function (sampleNum) {
-            if (sampleNum < $scope.samples.length) {
-                $scope.currentSampleNum = sampleNum;
-            } else {
-                console.log("can't go to next sample because this is the last one");
-            }
+        // /**
+        //  * Sets the current sample to sampleNum
+        //  * @param sample_num int the index of the samples array of json objects
+        //  */
+        // $scope.goToSample = function (sampleNum) {
+        //     if (sampleNum < $scope.samples.length && sampleNum >= 0) {
+        //         $scope.currentSampleNum = sampleNum;
+        //
+        //
+        //
+        //
+        //     } else {
+        //         console.log("can't go to next sample because this is the last one");
+        //     }
+        //
+        // };
 
-        };
+
+
+
+
+
 
         /**
          * When the currentSampleNum changes, change the current audio file / spectrogram to match it
@@ -156,6 +209,9 @@ class BristlebirdController {
                 self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
                 var backgroundPath = self.backgroundPaths[$scope.currentSampleNum % (self.backgroundPaths.length - 1)];
                 backgroundImage.currentBackground = backgroundPath;
+
+                $scope.$broadcast("update-selected-labels", $scope.samples[$scope.currentSampleNum].labels);
+
             }
         });
 

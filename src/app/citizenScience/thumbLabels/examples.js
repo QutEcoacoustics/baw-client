@@ -6,6 +6,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
     ])
     .component("citizenScienceLabelExamples", {
         templateUrl: "citizenScience/thumbLabels/examples.tpl.html",
+        transclude: true,
         controller: [
             "$scope",
             "$http",
@@ -16,6 +17,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
             function ($scope, $http, CitizenScienceCommon, libraryCommon, AudioEventService, AudioEvent) {
 
                 var self = this;
+
 
                 $scope.currentExample = -1;
 
@@ -59,8 +61,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
             }],
         bindings: {
             label: "=",
-            samples: "=",
-            currentSampleNum: "="
         }
     }).directive("centerInWindow", ["$window", function ($window) {
 
@@ -69,23 +69,16 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
                 link: function (scope, $element) {
 
                     var el = $element[0];
-
                     function recenter (){
-
                         if (!el || !el.offsetParent) {
                             return;
                         }
-
                         var offset = el.offsetParent.getBoundingClientRect().left;
-
                         el.style.width = $window.innerWidth - 50 + "px";
-
                         el.style.left = (15-offset) + "px";
-
                     }
 
                     recenter();
-
                     angular.element($window).bind("resize", recenter);
 
                 }

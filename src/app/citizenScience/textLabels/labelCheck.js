@@ -3,14 +3,18 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
         templateUrl: "citizenScience/textLabels/labelCheck.tpl.html",
         controller: [
             "$scope",
-            "$http",
-            "CitizenScienceCommon",
-            function ($scope, $http, CitizenScienceCommon) {
+            function ($scope) {
 
-                //console.log("dataset progress component scope");console.log($scope);
 
                 var self = this;
+                console.log("label check box for label ", self.label);
 
+
+                // /**
+                //  * Whether the label has been attached to the current sample
+                //  */
+                // $scope.isChecked = false;
+                //
                 /**
                  * Add or remove the label num to the list of selected labels for this sample
                  * Send the new set of labels to the dataset
@@ -19,53 +23,18 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                  * resulting in the wrong labels being applied.
                  * @param label string
                  */
-                $scope.toggleLabel = function (labelNum) {
-
-                    var currentSample = self.samples[self.currentSampleNum];
-
-                    currentSample.labels[labelNum] = !currentSample.labels[labelNum];
-
-                    currentSample.done = true;
-
-                    var tags = self.labels.filter(function (value, index) {
-                        return currentSample.labels[index];
-                    }).map(function (value) {
-                        return value.tags;
-                    });
-
-                    var url = CitizenScienceCommon.apiUrl("setLabels",
-                        self.csProject,
-                        currentSample.name,
-                        currentSample.recordingId,
-                        currentSample.startOffset,
-                        CitizenScienceCommon.labelsAsString(tags));
-                    $http.get(url).then(function (response) {
-                        console.log(response.data);
-                    });
-
-                };
-
-                /**
-                 * Whether the label has been attached to the current sample
-                 * @param label Object
-                 * @returns Boolean
-                 */
-                $scope.labelSelected = function () {
-                    if(self.currentSampleNum === -1) {
-                        return false;
-                    }
-                    var currentSample = self.samples[self.currentSampleNum];
-
-                    return currentSample.labels[self.label.labelNumber];
-
+                $scope.toggleLabel = function () {
+                    //$scope.isChecked = !$scope.isChecked;
+                    //self.onToggle($scope.isChecked);
+                    self.checked.value = !self.checked.value;
+                    self.onToggleSelected(self.checked.value);
                 };
 
 
             }],
         bindings: {
-            label: "=",
-            samples: "=",
-            currentSampleNum: "=",
-            csProject: "="
+            checked: "=",
+            onToggleSelected: "=",
+            text:"<"
         }
     });

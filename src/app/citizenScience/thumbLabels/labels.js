@@ -22,30 +22,34 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                 var self = this;
 
-                $scope.selectedLabelNum = {value: -1};
+                console.log(" --- current sample num (labels) ", self.currentSampleNum);
 
-                $scope.onToggleSelected = function (labelNum) {
-                    console.log("onToggleSelected", labelNum);
+                $scope.currentDetailsLabelNum = {value: -1};
 
-                    if ($scope.selectedLabelNum.value === labelNum) {
-                        $scope.selectedLabelNum.value = -1;
-                    } else {
-                        $scope.selectedLabelNum.value = labelNum;
-                    }
-
-                };
+                // $scope.onToggleShowInfo = function (labelNum) {
+                //     console.log("onToggleSelected", labelNum);
+                //
+                //     if ($scope.selectedLabelNum.value === labelNum) {
+                //         $scope.selectedLabelNum.value = -1;
+                //     } else {
+                //         $scope.selectedLabelNum.value = labelNum;
+                //     }
+                //
+                // };
 
                 $scope.examplesPosition = "0px";
 
-                $scope.$on("examples-position", function (event, newPosition) {
+                // $scope.$on("examples-position", function (event, newPosition) {
+                //     console.log("examples-position has changed: ", newPosition);
+                //     $scope.examplesPosition = newPosition + "px";
+                // });
 
-                    console.log("examples-position has changed: ", newPosition);
+                $scope.$on("update-selected-labels", function (e, sampleNum) {
 
-                    $scope.examplesPosition = newPosition + "px";
+
 
 
                 });
-
 
 
                 $scope.$watch(function () {
@@ -127,8 +131,5 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
             }],
         bindings: {
             labels: "=",
-            samples: "=",
-            currentSampleNum: "=",
-            csProject: "="
         }
     });

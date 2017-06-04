@@ -11,42 +11,44 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
 
                 var self = this;
 
-                $scope.selected = function () {
-                    return self.selectedLabelNum.value === self.label.labelNumber;
+                $scope.selected = { value: false };
+
+                $scope.isShowingDetails = function () {
+                    return self.currentDetailsLabelNum.value === self.label.labelNumber;
                 };
 
-
-                $scope.toggleSelected = function () {
-
-                    console.log("toggling state for label number", self.label.labelNumber);
-
-                    console.log("old selected label num:", self.selectedLabelNum.value);
-
-                    //$scope.selected = self.onToggleSelected(self.labelNum);
-
-                    if (self.selectedLabelNum.value === self.label.labelNumber) {
-                        self.selectedLabelNum.value = -1;
+                /**
+                 * toggles whether the details pane is showing for the current label
+                 */
+                $scope.toggleShowDetails = function () {
+                    console.log("one");
+                    if ($scope.isShowingDetails()) {
+                        self.currentDetailsLabelNum.value = -1;
                     } else {
-                        self.selectedLabelNum.value = self.label.labelNumber;
-                        $scope.$emit("examples-position", ($element[0].offsetTop));
+                        self.currentDetailsLabelNum.value = self.label.labelNumber;
                     }
+                    console.log("showing details for label num:", self.currentDetailsLabelNum.value);
+                };
 
-                    console.log("new selected label num:", self.selectedLabelNum.value);
-
+                /**
+                 * callback when this label is either attached or detached from the current sample
+                 * @param isSelected Boolean
+                 */
+                self.onToggleSelected = function (isSelected) {
+                    console.log("label ", self.label.name, "selected value for sample x set to", isSelected);
+                    $scope.$emit("label-toggle", self.label.labelNumber, isSelected);
 
                 };
+
+                $scope.$on("update-selected-labels", function (e, labelSelections) {
+                    $scope.selected.value = labelSelections[self.label.labelNumber];
+                });
 
             }],
         bindings: {
 
             label: "=",
-            onToggleSelected: "<",
-            selectedLabelNum: "=",
-
-            samples: "=samples",
-            currentSampleNum: "=currentSampleNum",
-            csProject: "=csProject"
-
+            currentDetailsLabelNum: "=",
 
         }
     });
