@@ -2,7 +2,6 @@ $thumb-height: 100;
 
 $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="20px" version="1.1"><defs/><g><path d="M 0 20 L 20 0 L 40 20 Z" fill="#ffffff" pointer-events="none"/></g></svg>';
 
-
 .thumb-labels-container {
   text-align: center;
   margin-top: 10px;
@@ -13,7 +12,6 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-
 
   .citizen-science-thumb-label {
 
@@ -44,7 +42,6 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
 
     }
 
-
     .citizen-science-thumb {
       height: $thumb-height + px;
       margin: 5px;
@@ -53,10 +50,7 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
         height: 100%;
       }
 
-
-
     }
-
 
     citizen-science-label-examples {
 
@@ -69,25 +63,13 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
 
       top: ($thumb-height + 10) + px;
 
-
     }
 
-
-
   }
-
-
-
-
-
-
-
-
 
   .label-examples-annotations {
 
     background: #fff;
-
 
     h3 {
       text-align: center;

@@ -26,27 +26,9 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                 $scope.currentDetailsLabelNum = {value: -1};
 
-                // $scope.onToggleShowInfo = function (labelNum) {
-                //     console.log("onToggleSelected", labelNum);
-                //
-                //     if ($scope.selectedLabelNum.value === labelNum) {
-                //         $scope.selectedLabelNum.value = -1;
-                //     } else {
-                //         $scope.selectedLabelNum.value = labelNum;
-                //     }
-                //
-                // };
-
                 $scope.examplesPosition = "0px";
 
-                // $scope.$on("examples-position", function (event, newPosition) {
-                //     console.log("examples-position has changed: ", newPosition);
-                //     $scope.examplesPosition = newPosition + "px";
-                // });
-
                 $scope.$on("update-selected-labels", function (e, sampleNum) {
-
-
 
 
                 });
@@ -124,9 +106,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                                 console.error("Failed to load citizen science example item response.", httpResponse);
                         });
 
-
                 };
-
 
             }],
         bindings: {

@@ -113,26 +113,22 @@ class BristlebirdController {
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
         CitizenScienceCommon.getLabels($scope.csProject).then(function (labels) {
-
-            console.log("labels received", labels);
-
-                $scope.labels = labels;
+            $scope.labels = labels;
         });
-
 
         $scope.$on("label-toggle", function (e, labelNumber, value) {
             self.toggleLabel(labelNumber, value);
         });
 
-
         /**
-         * applies or removes the tag-sets from the given label number
+         * applies or removes the tag-sets of the given label number
          * to the current sample
          * @param labelNumber
+         * @param value boolean if omitted will flip the current value
          */
         self.toggleLabel = function (labelNumber, value) {
 
-            console.log("toggling lable ", labelNumber, value);
+            console.log("toggling label ", labelNumber, value);
             var currentSample = $scope.samples[$scope.currentSampleNum];
             if (typeof value === "boolean") {
                 currentSample.labels[labelNumber] = value;
@@ -176,29 +172,6 @@ class BristlebirdController {
             }
         });
 
-        // /**
-        //  * Sets the current sample to sampleNum
-        //  * @param sample_num int the index of the samples array of json objects
-        //  */
-        // $scope.goToSample = function (sampleNum) {
-        //     if (sampleNum < $scope.samples.length && sampleNum >= 0) {
-        //         $scope.currentSampleNum = sampleNum;
-        //
-        //
-        //
-        //
-        //     } else {
-        //         console.log("can't go to next sample because this is the last one");
-        //     }
-        //
-        // };
-
-
-
-
-
-
-
         /**
          * When the currentSampleNum changes, change the current audio file / spectrogram to match it
          */
@@ -209,9 +182,7 @@ class BristlebirdController {
                 self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
                 var backgroundPath = self.backgroundPaths[$scope.currentSampleNum % (self.backgroundPaths.length - 1)];
                 backgroundImage.currentBackground = backgroundPath;
-
                 $scope.$broadcast("update-selected-labels", $scope.samples[$scope.currentSampleNum].labels);
-
             }
         });
 
@@ -238,7 +209,7 @@ class BristlebirdController {
         });
 
 
-        self.backgroundPaths = ["1.jpg","2.jpg","3.jpg","4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
+        self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
 
     }
 

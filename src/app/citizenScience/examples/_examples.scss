@@ -4,7 +4,6 @@
   margin-top: 10px;
 }
 
-
 .label-examples {
 
   display: none;
@@ -22,7 +21,6 @@
     background: rgba(0,0,0,0.7);
   }
 
-
   &.selected {
     display: inline-block;
   }
@@ -31,18 +29,11 @@
 
     display: none;
 
-
-
     &.selected {
-
       display: inline-block;
-
-
     }
 
-
   }
-
 
   h3 {
     text-align: center;
@@ -73,9 +64,6 @@
     }
 
   }
-
-
-
 
 }
 

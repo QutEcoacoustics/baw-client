@@ -18,7 +18,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
                 var self = this;
 
-
                 $scope.currentExample = -1;
 
                 $scope.changeCurrentExample = function (labelNum, changeBy) {
@@ -46,36 +45,28 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
 
                 });
 
-
-                $scope.$watch("currentExample", function (newVal, oldVal) {
-
-                    console.log("self.examples[$scope.currentExample].annotation",self.label.examples[$scope.currentExample].annotation);
-
-                });
-
-
-
-
-
-
             }],
         bindings: {
             label: "=",
         }
-    }).directive("centerInWindow", ["$window", function ($window) {
+    })
+    .directive("centerInWindow", [
+        "$window",
+        function ($window) {
 
             return {
                 restrict: "A",
                 link: function (scope, $element) {
 
                     var el = $element[0];
-                    function recenter (){
+
+                    function recenter() {
                         if (!el || !el.offsetParent) {
                             return;
                         }
                         var offset = el.offsetParent.getBoundingClientRect().left;
                         el.style.width = $window.innerWidth - 50 + "px";
-                        el.style.left = (15-offset) + "px";
+                        el.style.left = (15 - offset) + "px";
                     }
 
                     recenter();

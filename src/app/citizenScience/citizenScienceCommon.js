@@ -20,7 +20,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         var self = this;
 
-        self.sheets_api_url = "http://"+window.location.hostname+":8081";
+        self.sheets_api_url = "http://" + window.location.hostname + ":8081";
 
         /**
          * Default values for audio model, to be updated when UserProfile is loaded
@@ -45,6 +45,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             self.audioElement.muted = UserProfile.profile.preferences.muted;
             self.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay;
         };
+
         $rootScope.$on(UserProfileEvents.loaded, self.profileLoaded);
         if (UserProfile.profile && UserProfile.profile.preferences) {
             self.profileLoaded(null, UserProfile);
@@ -61,20 +62,16 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
         self.initSampleLabels = function (samples, labels) {
 
             samples.forEach(function (sample) {
-
                 sample.labels = labels.map(function (label) {
                     for (var i = 0; i < sample.tags.length; i++) {
                         //TODO: make this more efficient (don't repeatedly join label tags)
-                        if (self.compareTags(sample.tags[i],label.tags)) {
+                        if (self.compareTags(sample.tags[i], label.tags)) {
                             return true;
                         }
                     }
                     return false;
                 });
-
             });
-
-
         };
 
 
@@ -103,7 +100,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             return labels;
 
         };
-
 
         self.apiUrl = function () {
             // convert to array
@@ -211,11 +207,9 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
                 return showAudio;
 
-
             },
 
             getLabels: function (project) {
-
 
                 return $http.get(self.apiUrl(
                     "labels",
@@ -230,11 +224,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                     return labels;
                 });
 
-
             }
-
-
-
 
         };
 
