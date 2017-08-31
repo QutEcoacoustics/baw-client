@@ -20,7 +20,10 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         var self = this;
 
+        self.useLocalData = true;
+
         self.sheets_api_url = "http://" + window.location.hostname + ":8081";
+        self.local_api_url = "/public/citizen_science";
 
         /**
          * Default values for audio model, to be updated when UserProfile is loaded
@@ -53,27 +56,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.mediaModel = null;
 
-        /**
-         * creates a labels array of boolean values in the sample object, signifying whether
-         * the current sample has the label's tags attached to it
-         * @param samples Array The samples that are being initialised
-         * @param labels array The list of possible labels
-         */
-        self.initSampleLabels = function (samples, labels) {
-
-            samples.forEach(function (sample) {
-                sample.labels = labels.map(function (label) {
-                    for (var i = 0; i < sample.tags.length; i++) {
-                        //TODO: make this more efficient (don't repeatedly join label tags)
-                        if (self.compareTags(sample.tags[i], label.tags)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-            });
-        };
-
 
         /**
          * Checks if a tag or array of tags is the same
@@ -93,18 +75,25 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         };
 
-        self.initLabels = function (labels) {
 
-            // add the index (label number) to the label object
-            labels.forEach((label, index) => label.labelNumber = index);
-            return labels;
-
-        };
 
         self.apiUrl = function () {
             // convert to array
+            var base_url, url;
+            if (self.useLocalData) {
+                base_url = self.local_api_url;
+            } else {
+                base_url = self.sheets_api_url;
+            }
             var args = Array.prototype.slice.call(arguments);
-            return [self.sheets_api_url].concat(args).join("/");
+
+            url = [base_url].concat(args).join("/");
+
+            if (self.useLocalData) {
+                url = url + ".json";
+            }
+
+            return url;
         };
 
 
@@ -154,8 +143,9 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             bindGetSamples: function ($scope) {
                 var getSamples = function () {
                     if ($scope.samples.length === 0) {
+
                         var url = self.functions.apiUrl(
-                            "userSamples",
+                            "samples",
                             $scope.csProject,
                             UserProfile.profile.userName);
                         //TODO: error handling
@@ -163,7 +153,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                             //console.log(response.data);
                             var samples = response.data;
                             $scope.samples = samples;
-                            self.initSampleLabels($scope.samples, $scope.labels);
+                            //self.initSampleLabels($scope.samples, $scope.labels);
                             //$scope.goToSample(0);
                             $scope.currentSampleNum = 0;
                         });
@@ -210,20 +200,26 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             },
 
             getLabels: function (project) {
-
-                return $http.get(self.apiUrl(
+                var response = $http.get(self.apiUrl(
                     "labels",
                     project
-                )).then(function (response) {
+                ));
 
+                return response.then(function (response) {
                     var labels = [];
                     if (Array.isArray(response.data)) {
-                        labels = self.initLabels(response.data);
+                        labels = response.data;
                     }
 
                     return labels;
                 });
+            },
 
+            getSettings: function (project) {
+                return $http.get(self.apiUrl(
+                    "settings",
+                    project
+                ));
             }
 
         };

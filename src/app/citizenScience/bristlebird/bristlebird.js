@@ -23,6 +23,7 @@ class BristlebirdController {
                 UserProfile,
                 UserProfileEvents,
                 CitizenScienceCommon,
+                SampleLabels,
                 backgroundImage,
                 paths) {
 
@@ -116,9 +117,14 @@ class BristlebirdController {
             $scope.labels = labels;
         });
 
+
+        SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
+
         $scope.$on("label-toggle", function (e, labelNumber, value) {
             self.toggleLabel(labelNumber, value);
         });
+
+
 
         /**
          * applies or removes the tag-sets of the given label number
@@ -126,51 +132,29 @@ class BristlebirdController {
          * @param labelNumber
          * @param value boolean if omitted will flip the current value
          */
-        self.toggleLabel = function (labelNumber, value) {
-
-            console.log("toggling label ", labelNumber, value);
+        self.toggleLabel = function (labelId, value) {
+            console.log("toggling label ", labelId, value);
             var currentSample = $scope.samples[$scope.currentSampleNum];
-            if (typeof value === "boolean") {
-                currentSample.labels[labelNumber] = value;
-            } else {
-                currentSample.labels[labelNumber] = !currentSample.labels[labelNumber];
+            if (typeof value !== "boolean") {
+                value = !SampleLabels.getValue(currentSample.id, labelId);
             }
-
-            currentSample.done = true;
-
-            var tags = $scope.labels.filter(function (value, index) {
-                return currentSample.labels[index];
-            }).map(function (value) {
-                return value.tags;
-            });
-
-            console.log("new tags for sample: ", CitizenScienceCommon.labelsAsString(tags));
-
-            var url = CitizenScienceCommon.apiUrl("setLabels",
-                $scope.csProject,
-                currentSample.name,
-                currentSample.recordingId,
-                currentSample.startOffset,
-                CitizenScienceCommon.labelsAsString(tags));
-            $http.get(url).then(function (response) {
-                console.log(response.data);
-            });
-
+            SampleLabels.setValue(currentSample.id, labelId, value);
         };
 
 
-        /**
-         * Get settings from sheet
-         */
-        $http.get(CitizenScienceCommon.apiUrl(
-            "settings",
-            $scope.csProject
-        )).then(function (response) {
-            $scope.settings = response.data;
-            if ($scope.settings.hasOwnProperty("sampleDuration")) {
-                self.sampleDuration = $scope.settings.sampleDuration;
+
+
+
+        CitizenScienceCommon.getSettings($scope.csProject).then(
+            function (settings) {
+                $scope.settings = settings;
+                if ($scope.settings.hasOwnProperty("sampleDuration")) {
+                    self.sampleDuration = $scope.settings.sampleDuration;
+                }
             }
-        });
+        );
+
+
 
         /**
          * When the currentSampleNum changes, change the current audio file / spectrogram to match it
@@ -182,7 +166,7 @@ class BristlebirdController {
                 self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
                 var backgroundPath = self.backgroundPaths[$scope.currentSampleNum % (self.backgroundPaths.length - 1)];
                 backgroundImage.currentBackground = backgroundPath;
-                $scope.$broadcast("update-selected-labels", $scope.samples[$scope.currentSampleNum].labels);
+                $scope.$broadcast("update-selected-labels", SampleLabels.getLablesForSample($scope.samples[$scope.currentSampleNum].id));
             }
         });
 
@@ -208,8 +192,8 @@ class BristlebirdController {
             }
         });
 
-
         self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
+
 
     }
 
@@ -219,6 +203,7 @@ angular
     .module("bawApp.citizenScience.bristlebird", [
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
+        "bawApp.citizenScience.sampleLabels",
 //        "bawApp.components.citizenScienceTextLabels",
 //        "bawApp.components.citizenScienceExamples",
         "bawApp.components.citizenScienceThumbLabels",
@@ -238,6 +223,7 @@ angular
             "UserProfile",
             "UserProfileEvents",
             "CitizenScienceCommon",
+            "SampleLabels",
             "backgroundImage",
             "conf.paths",
             BristlebirdController

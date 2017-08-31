@@ -51,3 +51,6 @@ vendor/
 src/assets/temp
 .sass-cache
 *.generated*
+
+#citizen science temp data for development
+/public/citizen_science/*

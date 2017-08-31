@@ -729,10 +729,10 @@ module.exports = function (grunt) {
                                 // from there, angular deals with the route information
                                 //"!(\\/[^\\.\\/\\?]+\\.\\w+) /" + buildDirectory + "/ [L]"
 
-                                // does not match any url startng with /build, /src, or /vendor
+                                // does not match any url startng with /build, /src, /vendor or /public
                                 // if matched, the root (index.html) is sent back instead.
                                 // from there, angular deals with the route information
-                                "!(^(\\/build|\\/src|\\/vendor)) /" + buildDirectory + "/ [L]"
+                                "!(^(\\/build|\\/src|\\/vendor|\\/public)) /" + buildDirectory + "/ [L]"
 
                             ]),
 

@@ -14,7 +14,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                 $scope.selected = { value: false };
 
                 $scope.isShowingDetails = function () {
-                    return self.currentDetailsLabelNum.value === self.label.labelNumber;
+                    return self.currentDetailsLabelId.value === self.label.id;
                 };
 
                 /**
@@ -23,11 +23,11 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                 $scope.toggleShowDetails = function () {
                     console.log("one");
                     if ($scope.isShowingDetails()) {
-                        self.currentDetailsLabelNum.value = -1;
+                        self.currentDetailsLabelId.value = -1;
                     } else {
-                        self.currentDetailsLabelNum.value = self.label.labelNumber;
+                        self.currentDetailsLabelId.value = self.label.id;
                     }
-                    console.log("showing details for label num:", self.currentDetailsLabelNum.value);
+                    console.log("showing details for label:", self.currentDetailsLabelId.value);
                 };
 
                 /**
@@ -36,19 +36,23 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                  */
                 self.onToggleSelected = function (isSelected) {
                     console.log("label ", self.label.name, "selected value for sample x set to", isSelected);
-                    $scope.$emit("label-toggle", self.label.labelNumber, isSelected);
+                    $scope.$emit("label-toggle", self.label.id, isSelected);
 
                 };
 
                 $scope.$on("update-selected-labels", function (e, labelSelections) {
-                    $scope.selected.value = labelSelections[self.label.labelNumber];
+                    if (labelSelections[self.label.id] === undefined) {
+                        $scope.selected.value = false;
+                    } else {
+                        $scope.selected.value = labelSelections[self.label.id].value;
+                    }
                 });
 
             }],
         bindings: {
 
             label: "=",
-            currentDetailsLabelNum: "=",
+            currentDetailsLabelId: "=",
 
         }
     });
