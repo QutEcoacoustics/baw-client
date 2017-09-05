@@ -12,5 +12,6 @@ angular.module("bawApp.directives",
         "bawApp.directives.inputRange",
         "bawApp.directives.toggleSwitch",
         "bawApp.directives.ngForm",
+        "bawApp.components.audioButtons"
     ]);
 

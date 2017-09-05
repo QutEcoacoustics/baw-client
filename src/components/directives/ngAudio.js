@@ -57,6 +57,7 @@ angular.module("bawApp.directives.ngAudio", [
             scope.$watch(function () {
                 return target ? target.volume : null;
             }, function updateVolume(newValue, oldValue) {
+                console.log("changing the volume");
                 element.volume = newValue;
             });
 
@@ -64,6 +65,7 @@ angular.module("bawApp.directives.ngAudio", [
             scope.$watch(function () {
                 return target ? target.muted : null;
             }, function updateMuted(newValue, oldValue) {
+                console.log("changing the muted value");
                 element.muted = newValue === null ? null : !!newValue;
             });
 
