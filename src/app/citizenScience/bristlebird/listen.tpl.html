@@ -18,9 +18,9 @@
                 <div class="audio-inner">
                     <div class="spectrogram-wrapper">
                         <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
-                        <div position-line media="media" audio-data="model.audioElement" image-id="'spectrogram'"></div>
+                        <div position-line media="media" audio-data="audioElementModel" image-id="'spectrogram'"></div>
                     </div>
-                    <audio id="citsci-sample" ng-audio="model.audioElement" controls>
+                    <audio id="citsci-sample" ng-audio="audioElementModel" controls>
                         <source ng-repeat="key in media.available.audioOrder"
                                 ng-src="{{media.available.audio[key].url}}" src=""
                                 type="{{media.available.audio[key].mimeType}}">
@@ -37,10 +37,10 @@
                 <dataset-progress items="samples" selected="currentSampleNum"></dataset-progress>
 
 
-                <play-button audio-element="model.audioElement"></play-button>
+                <play-button audio-element-model="audioElementModel"></play-button>
 
                 <div class="autoplay progressCell">
-                    <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"
+                    <toggle-switch model="audioElementModel.autoPlay" disabled="disabled" mode="push-toggle"
                                    title="Enable/disable autoplay">
                         <toggle-switch-state switch-state="on">
                             <span class="glyphicon glyphicon-play-circle"></span>
@@ -51,7 +51,7 @@
                     </toggle-switch>
                 </div>
 
-                <volume-slider audio-element="model.audioElement"></volume-slider>
+                <volume-slider audio-element-model="audioElementModel"></volume-slider>
 
             </nav>
 

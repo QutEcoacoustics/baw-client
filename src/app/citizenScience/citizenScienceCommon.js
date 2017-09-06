@@ -29,7 +29,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
          * Default values for audio model, to be updated when UserProfile is loaded
          * @type {Object}
          */
-        self.audioElement = {
+        self.audioElementModel = {
             volume: null,
             muted: null,
             autoPlay: null,
@@ -44,9 +44,9 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
          * @param UserProfile
          */
         self.profileLoaded = function updateProfileSettings(event, UserProfile) {
-            self.audioElement.volume = UserProfile.profile.preferences.volume;
-            self.audioElement.muted = UserProfile.profile.preferences.muted;
-            self.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay;
+            self.audioElementModel.volume = UserProfile.profile.preferences.volume;
+            self.audioElementModel.muted = UserProfile.profile.preferences.muted;
+            self.audioElementModel.autoPlay = UserProfile.profile.preferences.autoPlay;
         };
 
         $rootScope.$on(UserProfileEvents.loaded, self.profileLoaded);
@@ -100,7 +100,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
         self.functions = {
 
             getAudioModel: function () {
-                return self.audioElement;
+                return self.audioElementModel;
             },
 
             /**

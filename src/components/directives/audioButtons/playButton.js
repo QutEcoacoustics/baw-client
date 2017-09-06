@@ -5,29 +5,27 @@ audioButtons.component("playButton", {
         templateUrl: "components/directives/audioButtons/playButton.tpl.html",
         controller: [
             "$scope",
-            "AudioEvent",
-            "baw.models.AudioEvent",
-            function ($scope, AudioEventService, AudioEvent) {
+            function ($scope) {
 
                 var self = this;
 
-                $scope.audioElement = self.audioElement;
+                $scope.audioElementModel = self.audioElementModel;
 
                 /**
                  * Toggles play/pause state when play/pause button is pressed
                  */
                 $scope.togglePlayState = function togglePlay() {
-                    if ($scope.audioElement.isPlaying) {
-                        $scope.audioElement.pause();
+                    if ($scope.audioElementModel.isPlaying) {
+                        $scope.audioElementModel.pause();
                     }
                     else {
-                        $scope.audioElement.play();
+                        $scope.audioElementModel.play();
                     }
                 };
 
 
             }],
         bindings: {
-            audioElement: "="
+            audioElementModel: "="
         }
     });

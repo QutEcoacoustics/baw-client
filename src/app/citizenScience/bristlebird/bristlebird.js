@@ -107,9 +107,7 @@ class BristlebirdController {
         self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
 
         // the model passed to ngAudio
-        $scope.model = {
-            audioElement: CitizenScienceCommon.getAudioModel()
-        };
+        $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
@@ -183,7 +181,7 @@ class BristlebirdController {
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
          */
         $scope.$on(ngAudioEvents.ended, function navigate(event, model) {
-            if (model === $scope.model.audioElement) {
+            if (model === $scope.audioElementModel) {
                 var nextSampleNum = $scope.currentSampleNum + 1;
                 console.info("Changing page to next segment, which is segment " + nextSampleNum);
                 $scope.$safeApply($scope, function () {
