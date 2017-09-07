@@ -89,7 +89,7 @@ angular.module("baw",
 
         "bawApp.models",
 
-        "audio-control",
+        "bawApp.audioControls",
         "draggabilly",
 
         "bawApp.d3", /* our d3 controls */

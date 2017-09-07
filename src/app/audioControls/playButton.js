@@ -1,8 +1,7 @@
-var audioButtons = audioButtons || angular.module("bawApp.components.audioButtons", []);
 
-
-audioButtons.component("playButton", {
-        templateUrl: "components/directives/audioButtons/playButton.tpl.html",
+angular.module("bawApp.audioControls.playButton", [])
+    .component("playButton", {
+        templateUrl: "audioControls/playButton.tpl.html",
         controller: [
             "$scope",
             function ($scope) {
