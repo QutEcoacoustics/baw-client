@@ -171,6 +171,9 @@ module.exports = function (environment) {
                 "library": "/library",
                 "libraryItem": "/library/{recordingId}/audio_events/{audioEventId}",
                 "visualize": "/visualize",
+                "citizenScience": {
+                    "listen":"/citsci/bristlebird/listen/{sampleNum}"
+                },
                 "demo": {
                     "d3": "/demo/d3",
                     "rendering": "/demo/rendering",

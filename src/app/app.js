@@ -148,6 +148,10 @@ angular.module("baw",
                     indentation: 1
                 };
 
+                function convertRouteParams (route) {
+                    return route.replace(/}/g,"").replace(/{/g,":");
+                }
+
                 // routes
                 $routeProvider.when("/home", {
                     templateUrl: "/assets/home.html",
@@ -283,12 +287,19 @@ angular.module("baw",
                 title: "Bristlebird Citizen Science",
                 fullWidth: true
             }).
-            when("/citsci/bristlebird/listen", {
-                templateUrl: "citizenScience/bristlebird/listen.tpl.html",
-                controller: "BristlebirdController",
-                title: "Bristlebird Citizen Science",
-                fullWidth: true
-            }).
+            // when("/citsci/bristlebird/listen", {
+            //     templateUrl: "citizenScience/bristlebird/listen.tpl.html",
+            //     controller: "BristlebirdController",
+            //     title: "Bristlebird Citizen Science",
+            //     fullWidth: true
+            // }).
+                when(convertRouteParams(paths.site.ngRoutes.citizenScience.listen), {
+                    templateUrl: "citizenScience/bristlebird/listen.tpl.html",
+                    controller: "BristlebirdController",
+                    title: "Bristlebird Citizen Science",
+                    fullWidth: true
+                }).
+
             when("/citsci/ipswich", {
                 templateUrl: "citizenScience/ipswich/about.tpl.html",
                 controller: "IpswichAboutController",

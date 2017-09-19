@@ -1,0 +1,5 @@
+<a class="btn btn-default" ng-href="{{$ctrl.anchorLink()}}"
+   ng-disabled="disabled()"
+   title="Previous Recording">
+    <span class="glyphicon" ng-class="{'glyphicon-step-backward': $ctrl.direction === 'previous', 'glyphicon-step-forward': $ctrl.direction !== 'previous'}"></span>
+</a>
