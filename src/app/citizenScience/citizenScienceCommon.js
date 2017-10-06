@@ -20,10 +20,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         var self = this;
 
-        self.useLocalData = true;
-
-        self.sheets_api_url = "http://" + window.location.hostname + ":8081";
-        self.local_api_url = "/public/citizen_science";
 
         /**
          * Default values for audio model, to be updated when UserProfile is loaded
@@ -77,24 +73,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
 
 
-        self.apiUrl = function () {
-            // convert to array
-            var base_url, url;
-            if (self.useLocalData) {
-                base_url = self.local_api_url;
-            } else {
-                base_url = self.sheets_api_url;
-            }
-            var args = Array.prototype.slice.call(arguments);
 
-            url = [base_url].concat(args).join("/");
-
-            if (self.useLocalData) {
-                url = url + ".json";
-            }
-
-            return url;
-        };
 
 
         self.functions = {
@@ -103,10 +82,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 return self.audioElementModel;
             },
 
-            /**
-             * Constructs a url for the api by concatenating url/arg1/arg2/arg3 etc
-             */
-            apiUrl: self.apiUrl,
 
             /**
              * Converts an array of strings to an object where each key is the same as the val
@@ -141,29 +116,26 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
              * @returns {function}
              */
             bindGetSamples: function ($scope) {
-                var getSamples = function () {
-                    if ($scope.samples.length === 0) {
 
-                        var url = self.functions.apiUrl(
-                            "samples",
-                            $scope.csProject,
-                            UserProfile.profile.userName);
-                        //TODO: error handling
-                        $http.get(url).then(function (response) {
-                            //console.log(response.data);
-                            var samples = response.data;
-                            $scope.samples = samples;
-                            //self.initSampleLabels($scope.samples, $scope.labels);
-                            //$scope.goToSample(0);
-                            $scope.currentSampleNum = 0;
-                        });
-                    }
-                };
                 UserProfile.get.then(getSamples);
                 return getSamples;
             },
+
             /**
-             * Returns a funciton that sets the media member of the scope to the
+             * returns the sample of the given id
+             * @param sampleId int
+             * @param project string
+             */
+            getNextSample: function (sampleId, project, ) {
+                var getSample = function (sampleNum) {
+                    return $scope.samples[sampleNum];
+                };
+                return getSample;
+            },
+
+
+            /**
+             * Returns a function that sets the media member of the scope to the
              * specified recording segment. The watcher will then actually load it to the dom
              * @param recordingId string
              * @param startOffset float

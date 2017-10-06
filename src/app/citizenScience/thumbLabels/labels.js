@@ -22,7 +22,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                 var self = this;
 
-                console.log(" --- current sample num (labels) ", self.currentSampleNum);
 
                 $scope.currentDetailsLabelId = {value: -1};
 

@@ -8,51 +8,61 @@ angular.module("bawApp.components.progress", [])
 
             var self = this;
             $scope.selectItem = function (itemNum) {
-                self.selected = itemNum;
+                console.log("selecting item", itemNum - 1);
+                self.selected = itemNum - 1;
+                console.log("setting selected to ", self.selected);
             };
 
+            $scope.selectItem($routeParams.sampleNum);
 
-            $scope.nextItem = function () {
-                if (self.selected < self.items.length - 1) {
-                    self.selected = self.selected + 1;
-                }
-            };
+            $scope.$watch($routeParams, function (newVal, oldVal) {
+                console.log("route params changed from ", oldVal, "to", newVal);
+                self.selected = newVal - 1;
+            }, true);
 
-            $scope.prevItem = function () {
-                if (self.selected > 0) {
-                    self.selected = self.selected - 1;
-                }
-            };
+
+            // $scope.nextItem = function () {
+            //     if (self.selected < self.items.length - 1) {
+            //         self.selected = self.selected + 1;
+            //     }
+            // };
+            //
+            // $scope.prevItem = function () {
+            //     if (self.selected > 0) {
+            //         self.selected = self.selected - 1;
+            //     }
+            // };
 
             //TODO: this gets called constantly while the audio is playing
+            /**
+             * returns a link for routing based on the selected sample
+             * Samples are 0 indexed, urls are 1 indexed.
+             * @returns string
+             */
             $scope.previousLink = function () {
                 if (self.selected > 0) {
-                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.selected - 1});
+                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.selected});
                 } else {
-                    return false;
+                    return "";
                 }
             };
             $scope.nextLink = function () {
                 if (self.selected < self.items.length - 1) {
-                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.selected + 1});
+                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.selected + 2});
                 } else {
-                    return false;
+                    return "";
                 }
             };
 
-            /**
-             * Returns the number of viewed items
-             * @returns {number}
-             */
-            $scope.numViewed = function () {
-                return self.items.reduce((prev, cur) => prev + (cur.done ? 1 : 0), 0);
-            };
+
 
             self.progressNav = true;
 
         }],
         bindings: {
-            items: "=items",
-            selected: "=selected"
+            previousSample: "=",
+            currentSample: "=",
+            nextSample: "=",
+            numViewed: "=numViewed"
         }
     });

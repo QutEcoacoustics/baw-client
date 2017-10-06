@@ -27,7 +27,7 @@ sampleLabels.factory("SampleLabels", [
         /**
          * checks the local storage for sampleLabels
          */
-        self.init = function (citizenScienceProject, samples, labels) {
+        self.init = function (citizenScienceProject) {
 
             self.localStorageKey = citizenScienceProject + "_sampleLabels";
 
@@ -39,8 +39,6 @@ sampleLabels.factory("SampleLabels", [
                 self.data = {};
             }
 
-            self.samples = samples;
-            self.labels = labels;
             self.csProject = citizenScienceProject;
 
             return self.data;
@@ -99,7 +97,7 @@ sampleLabels.factory("SampleLabels", [
             /**
              * updates the value of a labelId applied to a sampleId as either true or false
              * @param sampleId int
-             * @param labelId int
+             * @param labelId int; if omitted, we are not applying a label but noting that the sample has been viewed
              * @param value int [0,1]
              */
             setValue : function (sampleId, labelId, value) {
@@ -109,19 +107,23 @@ sampleLabels.factory("SampleLabels", [
                 }
 
 
-                if (self.data[sampleId][labelId] === undefined) {
-                    self.data[sampleId][labelId] = {};
+                if (labelId !== undefined) {
+
+                    if (self.data[sampleId][labelId] === undefined) {
+                        self.data[sampleId][labelId] = {};
+                    }
+
+                    self.data[sampleId][labelId].value = value;
+                    self.data[sampleId][labelId].timestamp = new Date();
+
                 }
 
-                self.data[sampleId][labelId].value = value;
-                self.data[sampleId][labelId].timestamp = new Date();
-
                 self.writeToStorage();
-                self.submitResponse(sampleId, labelId, value);
+                //self.submitResponse(sampleId, labelId, value);
 
             },
 
-            getLablesForSample : function (sampleId) {
+            getLabelsForSample : function (sampleId) {
 
                 if (typeof(self.data[sampleId]) !== "object") {
                     self.data[sampleId] = {};
@@ -129,6 +131,15 @@ sampleLabels.factory("SampleLabels", [
 
                 return self.data[sampleId];
 
+            },
+
+            /**
+             * returns the number of samples that have responses
+             * If a sample is viewed, but no labels are applied, an element
+             * should be added to the data object as an empty object
+             */
+            getNumSamplesViewed : function () {
+                return Object.keys(self.data).length;
             }
 
 
