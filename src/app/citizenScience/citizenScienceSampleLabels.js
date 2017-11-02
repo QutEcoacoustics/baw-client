@@ -45,14 +45,14 @@ sampleLabels.factory("SampleLabels", [
 
         };
 
+        /**
+         * stringifies the object that acts as a join between samples and labels
+         * Then stores that json string in local storage
+         */
         self.writeToStorage = function () {
             var value = JSON.stringify(self.data);
             localStorage.setItem(self.localStorageKey, value);
-
             console.log("saved responses: ", value + "ok");
-
-
-
         };
 
 
@@ -84,6 +84,13 @@ sampleLabels.factory("SampleLabels", [
 
             init : self.init,
 
+            /**
+             * Looks up the data to see if there is a boolean value stored for a given sampleId and labelId
+             * and if so, returns it.
+             * @param sampleId
+             * @param labelId
+             * @returns {boolean}
+             */
             getValue : function (sampleId, labelId) {
 
                 if (self.data[sampleId] !== undefined) {
@@ -123,6 +130,13 @@ sampleLabels.factory("SampleLabels", [
 
             },
 
+            /**
+             * returns an object that holds all the labels that have been applied to
+             * the given sample and their values. (if a label has been removed then it will be stored
+             * as false. If it has never been applied, it will not be present).
+             * @param sampleId
+             * @returns {*}
+             */
             getLabelsForSample : function (sampleId) {
 
                 if (typeof(self.data[sampleId]) !== "object") {
@@ -139,7 +153,12 @@ sampleLabels.factory("SampleLabels", [
              * should be added to the data object as an empty object
              */
             getNumSamplesViewed : function () {
-                return Object.keys(self.data).length;
+                if (self.data !== undefined) {
+                    return Object.keys(self.data).length;
+                } else {
+                    return 0;
+                }
+
             }
 
 

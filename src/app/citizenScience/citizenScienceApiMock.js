@@ -10,7 +10,7 @@ var csApiMock = angular.module("bawApp.citizenScience.csApiMock", ["bawApp.citiz
 
 
 
-sampleLabels.factory("CsApi", [
+csApiMock.factory("CsApi", [
     "CitizenScienceCommon",
     "$http",
     function CsApi(CitizenScienceCommon, $http) {
@@ -47,29 +47,116 @@ sampleLabels.factory("CsApi", [
             return url;
         };
 
+        /**
+         * Load and save all samples on page load
+         */
+        $http.get(self.apiUrl(
+            "samples",
+            "ebb")).then(function (response) {
+            self.allSamples = response.data;
+        });
+
+
+
         self.publicFunctions = {
 
+            /**
+             * Gets the media data for the specified sample
+             * @param recording_id
+             * @param offset
+             */
+            getSample : function (datasetItemId) {
+
+                    var url = self.apiUrl(
+                        "samples",
+                        "ebb",
+                        "phil");
+                    //TODO: error handling
+                    return $http.get(url).then(function (response) {
 
 
-        getSamples : function () {
-            if ($scope.samples.length === 0) {
+                        // mock version returns all samples. Then we search then here to get the right one
 
-                var url = self.functions.apiUrl(
-                    "samples",
-                    $scope.csProject,
-                    UserProfile.profile.userName);
-                //TODO: error handling
-                $http.get(url).then(function (response) {
-                    var samples = response.data;
-                    $scope.samples = samples;
-                    $scope.currentSampleNum = 0;
+                        var itemNum = response.data.findIndex(item => item.id === datasetItemId);
+
+                        if (itemNum === -1) {
+                            return {};
+                        }
+
+                        var item = response.data[itemNum];
+                        if (itemNum > 0) {
+                            item.previousSampleId = response.data[itemNum - 1].id;
+                        } else {
+                            item.previousSampleId = null;
+                        }
+                        if (itemNum < response.data.length-1) {
+                            item.nextSampleId = response.data[itemNum + 1].id;
+                        } else {
+                            item.nextSampleId = null;
+                        }
+
+
+
+
+                        return item;
+                    });
+            },
+            /**
+             * Gets the identifiers for the next sample
+             * to be used for navigation
+             * @param recording_id
+             * @param offset
+             */
+            getNextSample : function (datasetItemId) {
+                var url = self.apiUrl(
+                    "nextSample",
+                    "ebb");
+                return $http.get(url).then(function (response) {
+                    return response.data;
                 });
+
+            },
+            /**
+             * Gets the identifiers for the previous sample, to be used for navigation
+             * @param recording_id
+             * @param offset
+             */
+            getPrevousSample : function (datasetItemId) {
+                var url = self.apiUrl(
+                    "previousSample",
+                    "ebb");
+                return $http.get(url).then(function (response) {
+                    return response.data;
+                });
+
+            },
+
+            getLabels: function (project) {
+                var response = $http.get(self.apiUrl(
+                    "labels",
+                    project
+                ));
+
+                return response.then(function (response) {
+                    var labels = [];
+                    if (Array.isArray(response.data)) {
+                        labels = response.data;
+                    }
+
+                    return labels;
+                });
+            },
+
+            getSettings: function (project) {
+                return $http.get(self.apiUrl(
+                    "settings",
+                    project
+                ));
             }
-        }
 
-    };
+        };
 
-        return publicFunctions;
+        return self.publicFunctions;
 
 
 

@@ -1,23 +1,28 @@
-angular.module("bawApp.components.progress", [])
+angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"])
     .component("datasetProgress",{
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
-        controller: ["$scope", "$routeParams","$url", "conf.paths", function ($scope, $routeParams,$url,paths) {
+        controller: ["$scope", "$routeParams","$url", "conf.paths","CsApi", function ($scope, $routeParams,$url,paths,CsApi) {
             //console.log("dataset progress component scope");console.log($scope);
 
             console.log($routeParams);
 
             var self = this;
-            $scope.selectItem = function (itemNum) {
-                console.log("selecting item", itemNum - 1);
-                self.selected = itemNum - 1;
-                console.log("setting selected to ", self.selected);
+            $scope.selectItem = function (itemId) {
+                console.log("selecting item", itemId);
+                CsApi.getSample(itemId).then(function (apiResponse) {
+                    self.currentSample = apiResponse;
+                });
+                console.log("setting selected to ", itemId);
             };
 
             $scope.selectItem($routeParams.sampleNum);
 
             $scope.$watch($routeParams, function (newVal, oldVal) {
                 console.log("route params changed from ", oldVal, "to", newVal);
-                self.selected = newVal - 1;
+
+                // call the api to get the sample based on the route params
+                $scope.selectItem($routeParams.sampleNum);
+
             }, true);
 
 
@@ -40,15 +45,15 @@ angular.module("bawApp.components.progress", [])
              * @returns string
              */
             $scope.previousLink = function () {
-                if (self.selected > 0) {
-                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.selected});
+                if (self.currentSample.previousSampleId) {
+                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.currentSample.previousSampleId});
                 } else {
                     return "";
                 }
             };
             $scope.nextLink = function () {
-                if (self.selected < self.items.length - 1) {
-                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.selected + 2});
+                if (self.currentSample.nextSampleId) {
+                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.currentSample.nextSampleId});
                 } else {
                     return "";
                 }
@@ -60,9 +65,7 @@ angular.module("bawApp.components.progress", [])
 
         }],
         bindings: {
-            previousSample: "=",
             currentSample: "=",
-            nextSample: "=",
             numViewed: "=numViewed"
         }
     });

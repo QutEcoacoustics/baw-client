@@ -23,6 +23,7 @@ class BristlebirdController {
                 UserProfile,
                 UserProfileEvents,
                 CitizenScienceCommon,
+                CsApi,
                 SampleLabels,
                 backgroundImage,
                 paths) {
@@ -99,11 +100,8 @@ class BristlebirdController {
 
         $scope.labels = [];
 
-        //self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
-
-        self.getSample = CitizenScienceCommon.bindGetSample($scope);
-
         $scope.currentSample = {};
+
 
         // the model passed to ngAudio
         $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
@@ -112,7 +110,7 @@ class BristlebirdController {
 
         $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
 
-        CitizenScienceCommon.getLabels($scope.csProject).then(function (labels) {
+        CsApi.getLabels($scope.csProject).then(function (labels) {
             $scope.labels = labels;
         });
 
@@ -138,7 +136,10 @@ class BristlebirdController {
         };
 
 
-        CitizenScienceCommon.getSettings($scope.csProject).then(
+        /**
+         * Retrieve settings about this citizen science project
+         */
+        CsApi.getSettings($scope.csProject).then(
             function (settings) {
                 $scope.settings = settings;
                 if ($scope.settings.hasOwnProperty("sampleDuration")) {
@@ -159,7 +160,7 @@ class BristlebirdController {
                 backgroundImage.currentBackground = backgroundPath;
                 $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample($scope.samples[$scope.currentSampleNum].id));
                 // record that this sample has been viewed
-                SampleLabels.setValue($scope.currentSample.id)
+                SampleLabels.setValue($scope.currentSample.id);
                 $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
             }
         });
@@ -196,11 +197,10 @@ angular
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
         "bawApp.citizenScience.sampleLabels",
-//        "bawApp.components.citizenScienceTextLabels",
-//        "bawApp.components.citizenScienceExamples",
         "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
-        "bawApp.components.background"
+        "bawApp.components.background",
+        "bawApp.citizenScience.csApiMock"
     ])
     .controller(
         "BristlebirdController",
@@ -215,6 +215,7 @@ angular
             "UserProfile",
             "UserProfileEvents",
             "CitizenScienceCommon",
+            "CsApi",
             "SampleLabels",
             "backgroundImage",
             "conf.paths",

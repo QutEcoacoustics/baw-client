@@ -78,6 +78,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.functions = {
 
+
             getAudioModel: function () {
                 return self.audioElementModel;
             },
@@ -110,28 +111,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 return JSON.stringify(labels);
             },
 
-            /**
-             * Returns a function that retrieves the samples for the user and the project
-             * @param $scope
-             * @returns {function}
-             */
-            bindGetSamples: function ($scope) {
-
-                UserProfile.get.then(getSamples);
-                return getSamples;
-            },
-
-            /**
-             * returns the sample of the given id
-             * @param sampleId int
-             * @param project string
-             */
-            getNextSample: function (sampleId, project, ) {
-                var getSample = function (sampleNum) {
-                    return $scope.samples[sampleNum];
-                };
-                return getSample;
-            },
 
 
             /**
@@ -169,29 +148,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
                 return showAudio;
 
-            },
-
-            getLabels: function (project) {
-                var response = $http.get(self.apiUrl(
-                    "labels",
-                    project
-                ));
-
-                return response.then(function (response) {
-                    var labels = [];
-                    if (Array.isArray(response.data)) {
-                        labels = response.data;
-                    }
-
-                    return labels;
-                });
-            },
-
-            getSettings: function (project) {
-                return $http.get(self.apiUrl(
-                    "settings",
-                    project
-                ));
             }
 
         };
