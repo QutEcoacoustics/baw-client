@@ -9,11 +9,14 @@
         </div>
 
         <div class="progressCell progress-counter">{{ ($ctrl.selected > -1 && $ctrl.items.length > 0) ? (($ctrl.selected + 1) + "&nbsp;/&nbsp;" + $ctrl.items.length) : "" }}</div>
-        <div class="progressCell prev-clip" ng-class="{disabled : $ctrl.selected < 1}" ng-click="prevItem()"></div>
-        <div class="progressCell next-clip" ng-class="{disabled : $ctrl.selected > $ctrl.items.length - 2}" ng-click="nextItem()"></div>
 
-        <clip-navigation-button direction="'previous'" anchor-link="previousLink"></clip-navigation-button>
-        <clip-navigation-button direction="'next'" anchor-link="nextLink"></clip-navigation-button>
+        <div class="btn-group">
+
+            <clip-navigation-button class="btn btn-default" direction="'previous'" anchor-link="previousLink"></clip-navigation-button>
+            <play-button class="btn btn-default" audio-element-model="$ctrl.audioElementModel"></play-button>
+            <clip-navigation-button class="btn btn-default" direction="'next'" anchor-link="nextLink"></clip-navigation-button>
+
+        </div>
 
 
 

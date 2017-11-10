@@ -1,5 +1,4 @@
     <button ng-disabled="!audioElementModel.canPlay"
-            class="btn btn-default"
             ng-click="togglePlayState()"
             title="{{ audioElementModel.isPlaying && 'Pause' || 'Play' }}">
                         <span ng-class="{'glyphicon-pause': audioElementModel.isPlaying}"

@@ -2,9 +2,6 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
     .component("datasetProgress",{
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
         controller: ["$scope", "$routeParams","$url", "conf.paths","CsApi", function ($scope, $routeParams,$url,paths,CsApi) {
-            //console.log("dataset progress component scope");console.log($scope);
-
-            console.log($routeParams);
 
             var self = this;
             $scope.selectItem = function (itemId) {
@@ -25,23 +22,11 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
 
             }, true);
 
-
-            // $scope.nextItem = function () {
-            //     if (self.selected < self.items.length - 1) {
-            //         self.selected = self.selected + 1;
-            //     }
-            // };
-            //
-            // $scope.prevItem = function () {
-            //     if (self.selected > 0) {
-            //         self.selected = self.selected - 1;
-            //     }
-            // };
-
             //TODO: this gets called constantly while the audio is playing
             /**
-             * returns a link for routing based on the selected sample
-             * Samples are 0 indexed, urls are 1 indexed.
+             * returns a link for routing based on the id for the next and
+             * previous samples. That id is returned in the request for metadata of
+             * the current sample (contained in the route).
              * @returns string
              */
             $scope.previousLink = function () {
@@ -65,6 +50,7 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
 
         }],
         bindings: {
+            audioElementModel: "=",
             currentSample: "=",
             numViewed: "=numViewed"
         }

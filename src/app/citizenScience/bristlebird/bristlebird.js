@@ -158,7 +158,7 @@ class BristlebirdController {
                 self.showAudio($scope.currentSample.recordingId, $scope.currentSample.startOffset, self.sampleDuration);
                 var backgroundPath = self.backgroundPaths[parseInt($scope.currentSample.id) % (self.backgroundPaths.length - 1)];
                 backgroundImage.currentBackground = backgroundPath;
-                $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample($scope.samples[$scope.currentSampleNum].id));
+                $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample($scope.currentSample.id));
                 // record that this sample has been viewed
                 SampleLabels.setValue($scope.currentSample.id);
                 $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
