@@ -1,9 +1,13 @@
 //noinspection CssInvalidHtmlTagReference
 volume-slider {
 
-  width: 150px;
+  width: 200px;
+  position: relative;
 
   #volumeControl-mute {
+
+    width: 45px;
+    position:absolute;
 	
     span {
       @extend .glyphicon;
@@ -24,93 +28,95 @@ volume-slider {
 
   }
 
+  #volumeControl-slider {
+
+    -webkit-appearance: none;
+    margin-left:-1px;
+    position:relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(100% - 45px);
+    margin-left: 45px;
 
 
-
-    #volumeControl-slider {
-
-      -webkit-appearance: none;
-	  margin-left:-1px;
-	  position:relative;
-	  
-	  &:focus{
-		z-index:1;
-	  }
-
-      // track
-      $track-height : 2px;
-      $thumb-size: 10px;
-      @mixin track {
-        background-color: $btn-default-color;
-        border: none;
-        height: $track-height;
-
-      }
-
-      &::-ms-track {
-
-        color: transparent;
-        border: none;
-        @include track;
-      }
-      &::-moz-range-track {
-        @include track;
-      }
-      &::-webkit-slider-runnable-track {
-        @include track;
-      }
-
-
-      // thumb
-      @mixin thumb {
-        background: none ;
-        //background-color: blue;
-        background-color: $btn-default-bg;
-        width: $thumb-size;
-        height: $thumb-size;
-        border: solid $btn-default-color 1px;
-        @include rounded-corners(50%);
-        @include vendor-prefix(box-sizing, border-box);
-      }
-
-      &::-ms-thumb {
-        @include thumb;
-      }
-      &::-moz-range-thumb {
-        @include thumb;
-      }
-      &::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        margin-top: - ($thumb-size / 2 ) + ($track-height/2);
-        @include thumb;
-
-      }
-
-      // before
-      &::-ms-fill-lower {
-        border: none;
-        background:none;
-      }
-
-      &::-ms-ticks-before {
-        display: none;
-        border: none;
-        background:none;
-      }
-
-      // after
-      &::-ms-fill-upper {
-        border: none;
-        background:none;
-
-      }
-
-      &::-ms-ticks-after {
-        display: none;
-        border: none;
-        background:none;
-      }
+    &:focus{
+      z-index:1;
     }
+
+    // track
+    $track-height : 2px;
+    $thumb-size: 10px;
+    @mixin track {
+      background-color: $btn-default-color;
+      border: none;
+      height: $track-height;
+
+    }
+
+    &::-ms-track {
+
+      color: transparent;
+      border: none;
+      @include track;
+    }
+    &::-moz-range-track {
+      @include track;
+    }
+    &::-webkit-slider-runnable-track {
+      @include track;
+    }
+
+
+    // thumb
+    @mixin thumb {
+      background: none ;
+      //background-color: blue;
+      background-color: $btn-default-bg;
+      width: $thumb-size;
+      height: $thumb-size;
+      border: solid $btn-default-color 1px;
+      @include rounded-corners(50%);
+      @include vendor-prefix(box-sizing, border-box);
+    }
+
+    &::-ms-thumb {
+      @include thumb;
+    }
+    &::-moz-range-thumb {
+      @include thumb;
+    }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      margin-top: - ($thumb-size / 2 ) + ($track-height/2);
+      @include thumb;
+
+    }
+
+    // before
+    &::-ms-fill-lower {
+      border: none;
+      background:none;
+    }
+
+    &::-ms-ticks-before {
+      display: none;
+      border: none;
+      background:none;
+    }
+
+    // after
+    &::-ms-fill-upper {
+      border: none;
+      background:none;
+
+    }
+
+    &::-ms-ticks-after {
+      display: none;
+      border: none;
+      background:none;
+    }
+  }
 
 
 }
