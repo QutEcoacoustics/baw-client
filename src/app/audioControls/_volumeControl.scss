@@ -8,6 +8,7 @@ volume-slider {
 
     width: 45px;
     position:absolute;
+    left: 0px;
 	
     span {
       @extend .glyphicon;
@@ -31,12 +32,12 @@ volume-slider {
   #volumeControl-slider {
 
     -webkit-appearance: none;
-    margin-left:-1px;
     position:relative;
     display: inline-block;
     vertical-align: middle;
     width: calc(100% - 45px);
     margin-left: 45px;
+    border-left: none;
 
 
     &:focus{

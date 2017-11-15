@@ -8,8 +8,6 @@ angular.module("bawApp.audioControls.clipNavigationButton", [])
 
                 var self = this;
 
-
-
                 /**
                  * Returns whether the next button is disabled based on whether
                  * the bound link is a string of length at least 1

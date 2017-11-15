@@ -14,7 +14,7 @@ angular.module("bawApp.audioControls.playButton", [])
                  * Toggles play/pause state when play/pause button is pressed
                  */
                 $scope.togglePlayState = function togglePlay() {
-                    console.log($scope.audioElementModel);
+                    console.log("togglePlayState", $scope.audioElementModel);
                     if ($scope.audioElementModel.isPlaying) {
                         $scope.audioElementModel.pause();
                     }
