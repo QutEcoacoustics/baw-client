@@ -165,13 +165,7 @@ class BristlebirdController {
             }
         });
 
-        /**
-         * Reload audio when the source changes. Without this it won't change the audio
-         * even though the src attribute changes
-         */
-        $scope.$watch("media", function () {
-            document.querySelector("audio").load();
-        });
+
 
         /**
          * auto play feature
@@ -200,6 +194,7 @@ angular
         "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
         "bawApp.components.background",
+        "bawApp.audio.bawAudio",
         "bawApp.citizenScience.csApiMock"
     ])
     .controller(

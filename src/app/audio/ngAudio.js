@@ -46,6 +46,12 @@ angular.module("bawApp.directives.ngAudio", [
              * NOTE: only some properties are bound forward
              */
 
+            // scope.$watch(function () {
+            //     return element;
+            // }, function (newValue, oldValue) {
+            //     console.log(newValue);
+            // }, true);
+
             var target;
             scope.$watch(function () {
                 return expression(scope);

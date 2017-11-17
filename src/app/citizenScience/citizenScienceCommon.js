@@ -137,8 +137,8 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                             $scope.media = new MediaModel(mediaValue.data);
                         },
                         function () {
-                            console.log("fail");
-                        } // failure
+                            console.warn("failed to get media");
+                        }
                     );
 
                     // do not block, do not wait for Media requests to finish

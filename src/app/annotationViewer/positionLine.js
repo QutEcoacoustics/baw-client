@@ -90,6 +90,7 @@ angular
                     }
                 };
 
+
                 self.updateScope = _.throttle(function updateScope() {
                     if (scope.$parent.$parent.$$phase) {
                         return;
@@ -97,11 +98,18 @@ angular
                     scope.$parent.$parent.$digest();
                 }, 250);
 
-                scope.getOffset = self.getOffset;
+
 
             }],
             link: {
                 pre: function (scope, elements, attributes, controller) {
+
+                    scope.getOffset = controller.getOffset;
+
+
+                    // scope.$watch("audioData", function (newVal, oldVal) {
+                    //     console.log("new val for audioData", newVal);
+                    // }, true);
 
                     scope.dragOptions = {
                         axis: "x",
