@@ -31,6 +31,7 @@ angular.module("bawApp.directives.ngAudio", [
         restrict: "A",
         link: function (scope, elements, attributes, controller) {
             var element = elements[0];
+
             if (element.nodeName !== "AUDIO") {
                 throw "Cannot put ngAudio element on an element that is not a <audio />";
             }
@@ -46,24 +47,20 @@ angular.module("bawApp.directives.ngAudio", [
              * NOTE: only some properties are bound forward
              */
 
-            // scope.$watch(function () {
-            //     return element;
-            // }, function (newValue, oldValue) {
-            //     console.log(newValue);
-            // }, true);
-
             var target;
             scope.$watch(function () {
                 return expression(scope);
             }, function (newValue, oldValue) {
                 target = newValue;
+                // attach modification functions to model
+                target.play = play;
+                target.pause = pause;
             });
 
             // volume
             scope.$watch(function () {
                 return target ? target.volume : null;
             }, function updateVolume(newValue, oldValue) {
-                console.log("changing the volume");
                 element.volume = newValue;
             });
 
@@ -71,7 +68,6 @@ angular.module("bawApp.directives.ngAudio", [
             scope.$watch(function () {
                 return target ? target.muted : null;
             }, function updateMuted(newValue, oldValue) {
-                console.log("changing the muted value");
                 element.muted = newValue === null ? null : !!newValue;
             });
 
@@ -126,6 +122,10 @@ angular.module("bawApp.directives.ngAudio", [
             function updateState(event) {
                 console.debug("ngAudio:audioElement:eventType: ", event ? event.type : "<unknown>", element.currentTime);
 
+                if (scope.$root === null) {
+                    return;
+                }
+
                 scope.$root.$safeApply(scope, function () {
                     if (attributes.ngAudio) {
                         var target = expression(scope);
@@ -134,12 +134,7 @@ angular.module("bawApp.directives.ngAudio", [
                             target = expression(scope);
                         }
 
-                        // attach modification functions to model
-                        target.play = target.play || play;
-                        target.pause = target.pause || pause;
-
                         target.currentState = event && event.type || "unknown";
-
 
                         updateObject(element ,target);
 

@@ -53,7 +53,6 @@ class BristlebirdController {
         // to be populated after getting samples from dataset
         $scope.media = null;
 
-
         $scope.onboardingSteps = [
             {
                 element: document.querySelector(".citizen-science .spectrogram-wrapper"),
@@ -102,7 +101,6 @@ class BristlebirdController {
 
         $scope.currentSample = {};
 
-
         // the model passed to ngAudio
         $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
 
@@ -113,7 +111,6 @@ class BristlebirdController {
         CsApi.getLabels($scope.csProject).then(function (labels) {
             $scope.labels = labels;
         });
-
 
         SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
 

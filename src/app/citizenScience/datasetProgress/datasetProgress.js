@@ -14,13 +14,19 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
 
             $scope.selectItem($routeParams.sampleNum);
 
-            $scope.$watch($routeParams, function (newVal, oldVal) {
+            /**
+             * Load the new sample whenever the route params change.
+             */
+            $scope.$watch(
+                function () {
+                  return $routeParams.sampleNum;
+                }, function (newVal, oldVal) {
                 console.log("route params changed from ", oldVal, "to", newVal);
 
                 // call the api to get the sample based on the route params
                 $scope.selectItem($routeParams.sampleNum);
 
-            }, true);
+            });
 
             //TODO: this gets called constantly while the audio is playing
             /**
