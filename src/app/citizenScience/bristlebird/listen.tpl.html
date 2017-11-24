@@ -37,18 +37,7 @@
 
                 <dataset-progress audio-element-model="audioElementModel" current-sample="currentSample" num-viewed="numSamplesViewed"></dataset-progress>
 
-
-                <div class="autoplay progressCell">
-                    <toggle-switch model="audioElementModel.autoPlay" disabled="disabled" mode="push-toggle"
-                                   title="Enable/disable autoplay">
-                        <toggle-switch-state switch-state="on">
-                            <span class="glyphicon glyphicon-play-circle"></span>
-                        </toggle-switch-state>
-                        <toggle-switch-state switch-state="off">
-                            <span class="glyphicon glyphicon-play-circle"></span>
-                        </toggle-switch-state>
-                    </toggle-switch>
-                </div>
+                <autoplay-button audio-element-model="audioElementModel"></autoplay-button>
 
                 <volume-slider class="form-group form-group-without-feedback progressCell" audio-element-model="audioElementModel"></volume-slider>
 

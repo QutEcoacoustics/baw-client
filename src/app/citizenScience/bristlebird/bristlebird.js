@@ -164,6 +164,9 @@ class BristlebirdController {
 
 
 
+
+
+
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.

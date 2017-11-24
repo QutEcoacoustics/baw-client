@@ -20,7 +20,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         var self = this;
 
-
         /**
          * Default values for audio model, to be updated when UserProfile is loaded
          * @type {Object}
@@ -52,37 +51,28 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.mediaModel = null;
 
-
         /**
          * Checks if a tag or array of tags is the same
          * @param tags1 mixed string or array of strings
          * @param tags2 mixed string or array of strings
          */
         self.compareTags = function (tags1, tags2) {
-
             if (Array.isArray(tags1)) {
                 tags1 = tags1.sort().join("");
             }
             if (Array.isArray(tags2)) {
                 tags2 = tags2.sort().join("");
             }
-
             return tags1 === tags2;
-
         };
-
-
-
 
 
 
         self.functions = {
 
-
             getAudioModel: function () {
                 return self.audioElementModel;
             },
-
 
             /**
              * Converts an array of strings to an object where each key is the same as the val
@@ -110,7 +100,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             labelsAsString: function (labels) {
                 return JSON.stringify(labels);
             },
-
 
 
             /**
@@ -155,6 +144,3 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
         return self.functions;
 
     }]);
-
-
-
