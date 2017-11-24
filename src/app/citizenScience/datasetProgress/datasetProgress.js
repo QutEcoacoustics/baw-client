@@ -50,7 +50,9 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
                 }
             };
 
-
+            // reverse binding of this functions to make
+            // them accessible to the parent controller for autoplay
+            self.nextLink = $scope.nextLink;
 
             self.progressNav = true;
 
@@ -58,6 +60,7 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
         bindings: {
             audioElementModel: "=",
             currentSample: "=",
-            numViewed: "=numViewed"
+            numViewed: "=numViewed",
+            nextLink: "="
         }
     });

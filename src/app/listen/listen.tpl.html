@@ -60,47 +60,54 @@
 
             <div class="btn-toolbar">
 
+                <!--<div class="btn-group">-->
+
+                    <!--<a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}"-->
+                       <!--ng-disabled="!previousEnabled"-->
+                       <!--title="Previous Recording">-->
+                        <!--<span class="glyphicon glyphicon-step-backward"></span>-->
+                    <!--</a>-->
+                    <!--<button ng-disabled="!model.audioElement.canPlay"-->
+                            <!--class="btn btn-default"-->
+                            <!--ng-click="togglePlayState()"-->
+                            <!--title="{{ model.audioElement.isPlaying && 'Pause' || 'Play' }}">-->
+                        <!--<span ng-class="{'glyphicon-pause': model.audioElement.isPlaying}"-->
+                              <!--class="glyphicon glyphicon-play"></span>-->
+                    <!--</button>-->
+                    <!--<a class="btn btn-default" ng-href="{{createNavigationHref('next')}}" ng-disabled="!nextEnabled"-->
+                       <!--title="Next Recording">-->
+                        <!--<span class="glyphicon glyphicon-step-forward"></span>-->
+                    <!--</a>-->
+                <!--</div>-->
+
+                <previous-play-next audio-element-model="model.audioElement"  previous-link="previousLink" next-link="nextLink"></previous-play-next>
+
                 <div class="btn-group">
-
-                    <a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}"
-                       ng-disabled="!previousEnabled"
-                       title="Previous Recording">
-                        <span class="glyphicon glyphicon-step-backward"></span>
-                    </a>
-                    <button ng-disabled="!model.audioElement.canPlay"
-                            class="btn btn-default"
-                            ng-click="togglePlayState()"
-                            title="{{ model.audioElement.isPlaying && 'Pause' || 'Play' }}">
-                        <span ng-class="{'glyphicon-pause': model.audioElement.isPlaying}"
-                              class="glyphicon glyphicon-play"></span>
-                    </button>
-                    <a class="btn btn-default" ng-href="{{createNavigationHref('next')}}" ng-disabled="!nextEnabled"
-                       title="Next Recording">
-                        <span class="glyphicon glyphicon-step-forward"></span>
-                    </a>
-                </div>
-
-                <div class="btn-group">
-            <span class="position btn btn-default">
-                <!--<span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br/>-->
-                <span class="time">{{currentOffsetAbsolute()}}</span>
-            </span>
-
+                    <span class="position btn btn-default">
+                        <!--<span class="hint relative-chunk-time hint--bottom">{{currentOffsetChunk()}}</span><br/>-->
+                        <span class="time">{{currentOffsetAbsolute()}}</span>
+                    </span>
                 </div>
 
                 <!-- form-group form-group-without-feedback required here due to a bug with ngFormGroup -->
                 <volume-slider audio-element-model="model.audioElement"
                                 class="input-group btn-group form-group form-group-without-feedback"></volume-slider>
 
-                <toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"
-                               title="Enable/disable autoplay">
-                    <toggle-switch-state switch-state="on">
-                        <span class="glyphicon glyphicon-play-circle"></span>
-                    </toggle-switch-state>
-                    <toggle-switch-state switch-state="off">
-                        <span class="glyphicon glyphicon-play-circle"></span>
-                    </toggle-switch-state>
-                </toggle-switch>
+                <!--<toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"-->
+                               <!--title="Enable/disable autoplay">-->
+                    <!--<toggle-switch-state switch-state="on">-->
+                        <!--<span class="glyphicon glyphicon-play-circle"></span>-->
+                    <!--</toggle-switch-state>-->
+                    <!--<toggle-switch-state switch-state="off">-->
+                        <!--<span class="glyphicon glyphicon-play-circle"></span>-->
+                    <!--</toggle-switch-state>-->
+                <!--</toggle-switch>-->
+
+                <autoplay-button audio-element-model="model.audioElement"></autoplay-button>
+
+
+
+
 
             </div>
 

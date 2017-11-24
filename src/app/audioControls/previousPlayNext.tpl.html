@@ -2,7 +2,7 @@
     <a class="btn btn-default"
        ng-href="{{$ctrl.previousLink()}}"
        ng-if="showPrevious"
-       ng-disabled="disabled()"
+       ng-disabled="previousDisabled()"
        title="Previous Recording">
         <span class="glyphicon glyphicon-step-backward"></span>
     </a>
@@ -15,7 +15,7 @@
     <a class="btn btn-default"
        ng-href="{{$ctrl.nextLink()}}"
        ng-if="showNext"
-       ng-disabled="disabled()"
+       ng-disabled="nextDisabled()"
        title="Previous Recording">
         <span class="glyphicon glyphicon-step-forward"></span>
     </a>

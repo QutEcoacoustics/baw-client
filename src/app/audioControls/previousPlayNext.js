@@ -32,7 +32,7 @@ angular.module("bawApp.audioControls.previousPlayNext", [])
                     return self.linkDisabled(self.nextLink);
 
                 };
-                $scope.nextDisabled = function () {
+                $scope.previousDisabled = function () {
                     return self.linkDisabled(self.previousLink);
                 };
 
@@ -49,8 +49,6 @@ angular.module("bawApp.audioControls.previousPlayNext", [])
                  */
                 $scope.showPrevious = typeof self.previousLink === "function";
                 $scope.showNext = typeof self.nextLink === "function";
-
-
 
             }],
         bindings: {

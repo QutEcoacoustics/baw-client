@@ -422,14 +422,20 @@ angular
                     };
 
 
-                    $scope.previousEnabled = false;
-                    $scope.nextEnabled = false;
+                    $scope.previousLink = function () {
+                        return $scope.createNavigationHref("previous");
+                    };
+                    $scope.nextLink = function () {
+                        return $scope.createNavigationHref("next");
+                    };
+
+
                     // hacky hack for continuous playback
                     var nextStart, nextEnd;
                     $scope.createNavigationHref = function (linkType, stepBy) {
                         // skip if resources not available
                         if (!$scope.model.audioRecording) {
-                            return "#";
+                            return "";
                         }
 
                         if (!angular.isNumber(stepBy)) {
@@ -444,23 +450,28 @@ angular
 
                         if (linkType === "previous") {
                             var lowerBound = ($routeParams.start - stepBy);
+                            var uriPrev;
 
-                            $scope.previousEnabled = $routeParams.start > 0;
+                                // no previous link if we are at the start
+                            if ($routeParams.start <= 0) {
+                                uriPrev = "";
+                            } else {
+                                if (lowerBound === 0) {
+                                    baseLink.end = lowerBound + stepBy;
+                                }
+                                else if (lowerBound > 0) {
+                                    baseLink.start = lowerBound;
+                                    baseLink.end = lowerBound + stepBy;
+                                }
+                                else {
+                                    // noop
+                                }
 
-                            if (lowerBound === 0) {
-                                baseLink.end = lowerBound + stepBy;
-                            }
-                            else if (lowerBound > 0) {
-                                baseLink.start = lowerBound;
-                                baseLink.end = lowerBound + stepBy;
-                            }
-                            else {
-                                // noop
+                                uriPrev = $url.formatUri(
+                                    paths.site.ngRoutes.listen,
+                                    baseLink);
                             }
 
-                            var uriPrev = $url.formatUri(
-                                paths.site.ngRoutes.listen,
-                                baseLink);
                             return uriPrev;
 
                         }
@@ -477,7 +488,14 @@ angular
                                 baseLink
                             );
 
-                            $scope.nextEnabled = $routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds;
+
+                            var nextEnabled = $routeParams.end < $scope.model.audioRecording.durationSeconds - constants.listen.minAudioDurationSeconds;
+                            // keep this value for autoplay
+                            $scope.nextEnabled = nextEnabled;
+
+                            if (!nextEnabled) {
+                                uriNext = "";
+                            }
 
                             return uriNext;
                         }

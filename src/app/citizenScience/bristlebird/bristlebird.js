@@ -22,6 +22,7 @@ class BristlebirdController {
                 MediaModel,
                 UserProfile,
                 UserProfileEvents,
+                $location,
                 CitizenScienceCommon,
                 CsApi,
                 SampleLabels,
@@ -179,6 +180,27 @@ class BristlebirdController {
         //     }
         // });
 
+        // this will be reverse bound from the data progress component
+        $scope.nextLink = null;
+
+        $scope.$on(ngAudioEvents.ended, function navigate(event) {
+
+            var uriNext = $scope.nextLink();
+
+            if (uriNext && $scope.audioElementModel.autoPlay) {
+                console.info("Changing page to next segment...");
+                $scope.$apply(function () {
+                    $location.url(uriNext);
+                });
+            }
+            else {
+                console.warn("Continuous playback cannot continue");
+            }
+        });
+
+
+
+
         self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
 
 
@@ -209,6 +231,7 @@ angular
             "baw.models.Media",
             "UserProfile",
             "UserProfileEvents",
+            "$location",
             "CitizenScienceCommon",
             "CsApi",
             "SampleLabels",
