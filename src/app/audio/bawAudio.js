@@ -8,13 +8,10 @@ angular.module("bawApp.audio.bawAudio", [])
             "$timeout",
             function ($scope, $route, $timeout) {
 
-                var self = this;
-
-                $scope.audioElementModel = self.audioElementModel;
-
             }],
         bindings: {
             audioElementModel: "=",
-            media: "="
+            media: "=",
+            updateScope: "="
         }
     });

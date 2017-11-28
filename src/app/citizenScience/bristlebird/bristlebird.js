@@ -14,14 +14,7 @@ class BristlebirdAboutController {
 
 class BristlebirdController {
     constructor($scope,
-                $routeParams,
-                $http,
                 ngAudioEvents,
-                AudioRecording,
-                Media,
-                MediaModel,
-                UserProfile,
-                UserProfileEvents,
                 $location,
                 CitizenScienceCommon,
                 CsApi,
@@ -171,30 +164,18 @@ class BristlebirdController {
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
+         * The url for the next segment will be returned from the nextLink function
+         * which is initialised to null, then reverse bound bound from the data progress component
          */
-        // $scope.$on(ngAudioEvents.ended, function navigate(event, model) {
-        //     if (model === $scope.audioElementModel) {
-        //         $scope.$safeApply($scope, function () {
-        //             $scope.goToSample();
-        //         });
-        //     }
-        // });
 
-        // this will be reverse bound from the data progress component
         $scope.nextLink = null;
-
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
-
             var uriNext = $scope.nextLink();
-
             if (uriNext && $scope.audioElementModel.autoPlay) {
-                console.info("Changing page to next segment...");
+                console.info("Changing page to next sample...");
                 $scope.$apply(function () {
                     $location.url(uriNext);
                 });
-            }
-            else {
-                console.warn("Continuous playback cannot continue");
             }
         });
 
@@ -223,14 +204,7 @@ angular
         "BristlebirdController",
         [
             "$scope",
-            "$routeParams",
-            "$http",
             "ngAudioEvents",
-            "AudioRecording",
-            "Media",
-            "baw.models.Media",
-            "UserProfile",
-            "UserProfileEvents",
             "$location",
             "CitizenScienceCommon",
             "CsApi",

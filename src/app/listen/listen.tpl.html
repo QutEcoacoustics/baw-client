@@ -116,11 +116,11 @@
         </div>
 
 
-        <audio id="mainAudioElement" ng-audio="model.audioElement" controls class="debug-ui">
-            <source ng-repeat="key in model.media.available.audioOrder"
-                    ng-src="{{model.media.available.audio[key].url}}" src=""
-                    type="{{model.media.available.audio[key].mediaType}}">
-            Your browser does not support the audio element.
+        <audio ng-audio
+               ng-audio-model="model.audioElement"
+               ng-audio-sources="model.media.available"
+               controls
+               class="debug-ui hiddenAudioElement">
         </audio>
         <div id="listenEditContainer" ng-class="{disabled : singleEditDisabled()}">
             <div class="panel panel-default">

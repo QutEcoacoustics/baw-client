@@ -20,14 +20,14 @@
                         <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
                         <div position-line media="media" audio-data="audioElementModel" image-id="'spectrogram'"></div>
                     </div>
-                    <audio id="citsci-sample" ng-audio="audioElementModel">
-                        <source ng-repeat="key in media.available.audioOrder"
-                                ng-src="{{media.available.audio[key].url}}" src=""
-                                type="{{media.available.audio[key].mimeType}}">
-                        Your browser does not support the audio element.
-                    </audio>
+                    <audio
+                            id="citsci-sample"
+                            ng-audio
+                            ng-audio-model="audioElementModel"
+                            ng-audio-sources="media.available"
+                            class="hiddenAudioElement"></audio>
 
-                    <!--<baw-audio audio-element-model="audioElementModel" media="media"></baw-audio>-->
+                    <!--<baw-audio audio-element-model="audioElementModel" media="media" update-scope="this"></baw-audio>-->
 
                 </div>
             </div>

@@ -13,11 +13,10 @@
 </div>
 <div class="audio-wrapper">
     <audio id="annoSingleAudio{{$index}}"
-           ng-audio="$ctrl.audioElement">
-        <source ng-repeat="key in $ctrl.annotation.media.available.audioOrder"
-                ng-src="{{$ctrl.annotation.media.available.audio[key].url}}" src=""
-                type="{{$ctrl.annotation.media.available.audio[key].mediaType}}">
-        Your browser does not support the audio element.
+           ng-audio
+           ng-audio-model="$ctrl.audioElement"
+           ng-audio-sources="$ctrl.annotation.media.available"
+           class="hiddenAudioElement">
     </audio>
     <previous-play-next audio-element-model="$ctrl.audioElement"></previous-play-next>
     <volume-slider

@@ -29,17 +29,33 @@ angular.module("bawApp.directives.ngAudio", [
 
     return {
         restrict: "A",
+        template: `<source ng-repeat="key in sources.audioOrder"
+            ng-src="{{sources.audio[key].url}}" src=""
+            type="{{sources.audio[key].mediaType}}">
+            Your browser does not support the audio element.`,
         link: function (scope, elements, attributes, controller) {
             var element = elements[0];
+
 
             if (element.nodeName !== "AUDIO") {
                 throw "Cannot put ngAudio element on an element that is not a <audio />";
             }
 
             var expression;
-            attributes.$observe("ngAudio", function (interpolatedValue) {
-                expression = $parse(attributes.ngAudio);
+            attributes.$observe("ngAudioModel", function (interpolatedValue) {
+                expression = $parse(attributes.ngAudioModel);
             });
+
+            var expression2;
+            attributes.$observe("ngAudioSources", function (interpolatedValue) {
+                expression2 = $parse(attributes.ngAudioSources);
+                scope.$watch(function () {
+                    return expression2(scope);
+                }, function (newVal, oldVal) {
+                    scope.sources = newVal;
+                });
+            });
+
 
             /*
              * FORWARD BINDING
@@ -49,8 +65,19 @@ angular.module("bawApp.directives.ngAudio", [
 
             var target;
             scope.$watch(function () {
-                return expression(scope);
+                // expression is a function under normal circumstances
+                // but it sometimes gets evaluated here before being set
+                // in which case, return undefined
+                if (expression) {
+                    return expression(scope);
+                } else {
+                    return;
+                }
+
             }, function (newValue, oldValue) {
+                if (!newValue) {
+                    return;
+                }
                 target = newValue;
                 // attach modification functions to model
                 target.play = play;
@@ -127,7 +154,7 @@ angular.module("bawApp.directives.ngAudio", [
                 }
 
                 scope.$root.$safeApply(scope, function () {
-                    if (attributes.ngAudio) {
+                    if (attributes.ngAudioModel) {
                         var target = expression(scope);
                         if (!target) {
                             expression.assign(scope, {});
@@ -140,6 +167,9 @@ angular.module("bawApp.directives.ngAudio", [
 
                         target.isPlaying = !element.paused;
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
+
+                        console.log("element.readyState", element.readyState);
+
 
                        // IMPORTANT - setting the position while playing is done by RAF.
                         // Do not set it here or else jittery playback will occur when any event is raised from the element.
@@ -219,13 +249,13 @@ angular.module("bawApp.directives.ngAudio", [
             // position binding - reverse (element to model)
             function audioElementPositionRAF() {
                 rafOn = true;
-                if (attributes.ngAudio) {
-                    var target = scope.$eval(attributes.ngAudio);
+                if (attributes.ngAudioModel) {
+                    var target = scope.$eval(attributes.ngAudioModel);
                     if (target) {
                         var position = element.currentTime;
                         if (target.position !== position) {
-                            //scope.$safeApply2(function () {
-                            target.position = position;
+                            //scope.$apply(function () {
+                              target.position = position;
                             //});
 
                             lastRafPosition = position;

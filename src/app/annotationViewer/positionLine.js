@@ -105,12 +105,6 @@ angular
                 pre: function (scope, elements, attributes, controller) {
 
                     scope.getOffset = controller.getOffset;
-
-
-                    // scope.$watch("audioData", function (newVal, oldVal) {
-                    //     console.log("new val for audioData", newVal);
-                    // }, true);
-
                     scope.dragOptions = {
                         axis: "x",
                         containment: true,
