@@ -38,7 +38,7 @@ angular.module("bawApp.audioControls.previousPlayNext", [])
 
                 self.linkDisabled = function (linkFunction) {
                     var linkValue = linkFunction();
-                    return !(angular.isString(linkValue) && linkValue.length > 0);
+                    return !(angular.isString(linkValue) && linkValue.length > 0 && linkValue !== "#");
                 };
 
 

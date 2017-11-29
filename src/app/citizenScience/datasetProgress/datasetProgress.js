@@ -1,7 +1,8 @@
 angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"])
     .component("datasetProgress",{
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
-        controller: ["$scope", "$routeParams","$url", "conf.paths","CsApi", function ($scope, $routeParams,$url,paths,CsApi) {
+        controller: ["$scope", "$routeParams","$url", "conf.paths","CsApi","SampleLabels",
+            function ($scope, $routeParams,$url,paths,CsApi,SampleLabels) {
 
             var self = this;
             $scope.selectItem = function (itemId) {
@@ -9,6 +10,9 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
                 CsApi.getSample(itemId).then(function (apiResponse) {
                     self.currentSample = apiResponse;
                 });
+
+                $scope.totalSamplesViewed = SampleLabels.getNumSamplesViewed();
+
                 console.log("setting selected to ", itemId);
             };
 

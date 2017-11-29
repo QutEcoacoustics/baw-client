@@ -45,15 +45,13 @@ angular
                 // modify annotation by reference
                 // async
 
+                var x = Media.get(
+                    getMediaParameters(annotation),
+                    mediaGetSuccess.bind(null,annotation),
+                    mediaGetFailure
+                );
 
-                    var x = Media.get(
-                        getMediaParameters(annotation),
-                        mediaGetSuccess.bind(null,annotation),
-                        mediaGetFailure
-                    );
-
-                    return x.$promise;
-
+                return x.$promise;
 
             }
 

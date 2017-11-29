@@ -100,13 +100,14 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-        $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
+
 
         CsApi.getLabels($scope.csProject).then(function (labels) {
             $scope.labels = labels;
         });
 
         SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
+
 
         $scope.$on("label-toggle", function (e, labelNumber, value) {
             self.toggleLabel(labelNumber, value);
@@ -126,7 +127,6 @@ class BristlebirdController {
             SampleLabels.setValue($scope.currentSample.id, labelId, value);
         };
 
-
         /**
          * Retrieve settings about this citizen science project
          */
@@ -139,14 +139,14 @@ class BristlebirdController {
             }
         );
 
-
         /**
-         * When the currentSampleNum changes, change the current audio file / spectrogram to match it
+         * When the currentSample changes, change the current audio file / spectrogram to match it
          */
         $scope.$watch("currentSample", function () {
             if ($scope.currentSample.id !== undefined) {
-                console.log("load audio for sample " + $scope.currentSample);
                 self.showAudio($scope.currentSample.recordingId, $scope.currentSample.startOffset, self.sampleDuration);
+                // for now, we cycle through backgrounds arbitrarily, based on the id of the sample number
+                // todo: store background images as part of the dataset or cs project
                 var backgroundPath = self.backgroundPaths[parseInt($scope.currentSample.id) % (self.backgroundPaths.length - 1)];
                 backgroundImage.currentBackground = backgroundPath;
                 $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample($scope.currentSample.id));
@@ -156,18 +156,12 @@ class BristlebirdController {
             }
         });
 
-
-
-
-
-
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
-         * The url for the next segment will be returned from the nextLink function
-         * which is initialised to null, then reverse bound bound from the data progress component
+         * The url for the next segment will be returned from the nextLink function, which
+         * is initialised to null, then reverse bound bound from the data progress component
          */
-
         $scope.nextLink = null;
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
             var uriNext = $scope.nextLink();
@@ -179,11 +173,7 @@ class BristlebirdController {
             }
         });
 
-
-
-
         self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
-
 
     }
 
@@ -197,7 +187,6 @@ angular
         "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
         "bawApp.components.background",
-        "bawApp.audio.bawAudio",
         "bawApp.citizenScience.csApiMock"
     ])
     .controller(

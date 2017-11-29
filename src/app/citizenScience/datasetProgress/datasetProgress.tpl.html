@@ -1,4 +1,5 @@
 
+<!--
         <div class="progressCell progressItem"
              ng-if="showProgressItems"
              ng-repeat="(key, item) in $ctrl.items"
@@ -8,17 +9,10 @@
 
         </div>
 
-        <div class="progressCell progress-counter">{{ ($ctrl.selected > -1 && $ctrl.items.length > 0) ? (($ctrl.selected + 1) + "&nbsp;/&nbsp;" + $ctrl.items.length) : "" }}</div>
-
+        <div class="progressCell progress-counter">{{ totalSamplesViewed }}</div>
+-->
         <div class="btn-group">
-
-            <!--
-            <clip-navigation-button class="btn btn-default" direction="'previous'" anchor-link="previousLink"></clip-navigation-button>
-            <play-button class="btn btn-default" audio-element-model="$ctrl.audioElementModel"></play-button>
-            <clip-navigation-button class="btn btn-default" direction="'next'" anchor-link="nextLink"></clip-navigation-button>
-            -->
             <previous-play-next audio-element-model="$ctrl.audioElementModel" previous-link="previousLink" next-link="nextLink"></previous-play-next>
-
         </div>
 
 

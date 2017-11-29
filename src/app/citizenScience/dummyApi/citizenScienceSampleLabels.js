@@ -46,13 +46,12 @@ sampleLabels.factory("SampleLabels", [
         };
 
         /**
-         * stringifies the object that acts as a join between samples and labels
-         * Then stores that json string in local storage
+         * stringifies the object that acts as a join between samples and labels,
+         * then stores that json string in local storage
          */
         self.writeToStorage = function () {
             var value = JSON.stringify(self.data);
             localStorage.setItem(self.localStorageKey, value);
-            console.log("saved responses: ", value + "ok");
         };
 
 
@@ -66,16 +65,6 @@ sampleLabels.factory("SampleLabels", [
         self.submitResponse = function () {
 
             //TODO
-
-            // var url = CitizenScienceCommon.apiUrl("setLabels",
-            //     self.csProject,
-            //     sample.name,
-            //     sample.recordingId,
-            //     sample.startOffset,
-            //     CitizenScienceCommon.labelsAsString(tags));
-            // $http.get(url).then(function (response) {
-            //     console.log(response.data);
-            // });
 
         };
 
@@ -126,7 +115,7 @@ sampleLabels.factory("SampleLabels", [
                 }
 
                 self.writeToStorage();
-                //self.submitResponse(sampleId, labelId, value);
+                self.submitResponse(sampleId, labelId, value);
 
             },
 
@@ -159,6 +148,14 @@ sampleLabels.factory("SampleLabels", [
                     return 0;
                 }
 
+            },
+
+            /**
+             * Dev function to delete all applied labels
+             */
+            clearLabels : function () {
+                self.data = {};
+                self.writeToStorage();
             }
 
 

@@ -435,7 +435,7 @@ angular
                     $scope.createNavigationHref = function (linkType, stepBy) {
                         // skip if resources not available
                         if (!$scope.model.audioRecording) {
-                            return "";
+                            return "#";
                         }
 
                         if (!angular.isNumber(stepBy)) {
@@ -452,9 +452,9 @@ angular
                             var lowerBound = ($routeParams.start - stepBy);
                             var uriPrev;
 
-                                // no previous link if we are at the start
+                            // no previous link if we are at the start
                             if ($routeParams.start <= 0) {
-                                uriPrev = "";
+                                uriPrev = "#";
                             } else {
                                 if (lowerBound === 0) {
                                     baseLink.end = lowerBound + stepBy;
@@ -494,7 +494,7 @@ angular
                             $scope.nextEnabled = nextEnabled;
 
                             if (!nextEnabled) {
-                                uriNext = "";
+                                uriNext = "#";
                             }
 
                             return uriNext;
@@ -547,11 +547,9 @@ angular
                         }
                     };
 
-
                     $scope.singleEditDisabled = function () {
                         return ($scope.model.selectedAudioEvent === null || $scope.model.selectedAudioEvent.id === undefined);
                     };
-
 
                     $scope.typeaheadOpts = {
                         //inputFormatter: myInputFormatterFunction,

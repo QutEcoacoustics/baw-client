@@ -31,8 +31,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             position: 0
         };
 
-        self.username = null;
-
         /**
          * Callback funtion to apply user playback settings after user profile is loaded
          * @param event

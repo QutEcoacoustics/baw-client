@@ -148,6 +148,11 @@ angular.module("baw",
                     indentation: 1
                 };
 
+
+                /**
+                 * formats a string to replace the route from /something/{foo}/{bar}
+                 * to /something/:foo/:bar
+                 */
                 function convertRouteParams (route) {
                     return route.replace(/}/g,"").replace(/{/g,":");
                 }
@@ -287,19 +292,12 @@ angular.module("baw",
                 title: "Bristlebird Citizen Science",
                 fullWidth: true
             }).
-            // when("/citsci/bristlebird/listen", {
-            //     templateUrl: "citizenScience/bristlebird/listen.tpl.html",
-            //     controller: "BristlebirdController",
-            //     title: "Bristlebird Citizen Science",
-            //     fullWidth: true
-            // }).
-                when(convertRouteParams(paths.site.ngRoutes.citizenScience.listen), {
-                    templateUrl: "citizenScience/bristlebird/listen.tpl.html",
-                    controller: "BristlebirdController",
-                    title: "Bristlebird Citizen Science",
-                    fullWidth: true
-                }).
-
+            when(convertRouteParams(paths.site.ngRoutes.citizenScience.listen), {
+                templateUrl: "citizenScience/bristlebird/listen.tpl.html",
+                controller: "BristlebirdController",
+                title: "Bristlebird Citizen Science",
+                fullWidth: true
+            }).
             when("/citsci/ipswich", {
                 templateUrl: "citizenScience/ipswich/about.tpl.html",
                 controller: "IpswichAboutController",
