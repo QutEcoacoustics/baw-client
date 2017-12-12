@@ -7,24 +7,24 @@
 
         <h1 id="chunkInfo" class="row">
             <span class="col-md-6">
-                    <span ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'">
-                        <!--{{ $first && "" || ", "}}-->
-                        <span ng-switch-when="false">
-                            <a ng-href="{{p.link}}" target="_self">{{p.name}}</a>
-                            <!--<a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"-->
-                            <!--data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>-->
-                            <a href ng-href="{{p.visualizeLink}}" title="Visualize">
-                                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                            </a>
-                           &nbsp;&#47;&nbsp;
-                           <a ng-href="{{ model.site.links[$index]}}" target="_self">{{model.site.name}}</a>
-                            &nbsp;
-                            <a href ng-href="{{model.site.visualizeLink}}" title="Visualize">
-                                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                            </a>
-                       </span>
+                <span ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'">
+                    <!--{{ $first && "" || ", "}}-->
+                    <span ng-switch-when="false">
+                        <a ng-href="{{p.link}}" target="_self">{{p.name}}</a>
+                        <!--<a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"-->
+                        <!--data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>-->
+                        <a href ng-href="{{p.visualizeLink}}" title="Visualize">
+                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                        </a>
+                       &nbsp;&#47;&nbsp;
+                       <a ng-href="{{ model.site.links[$index]}}" target="_self">{{model.site.name}}</a>
+                        &nbsp;
+                        <a href ng-href="{{model.site.visualizeLink}}" title="Visualize">
+                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                        </a>
+                   </span>
 
-                    </span>
+                </span>
             </span>
         </h1>
 
@@ -60,26 +60,6 @@
 
             <div class="btn-toolbar">
 
-                <!--<div class="btn-group">-->
-
-                    <!--<a class="btn btn-default" ng-href="{{createNavigationHref('previous')}}"-->
-                       <!--ng-disabled="!previousEnabled"-->
-                       <!--title="Previous Recording">-->
-                        <!--<span class="glyphicon glyphicon-step-backward"></span>-->
-                    <!--</a>-->
-                    <!--<button ng-disabled="!model.audioElement.canPlay"-->
-                            <!--class="btn btn-default"-->
-                            <!--ng-click="togglePlayState()"-->
-                            <!--title="{{ model.audioElement.isPlaying && 'Pause' || 'Play' }}">-->
-                        <!--<span ng-class="{'glyphicon-pause': model.audioElement.isPlaying}"-->
-                              <!--class="glyphicon glyphicon-play"></span>-->
-                    <!--</button>-->
-                    <!--<a class="btn btn-default" ng-href="{{createNavigationHref('next')}}" ng-disabled="!nextEnabled"-->
-                       <!--title="Next Recording">-->
-                        <!--<span class="glyphicon glyphicon-step-forward"></span>-->
-                    <!--</a>-->
-                <!--</div>-->
-
                 <previous-play-next audio-element-model="model.audioElement"  previous-link="previousLink" next-link="nextLink"></previous-play-next>
 
                 <div class="btn-group">
@@ -93,21 +73,7 @@
                 <volume-slider audio-element-model="model.audioElement"
                                 class="input-group btn-group form-group form-group-without-feedback"></volume-slider>
 
-                <!--<toggle-switch model="model.audioElement.autoPlay" disabled="disabled" mode="push-toggle"-->
-                               <!--title="Enable/disable autoplay">-->
-                    <!--<toggle-switch-state switch-state="on">-->
-                        <!--<span class="glyphicon glyphicon-play-circle"></span>-->
-                    <!--</toggle-switch-state>-->
-                    <!--<toggle-switch-state switch-state="off">-->
-                        <!--<span class="glyphicon glyphicon-play-circle"></span>-->
-                    <!--</toggle-switch-state>-->
-                <!--</toggle-switch>-->
-
                 <autoplay-button audio-element-model="model.audioElement"></autoplay-button>
-
-
-
-
 
             </div>
 

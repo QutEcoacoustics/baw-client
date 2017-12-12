@@ -1,7 +1,6 @@
 angular.module("bawApp.components.citizenScienceThumbLabels.examples",
     [
         "bawApp.citizenScience.common",
-        "bawApp.directives.scaleToFit",
         "bawApp.components.citizenScienceLabelCheck"
     ])
     .component("citizenScienceLabelExamples", {
