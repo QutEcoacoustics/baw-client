@@ -20,20 +20,16 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         var self = this;
 
-        self.sheets_api_url = "http://"+window.location.hostname+":8081";
-
         /**
          * Default values for audio model, to be updated when UserProfile is loaded
          * @type {Object}
          */
-        self.audioElement = {
+        self.audioElementModel = {
             volume: null,
             muted: null,
             autoPlay: null,
             position: 0
         };
-
-        self.username = null;
 
         /**
          * Callback funtion to apply user playback settings after user profile is loaded
@@ -41,10 +37,11 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
          * @param UserProfile
          */
         self.profileLoaded = function updateProfileSettings(event, UserProfile) {
-            self.audioElement.volume = UserProfile.profile.preferences.volume;
-            self.audioElement.muted = UserProfile.profile.preferences.muted;
-            self.audioElement.autoPlay = UserProfile.profile.preferences.autoPlay;
+            self.audioElementModel.volume = UserProfile.profile.preferences.volume;
+            self.audioElementModel.muted = UserProfile.profile.preferences.muted;
+            self.audioElementModel.autoPlay = UserProfile.profile.preferences.autoPlay;
         };
+
         $rootScope.$on(UserProfileEvents.loaded, self.profileLoaded);
         if (UserProfile.profile && UserProfile.profile.preferences) {
             self.profileLoaded(null, UserProfile);
@@ -53,62 +50,26 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
         self.mediaModel = null;
 
         /**
-         * creates a labels array of boolean values in the sample object, signifying whether
-         * the current sample has the label's tags attached to it
-         * @param samples Array The samples that are being initialised
-         * @param labels array The list of possible labels
-         */
-        self.initSampleLabels = function (samples, labels) {
-
-            samples.forEach(function (sample) {
-
-                sample.labels = labels.map(function (label) {
-                    for (var i = 0; i < sample.tags.length; i++) {
-                        //TODO: make this more efficient (don't repeatedly join label tags)
-                        if (self.compareTags(sample.tags[i],label.tags)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-            });
-
-
-        };
-
-
-        /**
          * Checks if a tag or array of tags is the same
          * @param tags1 mixed string or array of strings
          * @param tags2 mixed string or array of strings
          */
         self.compareTags = function (tags1, tags2) {
-
             if (Array.isArray(tags1)) {
                 tags1 = tags1.sort().join("");
             }
             if (Array.isArray(tags2)) {
                 tags2 = tags2.sort().join("");
             }
-
             return tags1 === tags2;
-
         };
+
+
 
         self.functions = {
 
             getAudioModel: function () {
-                return self.audioElement;
-            },
-
-            /**
-             * Constructs a url for the api by concatenating url/arg1/arg2/arg3 etc
-             */
-            apiUrl: function () {
-                // convert to array
-                var args = Array.prototype.slice.call(arguments);
-                return [self.sheets_api_url].concat(args).join("/");
+                return self.audioElementModel;
             },
 
             /**
@@ -138,33 +99,9 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                 return JSON.stringify(labels);
             },
 
+
             /**
-             * Returns a function that retrieves the samples for the user and the project
-             * @param $scope
-             * @returns {function}
-             */
-            bindGetSamples: function ($scope) {
-                var getSamples = function () {
-                    if ($scope.samples.length === 0) {
-                        var url = self.functions.apiUrl(
-                            "userSamples",
-                            $scope.csProject,
-                            UserProfile.profile.userName);
-                        //TODO: error handling
-                        $http.get(url).then(function (response) {
-                            //console.log(response.data);
-                            var samples = response.data;
-                            $scope.samples = samples;
-                            self.initSampleLabels($scope.samples, $scope.labels);
-                            $scope.goToSample(0);
-                        });
-                    }
-                };
-                UserProfile.get.then(getSamples);
-                return getSamples;
-            },
-            /**
-             * Returns a funciton that sets the media member of the scope to the
+             * Returns a function that sets the media member of the scope to the
              * specified recording segment. The watcher will then actually load it to the dom
              * @param recordingId string
              * @param startOffset float
@@ -187,8 +124,8 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                             $scope.media = new MediaModel(mediaValue.data);
                         },
                         function () {
-                            console.log("fail");
-                        } // failure
+                            console.warn("failed to get media");
+                        }
                     );
 
                     // do not block, do not wait for Media requests to finish
@@ -198,15 +135,10 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
                 return showAudio;
 
-
             }
-
 
         };
 
         return self.functions;
 
     }]);
-
-
-

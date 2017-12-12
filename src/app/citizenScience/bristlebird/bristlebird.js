@@ -14,15 +14,11 @@ class BristlebirdAboutController {
 
 class BristlebirdController {
     constructor($scope,
-                $routeParams,
-                $http,
                 ngAudioEvents,
-                AudioRecording,
-                Media,
-                MediaModel,
-                UserProfile,
-                UserProfileEvents,
+                $location,
                 CitizenScienceCommon,
+                CsApi,
+                SampleLabels,
                 backgroundImage,
                 paths) {
 
@@ -41,21 +37,15 @@ class BristlebirdController {
          */
         self.sampleDuration = 25;
 
-        /**
-         * list of the samples, to be retrieved from the dataset
-         * @type {Array}
-         */
-        $scope.samples = [];
 
         /**
-         * Inddex in the samples array of the current sample
+         * The current sample object, including sample id
          * @type {number}
          */
-        $scope.currentSampleNum = -1;
+        self.currentSample = {};
 
         // to be populated after getting samples from dataset
         $scope.media = null;
-
 
         $scope.onboardingSteps = [
             {
@@ -78,7 +68,7 @@ class BristlebirdController {
          * example response from server
          *   [{
          *      "tags": ["ebb", "type1"],
-         *      "label": "Eastern Bristlebird",
+         *      "name": "Eastern Bristlebird",
          *      "examples": [{
          *          "annotationId": 124730
          *      },{
@@ -89,7 +79,7 @@ class BristlebirdController {
          *   },
          *   {
          *       "tags": ["ground_parrot", "type1"],
-         *       "label": "Ground Parrot",
+         *       "name": "Ground Parrot",
          *       "examples": [{
          *           "annotationId": 124622
          *       }]
@@ -103,89 +93,87 @@ class BristlebirdController {
 
         $scope.labels = [];
 
-        self.getSamples = CitizenScienceCommon.bindGetSamples($scope);
+        $scope.currentSample = {};
 
         // the model passed to ngAudio
-        $scope.model = {
-            audioElement: CitizenScienceCommon.getAudioModel()
-        };
+        $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-        $http.get(CitizenScienceCommon.apiUrl(
-            "labels",
-            $scope.csProject
-        )).then(function (response) {
-            if (Array.isArray(response.data)) {
-                $scope.labels = response.data;
-            } else {
-                $scope.labels = [];
-            }
+
+
+        CsApi.getLabels($scope.csProject).then(function (labels) {
+            $scope.labels = labels;
+        });
+
+        SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
+
+
+        $scope.$on("label-toggle", function (e, labelNumber, value) {
+            self.toggleLabel(labelNumber, value);
         });
 
         /**
-         * Get settings from sheet
+         * applies or removes the tag-sets of the given label number
+         * to the current sample
+         * @param labelNumber
+         * @param value boolean if omitted will flip the current value
          */
-        $http.get(CitizenScienceCommon.apiUrl(
-            "settings",
-            $scope.csProject
-        )).then(function (response) {
-            $scope.settings = response.data;
-            if ($scope.settings.hasOwnProperty("sampleDuration")) {
-                self.sampleDuration = $scope.settings.sampleDuration;
+        self.toggleLabel = function (labelId, value) {
+            console.log("toggling label ", labelId, value);
+            if (typeof value !== "boolean") {
+                value = !SampleLabels.getValue($scope.currentSample.id, labelId);
             }
-        });
-
-        /**
-         * Sets the current sample to sampleNum
-         * @param sample_num int the index of the samples array of json objects
-         */
-        $scope.goToSample = function (sampleNum) {
-            if (sampleNum < $scope.samples.length) {
-                $scope.currentSampleNum = sampleNum;
-            } else {
-                console.log("can't go to next sample because this is the last one");
-            }
-
+            SampleLabels.setValue($scope.currentSample.id, labelId, value);
         };
 
         /**
-         * When the currentSampleNum changes, change the current audio file / spectrogram to match it
+         * Retrieve settings about this citizen science project
          */
-        $scope.$watch("currentSampleNum", function () {
-            if ($scope.currentSampleNum > -1) {
-                console.log("load audio for sample " + $scope.currentSampleNum);
-                var currentSample = $scope.samples[$scope.currentSampleNum];
-                self.showAudio(currentSample.recordingId, currentSample.startOffset, self.sampleDuration);
-                var backgroundPath = self.backgroundPaths[$scope.currentSampleNum % (self.backgroundPaths.length - 1)];
-                backgroundImage.currentBackground = backgroundPath;
+        CsApi.getSettings($scope.csProject).then(
+            function (settings) {
+                $scope.settings = settings;
+                if ($scope.settings.hasOwnProperty("sampleDuration")) {
+                    self.sampleDuration = $scope.settings.sampleDuration;
+                }
             }
-        });
+        );
 
         /**
-         * Reload audio when the source changes. Without this it won't change the audio
-         * even though the src attribute changes
+         * When the currentSample changes, change the current audio file / spectrogram to match it
          */
-        $scope.$watch("media", function () {
-            document.querySelector("audio").load();
+        $scope.$watch("currentSample", function () {
+            if ($scope.currentSample.id !== undefined) {
+                self.showAudio($scope.currentSample.recordingId, $scope.currentSample.startOffset, self.sampleDuration);
+                // for now, we cycle through backgrounds arbitrarily, based on the id of the sample number
+                // todo: store background images as part of the dataset or cs project
+                var backgroundPath = self.backgroundPaths[parseInt($scope.currentSample.id) % (self.backgroundPaths.length - 1)];
+                backgroundImage.currentBackground = backgroundPath;
+                $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample($scope.currentSample.id));
+                // record that this sample has been viewed
+                SampleLabels.setValue($scope.currentSample.id);
+                $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
+            }
         });
 
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
+         * The url for the next segment will be returned from the nextLink function, which
+         * is initialised to null, then reverse bound bound from the data progress component
          */
-        $scope.$on(ngAudioEvents.ended, function navigate(event, model) {
-            if (model === $scope.model.audioElement) {
-                var nextSampleNum = $scope.currentSampleNum + 1;
-                console.info("Changing page to next segment, which is segment " + nextSampleNum);
-                $scope.$safeApply($scope, function () {
-                    $scope.goToSample(nextSampleNum);
+        $scope.nextLink = null;
+        $scope.$on(ngAudioEvents.ended, function navigate(event) {
+            var uriNext = $scope.nextLink();
+            if (uriNext && $scope.audioElementModel.autoPlay) {
+                console.info("Changing page to next sample...");
+                $scope.$apply(function () {
+                    $location.url(uriNext);
                 });
             }
         });
 
-
-        self.backgroundPaths = ["1.jpg","2.jpg","3.jpg","4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
+        self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
 
     }
 
@@ -195,24 +183,21 @@ angular
     .module("bawApp.citizenScience.bristlebird", [
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
-        "bawApp.components.citizenScienceLabels",
-        "bawApp.components.citizenScienceExamples",
+        "bawApp.citizenScience.sampleLabels",
+        "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
-        "bawApp.components.background"
+        "bawApp.components.background",
+        "bawApp.citizenScience.csApiMock"
     ])
     .controller(
         "BristlebirdController",
         [
             "$scope",
-            "$routeParams",
-            "$http",
             "ngAudioEvents",
-            "AudioRecording",
-            "Media",
-            "baw.models.Media",
-            "UserProfile",
-            "UserProfileEvents",
+            "$location",
             "CitizenScienceCommon",
+            "CsApi",
+            "SampleLabels",
             "backgroundImage",
             "conf.paths",
             BristlebirdController

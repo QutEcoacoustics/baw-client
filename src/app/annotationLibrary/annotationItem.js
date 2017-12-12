@@ -11,7 +11,6 @@ angular.module("bawApp.components.annotationItem", [])
                      position: 0
                 };
 
-
             }],
         bindings: {
             annotation: "=annotation",

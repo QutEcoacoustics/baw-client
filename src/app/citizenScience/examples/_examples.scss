@@ -4,20 +4,22 @@
   margin-top: 10px;
 }
 
-
 .label-examples {
 
   display: none;
   position: relative;
   padding: 8px;
   min-width: 410px;
+  background: #fff;
 
-  background: rgba(0,0,0,0.7);
   border-radius: 5px;
   -webkit-box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
   -moz-box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
   box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
 
+  .dark {
+    background: rgba(0,0,0,0.7);
+  }
 
   &.selected {
     display: inline-block;
@@ -27,18 +29,11 @@
 
     display: none;
 
-
-
     &.selected {
-
       display: inline-block;
-
-
     }
 
-
   }
-
 
   h3 {
     text-align: center;
@@ -69,9 +64,6 @@
     }
 
   }
-
-
-
 
 }
 

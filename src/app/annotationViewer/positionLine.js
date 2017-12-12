@@ -15,11 +15,15 @@ angular
                 var self = this;
                 self.containerWidth = 0;
 
+                /**
+                 * Updates the containerWidth property based on the
+                 * clientWidth of the parent dom element. This value is stored
+                 * for performance
+                 */
                 self.updateContainerWidth = function () {
                     var container = $element[0].parentElement;
                     self.containerWidth = container.clientWidth;
                 };
-
 
                 /**
                  * Returns the cached clientWidth of the containing element: self.containerWidth
@@ -90,6 +94,11 @@ angular
                     }
                 };
 
+                /**
+                 * Force a digest cycle on the grandparent whenever
+                 * the position line is dragged or drag ended
+                 * @type {Function}
+                 */
                 self.updateScope = _.throttle(function updateScope() {
                     if (scope.$parent.$parent.$$phase) {
                         return;
@@ -97,12 +106,11 @@ angular
                     scope.$parent.$parent.$digest();
                 }, 250);
 
-                scope.getOffset = self.getOffset;
-
             }],
             link: {
                 pre: function (scope, elements, attributes, controller) {
 
+                    scope.getOffset = controller.getOffset;
                     scope.dragOptions = {
                         axis: "x",
                         containment: true,
@@ -125,13 +133,6 @@ angular
                     });
 
                 }
-
-
             }
-
-
-
         };
-
-
     }]);
