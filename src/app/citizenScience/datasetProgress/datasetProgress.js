@@ -13,8 +13,6 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"]
                     $scope.totalSamplesViewed = SampleLabels.getNumSamplesViewed();
                     console.log("setting selected to ", itemId);
                 });
-
-
             };
 
             $scope.selectItem($routeParams.sampleNum);
