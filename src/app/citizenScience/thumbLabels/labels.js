@@ -16,22 +16,13 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                       $http,
                       CitizenScienceCommon,
                       libraryCommon,
-                      AudioEventService,
-                      AudioEvent,
-                      $q) {
+                      AudioEventService) {
 
                 var self = this;
-
 
                 $scope.currentDetailsLabelId = {value: -1};
 
                 $scope.examplesPosition = "0px";
-
-                $scope.$on("update-selected-labels", function (e, sampleNum) {
-
-
-                });
-
 
                 $scope.$watch(function () {
                     return self.labels;
@@ -100,13 +91,10 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                             console.log(self.labels);
 
-
                         }, function (httpResponse) {
                                 console.error("Failed to load citizen science example item response.", httpResponse);
                         });
-
                 };
-
             }],
         bindings: {
             labels: "=",

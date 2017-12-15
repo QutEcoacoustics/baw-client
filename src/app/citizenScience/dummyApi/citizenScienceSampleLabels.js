@@ -45,6 +45,8 @@ sampleLabels.factory("SampleLabels", [
 
         };
 
+        self.currentSampleId = 0;
+
         /**
          * stringifies the object that acts as a join between samples and labels,
          * then stores that json string in local storage
@@ -76,11 +78,15 @@ sampleLabels.factory("SampleLabels", [
             /**
              * Looks up the data to see if there is a boolean value stored for a given sampleId and labelId
              * and if so, returns it.
-             * @param sampleId
+             * @param sampleId. If omitted, will use the current sample if available
              * @param labelId
              * @returns {boolean}
              */
             getValue : function (sampleId, labelId) {
+
+                if (sampleId === null) {
+                    sampleId = self.currentSampleId;
+                }
 
                 if (self.data[sampleId] !== undefined) {
                     if (self.data[sampleId][labelId] !== undefined) {
@@ -98,10 +104,19 @@ sampleLabels.factory("SampleLabels", [
              */
             setValue : function (sampleId, labelId, value) {
 
+
+                if (sampleId === null) {
+                    sampleId = self.currentSampleId;
+                }
+
+                if (sampleId <= 0) {
+                    console.warn("bad sampleId supplied");
+                    return;
+                }
+
                 if (self.data[sampleId] === undefined) {
                     self.data[sampleId] = {};
                 }
-
 
                 if (labelId !== undefined) {
 
@@ -148,6 +163,10 @@ sampleLabels.factory("SampleLabels", [
                     return 0;
                 }
 
+            },
+
+            registerCurrentSampleId : function (currentSampleId) {
+                self.currentSampleId = currentSampleId;
             },
 
             /**

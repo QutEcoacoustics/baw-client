@@ -13,14 +13,13 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                  * @param label string
                  */
                 $scope.toggleLabel = function () {
-                    self.checked.value = !self.checked.value;
-                    self.onToggleSelected(self.checked.value);
+                    self.onToggleSelected(!self.isChecked());
                 };
 
             }],
         bindings: {
-            checked: "=",
+            isChecked: "=",
             onToggleSelected: "=",
-            text:"<"
+            text:"<",
         }
     });

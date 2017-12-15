@@ -18,14 +18,12 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
     position: relative;
     z-index: 51;
 
-    &.selected {
+    &.active {
 
       /* make room under the row for the info */
       padding-bottom: 400px;
 
       .citizen-science-thumb {
-
-        position: relative;
 
         outline: rgba(255,255,255,0.5) solid 2px;
 
@@ -43,11 +41,20 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
     }
 
     .citizen-science-thumb {
+      position: relative;
       height: $thumb-height + px;
       margin: 5px;
 
       img {
         height: 100%;
+      }
+
+      .thumb-tick {
+        position: absolute;
+        top:5px;
+        right:8px;
+        color: #fff;
+        text-shadow: 1px 1px 2px #000;
       }
 
     }
@@ -60,7 +67,6 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
       border-radius: 5px;
       background: #fff;
       padding: 5px;
-
       top: ($thumb-height + 10) + px;
 
     }
