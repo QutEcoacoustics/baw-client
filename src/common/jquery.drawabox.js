@@ -507,7 +507,7 @@
                 throw "An element with that id already exists, cannot insert";
             }
 
-            var newBox = createBox($this, $this.data("drawboxes"),0, 0, 0, 0, id, true);
+            var newBox = createBox($this, $this.data("drawboxes"), 0, 0, 0, 0, id, true);
             result.push(newBox);
         });
         return result;

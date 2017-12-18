@@ -71,9 +71,9 @@ class BristlebirdController {
          *      "name": "Eastern Bristlebird",
          *      "examples": [{
          *          "annotationId": 124730
-         *      },{
+         *      }, {
          *          "annotationId": 124727
-         *      },{
+         *      }, {
          *           "annotationId": 98378
          *       }]
          *   },

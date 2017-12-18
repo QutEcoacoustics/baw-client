@@ -98,7 +98,7 @@ sampleLabels.factory("SampleLabels", [
 
             /**
              * updates the value of a labelId applied to a sampleId as either true or false
-             * @param sampleId int
+             * @param sampleId int; if null, will use the current sample id
              * @param labelId int; if omitted, we are not applying a label but noting that the sample has been viewed
              * @param value int [0,1]
              */

@@ -98,7 +98,7 @@ angular
             angular.forEach((keyValue || "").split("&"), function(keyValue) {
                 var splitPoint, key, val;
                 if (keyValue) {
-                    key = keyValue = keyValue.replace(/\+/g,"%20");
+                    key = keyValue = keyValue.replace(/\+/g, "%20");
                     splitPoint = keyValue.indexOf("=");
                     if (splitPoint !== -1) {
                         key = keyValue.substring(0, splitPoint);
@@ -112,7 +112,7 @@ angular
                         } else if (angular.isArray(obj[key])) {
                             obj[key].push(val);
                         } else {
-                            obj[key] = [obj[key],val];
+                            obj[key] = [obj[key], val];
                         }
                     }
                 }

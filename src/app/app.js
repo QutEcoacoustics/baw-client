@@ -154,7 +154,7 @@ angular.module("baw",
                  * to /something/:foo/:bar
                  */
                 function convertRouteParams (route) {
-                    return route.replace(/}/g,"").replace(/{/g,":");
+                    return route.replace(/}/g, "").replace(/{/g, ":");
                 }
 
                 // routes

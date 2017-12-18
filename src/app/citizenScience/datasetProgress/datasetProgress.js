@@ -1,8 +1,8 @@
 angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"])
-    .component("datasetProgress",{
+    .component("datasetProgress", {
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
-        controller: ["$scope", "$routeParams","$url", "conf.paths","CsApi","SampleLabels",
-            function ($scope, $routeParams,$url,paths,CsApi,SampleLabels) {
+        controller: ["$scope", "$routeParams", "$url", "conf.paths", "CsApi", "SampleLabels",
+            function ($scope, $routeParams, $url, paths, CsApi, SampleLabels) {
 
             var self = this;
             $scope.selectItem = function (itemId) {

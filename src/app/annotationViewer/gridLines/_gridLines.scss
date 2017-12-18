@@ -106,7 +106,7 @@ $scale-background:  #f5f5f5; //#7eff5f
   & .yTitle {
     @include scale-title-base;
 
-    @include vendor-prefix(transform, translateX(-100%) rotate3d(0,0,1,-90deg) translateX(50%));
+    @include vendor-prefix(transform, translateX(-100%) rotate3d(0, 0, 1, -90deg) translateX(50%));
     @include vendor-prefix(transform-origin, 100% 0%);
 
 

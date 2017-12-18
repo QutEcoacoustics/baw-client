@@ -5,7 +5,7 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
 .thumb-labels-container {
   text-align: center;
   margin-top: 10px;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   position: relative;
 
   /* flexbox layout of thumbs */
@@ -25,7 +25,7 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
 
       .citizen-science-thumb {
 
-        outline: rgba(255,255,255,0.5) solid 2px;
+        outline: rgba(255, 255, 255, 0.5) solid 2px;
 
         &:after {
           content: url("data:image/svg+xml;utf8,#{$triangle}");
@@ -63,7 +63,7 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
 
       position: absolute;
       z-index: 50;
-      box-shadow: 5px 5px 10px 10px rgba(0,0,0,0.3);
+      box-shadow: 5px 5px 10px 10px rgba(0, 0, 0, 0.3);
       border-radius: 5px;
       background: #fff;
       padding: 5px;

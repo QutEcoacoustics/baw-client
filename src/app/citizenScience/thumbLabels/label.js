@@ -8,7 +8,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
         controller: [
             "$scope",
             "SampleLabels",
-            function ($scope,SampleLabels) {
+            function ($scope, SampleLabels) {
 
                 /**
                  * A label is "selected" if it has been applied to the current sample
@@ -18,7 +18,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                 var self = this;
 
                 $scope.isSelected = function() {
-                    return SampleLabels.getValue(null,self.label.id);
+                    return SampleLabels.getValue(null, self.label.id);
                 };
 
                 $scope.isShowingDetails = function () {
@@ -43,8 +43,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                  * @param isSelected Boolean
                  */
                 self.onToggleSelected = function (isSelected) {
-                    console.log("label ", self.label.name, "selected value for sample x set to", isSelected);
-                    SampleLabels.setValue(null,self.label.id,isSelected);
+                    SampleLabels.setValue(null, self.label.id, isSelected);
                 };
 
             }],

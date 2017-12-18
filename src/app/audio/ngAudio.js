@@ -169,7 +169,7 @@ angular.module("bawApp.directives.ngAudio", [
 
                         target.currentState = event && event.type || "unknown";
 
-                        updateObject(element ,target);
+                        updateObject(element, target);
 
                         target.isPlaying = !element.paused;
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
