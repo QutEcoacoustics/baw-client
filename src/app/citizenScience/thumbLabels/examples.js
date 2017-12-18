@@ -26,7 +26,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
                     console.log("changed cur example for label " + self.label + " to " + $scope.currentExample);
                 };
 
-
                 /**
                  * initialises curExample after examples have been loaded (they are loaded async)
                  */

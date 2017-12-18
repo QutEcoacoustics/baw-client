@@ -1,5 +1,5 @@
 angular
-    .module("bawApp.citizenScience",[
+    .module("bawApp.citizenScience", [
         "bawApp.citizenScience.bristlebird",
         "bawApp.citizenScience.ipswich",
     ])

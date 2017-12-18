@@ -71,9 +71,9 @@ class BristlebirdController {
          *      "name": "Eastern Bristlebird",
          *      "examples": [{
          *          "annotationId": 124730
-         *      },{
+         *      }, {
          *          "annotationId": 124727
-         *      },{
+         *      }, {
          *           "annotationId": 98378
          *       }]
          *   },
@@ -100,32 +100,11 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-
-
         CsApi.getLabels($scope.csProject).then(function (labels) {
             $scope.labels = labels;
         });
 
         SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
-
-
-        $scope.$on("label-toggle", function (e, labelNumber, value) {
-            self.toggleLabel(labelNumber, value);
-        });
-
-        /**
-         * applies or removes the tag-sets of the given label number
-         * to the current sample
-         * @param labelNumber
-         * @param value boolean if omitted will flip the current value
-         */
-        self.toggleLabel = function (labelId, value) {
-            console.log("toggling label ", labelId, value);
-            if (typeof value !== "boolean") {
-                value = !SampleLabels.getValue($scope.currentSample.id, labelId);
-            }
-            SampleLabels.setValue($scope.currentSample.id, labelId, value);
-        };
 
         /**
          * Retrieve settings about this citizen science project

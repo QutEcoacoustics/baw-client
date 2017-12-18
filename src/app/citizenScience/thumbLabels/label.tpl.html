@@ -1,19 +1,24 @@
-<div class="citizen-science-thumb-label" ng-class="{selected : isShowingDetails()}">
+<div class="citizen-science-thumb-label" ng-class="{active : isShowingDetails()}">
 
     <!-- stuff to show thumb image -->
     <div class="citizen-science-thumb" ng-click="toggleShowDetails()">
+
+        <i class="fa fa-check thumb-tick"
+           ng-if="isSelected()"
+           aria-hidden="true"></i>
+
+
         <img ng-src="{{$ctrl.label.examples[0].annotation.media.available.image.png.url}}" alt="{{$ctrl.label.name}}">
     </div>
 
     <citizen-science-label-examples
             center-in-window
             label="$ctrl.label"
-            on-toggle-selected="$ctrl.onToggleSelected"
             ng-if="isShowingDetails()"
     >
 
         <label-check
-                checked="selected"
+                is-checked="isSelected"
                 on-toggle-selected="$ctrl.onToggleSelected"
                 text="$ctrl.label.name"
         ></label-check>

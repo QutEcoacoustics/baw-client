@@ -47,7 +47,7 @@ angular
 
                 var x = Media.get(
                     getMediaParameters(annotation),
-                    mediaGetSuccess.bind(null,annotation),
+                    mediaGetSuccess.bind(null, annotation),
                     mediaGetFailure
                 );
 

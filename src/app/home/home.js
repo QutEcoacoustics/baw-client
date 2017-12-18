@@ -5,7 +5,7 @@ angular.module("bawApp.home", [])
         function HomeCtrl($scope, $resource, $routeParams, Project) {
 /*            // testing some es6 features
 
-            var numbers = (new Array(100)).map((x,i) => i);
+            var numbers = (new Array(100)).map((x, i) => i);
             console.log(numbers);
 
             var evenNumbers = numbers.filter(x => !(x & 1) );
