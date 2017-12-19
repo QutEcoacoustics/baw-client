@@ -132,8 +132,14 @@ $scale-background:  #f5f5f5; //#7eff5f
 
 
 .dark {
-  & .yScale span {
+
+  .yScale, .xScale {
     background-color: transparent;
-    color: #fff;
+    span {
+      background-color: transparent;
+      color: #888;
+    }
   }
+
+
 }

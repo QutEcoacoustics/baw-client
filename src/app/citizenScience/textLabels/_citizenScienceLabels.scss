@@ -23,14 +23,17 @@
       font-size: 18px;
       cursor: pointer;
       line-height: 1em;
+      color: #559cd9;
+      text-decoration: none;
+
 
       &.main-button {
 
         &:hover {
-          color: #333;
+          color: #77befb;
 
           .checkbox {
-            border-color: #333;
+            border-color: #77befb;
           }
 
         }
