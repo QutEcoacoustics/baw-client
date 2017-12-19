@@ -66,7 +66,7 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
       z-index: 50;
       box-shadow: 5px 5px 10px 10px rgba(0, 0, 0, 0.3);
       border-radius: 5px;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0, 0, 0, 0.9);
       padding: 5px;
       top: ($thumb-height + 10) + px;
 
@@ -78,7 +78,7 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
           flex-grow:1;
           background-size: cover;
           background-position: center center;
-          box-shadow: 0px 0px 1px 10px rgba(0,0,0,0.5) inset
+          box-shadow: 0px 0px 1px 10px rgba(0, 0, 0, 0.5) inset
         }
 
         annotation-item {
@@ -92,8 +92,6 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
   }
 
   .label-examples-annotations {
-
-
 
     h3 {
       text-align: center;
