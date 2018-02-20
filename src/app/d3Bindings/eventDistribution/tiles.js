@@ -327,15 +327,19 @@ angular
                         let low = new Date(this.dataFunctions.getLow(source)),
                             high = new Date(this.dataFunctions.getHigh(source));
 
+                        // we need to make sure we do our rounding relative to midnight in UTC
+                        var utcDayStart = new Date(low);
+                        utcDayStart.setUTCHours(0, 0, 0, 0);
+
                         // round down to the lower unit of time, determined by `tileSizeSeconds`
-                        var niceLow = +roundDate.floor(idealTileSizeSeconds, low);
+                        var niceLow = +roundDate.floor(idealTileSizeSeconds, low, utcDayStart);
 
                         // In some cases a fraction of an extra second exists in the metadata.
                         // We assume tiles aren't produced if they would have less than 1px of content
-                        var roundedHigh = roundDate.round(minimumTileWidthThreshold, high);
+                        var roundedHigh = roundDate.round(minimumTileWidthThreshold, high, utcDayStart);
 
                         // round up to higher unit of time, determined by `tileSizeSeconds`
-                        var niceHigh = +roundDate.ceil(idealTileSizeSeconds, roundedHigh);
+                        var niceHigh = +roundDate.ceil(idealTileSizeSeconds, roundedHigh, utcDayStart);
 
                         // use d3's in built range functionality to generate steps
                         var tiles = [], tilingFunctions = this;

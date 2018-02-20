@@ -35,7 +35,7 @@ $smaller-font-size: $font-size-small - 2px;
 $out-of-bounds-color: #DDD;
 $dataset-in-bounds-bg-color: #ffffff;
 
-$tile-border-color: #777;
+$tile-border-color: #888888;
 
 $tile-background-color: #e5ffd8;
 $generating-tile-color: $text-color;
@@ -164,7 +164,7 @@ event-distribution-detail {
 
 
 
-event-distribution-visualisation, event-distribution-visualisation-multi-scale {
+event-distribution-visualisation {
   text-align: center;
 
   .metaTrack {
@@ -187,12 +187,23 @@ event-distribution-visualisation, event-distribution-visualisation-multi-scale {
       fill: $dataset-in-bounds-bg-color;
     }
 
-    .tiles {
+    .tiles, .focus-anchor {
       cursor: pointer;
+    }
+
+    .tiles {
+
 
       .tile rect {
-        stroke: $tile-border-color;
-        stroke-width: 1px;
+        //stroke: rgba(0, 0, 0, 0.5);
+        //stroke-width: 1px;
+        //border-left: rgba(255, 0, 0, 0.5) solid 1px;
+        //border-right: rgba(0, 255, 0, 0.5) solid 1px;
+
+        fill: rgba(255, 255, 255, 0);
+
+        //stroke: $tile-border-color;
+        //stroke-width: 1px;
 
         //border-left: deeppink solid 1px;
         //border-right: blue solid 1px;

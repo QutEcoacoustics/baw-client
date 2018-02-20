@@ -40,23 +40,21 @@ describe("The Annotation object", function () {
 
     });
 
-    afterEach(function () {
-        describe("Invariant:", function () {
-            it("isDirty should be boolean", function () {
-                expect(annotation_local.isDirty).toBeBoolean();
-                expect(annotation_resource.isDirty).toBeBoolean();
-            });
-        });
-    });
+    function isDirtyIsBool() {
+        expect(annotation_local.isDirty).toBeBoolean();
+        expect(annotation_resource.isDirty).toBeBoolean();
+    }
 
     it("should be found globally", function () {
         var type = typeof baw.Annotation;
         expect(type).toEqual("function");
+        isDirtyIsBool();
     });
 
     it("should not be null", function () {
         expect(annotation_local).not.toBeNull();
         expect(annotation_resource).not.toBeNull();
+        isDirtyIsBool();
     });
 
     it("the localId mode to throw if not given a number", function () {
@@ -70,18 +68,20 @@ describe("The Annotation object", function () {
 
         expect(func).toThrow("Valid input not provided");
         expect(func2).toThrow("Valid input not provided");
+        isDirtyIsBool();
     });
 
     it("the localId to be negative for a new annotation", function () {
 
         expect(annotation_local.__localId__).toBeLessThan(0);
         expect(annotation_local.id).toBeNull();
-
+        isDirtyIsBool();
     });
 
     it("a new annotation should say so", function () {
 
         expect(annotation_local.isNew()).toBeTrue();
+        isDirtyIsBool();
     });
 
     it("the localId to be the same as the id for an existing annotation", function () {
@@ -89,12 +89,13 @@ describe("The Annotation object", function () {
         expect(annotation_resource.id).toBeGreaterThan(0);
         expect(annotation_resource.id).toBe(resource.id);
         expect(annotation_resource.__localId__).toBe(annotation_resource.id);
-
+        isDirtyIsBool();
     });
 
     it("an existing annotation should say so", function () {
 
         expect(annotation_resource.isNew()).toBeFalse();
+        isDirtyIsBool();
     });
 
     it("the localId mode to throw if not given a number", function () {
@@ -108,11 +109,12 @@ describe("The Annotation object", function () {
 
         expect(func).toThrow("Valid input not provided");
         expect(func2).toThrow("Valid input not provided");
+        isDirtyIsBool();
     });
 
     it("'s prototype should have all of the resource properties defined", function () {
         expect(baw.Annotation.prototype).toImplement({isNew: Function, mergeResource: Function, exportObj: Function});
-
+        isDirtyIsBool();
     });
 
     var dateFields = [
@@ -154,14 +156,17 @@ describe("The Annotation object", function () {
 
         annotation_local.selected = false;
         expect(annotation_local.isDirty).toBeFalse();
+        isDirtyIsBool();
     });
 
     it("should be dirty if it has just been created", function () {
         expect(annotation_local.isDirty).toBeTrue();
+        isDirtyIsBool();
     });
 
     it("should not be dirty if it has just been converted from an existing resource", function () {
         expect(annotation_resource.isDirty).toBeFalse();
+        isDirtyIsBool();
     });
 
     describe("bounding boxes dimensions change, then a", function () {
@@ -171,6 +176,7 @@ describe("The Annotation object", function () {
             expect(annotation_resource.highFrequencyHertz).toBeDefined();
             expect(annotation_resource.lowFrequencyHertz).toBeDefined();
             expect(annotation_resource.startTimeSeconds).toBeDefined();
+            isDirtyIsBool();
         });
 
         ["endTimeSeconds", "highFrequencyHertz", "lowFrequencyHertz", "startTimeSeconds"].forEach(function (value) {
@@ -186,18 +192,21 @@ describe("The Annotation object", function () {
                 expect(annotation_resource[value]).toBe(newValue);
 
                 expect(annotation_resource["_" + value]).toBe(newValue);
+                isDirtyIsBool();
             });
 
             it("Δ in " + value + " → isDirty ", function () {
                 annotation_resource[value] = annotation_resource[value] * (Math.random() + 0.5);
 
                 expect(annotation_resource.isDirty).toBeTrue();
+                isDirtyIsBool();
             });
 
             it("a Δ in " + value + " === 0.0, → !isDirty", function () {
                 annotation_resource[value] = annotation_resource[value];
 
                 expect(annotation_resource.isDirty).toBeFalse();
+                isDirtyIsBool();
             });
         });
 
@@ -208,6 +217,7 @@ describe("The Annotation object", function () {
         expect(annotation_resource.isDirty).toBeFalse();
         annotation_resource.isReference = !annotation_resource.isReference;
         expect(annotation_resource.isDirty).toBeTrue();
+        isDirtyIsBool();
     });
 
 
@@ -218,6 +228,7 @@ describe("The Annotation object", function () {
         expect(propExists).toBeTrue();
 
         expect(annotation_resource.taggings).toBeArrayOfObjects("taggings");
+        isDirtyIsBool();
     });
 
     it("should have a tags array, with tags in it", function () {
@@ -225,6 +236,7 @@ describe("The Annotation object", function () {
         expect(propExists).toBeTrue();
 
         expect(annotation_resource.taggings).toBeArrayOfObjects("tags");
+        isDirtyIsBool();
     });
 
 
