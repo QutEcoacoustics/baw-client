@@ -807,7 +807,7 @@ angular
                                 }
                             };
 
-                        let imageCheck = common.imageCheck.bind(null, self.resolution, imageVisibilityThreshold);
+                        let imageCheck = common.imageCheck.bind(null, () => self.resolution, imageVisibilityThreshold);
 
                         // debug only
                         tilesGroup.attr(debugGroupAttrs)

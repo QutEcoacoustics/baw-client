@@ -392,7 +392,7 @@ angular
                             };
 
 
-                        let imageCheck = common.imageCheck.bind(null, self.resolution, 0);
+                        let imageCheck = common.imageCheck.bind(null, () => self.resolution, 0);
 
                         // debug only
                         //tilesGroup.attr(debugGroupAttrs);

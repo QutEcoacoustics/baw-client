@@ -88,7 +88,7 @@ angular
                     return filtered;
                 },
                 imageCheck(mainResolution, imageVisibilityThreshold, tile ) {
-                        let resolutionRatio = tile.resolution /  mainResolution;
+                        let resolutionRatio = tile.resolution /  mainResolution();
                         if (resolutionRatio < imageVisibilityThreshold) {
                             return null;
                         }
