@@ -1,0 +1,66 @@
+//noinspection CssInvalidHtmlTagReference
+download {
+
+  .download-links-wrapper {
+
+    position: relative;
+    display: inline-block;
+
+    .download-links {
+
+      position: absolute;
+      bottom: 30px;
+      left:0px;
+      background: #ffffff;
+      z-index: 10000;
+      padding: 10px;
+      text-align: center;
+      white-space: nowrap;
+      border: solid #dddddd 1px;
+      border-radius: 3px;
+
+      &.show-links {
+
+        transition-duration: 0.3s;
+        transition-timing-function: ease-in;
+        max-height: 1000px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        overflow: hidden;
+
+      }
+
+      &.hide-links {
+
+        overflow: hidden;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        transition-duration: 0.3s;
+        transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+
+      }
+
+      a {
+        display: block;
+      }
+
+
+    }
+
+
+  }
+
+
+
+}
+
+.btn-toolbar .download-links-wrapper {
+
+  float: left;
+
+}
