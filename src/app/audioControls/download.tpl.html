@@ -1,34 +1,60 @@
-<div click-outside="hideDownloadLinks()" class="download-links-wrapper">
-
-    <button class="btn btn-default"
-            ng-click="toggleShowDownloadLinks()"
-
+<div uib-dropdown  class="download-links-wrapper">
+    <div class="btn-group" uib-dropdown is-open="$ctrl.downloadLinksShowing">
+        <button
+            id="downloadButton" 
+            type="button"
+            class="btn btn-default dropdown-toggle"
+            aria-haspopup="true"
+            aria-expanded="false"
+            uib-dropdown-toggle
+            ng-disabled="disabled"
             title="Download">
-            <span class="glyphicon glyphicon-download"></span>
-    </button>
-    <div ng-class="{'show-links': downloadLinksShowing, 'hide-links': !downloadLinksShowing}"
-        class="download-links">
-
-        <div>Download:</div>
-
-        <a target="_blank"
-               ng-href="{{$ctrl.media.spectrogram.url}}"
-               title="Download the spectrogram">Spectrogram</a>
-        <a target="_blank"
-               ng-class="{disabled: !$ctrl.media.available.audio['wav'].url}"
-               ng-href="{{$ctrl.media.available.audio['wav'].url}}"
-               title="{{ model.media.available.audio['wav'].url && 'Download the .wav file' || 'This file format is not available'  }}"
-    >Audio (WAV)</a>
-        <a target="_blank"
-                       ng-class="{disabled: !$ctrl.media.available.audio['mp3'].url}"
-                       ng-href="{{$ctrl.media.available.audio['mp3'].url}}"
-                       title="{{ $ctrl.media.available.audio['mp3'].url && 'Download the .mp3 file' || 'This file format is not available'  }}"
-                    >Audio (MP3)</a>
-        <a ng-repeat="(key,link) in $ctrl.otherLinks" target="_blank"
-                       ng-class="{disabled: !link.url}"
-                       ng-href="{{link.url}}"
-                       title="{{link.text}}"
-                    >{{link.text}}</a>
+            <i class="fa fa-download"></i>
+            <ng-transclude></ng-transclude>
+            <span class="caret"></span>
+        </button>
+        <ul class="download-links dropdown-menu"
+            uib-dropdown-menu
+            role="menu"
+            aria-labelledby="downloadButton">
+            <li class="dropdown-header">Download from this item</li>
+            <li>
+                <a target="_blank"
+                    class="dropdown-anchor"
+                    ng-href="{{$ctrl.media.spectrogram.url}}"
+                    title="Download the spectrogram">
+                    Spectrogram
+                </a>
+            </li>
+            <li>
+                <a target="_blank"
+                    class="dropdown-anchor"
+                    ng-class="{disabled: !$ctrl.media.available.audio['wav'].url}"
+                    ng-href="{{$ctrl.media.available.audio['wav'].url}}"
+                    title="{{ model.media.available.audio['wav'].url && 'Download the .wav file' || 'This file format is not available'  }}">
+                    Audio (WAV)
+                </a>
+            </li>
+            <li>
+                <a target="_blank"
+                    class="dropdown-anchor"
+                    ng-class="{disabled: !$ctrl.media.available.audio['mp3'].url}"
+                    ng-href="{{$ctrl.media.available.audio['mp3'].url}}"
+                    title="{{ $ctrl.media.available.audio['mp3'].url && 'Download the .mp3 file' || 'This file format is not available'  }}">
+                    Audio (MP3)
+                </a>
+            </li>
+            <li role="separator" class="divider" ng-if="$ctrl.otherLinks"></li>
+            <li>
+                <a ng-repeat="(key,link) in $ctrl.otherLinks"
+                    target="_blank"
+                    class="dropdown-anchor"
+                    ng-class="{disabled: !link.url}"
+                    ng-href="{{link.url}}"
+                    title="{{link.text}}">
+                    {{link.text}}
+                </a>
+            </li>
+        </ul>
     </div>
-
 </div>

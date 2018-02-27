@@ -4,18 +4,8 @@ angular.module("bawApp.audioControls.download", [])
         controller: [
             "$scope",
             function ($scope) {
-
-                $scope.downloadLinksShowing = false;
-
-                $scope.toggleShowDownloadLinks = function () {
-                    $scope.downloadLinksShowing = !$scope.downloadLinksShowing;
-                };
-
-                $scope.hideDownloadLinks = function () {
-                    $scope.downloadLinksShowing = false;
-                };
-
         }],
+        transclude: true,
         bindings: {
             media: "=",
             otherLinks: "="
