@@ -83,4 +83,8 @@ a {
   width: auto;
 }
 
-
+// override how dropdown links are displayed
+.dropdown-menu > li > a.dropdown-anchor {
+  color: $link-color !important;
+  @extend a;
+}
