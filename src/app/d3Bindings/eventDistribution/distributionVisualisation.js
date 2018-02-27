@@ -180,7 +180,9 @@ angular
                     }
 
                     function setDimensions() {
-                        tilesWidth = common.getWidth(container, margin);
+                        // it is possible that this container has no width (i.e. when it is hidden)
+                        // set floor to zero to prevent further errors
+                        tilesWidth = Math.max(common.getWidth(container, margin), 0);
 
                         // want tilesHeight to be a function of nyquistRate and window
                         var newHeight = getTilesGroupHeight();
@@ -373,7 +375,7 @@ angular
                                  * the zoom panel's current scale vs the ideal scale of the tile.
                                  */
                                 width: d => {
-                                    //var imageScale = d.resolution / self.resolution;
+                                    //var imageScale = d.resolution / resolution;
                                     //return tileWidthPixels * (imageScale);
 
                                     // this method (as opposed to multiplicative method above)
@@ -392,7 +394,7 @@ angular
                             };
 
 
-                        let imageCheck = common.imageCheck.bind(null, () => self.resolution, 0);
+                        let imageCheck = common.imageCheck.bind(null, () => resolution, 0);
 
                         // debug only
                         //tilesGroup.attr(debugGroupAttrs);
