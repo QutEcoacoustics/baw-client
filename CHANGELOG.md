@@ -1,3 +1,18 @@
+<a name="1.5.0"></a>
+# [1.5.0](https://github.com/QutBioacoustics/baw-client/compare/v1.4.0...v1.5.0) (2018-02-27)
+
+
+### Bug Fixes
+
+* **audioControls:** Simplified download component ([d6e6daf](https://github.com/QutBioacoustics/baw-client/commit/d6e6daf))
+* **visualize:** Two minor bugs in distributionVisualization fixed ([0f7cbbf](https://github.com/QutBioacoustics/baw-client/commit/0f7cbbf))
+
+### Features
+
+* **audioControls:** added audio download component ([ca7d54d](https://github.com/QutBioacoustics/baw-client/commit/ca7d54d))
+
+
+
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/QutBioacoustics/baw-client/compare/v1.2.0...v1.4.0) (2018-02-20)
 
