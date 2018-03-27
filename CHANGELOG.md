@@ -1,3 +1,13 @@
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/QutBioacoustics/baw-client/compare/v1.5.0...v1.5.1) (2018-03-27)
+
+
+### Bug Fixes
+
+* **visualize:** Final adjustments to tile paths ([6c95ee7](https://github.com/QutBioacoustics/baw-client/commit/6c95ee7))
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/QutBioacoustics/baw-client/compare/v1.4.0...v1.5.0) (2018-02-27)
 
