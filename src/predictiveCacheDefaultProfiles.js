@@ -3,7 +3,9 @@ angular.module("bawApp.predictiveCacheDefaultProfiles", [])
     "predictiveCacheDefaultProfiles", {
         "Media cache ahead": function bind($location, paths) {
             const imageFormat = "png";
-            const audioFormat = "mp3";
+            // Not all audio formats are always available. We cache the format that is most
+            // likely to be used by the browser, which should be in the following order
+            const audioFormatPriority = ["mp3","webm","ogg", "flac", "wav"];
             // request additional bits of media based the duration of the original request
             // do not make requests that would exceed the end of the recording
             function mediaProgressor(previous, data) {
@@ -45,8 +47,10 @@ angular.module("bawApp.predictiveCacheDefaultProfiles", [])
                     function (counters, data) {
                         return formatMediaUrl(data.responseData.data.available.image[imageFormat].url, counters);
                     },
-                    // mp3
+                    // audio, e.g. mp3
                     function (counters, data) {
+                        // audio format will be the first item in audioFormatPriority that appears in the data's available audio
+                        var audioFormat = audioFormatPriority.find(format => data.responseData.data.available.audio.hasOwnProperty(format));
                         return formatMediaUrl(data.responseData.data.available.audio[audioFormat].url, counters);
                     }
                 ],
