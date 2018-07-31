@@ -33,7 +33,8 @@ angular.module(
         "bawApp.services.birdWalkService",
         "bawApp.services.breadcrumbs",
         "bawApp.services.userProfile",
-        "bawApp.services.authenticator"
+        "bawApp.services.authenticator",
+        "bawApp.services.datasetItem"
 
     ]);
 

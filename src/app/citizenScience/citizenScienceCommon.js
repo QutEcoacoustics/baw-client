@@ -109,12 +109,12 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
              */
             bindShowAudio: function ($scope) {
 
-                var showAudio = function (recordingId, startOffset, duration) {
+                var showAudio = function (recordingId, startOffset, endOffset) {
 
                     var mediaParams = {
                         recordingId: recordingId,
                         startOffset: startOffset,
-                        endOffset: startOffset + duration,
+                        endOffset: endOffset,
                         format: "json"
                     };
 

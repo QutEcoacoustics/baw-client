@@ -17,7 +17,7 @@ class BristlebirdController {
                 ngAudioEvents,
                 $location,
                 CitizenScienceCommon,
-                CsApi,
+                CsSamples,
                 SampleLabels,
                 backgroundImage,
                 paths) {
@@ -100,7 +100,7 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-        CsApi.getLabels($scope.csProject).then(function (labels) {
+        CsSamples.getLabels($scope.csProject).then(function (labels) {
             $scope.labels = labels;
         });
 
@@ -109,7 +109,7 @@ class BristlebirdController {
         /**
          * Retrieve settings about this citizen science project
          */
-        CsApi.getSettings($scope.csProject).then(
+        CsSamples.getSettings($scope.csProject).then(
             function (settings) {
                 $scope.settings = settings;
                 if ($scope.settings.hasOwnProperty("sampleDuration")) {
@@ -123,7 +123,7 @@ class BristlebirdController {
          */
         $scope.$watch("currentSample", function () {
             if ($scope.currentSample.id !== undefined) {
-                self.showAudio($scope.currentSample.recordingId, $scope.currentSample.startOffset, self.sampleDuration);
+                self.showAudio($scope.currentSample.audioRecordingId, $scope.currentSample.startTimeSeconds, $scope.currentSample.endTimeSeconds);
                 // for now, we cycle through backgrounds arbitrarily, based on the id of the sample number
                 // todo: store background images as part of the dataset or cs project
                 var backgroundPath = self.backgroundPaths[parseInt($scope.currentSample.id) % (self.backgroundPaths.length - 1)];
@@ -166,7 +166,7 @@ angular
         "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
         "bawApp.components.background",
-        "bawApp.citizenScience.csApiMock"
+        "bawApp.citizenScience.csSamples"
     ])
     .controller(
         "BristlebirdController",
@@ -175,7 +175,7 @@ angular
             "ngAudioEvents",
             "$location",
             "CitizenScienceCommon",
-            "CsApi",
+            "CsSamples",
             "SampleLabels",
             "backgroundImage",
             "conf.paths",

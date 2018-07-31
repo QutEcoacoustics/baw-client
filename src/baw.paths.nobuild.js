@@ -72,6 +72,10 @@ module.exports = function (environment) {
                 "savedSearches": {
                     "list": "/saved_searches",
                     "show": "/saved_searches/{savedSearchId}"
+                },
+                "datasetItem": {
+                    "list": "/datasets/{datasetId}/items",
+                    "show": "/datasets/{datasetId}/items/{datasetItemId}"
                 }
             },
             "links": {
