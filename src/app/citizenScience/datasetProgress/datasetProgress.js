@@ -1,3 +1,11 @@
+/**
+ * Component that
+ *  - contains the button to move to the next sample,
+ *  - loads the correct sample if specified in the url
+ *  - updates the selected labels to match what is stored for the selected sample
+ */
+
+
 angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"])
     .component("datasetProgress", {
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
@@ -6,19 +14,13 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
 
                 var self = this;
 
-
-                $scope.selectItem = function (itemId) {
+                $scope.selectSampleById = function (itemId) {
                     console.log("selecting item", itemId);
-                    self.currentSample = CsSamples.getSample(itemId);
-                    if (self.currentSample) {
-                        SampleLabels.registerCurrentSampleId(self.currentSample.id);
-                        $scope.totalSamplesViewed = SampleLabels.getNumSamplesViewed();
-                        console.log("setting selected to ", itemId);
-                    }
+                    CsSamples.selectById(itemId).then(x => {
+                        console.log("selected sample ", x);
+                        SampleLabels.registerCurrentSampleId(CsSamples.currentSample);
+                    });
                 };
-
-                // don't do this yet, because we'll watch for ready
-                //$scope.selectItem($routeParams.sampleNum);
 
                 /**
                  * Load the new sample whenever the route params change.
@@ -27,62 +29,29 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                     function () {
                         return $routeParams.sampleNum;
                     }, function (newVal, oldVal) {
-                        console.log("route params changed from ", oldVal, "to", newVal);
-
-                        // call the api to get the sample based on the route params
-                        $scope.selectItem($routeParams.sampleNum);
-
+                        if ($routeParams.sampleNum) {
+                            $scope.selectSampleById($routeParams.sampleNum);
+                        }
                     });
 
-                /**
-                 * Load sample when the list of samples is ready
-                 */
-
-                $scope.$watch(
-                    function () {
-                        return CsSamples.isReady;
-                    },
-                    function (newVal, oldVal) {
-                        if (newVal) {
-                            $scope.selectItem($routeParams.sampleNum);
-                        }
-                    },
-                    true);
-
-
-                //TODO: this gets called constantly while the audio is playing
-                /**
-                 * returns a link for routing based on the id for the next and
-                 * previous samples. That id is returned in the request for metadata of
-                 * the current sample (contained in the route).
-                 * @returns string
-                 */
-                $scope.previousLink = function () {
-                    if (self.currentSample.previousSampleId) {
-                        return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum: self.currentSample.previousSampleId});
-                    } else {
-                        return "";
-                    }
-                };
-                $scope.nextLink = function () {
-                    if (self.currentSample.nextSampleId) {
-                        return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum: self.currentSample.nextSampleId});
-                    } else {
-                        return "";
-                    }
+                                 
+                $scope.nextItem = function () {
+                    console.log("next item");
+                    CsSamples.nextItem();
+                    SampleLabels.registerCurrentSampleId(CsSamples.currentItem());
                 };
 
-                // reverse binding of this functions to make
-                // them accessible to the parent controller for autoplay
-                self.nextLink = $scope.nextLink;
+                /**
+                 *
+                 * @return {*}
+                 */
+                $scope.nextDisabled = function () {
+                    return !CsSamples.nextItemAvailable();
+                };
 
                 self.progressNav = true;
 
             }],
         bindings: {
-            audioElementModel: "=",
-            currentSample: "=",
-            numViewed: "=numViewed",
-            nextLink: "="
         }
     });

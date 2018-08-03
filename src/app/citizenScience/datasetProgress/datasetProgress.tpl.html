@@ -12,8 +12,14 @@
         <div class="progressCell progress-counter">{{ totalSamplesViewed }}</div>
 -->
         <div class="btn-group">
-            <previous-play-next audio-element-model="$ctrl.audioElementModel" previous-link="previousLink" next-link="nextLink"></previous-play-next>
+            <button class="btn btn-default"
+               ng-disabled="nextDisabled()"
+               ng-click="nextItem()"
+               title="Next Clip">
+                <span class="glyphicon glyphicon-step-forward"></span>
+            </button>
         </div>
+
 
 
 

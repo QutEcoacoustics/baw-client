@@ -42,7 +42,7 @@ class BristlebirdController {
          * The current sample object, including sample id
          * @type {number}
          */
-        self.currentSample = {};
+        $scope.currentItem = CsSamples.currentItem;
 
         // to be populated after getting samples from dataset
         $scope.media = null;
@@ -93,8 +93,6 @@ class BristlebirdController {
 
         $scope.labels = [];
 
-        $scope.currentSample = {};
-
         // the model passed to ngAudio
         $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
 
@@ -119,28 +117,33 @@ class BristlebirdController {
         );
 
         /**
-         * When the currentSample changes, change the current audio file / spectrogram to match it
+         * When the currentItem changes, change the current audio file / spectrogram to match it
          */
-        $scope.$watch("currentSample", function () {
-            if ($scope.currentSample.id !== undefined) {
-                self.showAudio($scope.currentSample.audioRecordingId, $scope.currentSample.startTimeSeconds, $scope.currentSample.endTimeSeconds);
-                // for now, we cycle through backgrounds arbitrarily, based on the id of the sample number
-                // todo: store background images as part of the dataset or cs project
-                var backgroundPath = self.backgroundPaths[parseInt($scope.currentSample.id) % (self.backgroundPaths.length - 1)];
-                backgroundImage.currentBackground = backgroundPath;
-                $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample($scope.currentSample.id));
-                // record that this sample has been viewed
-                SampleLabels.setValue($scope.currentSample.id);
-                $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
-            }
-        });
+        $scope.$watch(function () {
+            return CsSamples.currentItem();
+            },
+            function (item, oldVal) {
+                if (item) {
+                    self.showAudio(item.audioRecordingId, item.startTimeSeconds, item.endTimeSeconds);
+                    // for now, we cycle through backgrounds arbitrarily, based on the id of the sample number
+                    // todo: store background images as part of the dataset or cs project
+                    var backgroundPath = self.backgroundPaths[parseInt(item.id) % (self.backgroundPaths.length - 1)];
+                    backgroundImage.currentBackground = backgroundPath;
+                    $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample(item.id));
+                    // record that this sample has been viewed
+                    SampleLabels.setValue(item.id);
+                    $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
+                }
+            }, true);
 
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
          * The url for the next segment will be returned from the nextLink function, which
          * is initialised to null, then reverse bound bound from the data progress component
-         */
+
+         *TODO: make this work with non-url progress
+
         $scope.nextLink = null;
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
             var uriNext = $scope.nextLink();
@@ -151,6 +154,8 @@ class BristlebirdController {
                 });
             }
         });
+
+         */
 
         self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
 

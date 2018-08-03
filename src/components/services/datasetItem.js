@@ -16,8 +16,15 @@ angular
                     {datasetId: "@datasetId", datasetItemId: "@datasetItemId"},
                     {});
 
-                resource.datasetItems = function getDatasetItems(dataset_id) {
-                    var url = $url.formatUri(paths.api.routes.datasetItem.listAbsolute, {datasetId: dataset_id});
+                resource.datasetItems = function getDatasetItems(datasetId, pageNum) {
+                    var url = $url.formatUri(paths.api.routes.datasetItem.listAbsolute, {datasetId: datasetId, page: pageNum});
+                    return $http.get(url).then(x => {
+                        return DatasetItemModel.makeFromApi(x);
+                    });
+                };
+
+                resource.datasetItem = function getDatasetItem(datasetId, datasetItemId) {
+                    var url = $url.formatUri(paths.api.routes.datasetItem.show, {datasetId: datasetId, datasetItemId: datasetItemId});
                     return $http.get(url).then(x => DatasetItemModel.makeFromApi(x));
                 };
 
