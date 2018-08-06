@@ -56,6 +56,12 @@ angular.module("bawApp.directives.ngAudio", [
                 });
             });
 
+
+            scope.$watch(attributes.ngAudioSources, function (newval, oldval) {
+                console.log("audio sources have changed", newval);
+                element.load();
+            });
+
             /*
              * FORWARD BINDING
              *
@@ -82,6 +88,7 @@ angular.module("bawApp.directives.ngAudio", [
                 target.play = play;
                 target.pause = pause;
             });
+
 
             // volume
             scope.$watch(function () {
