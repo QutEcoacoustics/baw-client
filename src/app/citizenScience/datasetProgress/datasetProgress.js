@@ -9,47 +9,31 @@
 angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"])
     .component("datasetProgress", {
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
-        controller: ["$scope", "$routeParams", "$url", "conf.paths", "CsSamples", "SampleLabels",
-            function ($scope, $routeParams, $url, paths, CsSamples, SampleLabels) {
+        controller: ["$scope", "$routeParams", "CsSamples", "SampleLabels",
+            function ($scope, $routeParams, CsSamples, SampleLabels) {
 
-                var self = this;
+                if ($routeParams.sampleNum) {
+                    CsSamples.selectById($routeParams.sampleNum);
+                    $scope.nextItem = false;
+                } else {
+                    CsSamples.init();
+                    $scope.nextItem = function () {
+                        console.log("next item");
+                        CsSamples.nextItem();
+                    };
+                }
 
-                $scope.selectSampleById = function (itemId) {
-                    console.log("selecting item", itemId);
-                    CsSamples.selectById(itemId).then(x => {
-                        console.log("selected sample ", x);
-                        SampleLabels.registerCurrentSampleId(CsSamples.currentSample);
-                    });
-                };
-
-                /**
-                 * Load the new sample whenever the route params change.
-                 */
-                $scope.$watch(
-                    function () {
-                        return $routeParams.sampleNum;
-                    }, function (newVal, oldVal) {
-                        if ($routeParams.sampleNum) {
-                            $scope.selectSampleById($routeParams.sampleNum);
-                        }
-                    });
-
-                                 
-                $scope.nextItem = function () {
-                    console.log("next item");
-                    CsSamples.nextItem();
-                    SampleLabels.registerCurrentSampleId(CsSamples.currentItem());
-                };
+                $scope.$watch(() => CsSamples.currentItem(), (newVal, oldVal) => {
+                    SampleLabels.registerCurrentSampleId(CsSamples.currentItem().id);
+                });
 
                 /**
                  *
-                 * @return {*}
+                 * @return boolean
                  */
                 $scope.nextDisabled = function () {
                     return !CsSamples.nextItemAvailable();
                 };
-
-                self.progressNav = true;
 
             }],
         bindings: {

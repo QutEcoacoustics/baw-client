@@ -19,11 +19,11 @@ csSamples.factory("CsSamples", [
         // todo: integrate with settings for cs project
         self.datasetId = 3;
 
-        self.resetIndex = function () {
+        self.resetlist = function () {
             self.currentIndex = { page: -1, item: -1};
             self.pages = [];
         };
-        self.resetIndex();
+        self.resetlist();
 
         /**
          * Returns the number of items in the current page, or 0 if the indexes
@@ -151,25 +151,26 @@ csSamples.factory("CsSamples", [
 
         };
 
-        self.requestPageOfItems(true);
-
-
         self.publicFunctions = {
 
             /**
              * make a request for a specific dataset item. When the response comes,
-             * empty the list and set it to to the first item, then request a page to append
+             * make that item the current item, empty the list, then request a page to append
              * @param datasetItemId
-             * @return Promise
+             * @return Promise that returns the dataset item
              */
             selectById : function (datasetItemId) {
                 return DatasetItem.datasetItem(self.datasetId, datasetItemId).then(x => {
                     // todo: need something to stop this being called twice before response comes
-                    self.resetIndex();
-                    self.currentItem = self.items[x.data.data];
+                    self.resetlist();
+                    self.currentItem = x.data.data[0];
                     self.requestPageOfItems(false);
-                    return x.data.data;
+                    return x.data.data[0];
                 });
+            },
+
+            init : function () {
+                self.requestPageOfItems(true);
             },
 
             /**
@@ -193,7 +194,6 @@ csSamples.factory("CsSamples", [
             nextItemAvailable : function () {
                 var nextIndex = self.nextItemIndexes();
                 return Boolean(nextIndex);
-
             },
 
             /**

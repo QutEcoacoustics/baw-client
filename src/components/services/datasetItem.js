@@ -24,7 +24,7 @@ angular
                 };
 
                 resource.datasetItem = function getDatasetItem(datasetId, datasetItemId) {
-                    var url = $url.formatUri(paths.api.routes.datasetItem.show, {datasetId: datasetId, datasetItemId: datasetItemId});
+                    var url = $url.formatUri(paths.api.routes.datasetItem.showAbsolute, {datasetId: datasetId, datasetItemId: datasetItemId});
                     return $http.get(url).then(x => DatasetItemModel.makeFromApi(x));
                 };
 

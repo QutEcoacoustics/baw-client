@@ -1,23 +1,18 @@
 
-<!--
-        <div class="progressCell progressItem"
-             ng-if="showProgressItems"
-             ng-repeat="(key, item) in $ctrl.items"
-             ng-class="{done : item.done,  cur : $ctrl.selected === key}"
-             ng-click="selectItem(key)">
-            {{ key + 1 }}
-
-        </div>
-
-        <div class="progressCell progress-counter">{{ totalSamplesViewed }}</div>
--->
         <div class="btn-group">
-            <button class="btn btn-default"
-               ng-disabled="nextDisabled()"
-               ng-click="nextItem()"
-               title="Next Clip">
+            <button ng-if="nextItem"
+                    class="btn btn-default"
+                    ng-disabled="nextDisabled()"
+                    ng-click="nextItem()"
+                    title="Next Clip">
                 <span class="glyphicon glyphicon-step-forward"></span>
             </button>
+            <a ng-if="!nextItem"
+               href="/citsci/bristlebird/listen/"
+               class="btn btn-default"
+               title="Next Clip">
+                <span class="glyphicon glyphicon-step-forward"></span>
+            </a>
         </div>
 
 
