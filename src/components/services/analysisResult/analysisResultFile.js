@@ -26,6 +26,7 @@ angular
                 return number;
             },
             zooming: {
+                directoryPrefix: "zooming/",
                 tileSuffix: "Tiles.sqlite3/",
                 availableResolutions: [0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 7.5, 15, 30, 60, 120, 240],
                 maxFrequency: 11025,
@@ -72,6 +73,9 @@ angular
                     }
 
                     var fileFragment = "";
+                    if (isZooming) {
+                        fileFragment += ear.zooming.directoryPrefix;
+                    }
                     fileFragment += ear.longDurationAnalysisName + "/";
                     fileFragment += audioRecording.uuid;
                     fileFragment += ear.fieldDelimiter;
