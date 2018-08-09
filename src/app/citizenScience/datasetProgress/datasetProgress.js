@@ -35,6 +35,14 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                     return !CsSamples.nextItemAvailable();
                 };
 
+                $scope.nextText = function () {
+                    if (SampleLabels.hasResponse()) {
+                        return "Done! Next sample";
+                    } else {
+                        return "Nothing here, next sample";
+                    }
+                };
+
             }],
         bindings: {
         }

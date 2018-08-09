@@ -148,6 +148,23 @@ sampleLabels.factory("SampleLabels", [
                 }
 
                 return self.data[sampleId];
+            },
+
+            /**
+             * Returns whether any responses have been recorded for a sample
+             * @param sampleId
+             */
+            hasResponse : function (sampleId = -1) {
+
+                if (sampleId < 0) {
+                    sampleId = self.currentSampleId;
+                }
+
+                if (!self.data.hasOwnProperty(sampleId)) {
+                    return false;
+                }
+
+                return (Object.keys(self.data[sampleId]).length > 0);
 
             },
 
