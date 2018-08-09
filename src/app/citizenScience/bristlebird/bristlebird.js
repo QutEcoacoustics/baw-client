@@ -1,6 +1,8 @@
 class BristlebirdAboutController {
     constructor($scope,
-                $location) {
+                $location,
+                backgroundImage,
+                paths) {
 
         $scope.citizenScientistName = "";
 
@@ -8,6 +10,8 @@ class BristlebirdAboutController {
             localStorage.setItem("citizenScientistName", $scope.citizenScientistName);
             $location.path("/citsci/bristlebird/listen");
         };
+
+        backgroundImage.currentBackground = paths.site.assets.backgrounds.citizenScience + "1.jpg";
     }
 }
 
@@ -125,7 +129,7 @@ class BristlebirdController {
             function (item, oldVal) {
                 if (item) {
                     self.showAudio(item.audioRecordingId, item.startTimeSeconds, item.endTimeSeconds);
-                    // for now, we cycle through backgrounds arbitrarily, based on the id of the sample number
+                    // for now, we cycle through backgrounds arbitrarily, based on the id of the sample
                     // todo: store background images as part of the dataset or cs project
                     var backgroundPath = self.backgroundPaths[parseInt(item.id) % (self.backgroundPaths.length - 1)];
                     backgroundImage.currentBackground = backgroundPath;
@@ -191,5 +195,7 @@ angular
         [
             "$scope",
             "$location",
+            "backgroundImage",
+            "conf.paths",
             BristlebirdAboutController
         ]);
