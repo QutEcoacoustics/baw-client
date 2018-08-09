@@ -20,9 +20,10 @@ angular
             "AudioRecording",
             "AnalysisResultFile",
             "UserProfile",
+            "ecosoundsAnalysisResults",
             function ($scope, $location, $routeParams, $http, $q, $timeout, _, moment, $url,
                       paths, constants, modelAssociations,
-                      Project, Site, AudioRecording, AnalysisResultFile, UserProfile) {
+                      Project, Site, AudioRecording, AnalysisResultFile, UserProfile, ecosoundsAnalysisResults) {
                 const extent0Key = "extent0",
                     extent1Key = "extent1",
                     selectedLaneKey = "lane";
@@ -206,10 +207,9 @@ angular
                             }
                         }
                     },
-                    // TODO: do not hard code
-                    availableResolutions: [0.02, 0.04, 0.08, 0.16, 0.2, 0.4, 0.6, 1, 2, 4, 6, 12, 24, 60],
-                    visualizationTileHeight: 256,
-                    visualizationYMax: 11025,
+                    availableResolutions: ecosoundsAnalysisResults.zooming.availableResolutions,
+                    visualizationTileHeight: ecosoundsAnalysisResults.zooming.frequencyBins,
+                    visualizationYMax: ecosoundsAnalysisResults.zooming.maxFrequency,
                     initialSelection: parameters.initialSelection
                 };
 

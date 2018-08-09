@@ -444,8 +444,6 @@ angular
                         tilesGroup.clipPath("url(#" + tilesGroupClipId + ")");
 
                         tilesGroup.on("mousedown", onMouseDown);
-                        tilesGroup.on("click", onClickNavigate);
-                        tilesGroup.on("dblclick", onDblClick);
 
                         mainMeasure = new MeasureWidget(
                             main.append("g"),
@@ -690,47 +688,14 @@ angular
                             labelBackgrounds.attr("y", labelY);
                         }
                     }
-
-                    /**
-                     * Filter out audio recordings.
-                     * Additionally cluster audio recordings together into contiguous blocks
-                     * to reduce the number of elements on the screen.
-                     * @returns {Array.<T>}
-                     */
-                    function filterAndClusterAudioRecordings() {
-                        // get the duration (in real time) equivalent to 1px
-                        //let visibleTime = xScale.invert(1);
-
-                        let filtered = itemsTree.search([
-                            self.visibleExtent[0],
-                            -Infinity,
-                            self.visibleExtent[1],
-                            +Infinity
-                        ]);
-
-
-                        // TODO: actually implement clustering
-                        // pre: split items into lane groups
-                        // pre: sort data in each group by start time
-                        // loop over each group
-                        //     start a new group
-                        //     loop over all items
-                        //         if next item's start - this item's end < visibleTime
-                        //            add to group
-                        //         else
-                        //            start a new group
-
-
-                        return filtered;
-                    }
-
                     /**
                      * Called when the extent is updated to repaint rects
                      */
                     function renderRects() {
 
                         // filter out data that is not in range
-                        var visibleItems = filterAndClusterAudioRecordings();
+                        var visibleItems = common
+                            .filterAndClusterAudioRecordings(itemsTree, self.visibleExtent);
 
                         // paint the visible rects
                         // update the visible rects
@@ -842,7 +807,7 @@ angular
                                 }
                             };
 
-                        let imageCheck = common.imageCheck.bind(null, self.resolution, imageVisibilityThreshold);
+                        let imageCheck = common.imageCheck.bind(null, () => self.resolution, imageVisibilityThreshold);
 
                         // debug only
                         tilesGroup.attr(debugGroupAttrs)
@@ -950,6 +915,9 @@ angular
                                 categoryChanged,
                                 zoomChanged: false
                             });
+
+                            // updates the controller - bind back
+                            dataFunctions.extentUpdate(self.visibleExtent, "DistributionDetail");
                         }
                         else {
                             //renderFocusGroup();
@@ -1273,57 +1241,6 @@ angular
 
                         updateFocusDate(false);
                         renderFocusGroup();
-                    }
-
-                    function onClickNavigate() {
-                        /*let now = $window.performance.now(),
-                            deltaTime = now - _isZooming,
-                            newPosition = d3.mouse(main.node()),
-                            deltaPosition = distance(newPosition, _hasMouseMoved);
-
-                        console.debug("distributionDetail::onClickNavigate: deltaTime, deltaPosition:", deltaTime, deltaPosition);
-
-                        // if the mouse hasn't moved
-                        if (deltaPosition < clickOrDragThresholdPixels) {
-                            console.debug("distributionDetail::onClickNavigate: **click** NOT drag", $window.performance.now());
-
-                            // and if we're not already tracking another click in a series for a double click
-                            if (!_navigateTimeoutPromise) {
-                                console.warn("distributionDetail::onClickNavigate::beforeTimeout:", $window.performance.now());
-                                // delay navigate for a set amount of time...
-                                // give the double click event handler time to cancel the navigate
-                                _navigateTimeoutPromise = $timeout(
-                                    //() => console.debug("distributionDetail::onClickNavigate::timeoutComplete:",
-                                    // $window.performance.now()),
-                                    () => {
-                                        // only navigate if the timeout was successful
-                                        //console.warn("distributionDetail::onClickNavigate::timeoutResolved: Navigating now!", $window.performance.now());
-                                        //common.navigateTo(tilingFunctions, visibleTiles, xScale, tilesGroup);
-                                    },
-                                    clickOrDblTimeoutMilliseconds);
-
-                                // make sure we keep original reference to $timeout promise (i.e. don't chain the then)
-                                _navigateTimeoutPromise.finally(() => {
-                                    // this may not matter if we're navigating away,
-                                    // but cleaning up state is responsible
-                                    _navigateTimeoutPromise = null;
-                                });
-                            }
-                        }
-
-                        _isZooming = null;
-                        _hasMouseMoved = null;*/
-                    }
-
-                    /**
-                     * This handler exists solely to cancel navigation on a single click
-                     * if it in fact turns out to be a double click.
-                     */
-                    function onDblClick() {
-                        console.debug("distributionDetail::onDblClick: Cancelling navigate");
-
-                        // cancel the navigate from a single click
-                        //$timeout.cancel(_navigateTimeoutPromise);
                     }
 
                     function updateFocusDate(fromMiddle) {

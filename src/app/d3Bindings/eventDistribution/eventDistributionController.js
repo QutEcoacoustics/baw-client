@@ -91,7 +91,8 @@ angular
                         $scope.options.visualizationDuration = humanized;
                         $scope.options.selectedLane = selectedLane;
                         $scope.options.currentResolution = self.detail.resolution.toFixed(2);
-                        $scope.options.currentZoom = self.detail.currentZoomValue.toFixed(0);
+                        // rescale the zoom the user sees to 60.0s/px (original: (self.detail.currentZoomValue)
+                        $scope.options.currentZoom = (60.0 / self.detail.resolution).toFixed(2);
                     }
 
                     if (!$scope.$root.$$phase) {

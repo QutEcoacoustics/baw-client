@@ -77,8 +77,11 @@
         </section>
 
         <section class="row" ng-if="!visualizeOptions.hideFixed">
-            <h3>Fixed resolution visualisation for {{ distributionOptions.visualizationDuration[0] }} in
-                {{ distributionOptions.functions.getCategoryName(distributionOptions.selectedLane) }}</h3>
+            <h3>24-hour scale visualisation for {{ distributionOptions.functions.getCategoryName(distributionOptions.selectedLane) }}
+                <small>
+                    (about {{ distributionOptions.visualizationDuration[0] }} visible)
+                </small>
+            </h3>
             <event-distribution-visualisation></event-distribution-visualisation>
         </section>
     </div>

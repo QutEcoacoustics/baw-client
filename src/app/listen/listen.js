@@ -159,12 +159,20 @@ angular
 
                                 $scope.startOffsetAbsolute = absoluteStartChunk.format("HH:mm:ss");
                                 $scope.endOffsetAbsolute = absoluteEndChunk.format("HH:mm:ss");
-                                $scope.downloadAnnotationsLink = AudioEvent.csvLink(
+
+                                // any other download links besides spectrogram and audio files
+                                $scope.downloadLinks = [
                                     {
-                                        recordingId: $scope.model.media.recording.id,
-                                        startOffset: $scope.model.media.commonParameters.startOffset,
-                                        endOffset: $scope.model.media.commonParameters.endOffset
-                                    });
+                                        text: "Annotations (CSV)",
+                                        title: "Download annotations seen on this screen",
+                                        url: AudioEvent.csvLink(
+                                            {
+                                                recordingId: $scope.model.media.recording.id,
+                                                startOffset: $scope.model.media.commonParameters.startOffset,
+                                                endOffset: $scope.model.media.commonParameters.endOffset
+                                            })
+                                    }
+                                ];
 
                             },
                             function mediaGetFailure() {

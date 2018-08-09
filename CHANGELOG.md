@@ -1,3 +1,82 @@
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/QutBioacoustics/baw-client/compare/v1.5.0...v1.5.1) (2018-03-27)
+
+
+### Bug Fixes
+
+* **visualize:** Final adjustments to tile paths ([6c95ee7](https://github.com/QutBioacoustics/baw-client/commit/6c95ee7))
+
+
+
+<a name="1.5.0"></a>
+# [1.5.0](https://github.com/QutBioacoustics/baw-client/compare/v1.4.0...v1.5.0) (2018-02-27)
+
+
+### Bug Fixes
+
+* **audioControls:** Simplified download component ([d6e6daf](https://github.com/QutBioacoustics/baw-client/commit/d6e6daf))
+* **visualize:** Two minor bugs in distributionVisualization fixed ([0f7cbbf](https://github.com/QutBioacoustics/baw-client/commit/0f7cbbf))
+
+### Features
+
+* **audioControls:** added audio download component ([ca7d54d](https://github.com/QutBioacoustics/baw-client/commit/ca7d54d))
+
+
+
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/QutBioacoustics/baw-client/compare/v1.2.0...v1.4.0) (2018-02-20)
+
+Visualize page updated to support new format of zooming FCS spectrogram tiles.
+
+### Bug Fixes
+
+* **visualise:** Fixes minor bug in tile cacher ([246850e](https://github.com/QutBioacoustics/baw-client/commit/246850e))
+* **visualize:** Interface enhancements for sqlite tiles ([7fbf0a1](https://github.com/QutBioacoustics/baw-client/commit/7fbf0a1))
+* **audioButtons:** fixed bug stopping play and pause buttons from working due to model functions be ([b206c52](https://github.com/QutBioacoustics/baw-client/commit/b206c52))
+* **background:** addresses comments to pull request ([67c86c6](https://github.com/QutBioacoustics/baw-client/commit/67c86c6))
+* **background:** removed rootscope dependency on bristlebird controller, which is unecessary afte ([a47642f](https://github.com/QutBioacoustics/baw-client/commit/a47642f))
+* **citizenScience:** disabled background watching for change in parent client rectangle because it wa ([25bf1c6](https://github.com/QutBioacoustics/baw-client/commit/25bf1c6))
+* **citizenScience:** full-window background is now fixed (doesnt scroll with other page content). ([bcc35f3](https://github.com/QutBioacoustics/baw-client/commit/bcc35f3))
+* **citizenScienceExamples:** dealing with example spectrograms that are wider than the window ([04416f7](https://github.com/QutBioacoustics/baw-client/commit/04416f7))
+* **positionLine:** css to make drag handle show outside containing element ([e1317e1](https://github.com/QutBioacoustics/baw-client/commit/e1317e1))
+* **positionLine:** improve code style and simplify. Update comments. ([4b652bc](https://github.com/QutBioacoustics/baw-client/commit/4b652bc))
+* **positionLine:** restored css so position line is not hidden ([39cab3b](https://github.com/QutBioacoustics/baw-client/commit/39cab3b))
+
+
+### Features
+
+* **audioButtons:** begin to componentize audio buttons play/pause and volume slider ([ccba02f](https://github.com/QutBioacoustics/baw-client/commit/ccba02f))
+* **audioButtons:** move components to directory under app, replacing existing volume directive ([ed0fc18](https://github.com/QutBioacoustics/baw-client/commit/ed0fc18))
+* **audioButtons:** previous and next buttons as components, routing for citizenScience ([5ea1b04](https://github.com/QutBioacoustics/baw-client/commit/5ea1b04))
+* **audioButtons:** simplify bindings, rename audioElement to audioElementModel ([5b80107](https://github.com/QutBioacoustics/baw-client/commit/5b80107))
+* **audioButtons:** swapped in audio button component to listen page. Added end of audio clip listen ([72380e4](https://github.com/QutBioacoustics/baw-client/commit/72380e4))
+* **background:** make background a service. Change to use queue of backgrounds to make it robust  ([9f824de](https://github.com/QutBioacoustics/baw-client/commit/9f824de))
+* **background:** replaced csBackground with general background component ([0edb954](https://github.com/QutBioacoustics/baw-client/commit/0edb954))
+* **citizenScience:** css to make spectro scale work ok with dark background ([b037c02](https://github.com/QutBioacoustics/baw-client/commit/b037c02))
+* **citizenScience:** service to store responses to local storage. Use static json file rather than gs ([d1f58bd](https://github.com/QutBioacoustics/baw-client/commit/d1f58bd))
+* **citizenScienceExamples:** Added checkbox to example to attach tags to audio sample ([fb7270d](https://github.com/QutBioacoustics/baw-client/commit/fb7270d))
+* **citizenScienceExamples:** binding to checkbox value to label status for current sample, plus checkbox styl ([ad193e6](https://github.com/QutBioacoustics/baw-client/commit/ad193e6))
+* **citizenScienceLabels:** center label audio player in window and style arrow ([b67b418](https://github.com/QutBioacoustics/baw-client/commit/b67b418))
+* **citizenScienceLabels:** implement selected label for examples  outside of label component ([35b6568](https://github.com/QutBioacoustics/baw-client/commit/35b6568))
+* **citizenScienceLabels:** modified annotation common functions to return promise that only resolves after  ([45770ec](https://github.com/QutBioacoustics/baw-client/commit/45770ec))
+* **citizenScienceLabels:** moved annotation media requests to labels component so they are batched ([b712a85](https://github.com/QutBioacoustics/baw-client/commit/b712a85))
+* **citizenScienceLabels:** moved examples outside of label component ([d9efa76](https://github.com/QutBioacoustics/baw-client/commit/d9efa76))
+* **citizenScienceLabels:** one examples component per label ([6276bca](https://github.com/QutBioacoustics/baw-client/commit/6276bca))
+* **citizenScienceRouting:** start refactor for new datasets and citi… ([0b21ca1](https://github.com/QutBioacoustics/baw-client/commit/0b21ca1))
+* **citizenScienceRouting:** start refactor for new datasets and citizen science api on server ([d0baa6c](https://github.com/QutBioacoustics/baw-client/commit/d0baa6c))
+* **csLabels:** added tick on thumb to show if selected. Refactored how selected status is bound ([b3b9175](https://github.com/QutBioacoustics/baw-client/commit/b3b9175))
+* **ngAudio:** added media sources to audio template ([4e81a30](https://github.com/QutBioacoustics/baw-client/commit/4e81a30))
+* **postionLine:** make position line draggable in library and citizen science ([20a0344](https://github.com/QutBioacoustics/baw-client/commit/20a0344))
+* **postionLine:** make position line draggable in library and citizen science. Closes #313. ([1209234](https://github.com/QutBioacoustics/baw-client/commit/1209234)), closes [#313](https://github.com/QutBioacoustics/baw-client/issues/313)
+
+### Other Notes
+
+* background component to transition between backgrounds ([287873d](https://github.com/QutBioacoustics/baw-client/commit/287873d))
+* background component to transition between backgrounds ([4ca3716](https://github.com/QutBioacoustics/baw-client/commit/4ca3716))
+* Commiting package-lock and explicitly adding support for node-sass ([1736d85](https://github.com/QutBioacoustics/baw-client/commit/1736d85))
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/QutBioacoustics/baw-client/compare/v1.1.1...v1.2.0) (2017-03-27)
 

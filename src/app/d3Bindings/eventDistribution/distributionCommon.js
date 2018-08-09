@@ -55,8 +55,40 @@ angular
 
                         return availableWidth;
                     },
-                    imageCheck(mainResolution, imageVisibilityThreshold, tile ) {
-                        let resolutionRatio = tile.resolution /  mainResolution;
+                    /**
+                     * Filter out audio recordings.
+                     * Additionally cluster audio recordings together into contiguous blocks
+                     * to reduce the number of elements on the screen.
+                     * @returns {Array.<T>}
+                     */
+                    filterAndClusterAudioRecordings(itemsTree, visibleExtent) {
+                    // get the duration (in real time) equivalent to 1px
+                    //let visibleTime = xScale.invert(1);
+
+                    let filtered = itemsTree.search([
+                        visibleExtent[0],
+                        -Infinity,
+                        visibleExtent[1],
+                        +Infinity
+                    ]);
+
+
+                    // TODO: actually implement clustering
+                    // pre: split items into lane groups
+                    // pre: sort data in each group by start time
+                    // loop over each group
+                    //     start a new group
+                    //     loop over all items
+                    //         if next item's start - this item's end < visibleTime
+                    //            add to group
+                    //         else
+                    //            start a new group
+
+
+                    return filtered;
+                },
+                imageCheck(mainResolution, imageVisibilityThreshold, tile ) {
+                        let resolutionRatio = tile.resolution /  mainResolution();
                         if (resolutionRatio < imageVisibilityThreshold) {
                             return null;
                         }

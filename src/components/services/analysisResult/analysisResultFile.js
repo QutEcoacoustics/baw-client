@@ -19,11 +19,19 @@ angular
             ],
             tiledTag: "Tile",
             longDurationAnalysisName: "Towsey.Acoustic",
-            zoomingSubFolder: "ZoomingTiles",
+            zoomingSubFolder: "",
             defaultResolution: 60,
             fileDateFormat: "YYYYMMDD-HHmmss[Z]",
             numberFormatter: function (number) {
                 return number;
+            },
+            zooming: {
+                directoryPrefix: "zooming/",
+                tileSuffix: "Tiles.sqlite3/",
+                availableResolutions: [0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 7.5, 15, 30, 60, 120, 240],
+                maxFrequency: 11025,
+                frequencyBins: 256,
+                tileDateFormat: "YYYYMMDDTHHmmss[Z]"
             }
         }
     )
@@ -39,7 +47,7 @@ angular
             function ($http, $url, moment, paths, casingTransformers, ear) {
                 var uuidRegex = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/;
 
-                function getLongDurationImage(audioRecording, imageType, subFolder) {
+                function getLongDurationImage(audioRecording, imageType, isZooming) {
                     if (!audioRecording) {
                         throw new Error("Expected an object for audioRecording");
                     }
@@ -65,14 +73,18 @@ angular
                     }
 
                     var fileFragment = "";
-                    fileFragment += ear.longDurationAnalysisName + "/";
-                    if (subFolder) {
-                        fileFragment += subFolder + "/";
+                    if (isZooming) {
+                        fileFragment += ear.zooming.directoryPrefix;
                     }
+                    fileFragment += ear.longDurationAnalysisName + "/";
                     fileFragment += audioRecording.uuid;
                     fileFragment += ear.fieldDelimiter;
+
                     fileFragment += moment.utc(+audioRecording.recordedDate).format(ear.fileDateFormat);
                     fileFragment += ear.fileDelimiter;
+                    if (isZooming) {
+                        fileFragment += ear.zooming.tileSuffix;
+                    }
                     fileFragment += imageType;
                     fileFragment += "." + ear.imageExtension;
 
@@ -88,6 +100,8 @@ angular
                     return url + "/" + fileFragment;
                 }
 
+                // Example:
+                // /analysis_jobs/system/results/234237/Towsey.Acoustic/b24460cf-e25e-44c9-9034-af9b0a1ddcbe_20121019-140000Z__Tiles.sqlite3/BLENDED.Tile_20121019T120000Z_120.png
                 function getLongDurationImageTile(audioRecording, tileDate, resolution, imageType, zooming) {
                     if (!tileDate || !angular.isDate(tileDate)) {
                         throw new Error("Expected a valid tile date argument");
@@ -101,18 +115,17 @@ angular
                         throw new Error("Expected a valid tile resolution");
                     }
 
-                    let subFolder = null;
                     if (zooming) {
-                        subFolder = ear.zoomingSubFolder;
                         imageType = ear.falseColorProfiles[2];
                     }
 
 
                     let ms = tileDate.getMilliseconds(),
                         msString = ms === 0 ? "" : (ms / 1000).toString().substring(1),
-                        tileDateString = moment.utc(+tileDate).format(ear.fileDateFormat),
+                        dateFormat = zooming ? ear.zooming.tileDateFormat : ear.fileDateFormat,
+                        tileDateString = moment.utc(+tileDate).format(dateFormat),
                         lastIndex = tileDateString.length - 1,
-                        url = getLongDurationImage(audioRecording, imageType, subFolder);
+                        url = getLongDurationImage(audioRecording, imageType, zooming);
 
                     tileDateString = tileDateString.substr(0, lastIndex ) + msString + tileDateString[lastIndex];
 
