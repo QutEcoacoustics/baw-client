@@ -178,6 +178,7 @@ module.exports = function (environment) {
                 "citizenScience": {
                     "listenId":"/citsci/bristlebird/listen/{sampleNum}",
                     "listen":"/citsci/bristlebird/listen",
+                    "responses": "/citsci/bristlebird/responses"
                 },
                 "demo": {
                     "d3": "/demo/d3",

@@ -306,6 +306,13 @@ angular.module("baw",
                     fullWidth: true,
                     reloadOnUrl: false
                 }).
+                when(convertRouteParams(paths.site.ngRoutes.citizenScience.responses), {
+                    templateUrl: "citizenScience/responses/responses.tpl.html",
+                    controller: "ResponsesController",
+                    title: "Citizen Science Responses",
+                    fullWidth: true,
+                    reloadOnUrl: false
+                }).
                 when("/citsci/ipswich", {
                     templateUrl: "citizenScience/ipswich/about.tpl.html",
                     controller: "IpswichAboutController",

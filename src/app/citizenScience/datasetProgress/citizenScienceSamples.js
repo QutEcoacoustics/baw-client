@@ -11,9 +11,6 @@ csSamples.factory("CsSamples", [
     function CsSamples(CitizenScienceCommon, $http, DatasetItem) {
 
         var self = this;
-        self.useLocalData = true;
-        self.sheets_api_url = "http://" + window.location.hostname + ":8081";
-        self.local_api_url = "/public/citizen_science";
 
         // the dataset id for this citizen science project
         // todo: integrate with settings for cs project
@@ -91,35 +88,6 @@ csSamples.factory("CsSamples", [
 
         self.setCurrentItem();
 
-
-        /**
-         * Constructs a url for the request by concatenating the arguments, joined by "/"
-         * and appending to the relevant baseURL. Allows experimenting with different sources
-         * for the data without changing everything
-         * @returns {string|*}
-         */
-        self.apiUrl = function () {
-            // convert to array
-            var base_url, url;
-            if (self.useLocalData) {
-                base_url = self.local_api_url;
-            } else {
-                base_url = self.sheets_api_url;
-            }
-            var args = Array.prototype.slice.call(arguments);
-
-            url = [base_url].concat(args).join("/");
-
-            if (self.useLocalData) {
-                url = url + ".json";
-            }
-
-            return url;
-        };
-
-
-
-
         /**
          * Adds a new page of items to the list of pages
          * @param thenSelectNewItem boolean; if true will update the current item to be the first item
@@ -144,10 +112,10 @@ csSamples.factory("CsSamples", [
                 if (thenSelectNewItem) {
                     self.currentIndex.page = nextPageNum - 1;
                     self.currentIndex.item = 0;
+                    self.setCurrentItem();
                 }
-                self.setCurrentItem();
-            });
 
+            });
 
         };
 
@@ -196,38 +164,6 @@ csSamples.factory("CsSamples", [
                 return Boolean(nextIndex);
             },
 
-            /**
-             * Gets all labels associated with the specified citizen science project
-             * @param project string
-             */
-            getLabels: function (project) {
-                var response = $http.get(self.apiUrl(
-                    "labels",
-                    project
-                ));
-
-                return response.then(function (response) {
-                    var labels = [];
-                    if (Array.isArray(response.data)) {
-                        labels = response.data;
-                    }
-
-                    return labels;
-                });
-            },
-
-            /**
-             * Gets all settings associated with the specified citizen science project
-             * @param project string
-             * @returns {HttpPromise}
-             */
-            getSettings: function (project) {
-                return $http.get(self.apiUrl(
-                    "settings",
-                    project
-                ));
-            },
-
             currentItem: function () {
                 return self.currentItem;
             }
@@ -237,5 +173,3 @@ csSamples.factory("CsSamples", [
         return self.publicFunctions;
 
     }]);
-
-

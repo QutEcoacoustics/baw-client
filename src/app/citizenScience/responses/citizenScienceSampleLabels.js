@@ -1,4 +1,5 @@
-var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels", ["bawApp.citizenScience.common"]);
+var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels",
+["bawApp.citizenScience.common", "baw"]);
 
 /**
  *
@@ -20,9 +21,12 @@ var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels", ["bawApp
 sampleLabels.factory("SampleLabels", [
     "CitizenScienceCommon",
     "$http",
-    function SampleLabels(CitizenScienceCommon, $http) {
+    "DatasetItem",
+    function SampleLabels(CitizenScienceCommon, $http, DatasetItem) {
 
         var self = this;
+
+        self.datasetId = 3;
 
         /**
          * checks the local storage for sampleLabels
@@ -192,11 +196,71 @@ sampleLabels.factory("SampleLabels", [
             clearLabels : function () {
                 self.data = {};
                 self.writeToStorage();
+            },
+
+            /**
+             * Combines the SampleLabels data with the samples and labels
+             * to return the full report of which labels have been applied to which samples
+             * @return {{}|*}
+             */
+            getData : function (labels) {
+
+                var d = self.data;
+
+                var keys = Object.keys(d);
+
+                if (keys.length === 0) {
+                    return d;
+                }
+
+                var currentKey = -1;
+
+                var addItemDetails = function (response) {
+
+                    var datasetItemId = keys[currentKey];
+
+                    d[datasetItemId] = {
+                        "sample" : response.data.data[0],
+                        "labels" : JSON.parse(JSON.stringify(d[datasetItemId]))
+                    };
+
+                    for (var labelId in d[datasetItemId].labels) {
+
+                        if (d[datasetItemId].labels.hasOwnProperty(labelId)) {
+
+                            d[datasetItemId].labels[labelId] = {
+                                "label": labels.find(l => true),
+                                "response": JSON.parse(JSON.stringify(d[datasetItemId].labels[labelId]))
+                            };
+
+                        }
+
+                    }
+
+                    requestNextItem();
+
+
+                };
+
+                var requestFailed = function (response) {
+                    requestNextItem();
+                };
+
+                var requestNextItem = function () {
+                    currentKey++;
+                    // recurse to do the next dataset item
+                    if (currentKey < keys.length) {
+                        DatasetItem.datasetItem(self.datasetId, keys[currentKey]).then(addItemDetails, requestFailed);
+                    }
+                };
+
+                // request the first dataset item and add it to the returned object.
+                // when that is finished it will do the next one.
+                requestNextItem();
+
+
+                return d;
             }
-
-
-
-
 
         };
 

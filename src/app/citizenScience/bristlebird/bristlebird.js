@@ -22,6 +22,7 @@ class BristlebirdController {
                 $location,
                 CitizenScienceCommon,
                 CsSamples,
+                CsLabels,
                 SampleLabels,
                 backgroundImage,
                 paths) {
@@ -102,7 +103,7 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-        CsSamples.getLabels($scope.csProject).then(function (labels) {
+        CsLabels.getLabels($scope.csProject).then(function (labels) {
             $scope.labels = labels;
         });
 
@@ -111,7 +112,7 @@ class BristlebirdController {
         /**
          * Retrieve settings about this citizen science project
          */
-        CsSamples.getSettings($scope.csProject).then(
+        CsLabels.getSettings($scope.csProject).then(
             function (settings) {
                 $scope.settings = settings;
                 if ($scope.settings.hasOwnProperty("sampleDuration")) {
@@ -175,7 +176,8 @@ angular
         "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
         "bawApp.components.background",
-        "bawApp.citizenScience.csSamples"
+        "bawApp.citizenScience.csSamples",
+        "bawApp.citizenScience.csLabels"
     ])
     .controller(
         "BristlebirdController",
@@ -185,6 +187,7 @@ angular
             "$location",
             "CitizenScienceCommon",
             "CsSamples",
+            "CsLabels",
             "SampleLabels",
             "backgroundImage",
             "conf.paths",
