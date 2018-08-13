@@ -157,6 +157,11 @@ csSamples.factory("CsSamples", [
                     self.requestPageOfItems(true);
                 }
 
+                // note: indexes are 0-indexed, paging is 1-indexed
+                var debug_message = {currentIndex: self.currentIndex, currentPageMeta: self.pages[self.pages.length - 1].meta.paging};
+                console.log("moved to next page: ", debug_message);
+
+
             },
 
             nextItemAvailable : function () {
