@@ -75,7 +75,12 @@ module.exports = function (environment) {
                 },
                 "datasetItem": {
                     "list": "/datasets/{datasetId}/items",
-                    "show": "/datasets/{datasetId}/items/{datasetItemId}"
+                    "show": "/datasets/{datasetId}/items/{datasetItemId}",
+                    "todo": "/datasets/{datasetId}/dataset_items/filter_todo"
+                },
+                "progressEvent": {
+                    "list": "/progress_events",
+                    "show": "/progress_events/{progressEventId}",
                 }
             },
             "links": {

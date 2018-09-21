@@ -6,9 +6,9 @@ var csSamples = angular.module("bawApp.citizenScience.csSamples", ["bawApp.citiz
  */
 csSamples.factory("CsSamples", [
     "CitizenScienceCommon",
-    "$http",
     "DatasetItem",
-    function CsSamples(CitizenScienceCommon, $http, DatasetItem) {
+    "ProgressEvent",
+    function CsSamples(CitizenScienceCommon, DatasetItem, ProgressEvent) {
 
         var self = this;
 
@@ -42,6 +42,7 @@ csSamples.factory("CsSamples", [
         /**
          * Sets the currentItem property based on the current item indexes,
          * with some checks to see if they are not out of bounds
+         * Sends a "viewed" progress event to the server
          */
         self.setCurrentItem = function () {
             if (self.currentIndex.page < self.pages.length &&
@@ -49,6 +50,7 @@ csSamples.factory("CsSamples", [
                 self.currentIndex.item > -1 &&
                 self.currentIndex.item < self.currentPageLength()) {
                 self.currentItem = self.pages[self.currentIndex.page].data[self.currentIndex.item];
+                ProgressEvent.createProgressEvent(self.currentItem.id, "viewed");
                 // check if there is another item after this, and if so, go to it.
                 if (!self.nextItemIndexes()) {
                     self.requestPageOfItems(false);
