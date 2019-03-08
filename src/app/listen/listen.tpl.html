@@ -91,6 +91,7 @@
                ng-audio-model="model.audioElement"
                ng-audio-sources="model.media.available"
                controls
+               on-played="model.media.trackProgress('played')"
                class="debug-ui hiddenAudioElement">
         </audio>
         <div id="listenEditContainer" ng-class="{disabled : singleEditDisabled()}">

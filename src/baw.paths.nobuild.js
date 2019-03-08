@@ -76,11 +76,12 @@ module.exports = function (environment) {
                 "datasetItem": {
                     "list": "/datasets/{datasetId}/items",
                     "show": "/datasets/{datasetId}/items/{datasetItemId}",
-                    "todo": "/datasets/{datasetId}/dataset_items/filter_todo"
+                    "todo": "/datasets/{datasetId}/dataset_items/next_for_me"
                 },
                 "progressEvent": {
                     "list": "/progress_events",
                     "show": "/progress_events/{progressEventId}",
+                    "createByDatasetItemAttributes": "datasets/{datasetId}/progress_events/audio_recordings/{audioRecordingId}/start/{startTimeSeconds}/end/{endTimeSeconds}"
                 }
             },
             "links": {

@@ -58,7 +58,6 @@ csSamples.factory("CsSamples", [
             } else {
                 self.currentItem = false;
             }
-
         };
 
 
@@ -173,6 +172,10 @@ csSamples.factory("CsSamples", [
 
             currentItem: function () {
                 return self.currentItem;
+            },
+
+            onPlayed: function () {
+                ProgressEvent.createProgressEvent(self.currentItem.id, "played");
             }
 
         };

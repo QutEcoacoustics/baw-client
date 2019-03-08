@@ -49,6 +49,8 @@ class BristlebirdController {
          */
         $scope.currentItem = CsSamples.currentItem;
 
+        $scope.onPlayed = CsSamples.onPlayed;
+
         // to be populated after getting samples from dataset
         $scope.media = null;
 
