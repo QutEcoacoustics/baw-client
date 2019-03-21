@@ -25,7 +25,8 @@ angular.module(
         "bawApp.models.userProfile",
         //"bawApp.models.authenticator",
         "bawApp.models.datasetItem",
-        "bawApp.models.progressEvent"
+        "bawApp.models.progressEvent",
+        "bawApp.models.question"
 
     ]);
 

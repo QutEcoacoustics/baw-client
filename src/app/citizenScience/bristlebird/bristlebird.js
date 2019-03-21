@@ -25,7 +25,8 @@ class BristlebirdController {
                 CsLabels,
                 SampleLabels,
                 backgroundImage,
-                paths) {
+                paths,
+                Question) {
 
         var self = this;
 
@@ -105,8 +106,13 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-        CsLabels.getLabels($scope.csProject).then(function (labels) {
-            $scope.labels = labels;
+        //TODO: replace hardcoded value with routed study id
+        self.study_id = 1;
+        Question.questions(self.study_id).then(x => {
+
+            console.log("questions loaded", x);
+            $scope.labels = x.data.data[0].questionData.labels;
+
         });
 
         SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
@@ -193,6 +199,7 @@ angular
             "SampleLabels",
             "backgroundImage",
             "conf.paths",
+            "Question",
             BristlebirdController
         ])
     .controller(

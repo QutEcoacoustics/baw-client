@@ -35,7 +35,8 @@ angular.module(
         "bawApp.services.userProfile",
         "bawApp.services.authenticator",
         "bawApp.services.datasetItem",
-        "bawApp.services.progressEvent"
+        "bawApp.services.progressEvent",
+        "bawApp.services.question",
 
     ]);
 

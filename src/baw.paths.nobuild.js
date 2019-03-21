@@ -82,7 +82,11 @@ module.exports = function (environment) {
                     "list": "/progress_events",
                     "show": "/progress_events/{progressEventId}",
                     "createByDatasetItemAttributes": "datasets/{datasetId}/progress_events/audio_recordings/{audioRecordingId}/start/{startTimeSeconds}/end/{endTimeSeconds}"
-                }
+                },
+                "question": {
+                    "list": "/studies/{studyId}/questions",
+                    "show": "/questions/{questionId}"
+                },
             },
             "links": {
                 "projects": "/projects",
