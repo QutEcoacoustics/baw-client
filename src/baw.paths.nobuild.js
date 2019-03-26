@@ -87,6 +87,11 @@ module.exports = function (environment) {
                     "list": "/studies/{studyId}/questions",
                     "show": "/questions/{questionId}"
                 },
+                "questionResponse": {
+                    "list": "/studies/{studyId}/responses",
+                    "show": "/responses/{responseId}",
+                    "create": "/responses"
+                },
             },
             "links": {
                 "projects": "/projects",

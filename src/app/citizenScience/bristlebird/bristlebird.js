@@ -107,27 +107,15 @@ class BristlebirdController {
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
         //TODO: replace hardcoded value with routed study id
-        self.study_id = 1;
-        Question.questions(self.study_id).then(x => {
-
+        $scope.study_id = 1;
+        Question.questions($scope.study_id).then(x => {
             console.log("questions loaded", x);
+            //TODO: update to allow multiple questions
             $scope.labels = x.data.data[0].questionData.labels;
-
+            SampleLabels.init(x.data.data[0].id, $scope.study_id);
         });
 
-        SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
-
-        /**
-         * Retrieve settings about this citizen science project
-         */
-        CsLabels.getSettings($scope.csProject).then(
-            function (settings) {
-                $scope.settings = settings;
-                if ($scope.settings.hasOwnProperty("sampleDuration")) {
-                    self.sampleDuration = $scope.settings.sampleDuration;
-                }
-            }
-        );
+        //SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
 
         /**
          * When the currentItem changes, change the current audio file / spectrogram to match it
@@ -143,9 +131,9 @@ class BristlebirdController {
                     var backgroundPath = self.backgroundPaths[parseInt(item.id) % (self.backgroundPaths.length - 1)];
                     backgroundImage.currentBackground = backgroundPath;
                     $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample(item.id));
-                    // record that this sample has been viewed
-                    SampleLabels.setValue(item.id);
-                    $scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
+
+                    // todo: check where this is used
+                    //$scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
                 }
             }, true);
 

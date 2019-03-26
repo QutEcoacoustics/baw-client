@@ -37,6 +37,7 @@ angular.module(
         "bawApp.services.datasetItem",
         "bawApp.services.progressEvent",
         "bawApp.services.question",
+        "bawApp.services.questionResponse",
 
     ]);
 

@@ -64,18 +64,6 @@ csLabels.factory("CsLabels", [
                 });
             },
 
-            /**
-             * Gets all settings associated with the specified citizen science project
-             * @param project string
-             * @returns {HttpPromise}
-             */
-            getSettings: function (project) {
-                return $http.get(self.apiUrl(
-                    "settings",
-                    project
-                ));
-            }
-
         };
 
         return self.publicFunctions;

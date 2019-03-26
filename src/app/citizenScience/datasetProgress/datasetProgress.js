@@ -24,7 +24,8 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                 }
 
                 $scope.$watch(() => CsSamples.currentItem(), (newVal, oldVal) => {
-                    SampleLabels.registerCurrentSampleId(CsSamples.currentItem().id);
+                    var newDatasetItemId = newVal.id;
+                    SampleLabels.submitAndClear(newDatasetItemId);
                 });
 
                 /**

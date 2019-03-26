@@ -2,18 +2,10 @@ var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels",
 ["bawApp.citizenScience.common", "baw"]);
 
 /**
- *
- *  Handles applying labels to and removing labels from samples
- *  The "join" between labels and samples is stored in JSON in the following structure
+ *  Keeps track of the labels applied to the current sample.
+ *  Sends as a data for a questionResponse in the following structure
  *  {
- *  'sampleId': {
- *    'labelId': {
- *      'value': [1,0],
- *      'timestamp': [timestamp]
- *      }
- *      ...
- *    }
- *    ...
+ *  'labelsIds': [1,3,4,7]
  *  }
  *
  *
@@ -21,59 +13,48 @@ var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels",
 sampleLabels.factory("SampleLabels", [
     "CitizenScienceCommon",
     "$http",
-    "DatasetItem",
-    function SampleLabels(CitizenScienceCommon, $http, DatasetItem) {
+    "QuestionResponse",
+    function SampleLabels(CitizenScienceCommon, $http, QuestionResponse) {
 
         var self = this;
 
-        self.datasetId = 3;
+        // the data for questionResponses. Each question will have a unique key
+        self.data = {};
+        self.hasResponse = false;
+
+
 
         /**
-         * checks the local storage for sampleLabels
+         * happens once when the questions are loaded by the citizen science study controller
+         * @param questionid int
+         * @param studyId int
          */
-        self.init = function (citizenScienceProject) {
+        self.init = function (questionId = false, studyId = false) {
 
-            self.localStorageKey = citizenScienceProject + "_sampleLabels";
-
-            var data = localStorage.getItem(self.localStorageKey);
-
-            if (data !== null) {
-                self.data = JSON.parse(data);
-            } else {
-                self.data = {};
+            if (studyId !== false) {
+                self.data.studyId = studyId;
             }
-
-            self.csProject = citizenScienceProject;
+            if (questionId !== false) {
+                self.data.questionId = questionId;
+            }
 
             return self.data;
 
         };
 
-        self.currentSampleId = 0;
-
         /**
-         * stringifies the object that acts as a join between samples and labels,
-         * then stores that json string in local storage
+         * Happens whenever we get a new dataset item
+         * @param newDatasetItemId int
          */
-        self.writeToStorage = function () {
-            var value = JSON.stringify(self.data);
-            localStorage.setItem(self.localStorageKey, value);
-        };
+        self.setup = function (newDatasetItemId) {
 
-
-        /**
-         * submits all responses to the server
-         * will merge with existing responses using timestamp of each response to save the latest
-         * @param sampleId
-         * @param labelId
-         * @param value
-         */
-        self.submitResponse = function () {
-
-            //TODO
+            self.data.datasetItemId = newDatasetItemId;
+            self.data.labels = new Set();
+            // hasResponse will be stay true if a value has been added and then removed
+            // until this init function is called.
+            self.hasResponse = false;
 
         };
-
 
         self.functions = {
 
@@ -86,18 +67,10 @@ sampleLabels.factory("SampleLabels", [
              * @param labelId
              * @returns {boolean}
              */
-            getValue : function (sampleId, labelId) {
+            getValue : function (labelId) {
 
-                if (sampleId === null) {
-                    sampleId = self.currentSampleId;
-                }
+                return self.data.labels.has(labelId);
 
-                if (self.data[sampleId] !== undefined) {
-                    if (self.data[sampleId][labelId] !== undefined) {
-                        return self.data[sampleId][labelId].value;
-                    }
-                }
-                return false;
             },
 
             /**
@@ -106,35 +79,35 @@ sampleLabels.factory("SampleLabels", [
              * @param labelId int; if omitted, we are not applying a label but noting that the sample has been viewed
              * @param value int [0,1]
              */
-            setValue : function (sampleId, labelId, value) {
-
-
-                if (sampleId === null) {
-                    sampleId = self.currentSampleId;
-                }
-
-                if (sampleId <= 0) {
-                    console.warn("bad sampleId supplied");
-                    return;
-                }
-
-                if (self.data[sampleId] === undefined) {
-                    self.data[sampleId] = {};
-                }
+            setValue : function (labelId, value) {
 
                 if (labelId !== undefined) {
-
-                    if (self.data[sampleId][labelId] === undefined) {
-                        self.data[sampleId][labelId] = {};
+                    self.hasResponse = true;
+                    if (value) {
+                        self.data.labels.add(labelId);
+                    } else {
+                        self.data.labels.delete(labelId);
                     }
-
-                    self.data[sampleId][labelId].value = value;
-                    self.data[sampleId][labelId].timestamp = new Date();
-
                 }
 
-                self.writeToStorage();
-                self.submitResponse(sampleId, labelId, value);
+            },
+
+            /**
+             * sends the response to the server using the questionResponse service
+             * and reinitialises with a new datasetItemId
+             * @param newDatasetItemId
+             */
+            submitAndClear : function (newDatasetItemId) {
+
+                if (self.data.datasetItemId) {
+                    // convert labels to data json
+                    self.data.data = {"labels": [...self.data.labels]};
+                    QuestionResponse.createQuestionResponse(self.data.questionId, self.data.datasetItemId, self.data.studyId, self.data.data);
+                }
+
+
+                // todo: is it better to do this in the promise success, incase it doesn't work? but then it should be linkedto the current dataset item shown.
+                self.setup(newDatasetItemId);
 
             },
 
@@ -145,121 +118,17 @@ sampleLabels.factory("SampleLabels", [
              * @param sampleId
              * @returns {*}
              */
-            getLabelsForSample : function (sampleId) {
+            getLabelsForSample : function () {
 
-                if (typeof(self.data[sampleId]) !== "object") {
-                    self.data[sampleId] = {};
-                }
-
-                return self.data[sampleId];
+                return [...self.data.labels];
             },
 
             /**
-             * Returns whether any responses have been recorded for a sample
+             * Returns whether any responses have been recorded for the current dataset item and question
              * @param sampleId
              */
-            hasResponse : function (sampleId = -1) {
-
-                if (sampleId < 0) {
-                    sampleId = self.currentSampleId;
-                }
-
-                if (!self.data.hasOwnProperty(sampleId)) {
-                    return false;
-                }
-
-                return (Object.keys(self.data[sampleId]).length > 0);
-
-            },
-
-            /**
-             * returns the number of samples that have responses
-             * If a sample is viewed, but no labels are applied, an element
-             * should be added to the data object as an empty object
-             */
-            getNumSamplesViewed : function () {
-                if (self.data !== undefined) {
-                    return Object.keys(self.data).length;
-                } else {
-                    return 0;
-                }
-
-            },
-
-            registerCurrentSampleId : function (currentSampleId) {
-                self.currentSampleId = currentSampleId;
-            },
-
-            /**
-             * Dev function to delete all applied labels
-             */
-            clearLabels : function () {
-                self.data = {};
-                self.writeToStorage();
-            },
-
-            /**
-             * Combines the SampleLabels data with the samples and labels
-             * to return the full report of which labels have been applied to which samples
-             * @return {{}|*}
-             */
-            getData : function (labels) {
-
-                var d = self.data;
-
-                var keys = Object.keys(d);
-
-                if (keys.length === 0) {
-                    return d;
-                }
-
-                var currentKey = -1;
-
-                var addItemDetails = function (response) {
-
-                    var datasetItemId = keys[currentKey];
-
-                    d[datasetItemId] = {
-                        "sample" : response.data.data[0],
-                        "labels" : JSON.parse(JSON.stringify(d[datasetItemId]))
-                    };
-
-                    for (var labelId in d[datasetItemId].labels) {
-
-                        if (d[datasetItemId].labels.hasOwnProperty(labelId)) {
-
-                            d[datasetItemId].labels[labelId] = {
-                                "label": labels.find(l => true),
-                                "response": JSON.parse(JSON.stringify(d[datasetItemId].labels[labelId]))
-                            };
-
-                        }
-
-                    }
-
-                    requestNextItem();
-
-
-                };
-
-                var requestFailed = function (response) {
-                    requestNextItem();
-                };
-
-                var requestNextItem = function () {
-                    currentKey++;
-                    // recurse to do the next dataset item
-                    if (currentKey < keys.length) {
-                        DatasetItem.datasetItem(self.datasetId, keys[currentKey]).then(addItemDetails, requestFailed);
-                    }
-                };
-
-                // request the first dataset item and add it to the returned object.
-                // when that is finished it will do the next one.
-                requestNextItem();
-
-
-                return d;
+            hasResponse : function () {
+                return self.hasResponse;
             }
 
         };

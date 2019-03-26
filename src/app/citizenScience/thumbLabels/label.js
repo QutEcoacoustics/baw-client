@@ -18,7 +18,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                 var self = this;
 
                 $scope.isSelected = function() {
-                    return SampleLabels.getValue(null, self.label.id);
+                    return SampleLabels.getValue(self.label.id);
                 };
 
                 $scope.isShowingDetails = function () {
@@ -43,14 +43,14 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                  * @param isSelected Boolean
                  */
                 self.onToggleSelected = function (isSelected) {
-                    SampleLabels.setValue(null, self.label.id, isSelected);
+                    SampleLabels.setValue(self.label.id, isSelected);
                 };
 
             }],
         bindings: {
 
             label: "=",
-            currentDetailsLabelId: "=",
+            currentDetailsLabelId: "="
 
         }
     });
