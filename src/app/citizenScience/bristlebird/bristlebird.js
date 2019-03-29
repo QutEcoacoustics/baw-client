@@ -132,8 +132,6 @@ class BristlebirdController {
                     backgroundImage.currentBackground = backgroundPath;
                     $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample(item.id));
 
-                    // todo: check where this is used
-                    //$scope.numSamplesViewed = SampleLabels.getNumSamplesViewed();
                 }
             }, true);
 
@@ -144,19 +142,18 @@ class BristlebirdController {
          * is initialised to null, then reverse bound bound from the data progress component
 
          *TODO: make this work with non-url progress
-
-        $scope.nextLink = null;
+         */
+        //$scope.nextLink = null;
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
-            var uriNext = $scope.nextLink();
-            if (uriNext && $scope.audioElementModel.autoPlay) {
-                console.info("Changing page to next sample...");
-                $scope.$apply(function () {
-                    $location.url(uriNext);
-                });
+
+            console.log(event);
+
+            if (event.targetScope.audioElementModel === $scope.audioElementModel && $scope.audioElementModel.autoPlay) {
+                $scope.$broadcast("autoNextTrigger");
             }
         });
 
-         */
+
 
         self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
 

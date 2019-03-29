@@ -42,20 +42,6 @@ sampleLabels.factory("SampleLabels", [
 
         };
 
-        /**
-         * Happens whenever we get a new dataset item
-         * @param newDatasetItemId int
-         */
-        self.setup = function (newDatasetItemId) {
-
-            self.data.datasetItemId = newDatasetItemId;
-            self.data.labels = new Set();
-            // hasResponse will be stay true if a value has been added and then removed
-            // until this init function is called.
-            self.hasResponse = false;
-
-        };
-
         self.functions = {
 
             init : self.init,
@@ -94,20 +80,31 @@ sampleLabels.factory("SampleLabels", [
 
             /**
              * sends the response to the server using the questionResponse service
-             * and reinitialises with a new datasetItemId
-             * @param newDatasetItemId
              */
-            submitAndClear : function (newDatasetItemId) {
+            sendResponse : function (notes) {
 
                 if (self.data.datasetItemId) {
                     // convert labels to data json
                     self.data.data = {"labels": [...self.data.labels]};
+                    if (notes) {
+                        self.data.data.notes = notes;
+                    }
                     QuestionResponse.createQuestionResponse(self.data.questionId, self.data.datasetItemId, self.data.studyId, self.data.data);
                 }
 
+            },
 
-                // todo: is it better to do this in the promise success, incase it doesn't work? but then it should be linkedto the current dataset item shown.
-                self.setup(newDatasetItemId);
+            /**
+             * empties the data and updates the datasetItemId
+             * @param newDatasetItemId
+             */
+            reset : function (newDatasetItemId) {
+
+                self.data.datasetItemId = newDatasetItemId;
+                self.data.labels = new Set();
+                // hasResponse will be stay true if a value has been added and then removed
+                // until this init function is called.
+                self.hasResponse = false;
 
             },
 

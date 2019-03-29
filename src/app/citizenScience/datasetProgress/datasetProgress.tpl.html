@@ -1,14 +1,15 @@
 
         <div class="btn-group citSci-next">
-            <button ng-if="nextItem"
+            <button ng-if="!isRoutedSample"
                     class="btn btn-default"
                     ng-disabled="nextDisabled()"
                     ng-click="nextItem()"
                     title="Next Clip">
                 {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
             </button>
-            <a ng-if="!nextItem"
+            <a ng-if="isRoutedSample"
                href="/citsci/bristlebird/listen/"
+               ng-click="nextItem()"
                class="btn btn-default"
                title="Next Clip">
                 {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>

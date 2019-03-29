@@ -14,18 +14,30 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
 
                 if ($routeParams.sampleNum) {
                     CsSamples.selectById($routeParams.sampleNum);
-                    $scope.nextItem = false;
+                    $scope.nextItem = function () {
+                        SampleLabels.sendResponse("using_routed");
+                        return true;
+                    };
+                    $scope.isRoutedSample = true;
                 } else {
                     CsSamples.init();
                     $scope.nextItem = function () {
-                        console.log("next item");
+                        SampleLabels.sendResponse();
                         CsSamples.nextItem();
                     };
+                    $scope.isRoutedSample = false;
                 }
+
+
 
                 $scope.$watch(() => CsSamples.currentItem(), (newVal, oldVal) => {
                     var newDatasetItemId = newVal.id;
-                    SampleLabels.submitAndClear(newDatasetItemId);
+                    SampleLabels.reset(newDatasetItemId);
+                });
+
+                $scope.$on("autoNextTrigger", function (x) {
+                    SampleLabels.sendResponse("autoplay");
+                    CsSamples.nextItem();
                 });
 
                 /**
