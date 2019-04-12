@@ -55,20 +55,45 @@ class BristlebirdController {
         // to be populated after getting samples from dataset
         $scope.media = null;
 
-        $scope.onboardingSteps = [
+
+        // load populate the onboarding steps as they are loaded.
+        $scope.onboarding = {};
+
+        $scope.onboarding.steps = [
             {
-                element: document.querySelector(".citizen-science .spectrogram-wrapper"),
+                element: ".citizen-science .spectrogram-wrapper",
                 intro: "This shows a picture of the audio as a spectrogram."
             },
             {
-                element: document.querySelector("dataset-progress"),
+                element: "dataset-progress button",
                 intro: "This shows how many clips you have listened do, and lets you navigate between clips"
             },
             {
-                element: document.querySelector(".autoplay"),
+                element: ".autoplay",
                 intro: "Switch this on to automatically progress to the next clip and play it."
+            },
+            {
+                element: ".citizen-science-thumb",
+                intro: "See if you can identify the events that are in these small spectrogram thumbnails in the audio clip above. " +
+                "Tap the thumbnail for a closer look and to listen to the audio."
+            },
+            {
+                element: ".label-check a",
+                intro: "Use the checkbox to indicate if the this kind of even occurs in the audio clip above",
+
             }
         ];
+
+        $scope.onboarding.callbacks = {
+            onBeforeStart: function () {
+                $scope.$broadcast("show-label-details");
+            },
+            onExit: function () {
+                $scope.$broadcast("hide-label-details");
+            }
+        };
+
+
 
         /**
          * Labels that the user can select.

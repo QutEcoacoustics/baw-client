@@ -22,6 +22,18 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                 $scope.currentDetailsLabelId = {value: -1};
 
+                $scope.$on("show-label-details", () =>  {
+                    if ($scope.currentDetailsLabelId.value < 0) {
+                        $scope.currentDetailsLabelId.value = self.labels[0].id;
+                        $scope.$apply();
+                    }
+                });
+
+                $scope.$on("hide-label-details", () =>  {
+                    $scope.currentDetailsLabelId.value = -1;
+                    $scope.$apply();
+                });
+
                 $scope.examplesPosition = "0px";
 
                 $scope.$watch(function () {

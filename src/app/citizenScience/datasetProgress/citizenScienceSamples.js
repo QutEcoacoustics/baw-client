@@ -162,7 +162,6 @@ csSamples.factory("CsSamples", [
                 var debug_message = {currentIndex: self.currentIndex, currentPageMeta: self.pages[self.pages.length - 1].meta.paging};
                 console.log("moved to next page: ", debug_message);
 
-
             },
 
             nextItemAvailable : function () {

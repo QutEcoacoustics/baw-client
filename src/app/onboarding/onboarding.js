@@ -1,42 +1,47 @@
 /**
- * Wrapper for the angular-introjs directive with info-button and consistent styling
+ * Wrapper for the angular-introjs directive with info-button, consistent styling, onBeforeStart callback
  */
 
-angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common"])
+angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", "angular-intro"])
     .component("onboarding", {
         templateUrl: "onboarding/infoButton.tpl.html",
         bindings: {
-            steps: "=steps",
-            options: "=options"
+            config: "=",
         },
         controller: [
             "$scope",
-            function ($scope) {
+            "ngIntroService",
+            "$timeout",
+            function ($scope, ngIntroService, $timeout) {
 
-                //var self = this;
+                var self = this;
 
-                $scope.CompletedEvent = function (scope) {
-                    console.log("Completed Event called");
-                };
+                // set all the callbacks
 
-                $scope.ExitEvent = function (scope) {
-                    console.log("Exit Event called");
-                };
+                Object.keys(self.config.callbacks).forEach((cb) => {
+                    if (angular.isFunction(ngIntroService[cb])) {
+                        ngIntroService[cb](self.config.callbacks[cb]);
+                    } else {
+                        console.log("no function", cb);
+                    }
 
-                $scope.ChangeEvent = function (targetElement, scope) {
-                    console.log("Change Event called");
-                    console.log(targetElement);  //The target element
-                    console.log(this);  //The IntroJS object
-                };
+                });
 
-                $scope.BeforeChangeEvent = function (targetElement, scope) {
-                    console.log("Before Change Event called");
-                    console.log(targetElement);
-                };
+                $scope.launchTour = function launchTour () {
 
-                $scope.AfterChangeEvent = function (targetElement, scope) {
-                    console.log("After Change Event called");
-                    console.log(targetElement);
+                  console.log("launchtour");
+
+                    // it does not seem possible to modify the elements in the steps list
+                    // after the intro has started. If an intro step include an element that is hidden when
+                    // the intro starts, then that step will not display correctly. Dom manipulation must be finished
+                    // before the introJS initialises (which is before any introJs callback.
+                    if (angular.isFunction(self.config.callbacks.onBeforeStart)) {
+                        self.config.callbacks.onBeforeStart.call();
+                        $timeout(() => {ngIntroService.start();});
+                    } else {
+                        ngIntroService.start();
+                    }
+
                 };
 
                 this.introOptionsDefaults = {
@@ -50,20 +55,9 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common"])
                     doneLabel: "Thanks"
                 };
 
-
-                $scope.introOptions = Object.assign({}, this.introOptionsDefaults, this.options);
-
-                if (Array.isArray(this.steps)) {
-
-                        this.steps = this.steps.map(function (step) {
-                            if (typeof step.element === "string") {
-                                step.element = document.querySelector(step.element);
-                            }
-                            return step;
-                        });
-
-                    $scope.introOptions.steps = this.steps;
-                }
+                var options = Object.assign({}, this.introOptionsDefaults, this.options);
+                options.steps = self.config.steps;
+                ngIntroService.setOptions(options);
 
             }]
     });

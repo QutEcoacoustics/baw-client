@@ -32,7 +32,7 @@
     "angular-ui-ace": "bower",
 
     "c3": "git://github.com/masayuki0812/c3.git#98769492d07b6103bfc30a0254ccb1e1ec1cca50",
-    "angular-intro.js": "~3.0.1"
+    "angular-intro.js": "~3.1.2"
   },
   "dependencies": {},
   "private": true,
