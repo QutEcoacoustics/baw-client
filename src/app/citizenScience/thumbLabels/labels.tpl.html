@@ -1,13 +1,16 @@
 
-<div class="thumb-labels-container">
+<ng-if true>
+    <div class="thumb-labels-container">
 
-    <citizen-science-label
-            ng-repeat="label in $ctrl.labels"
-            class="label-thumbs"
-            ng-if="label.examples.length"
-            label="label"
-            current-details-label-id="currentDetailsLabelId"
+        <citizen-science-label
+                ng-repeat="label in $ctrl.questionData.labels"
+                class="label-thumbs"
+                ng-if="label.examples.length"
+                label="label"
+                current-details-label-id="currentDetailsLabelId"
 
-    ></citizen-science-label>
+        ></citizen-science-label>
 
-</div>
+    </div>
+</ng-if>
+

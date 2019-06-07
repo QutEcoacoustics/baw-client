@@ -22,11 +22,13 @@ class BristlebirdController {
                 $location,
                 CitizenScienceCommon,
                 CsSamples,
-                CsLabels,
                 SampleLabels,
                 backgroundImage,
                 paths,
-                Question) {
+                Question,
+                $routeParams,
+                StudyService
+    ) {
 
         var self = this;
 
@@ -34,15 +36,7 @@ class BristlebirdController {
          * The name of the css project as it appears in the dataset definition
          * @type {string}
          */
-        $scope.csProject = "ebb";
-
-        /**
-         * The duration of each audio sample
-         * currently all samples will be the same duration (not set per sample in the dataset)
-         * @type {number}
-         */
-        self.sampleDuration = 25;
-
+        $scope.csProject = $routeParams.studyName;
 
         /**
          * The current sample object, including sample id
@@ -55,8 +49,6 @@ class BristlebirdController {
         // to be populated after getting samples from dataset
         $scope.media = null;
 
-
-        // load populate the onboarding steps as they are loaded.
         $scope.onboarding = {};
 
         $scope.onboarding.steps = [
@@ -94,37 +86,7 @@ class BristlebirdController {
         };
 
 
-
-        /**
-         * Labels that the user can select.
-         * applies one or more tags which are not shown to the user.
-         * example response from server
-         *   [{
-         *      "tags": ["ebb", "type1"],
-         *      "name": "Eastern Bristlebird",
-         *      "examples": [{
-         *          "annotationId": 124730
-         *      }, {
-         *          "annotationId": 124727
-         *      }, {
-         *           "annotationId": 98378
-         *       }]
-         *   },
-         *   {
-         *       "tags": ["ground_parrot", "type1"],
-         *       "name": "Ground Parrot",
-         *       "examples": [{
-         *           "annotationId": 124622
-         *       }]
-         *   },
-         *   {
-         *       "tags": ["quoll", "type1"],
-         *       "label": "Spotted Quoll",
-         *       "examples": []
-         *   }];
-         */
-
-        $scope.labels = [];
+        $scope.questionData = {};
 
         // the model passed to ngAudio
         $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
@@ -132,13 +94,27 @@ class BristlebirdController {
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
         //TODO: replace hardcoded value with routed study id
-        $scope.study_id = 1;
-        Question.questions($scope.study_id).then(x => {
-            console.log("questions loaded", x);
-            //TODO: update to allow multiple questions
-            $scope.labels = x.data.data[0].questionData.labels;
-            SampleLabels.init(x.data.data[0].id, $scope.study_id);
+
+        StudyService.studyByName($routeParams.studyName).then(x => {
+            var studies = x.data.data;
+            if (studies.length === 0) {
+                console.warn("No study " + $routeParams.studyName + " exists");
+                return;
+            } else if (studies.length > 1) {
+                console.warn("More than one study found. Using the first one");
+            }
+            $scope.study = studies[0];
+            $scope.study_id = $scope.study.id;
+
+            Question.questions($scope.study_id).then(x => {
+                console.log("questions loaded", x);
+                //TODO: update to allow multiple questions
+                $scope.questionData = x.data.data[0].questionData;
+
+                SampleLabels.init(x.data.data[0], $scope.study_id);
+            });
         });
+
 
         //SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
 
@@ -194,8 +170,7 @@ angular
         "bawApp.components.citizenScienceThumbLabels",
         "bawApp.components.onboarding",
         "bawApp.components.background",
-        "bawApp.citizenScience.csSamples",
-        "bawApp.citizenScience.csLabels"
+        "bawApp.citizenScience.csSamples"
     ])
     .controller(
         "BristlebirdController",
@@ -205,11 +180,12 @@ angular
             "$location",
             "CitizenScienceCommon",
             "CsSamples",
-            "CsLabels",
             "SampleLabels",
             "backgroundImage",
             "conf.paths",
             "Question",
+            "$routeParams",
+            "Study",
             BristlebirdController
         ])
     .controller(

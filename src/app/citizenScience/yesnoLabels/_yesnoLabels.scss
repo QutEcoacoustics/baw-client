@@ -1,0 +1,141 @@
+$thumb-height: 100;
+
+$triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="20px" version="1.1"><defs/><g><path d="M 0 20 L 20 0 L 40 20 Z" fill="#000000" pointer-events="none"/></g></svg>';
+
+.thumb-labels-container {
+  text-align: center;
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  position: relative;
+
+  /* flexbox layout of thumbs */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .citizen-science-thumb-label {
+
+    position: relative;
+    z-index: 51;
+
+    &.active {
+
+      /* make room under the row for the info */
+      padding-bottom: 400px;
+
+      .citizen-science-thumb {
+
+        outline: rgba(255, 255, 255, 0.5) solid 2px;
+
+        &:after {
+          content: url("data:image/svg+xml;utf8,#{$triangle}");
+          position: absolute;
+          bottom: -15px;
+          z-index: 52;
+          left: 0;
+          right: 0;
+          opacity: 0.9
+        }
+
+      }
+
+    }
+
+    .citizen-science-thumb {
+      position: relative;
+      height: $thumb-height + px;
+      margin: 5px;
+
+      img {
+        height: 100%;
+      }
+
+      .thumb-tick {
+        position: absolute;
+        top:5px;
+        right:8px;
+        color: #fff;
+        text-shadow: 1px 1px 2px #000;
+      }
+
+    }
+
+    citizen-science-label-examples {
+
+      position: absolute;
+      z-index: 50;
+      box-shadow: 5px 5px 10px 10px rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 5px;
+      top: ($thumb-height + 10) + px;
+
+      .citizen-science-thumb-example {
+
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-evenly;
+
+        .img {
+          flex-grow:1;
+          background-size: cover;
+          background-position: center center;
+          box-shadow: 0px 0px 1px 10px rgba(0, 0, 0, 0.5) inset;
+          max-width: 60%;
+          min-width: 30%;
+        }
+
+        @media (max-width: 520px) {
+          .img {
+            display: none;
+          }
+        }
+
+        annotation-item {
+
+          padding-left: 20px;
+          padding-right: 10px;
+
+        }
+
+      }
+
+    }
+
+  }
+
+  .label-examples-annotations {
+
+    h3 {
+      text-align: center;
+      font-size: 1.2em;
+      max-width: 350px;
+      padding-left: 50px;
+      padding-right: 50px;
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+
+      span {
+        max-width: calc(100% - 100px);
+      }
+
+      .arrow {
+        font-size: 1.4em;
+        position: absolute;
+
+        &.prev {
+          left: 0px;
+        }
+
+        &.next {
+          right: 0px;
+        }
+
+      }
+
+    }
+
+  }
+
+}

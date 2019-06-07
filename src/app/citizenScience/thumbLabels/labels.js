@@ -37,9 +37,13 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                 $scope.examplesPosition = "0px";
 
                 $scope.$watch(function () {
-                    return self.labels;
+                    return self.questionData;
                 }, function (newVal, oldVal) {
-                    self.fetchAnnotationData(newVal);
+                    if (newVal !== null && typeof newVal === "object") {
+                        if (newVal.hasOwnProperty("labels")) {
+                            self.fetchAnnotationData();
+                        }
+                    }
                 });
 
                 /**
@@ -48,9 +52,10 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                  * full "anotation" object that contains the AudioEvent model as well Media model
                  * @param labels Object
                  */
-                self.fetchAnnotationData = function (labels) {
+                self.fetchAnnotationData = function () {
 
                     // transform labels structure into a single array of annotationsIds
+                    var labels = self.questionData.labels;
                     var annotationIds = [].concat.apply([], labels.map(l => l.examples)).map(e => e.annotationId);
 
                     if (annotationIds.length === 0) {
@@ -92,7 +97,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                             // add annotations back into labels object
                             response.annotations.forEach(function (annotation) {
-                               self.labels.forEach(function (l) {
+                               self.questionData.labels.forEach(function (l) {
                                    l.examples.forEach(function (e) {
                                        if (e.annotationId === annotation.id) {
                                            e.annotation = annotation;
@@ -101,7 +106,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                                });
                             });
 
-                            console.log(self.labels);
 
                         }, function (httpResponse) {
                                 console.error("Failed to load citizen science example item response.", httpResponse);
@@ -109,6 +113,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                 };
             }],
         bindings: {
-            labels: "=",
+            questionData: "=",
         }
     });

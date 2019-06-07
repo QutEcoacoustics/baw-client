@@ -1,37 +1,14 @@
+/* This controls the screen where all responses are listed for admin */
 class ResponsesController {
     constructor($scope,
                 SampleLabels,
-                CsLabels) {
+                Question) {
 
         var self = this;
 
-        SampleLabels.init("ebb");
+        // todo: display table of responses.
 
-        self.labels = false;
-
-        CsLabels.getLabels("ebb").then(labels => {
-            $scope.responseData = SampleLabels.getData(labels);
-            self.labels = labels;
-        });
-
-
-
-
-        $scope.$watch("responseData", function (newVal, oldVal) {
-            $scope.responseDataString = JSON.stringify(newVal, null, 4);
-        },true);
-
-        $scope.deleteResponses = function () {
-            if (confirm("Are you sure you want to delete all the responses?")) {
-                SampleLabels.clearLabels();
-                CsLabels.getLabels("ebb").then(labels => {
-                    $scope.responseData = SampleLabels.getData(labels);
-                    self.labels = labels;
-                });
-            }
-        };
-
-
+        console.log(self);
 
 
     }
@@ -40,14 +17,13 @@ class ResponsesController {
 
 angular
     .module("bawApp.citizenScience.responses", [
-        "bawApp.citizenScience.sampleLabels",
-        "bawApp.citizenScience.csLabels"
+        "bawApp.citizenScience.sampleLabels"
     ])
     .controller(
         "ResponsesController",
         [
             "$scope",
             "SampleLabels",
-            "CsLabels",
+            "Question",
             ResponsesController
         ]);

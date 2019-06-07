@@ -21,6 +21,8 @@ sampleLabels.factory("SampleLabels", [
         // the data for questionResponses. Each question will have a unique key
         self.data = {};
         self.hasResponse = false;
+        self.allowEmpty = true;
+        self.allowMulti = true;
 
 
 
@@ -29,14 +31,28 @@ sampleLabels.factory("SampleLabels", [
          * @param questionid int
          * @param studyId int
          */
-        self.init = function (questionId = false, studyId = false) {
+        self.init = function (question = false, studyId = false) {
 
             if (studyId !== false) {
                 self.data.studyId = studyId;
             }
-            if (questionId !== false) {
-                self.data.questionId = questionId;
+            if (question !== false) {
+                self.data.questionId = question.id;
+
+                if (question.data.hasOwnProperty("allowEmpty")) {
+                    self.allowEmpty = question.data.allowEmpty;
+                }
+
+                if (question.data.hasOwnProperty("allowMulti")) {
+                    self.allowMulti = question.data.allowMulti;
+                }
+                if (question.data.labels.length === 1) {
+                    // for binary yes/no there is only one label, therefore no multi select
+                    self.allowMulti = false;
+                }
+
             }
+
 
             return self.data;
 
@@ -70,6 +86,9 @@ sampleLabels.factory("SampleLabels", [
                 if (labelId !== undefined) {
                     self.hasResponse = true;
                     if (value) {
+                        if (!self.allowMulti) {
+                            self.data.labels.clear();
+                        }
                         self.data.labels.add(labelId);
                     } else {
                         self.data.labels.delete(labelId);

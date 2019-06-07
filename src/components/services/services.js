@@ -38,6 +38,7 @@ angular.module(
         "bawApp.services.progressEvent",
         "bawApp.services.question",
         "bawApp.services.questionResponse",
+        "bawApp.services.study"
 
     ]);
 

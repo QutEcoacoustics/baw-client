@@ -24,7 +24,7 @@ angular
                 };
 
                 resource.question = function getQuestion(questionId) {
-                    var url = $url.formatUri(paths.api.routes.datasetItem.showAbsolute, {questionId: questionId});
+                    var url = $url.formatUri(paths.api.routes.question.showAbsolute, {questionId: questionId});
                     return $http.get(url).then(x => QuestionModel.makeFromApi(x));
                 };
 

@@ -47,22 +47,11 @@
             </nav>
 
 
-            <citizen-science-labels labels="labels"
-                                    samples="samples"
-                                    current-sample-num="currentSampleNum"
-                                    cs-project="csProject"></citizen-science-labels>
 
 
-            <!-- text-only labels
-            <citizen-science-text-labels labels="labels"
-                                    samples="samples"
-                                    current-sample-num="currentSampleNum"
-                                    cs-project="csProject"></citizen-science-labels>
+            <citizen-science-labels ng-if="questionData.labels.length > 1" question-data="questionData"></citizen-science-labels>
 
-            -->
-            <!-- examples not used as labels
-            <citizen-science-examples labels="labels"></citizen-science-examples>
-            -->
+
 
         </div> <!-- #main -->
     </div> <!-- #main-container -->

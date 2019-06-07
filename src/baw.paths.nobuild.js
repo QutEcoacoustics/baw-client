@@ -92,6 +92,11 @@ module.exports = function (environment) {
                     "show": "/responses/{responseId}",
                     "create": "/responses"
                 },
+                "study": {
+                    "list": "/studies",
+                    "show": "/studies/{studyId}",
+                    "filter": "/studies/filter"
+                },
             },
             "links": {
                 "projects": "/projects",
@@ -191,9 +196,9 @@ module.exports = function (environment) {
                 "libraryItem": "/library/{recordingId}/audio_events/{audioEventId}",
                 "visualize": "/visualize",
                 "citizenScience": {
-                    "listenId":"/citsci/bristlebird/listen/{sampleNum}",
-                    "listen":"/citsci/bristlebird/listen",
-                    "responses": "/citsci/bristlebird/responses"
+                    "listenId":"/citsci/{studyName}/listen/{sampleNum}",
+                    "listen":"/citsci/{studyName}/listen",
+                    "responses": "/citsci/{studyName}/responses"
                 },
                 "demo": {
                     "d3": "/demo/d3",

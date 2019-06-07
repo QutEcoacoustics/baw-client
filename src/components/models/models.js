@@ -27,7 +27,8 @@ angular.module(
         "bawApp.models.datasetItem",
         "bawApp.models.progressEvent",
         "bawApp.models.question",
-        "bawApp.models.questionResponse"
+        "bawApp.models.questionResponse",
+        "bawApp.models.study"
 
     ]);
 
