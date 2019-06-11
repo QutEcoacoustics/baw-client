@@ -4,7 +4,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
         "bawApp.components.citizenScienceLabelCheck"
     ])
     .component("citizenScienceLabelExamples", {
-        templateUrl: "citizenScience/thumbLabels/examples.tpl.html",
+        templateUrl: "citizenScience/labels/thumbLabels/examples.tpl.html",
         transclude: true,
         controller: [
             "$scope",

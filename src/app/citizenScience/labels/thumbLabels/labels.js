@@ -1,22 +1,23 @@
 angular.module("bawApp.components.citizenScienceThumbLabels",
     [
-        "bawApp.components.citizenScienceThumbLabels.label"
+        "bawApp.components.citizenScienceThumbLabels.label",
+        "bawApp.citizenScience.sampleLabels"
     ])
-    .component("citizenScienceLabels", {
-        templateUrl: "citizenScience/thumbLabels/labels.tpl.html",
+    .component("citizenScienceThumbLabels", {
+        templateUrl: "citizenScience/labels/thumbLabels/labels.tpl.html",
         controller: [
             "$scope",
             "$http",
             "CitizenScienceCommon",
             "annotationLibraryCommon",
             "AudioEvent",
-            "baw.models.AudioEvent",
-            "$q",
+            "SampleLabels",
             function ($scope,
                       $http,
                       CitizenScienceCommon,
                       libraryCommon,
-                      AudioEventService) {
+                      AudioEventService,
+                      SampleLabels) {
 
                 var self = this;
 
@@ -37,12 +38,10 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                 $scope.examplesPosition = "0px";
 
                 $scope.$watch(function () {
-                    return self.questionData;
+                    return self.labels;
                 }, function (newVal, oldVal) {
-                    if (newVal !== null && typeof newVal === "object") {
-                        if (newVal.hasOwnProperty("labels")) {
-                            self.fetchAnnotationData();
-                        }
+                    if (Array.isArray(newVal)) {
+                        self.fetchAnnotationData();
                     }
                 });
 
@@ -55,7 +54,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                 self.fetchAnnotationData = function () {
 
                     // transform labels structure into a single array of annotationsIds
-                    var labels = self.questionData.labels;
+                    var labels = self.labels;
                     var annotationIds = [].concat.apply([], labels.map(l => l.examples)).map(e => e.annotationId);
 
                     if (annotationIds.length === 0) {
@@ -97,7 +96,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                             // add annotations back into labels object
                             response.annotations.forEach(function (annotation) {
-                               self.questionData.labels.forEach(function (l) {
+                               self.labels.forEach(function (l) {
                                    l.examples.forEach(function (e) {
                                        if (e.annotationId === annotation.id) {
                                            e.annotation = annotation;
@@ -113,6 +112,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                 };
             }],
         bindings: {
-            questionData: "=",
+            labels: "=",
         }
     });

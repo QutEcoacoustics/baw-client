@@ -1,73 +1,43 @@
-// var csLabels = angular.module("bawApp.citizenScience.csLabels", ["bawApp.citizenScience.common"]);
-//
-//
-// /**
-//  * Manages the data for labels that will be applied to cs samples
-//  */
-// csLabels.factory("CsLabels", [
-//     "CitizenScienceCommon",
-//     "$http",
-//     function CsLabels(CitizenScienceCommon, $http) {
-//
-//         var self = this;
-//         self.useLocalData = true;
-//         self.sheets_api_url = "http://" + window.location.hostname + ":8081";
-//         self.local_api_url = "/public/citizen_science";
-//
-//
-//         /**
-//          * Constructs a url for the request by concatenating the arguments, joined by "/"
-//          * and appending to the relevant baseURL. Allows experimenting with different sources
-//          * for the data without changing everything
-//          * @returns {string|*}
-//          */
-//         self.apiUrl = function () {
-//             // convert to array
-//             var base_url, url;
-//             if (self.useLocalData) {
-//                 base_url = self.local_api_url;
-//             } else {
-//                 base_url = self.sheets_api_url;
-//             }
-//             var args = Array.prototype.slice.call(arguments);
-//
-//             url = [base_url].concat(args).join("/");
-//
-//             if (self.useLocalData) {
-//                 url = url + ".json";
-//             }
-//
-//             return url;
-//         };
-//
-//
-//         self.publicFunctions = {
-//
-//
-//             /**
-//              * Gets all labels associated with the specified citizen science project
-//              * @param project string
-//              */
-//             getLabels: function (project) {
-//                 var response = $http.get(self.apiUrl(
-//                     "labels",
-//                     project
-//                 ));
-//
-//                 return response.then(function (response) {
-//                     var labels = [];
-//                     if (Array.isArray(response.data)) {
-//                         labels = response.data;
-//                     }
-//
-//                     return labels;
-//                 });
-//             },
-//
-//         };
-//
-//         return self.publicFunctions;
-//
-//     }]);
-//
-//
+var csLabels = angular.module("bawApp.citizenScience.csLabels", [
+    "bawApp.citizenScience.common",
+    "bawApp.components.citizenScienceYesnoLabels",
+    "bawApp.components.citizenScienceThumbLabels",
+    "bawApp.citizenScience.sampleLabels"
+]);
+
+
+csLabels.component("citizenScienceLabels", {
+        templateUrl: "citizenScience/labels/labels.tpl.html",
+        controller: [
+            "$scope",
+            "SampleLabels",
+            function ($scope, SampleLabels) {
+
+                var self = this;
+
+                console.log(self);
+
+                $scope.$watch(SampleLabels.getLabels, function (newVal, oldVal) {
+
+                    if (typeof(newVal) === "object") {
+                        if (newVal === 1) {
+                            $scope.labelType = "yesno";
+                        } else if (newVal.length > 0 &&
+                            newVal.every(l => l.hasOwnProperty("examples") && l.examples.length > 0 )) {
+                            // if all labels have an example
+                            $scope.labelType = "thumb";
+                        } else {
+                            // this is not yet implemented but should be just a list of checkboxes next to the label text string
+                            $scope.labelType = "text";
+                        }
+
+                        $scope.labels = newVal;
+                    }
+
+                }, true);
+
+            }],
+        bindings: {
+        }
+    });
+

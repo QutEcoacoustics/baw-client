@@ -3,12 +3,6 @@ var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels",
 
 /**
  *  Keeps track of the labels applied to the current sample.
- *  Sends as a data for a questionResponse in the following structure
- *  {
- *  'labelsIds': [1,3,4,7]
- *  }
- *
- *
  */
 sampleLabels.factory("SampleLabels", [
     "CitizenScienceCommon",
@@ -23,7 +17,7 @@ sampleLabels.factory("SampleLabels", [
         self.hasResponse = false;
         self.allowEmpty = true;
         self.allowMulti = true;
-
+        self.labels = false;
 
 
         /**
@@ -38,21 +32,21 @@ sampleLabels.factory("SampleLabels", [
             }
             if (question !== false) {
                 self.data.questionId = question.id;
+                self.labels =  question.questionData.labels;
 
-                if (question.data.hasOwnProperty("allowEmpty")) {
-                    self.allowEmpty = question.data.allowEmpty;
+                if (question.questionData.hasOwnProperty("allowEmpty")) {
+                    self.allowEmpty = question.questionData.allowEmpty;
                 }
 
-                if (question.data.hasOwnProperty("allowMulti")) {
-                    self.allowMulti = question.data.allowMulti;
+                if (question.questionData.hasOwnProperty("allowMulti")) {
+                    self.allowMulti = question.questionData.allowMulti;
                 }
-                if (question.data.labels.length === 1) {
+                if (question.questionData.labels.length === 1) {
                     // for binary yes/no there is only one label, therefore no multi select
                     self.allowMulti = false;
                 }
 
             }
-
 
             return self.data;
 
@@ -145,7 +139,9 @@ sampleLabels.factory("SampleLabels", [
              */
             hasResponse : function () {
                 return self.hasResponse;
-            }
+            },
+
+            getLabels: function () { return self.labels; }
 
         };
 

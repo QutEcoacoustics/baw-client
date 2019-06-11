@@ -1,6 +1,6 @@
 angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenScience.common"])
     .component("labelCheck", {
-        templateUrl: "citizenScience/textLabels/labelCheck.tpl.html",
+        templateUrl: "citizenScience/labels/textLabels/labelCheck.tpl.html",
         controller: [
             "$scope",
             function ($scope) {
