@@ -3,7 +3,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
         "bawApp.components.citizenScienceThumbLabels.examples",
         "bawApp.citizenScience.sampleLabels"
     ])
-    .component("citizenScienceLabel", {
+    .component("citizenScienceThumbLabel", {
         templateUrl: "citizenScience/labels/thumbLabels/label.tpl.html",
         controller: [
             "$scope",
@@ -43,7 +43,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                  * @param isSelected Boolean
                  */
                 self.onToggleSelected = function (isSelected) {
-                    SampleLabels.setValue(self.label.id, isSelected);
+                    SampleLabels.setValue(isSelected, self.label.id);
                 };
 
             }],

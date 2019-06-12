@@ -103,15 +103,15 @@ class BristlebirdController {
             } else if (studies.length > 1) {
                 console.warn("More than one study found. Using the first one");
             }
-            $scope.study = studies[0];
-            $scope.study_id = $scope.study.id;
 
-            Question.questions($scope.study_id).then(x => {
+            $scope.study = studies[0];
+
+            Question.questions($scope.study.id).then(x => {
                 console.log("questions loaded", x);
                 //TODO: update to allow multiple questions
                 $scope.questionData = x.data.data[0].questionData;
 
-                SampleLabels.init(x.data.data[0], $scope.study_id);
+                SampleLabels.init(x.data.data[0], $scope.study.id);
             });
         });
 

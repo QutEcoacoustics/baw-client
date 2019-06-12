@@ -37,6 +37,9 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                 $scope.examplesPosition = "0px";
 
+                /**
+                 * Watch for labels to be updated so that the examples etc can be loaded
+                 */
                 $scope.$watch(function () {
                     return self.labels;
                 }, function (newVal, oldVal) {

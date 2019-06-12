@@ -10,25 +10,22 @@ angular.module("bawApp.components.citizenScienceYesnoLabels",
 
                 var self = this;
                 // yesno questions only have one label
-                $scope.label = self.questionData.labels[0].name;
+                $scope.label = self.labels[0].name;
 
-                // binary can have 3 statuses: selected yes, selected no or not selected
-
-                $scope.isSelected = function() {
-                    return SampleLabels.getValue(self.label.id);
+                $scope.isSelectedPositive = function() {
+                    return SampleLabels.getValue() === 1;
                 };
 
                 /**
                  * callback when this label is either attached or detached from the current sample
-                 * @param isSelected Boolean
+                 * @param value Boolean
                  */
-                self.onToggleSelected = function (isSelected) {
-                    SampleLabels.setValue(self.label.id, isSelected);
+                $scope.setValue = function (value) {
+                    SampleLabels.setValue(value);
                 };
-
 
             }],
         bindings: {
-            questionData: "=",
+            labels: "=",
         }
     });

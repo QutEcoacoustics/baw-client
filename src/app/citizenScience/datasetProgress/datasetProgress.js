@@ -12,27 +12,32 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
         controller: ["$scope", "$routeParams", "CsSamples", "SampleLabels",
             function ($scope, $routeParams, CsSamples, SampleLabels) {
 
-                if ($routeParams.sampleNum) {
-                    CsSamples.selectById($routeParams.sampleNum);
-                    $scope.nextItem = function () {
-                        SampleLabels.sendResponse("using_routed");
-                        return true;
-                    };
-                    $scope.isRoutedSample = true;
-                } else {
-                    CsSamples.init();
-                    $scope.nextItem = function () {
-                        SampleLabels.sendResponse();
-                        CsSamples.nextItem();
-                    };
-                    $scope.isRoutedSample = false;
-                }
+                var self = this;
 
 
+                // need to wait for the study's dataset_id before initialising
+                $scope.$watch(function () { return self.datasetId; }, function (newVal, oldVal){
+                    if (newVal > 0) {
+                        if ($routeParams.sampleNum) {
+                            CsSamples.selectById($routeParams.sampleNum);
+                            $scope.nextItem = function () {
+                                SampleLabels.sendResponse("using_routed");
+                                return true;
+                            };
+                            $scope.isRoutedSample = true;
+                        } else {
+                            CsSamples.init(self.datasetId);
+                            $scope.nextItem = function () {
+                                SampleLabels.sendResponse();
+                                CsSamples.nextItem();
+                            };
+                            $scope.isRoutedSample = false;
+                        }
+                    }
+                });
 
                 $scope.$watch(() => CsSamples.currentItem(), (newVal, oldVal) => {
-                    var newDatasetItemId = newVal.id;
-                    SampleLabels.reset(newDatasetItemId);
+                    SampleLabels.reset(newVal.id);
                 });
 
                 $scope.$on("autoNextTrigger", function (x) {
@@ -58,5 +63,6 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
 
             }],
         bindings: {
+            datasetId: "="
         }
     });

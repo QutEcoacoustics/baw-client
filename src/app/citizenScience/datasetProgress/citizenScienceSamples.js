@@ -12,10 +12,6 @@ csSamples.factory("CsSamples", [
 
         var self = this;
 
-        // the dataset id for this citizen science project
-        // todo: integrate with settings for cs project
-        self.datasetId = 3;
-
         self.resetlist = function () {
             self.currentIndex = { page: -1, item: -1};
             self.pages = [];
@@ -138,7 +134,8 @@ csSamples.factory("CsSamples", [
                 });
             },
 
-            init : function () {
+            init : function (datasetId) {
+                self.datasetId = datasetId;
                 self.requestPageOfItems(true);
             },
 
