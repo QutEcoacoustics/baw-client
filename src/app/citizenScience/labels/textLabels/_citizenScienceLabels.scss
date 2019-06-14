@@ -23,17 +23,14 @@
       font-size: 18px;
       cursor: pointer;
       line-height: 1em;
-      color: #559cd9;
+      color: #FFFFFF;
       text-decoration: none;
 
       &.main-button {
 
         &:hover {
-          color: #77befb;
 
-          .checkbox {
-            border-color: #77befb;
-          }
+          opacity: 0.9;
 
         }
 
@@ -50,11 +47,65 @@
 
     }
 
-    .selected a {
-      i {
-        color: #8cc967;
-      }
-    }
+     a {
+
+       .label-value-text {
+         width: 40px;
+         display: inline-block;
+       }
+
+       &.empty {
+
+       }
+       &.yes {
+         i {
+           b {
+             color: #8cc967;
+             &:before {
+               content: "\f00c";
+             }
+           }
+         }
+       }
+       &.maybe {
+         i {
+           b {
+             color: #ffbc3e;
+             &:before {
+               content: "\f128";
+             }
+           }
+         }
+       }
+       &.no {
+         i {
+           b {
+             color: #d00900;
+             &:before {
+               content: "\f00d";
+             }
+           }
+         }
+       }
+
+       i {
+         position: relative;
+         &:before {
+           content: "\f096";
+         }
+         b {
+           position: absolute;
+           top: 0;
+           font-size: 0.9em;
+           &.grey {
+             color: #666666;
+             opacity: 0.5;
+           }
+         }
+       }
+
+
+     }
 
     i {
       display: inline-block;

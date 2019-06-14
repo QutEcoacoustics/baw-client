@@ -3,8 +3,8 @@
     <!-- stuff to show thumb image -->
     <div class="citizen-science-thumb" ng-click="toggleShowDetails()">
 
-        <i class="fa fa-check thumb-tick"
-           ng-if="isSelected()"
+        <i class="fa {{state}} thumb-tick"
+           ng-if="state !== 'empty' && state !== 'no'"
            aria-hidden="true"></i>
 
 
@@ -18,8 +18,8 @@
     >
 
         <label-check
-                is-checked="isSelected"
                 on-toggle-selected="$ctrl.onToggleSelected"
+                state="state"
                 text="$ctrl.label.name"
         ></label-check>
 

@@ -11,15 +11,23 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
             function ($scope, SampleLabels) {
 
                 /**
-                 * A label is "selected" if it has been applied to the current sample
+                 * A label "state" means it's response state e.g. yes, no, maybe, empty
                  * A label is "active" if it has been clicked to show details
                  */
 
                 var self = this;
 
-                $scope.isSelected = function() {
-                    return SampleLabels.getValue(self.label.id);
-                };
+                // $scope.currentState = function() {
+                //     return SampleLabels.getValue(self.label.id);
+                // };
+
+
+                $scope.state = "empty";
+
+                $scope.$watch("state", function (newVal, oldVal) {
+                    console.log(newVal);
+                    SampleLabels.setValue($scope.state, self.label.id);
+                });
 
                 $scope.isShowingDetails = function () {
                     return self.currentDetailsLabelId.value === self.label.id;
@@ -39,11 +47,13 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                 };
 
                 /**
-                 * callback when this label is either attached or detached from the current sample
+                 * callback when this label state changes
+                 * This is used to get reverse binding into transcluded components.
                  * @param isSelected Boolean
                  */
-                self.onToggleSelected = function (isSelected) {
-                    SampleLabels.setValue(isSelected, self.label.id);
+                self.onToggleSelected = function (state) {
+                    SampleLabels.setValue(state, self.label.id);
+                    $scope.state = state;
                 };
 
             }],
