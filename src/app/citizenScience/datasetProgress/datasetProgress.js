@@ -50,16 +50,27 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                  * @return boolean
                  */
                 $scope.nextDisabled = function () {
-                    return !CsSamples.nextItemAvailable();
+
+                    // default to allow empty if not specified
+                    var enabled = (SampleLabels.hasResponse() || SampleLabels.allowEmpty()) && CsSamples.nextItemAvailable();
+                    return !enabled;
+
                 };
 
                 $scope.nextText = function () {
                     if (SampleLabels.hasResponse()) {
-                        return "Done! Next sample";
+                        return "Submit response";
                     } else {
-                        return "Nothing here, next sample";
+
+                        if (self.allowEmpty || self.allowEmpty === undefined) {
+                            return "Nothing here, next sample";
+                        } else {
+                            return "Enter a response";
+                        }
+
                     }
                 };
+
 
             }],
         bindings: {

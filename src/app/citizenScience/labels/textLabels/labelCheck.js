@@ -41,8 +41,15 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                     }
 
                     console.log(self.state);
+
+                    // the state is preserved by storing the stateIndex
                     $scope.stateIndex = stateIndex;
-                    self.onToggleSelected($scope.states[stateIndex]);
+
+                    // the onToggleSelected function expects a state string
+                    if (typeof self.onToggleSelected === "function") {
+                        self.onToggleSelected($scope.states[stateIndex]);
+                    }
+
                 };
 
                 // TODO: generalise by moving this to bindings?
@@ -53,12 +60,17 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                 $scope.stateIndexes = [1,2,3];
 
 
-                if (typeof self.state === "undefined") {
-                    // default to initialise to empty
-                    self.state = "empty";
-                }
-                $scope.stateIndex = $scope.states.indexOf(self.state);
+                $scope.$watch(function () {
+                    return self.state;
+                    }, function (newVal, oldVal) {
 
+                    if (typeof self.state === "undefined" || $scope.states.indexOf(self.state) === -1) {
+                        // default to initialise to empty
+                        self.state = "empty";
+                    }
+                    $scope.stateIndex = $scope.states.indexOf(self.state);
+
+                });
 
 
                 // whether it shows all three options at once to click like buttons
@@ -66,6 +78,7 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                 $scope.expanded = self.expanded;
 
             }],
+
         bindings: {
             onToggleSelected: "=",
             state: "<",

@@ -4,6 +4,7 @@
                     class="btn btn-default"
                     ng-disabled="nextDisabled()"
                     ng-click="nextItem()"
+                    ng-disabled="isDisabled()"
                     title="Next Clip">
                 {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
             </button>
@@ -11,6 +12,7 @@
                href="/citsci/bristlebird/listen/"
                ng-click="nextItem()"
                class="btn btn-default"
+               ng-disabled="nextDisabled()"
                title="Next Clip">
                 {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
             </a>

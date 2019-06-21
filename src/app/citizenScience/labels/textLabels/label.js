@@ -11,10 +11,9 @@ angular.module("bawApp.components.citizenScienceTextLabels.label",
 
                 var self = this;
 
-                //was : $scope.isSelected = function() {
-                // $scope.currentState = function() {
-                //     return SampleLabels.getValue(self.label.id);
-                // };
+                $scope.currentState = function() {
+                    return SampleLabels.getValue(self.label.id);
+                };
 
                 $scope.state = "empty";
 

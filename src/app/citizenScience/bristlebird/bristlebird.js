@@ -169,8 +169,7 @@ angular
         "bawApp.citizenScience.sampleLabels",
         "bawApp.citizenScience.csLabels",
         "bawApp.components.onboarding",
-        "bawApp.components.background",
-        "bawApp.components.test.one"
+        "bawApp.components.background"
     ])
     .controller(
         "BristlebirdController",

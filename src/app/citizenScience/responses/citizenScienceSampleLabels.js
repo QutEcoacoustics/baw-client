@@ -69,11 +69,12 @@ sampleLabels.factory("SampleLabels", [
 
 
         /**
-         * updates the value of a labelId applied to a sampleId as either true or false
+         * adds or removes a label id from the list of true labels ids. This is now deprecated and
+         * here only for reference, since we now allow 'yes' and 'maybe' for a label.
          * @param labelId int; may be omitted if it is a binary (only one label) task.
          * @param value int [0,1]
          */
-        self.setValue = function (value, labelId) {
+        self.setValueOld = function (value, labelId) {
 
             if (labelId === undefined && self.labels.length === 1) {
                 labelId = 1;
@@ -97,19 +98,66 @@ sampleLabels.factory("SampleLabels", [
 
 
         /**
-         * Looks up the data to see if there is a boolean value stored for a given sampleId and labelId
+         * updates the
+         * @param value String
+         * @param labelId Int
+         */
+        self.setValue = function (value, labelId) {
+
+            if (labelId === undefined && self.labels.length === 1) {
+                labelId = 1;
+            }
+
+            if (labelId !== undefined) {
+                self.hasResponse = true;
+                if (value === "yes" && !self.allowMulti) {
+                    self.data.labels = {};
+                }
+
+                self.data.labels[labelId] = value;
+
+
+            } else {
+                console.warn("Label id not defined");
+            }
+
+        };
+
+
+        /**
+         * Looks up the data to see if there is a boolean value stored for a given labelId
          * and if so, returns it.
-         * @param sampleId. If omitted, will use the current sample if available
          * @param labelId
          * @returns {boolean}
          */
-        self.getValue = function (labelId) {
+        self.getValueOld = function (labelId) {
 
             if (labelId === undefined && self.labels.length === 1) {
                 labelId = 1;
             }
             return self.data.labels.has(labelId);
         };
+
+        /**
+         * Looks up the data to see if there is a value stored for a given labelId
+         * and if so, returns it, else returns "empty"
+         * @param labelId Int
+         * @returns {string}
+         */
+        self.getValue = function (labelId) {
+
+            if (labelId === undefined && self.labels.length === 1) {
+                labelId = 1;
+            }
+
+            if (self.data.labels.hasOwnProperty(labelId)) {
+                return self.data.labels[labelId];
+            } else {
+                return "empty";
+            }
+
+        };
+
 
         self.functions = {
 
@@ -120,27 +168,26 @@ sampleLabels.factory("SampleLabels", [
 
             /**
              * sends the response to the server using the questionResponse service
+             * @param notes string optional; message about the state when the response was submitted, e.g. autoplay on
+             * @param userNotes string optional; message that the user entered
              */
             sendResponse : function (notes, userNotes) {
 
+
                 if (self.data.datasetItemId) {
+
                     // convert labels to data json
                     // just an array of label ids
-                    self.data.data = {"labelIds": [...self.data.labels]};
-                    // json object with status for all positive labels
-                    self.data.data.labels = self.labels.reduce(function (map, obj, idx, src) {
-                        if (self.data.labels.has(obj.id)) {
-                            map.push(obj.name);
-                        }
-                        return map;
-                    },[]);
+                    var userResponseData = {"labelIds": Object.keys(self.data.labels)};
+                    // json object with status for all non-empty labels
+                    userResponseData.labels = self.data.labels;
                     if (notes) {
-                        self.data.data.notes = notes;
+                        userResponseData.notes = notes;
                     }
                     if (userNotes) {
-                        self.data.data.userNotes = userNotes;
+                        userResponseData.userNotes = userNotes;
                     }
-                    QuestionResponse.createQuestionResponse(self.data.questionId, self.data.datasetItemId, self.data.studyId, self.data.data);
+                    QuestionResponse.createQuestionResponse(self.data.questionId, self.data.datasetItemId, self.data.studyId, userResponseData);
                 }
 
             },
@@ -152,7 +199,7 @@ sampleLabels.factory("SampleLabels", [
             reset : function (newDatasetItemId) {
 
                 self.data.datasetItemId = newDatasetItemId;
-                self.data.labels = new Set();
+                self.data.labels = {};
                 // hasResponse will be stay true if a value has been added and then removed
                 // until this init function is called.
                 self.hasResponse = false;
@@ -177,6 +224,10 @@ sampleLabels.factory("SampleLabels", [
              */
             hasResponse : function () {
                 return self.hasResponse;
+            },
+
+            allowEmpty : function () {
+                return self.allowEmpty;
             },
 
             getLabels: function () { return self.labels; }

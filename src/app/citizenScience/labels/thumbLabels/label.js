@@ -17,17 +17,17 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
 
                 var self = this;
 
-                // $scope.currentState = function() {
-                //     return SampleLabels.getValue(self.label.id);
-                // };
+                $scope.currentState = function() {
+                    return SampleLabels.getValue(self.label.id);
+                };
 
 
-                $scope.state = "empty";
+                //$scope.state = "empty";
 
-                $scope.$watch("state", function (newVal, oldVal) {
-                    console.log(newVal);
-                    SampleLabels.setValue($scope.state, self.label.id);
-                });
+                // $scope.$watch("state", function (newVal, oldVal) {
+                //     console.log(newVal);
+                //     SampleLabels.setValue($scope.state, self.label.id);
+                // });
 
                 $scope.isShowingDetails = function () {
                     return self.currentDetailsLabelId.value === self.label.id;
