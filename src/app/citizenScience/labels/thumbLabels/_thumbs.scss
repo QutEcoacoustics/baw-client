@@ -50,19 +50,13 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
         height: 100%;
       }
 
-      .thumb-tick {
-        position: absolute;
-        top:5px;
-        right:8px;
-        color: #fff;
-        text-shadow: 1px 1px 2px #000;
+      .minicheck {
 
-        &.yes {
-
-        }
-        &.maybe {
-
-        }
+          position:absolute;
+          display:block;
+          transform: scale(0.75);
+          top:0px;
+          left:0px;
 
       }
 

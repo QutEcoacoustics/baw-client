@@ -3,9 +3,20 @@
     <!-- stuff to show thumb image -->
     <div class="citizen-science-thumb" ng-click="toggleShowDetails()">
 
-        <i class="fa {{state}} thumb-tick"
-           ng-if="state !== 'empty' && state !== 'no'"
-           aria-hidden="true"></i>
+
+        <!--
+
+        <i class="fa {{currentState()}} thumb-tick"
+           ng-if="currentState() !== 'empty'"
+           aria-hidden="true"><b class="fa" aria-hidden="true"></b></i>
+
+        -->
+
+        <label-check class="minicheck"
+                on-toggle-selected="$ctrl.onToggleSelected"
+                state="currentState()"
+                text=""
+        ></label-check>
 
 
         <img ng-src="{{$ctrl.label.examples[0].annotation.media.available.image.png.url}}" alt="{{$ctrl.label.name}}">
@@ -21,6 +32,7 @@
                 on-toggle-selected="$ctrl.onToggleSelected"
                 state="currentState()"
                 text="$ctrl.label.name"
+                showStateText="true"
         ></label-check>
 
     </citizen-science-label-examples>

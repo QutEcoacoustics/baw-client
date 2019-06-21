@@ -1,26 +1,26 @@
 <div class="label-check">
     <div ng-if="!expanded">
-        <a ng-click="toggleLabel()" class="main-button {{states[stateIndex]}}">
+        <a ng-click="toggleLabel(); $event.stopPropagation()" class="main-button {{states[stateIndex]}}">
             <span class="label-text">{{$ctrl.text}}</span>
             <i class="fa"
                aria-hidden="true">
                 <b class="fa" aria-hidden="true"></b>
-            </i><span class="label-value-text">{{labelValueTexts[stateIndex]}}</span>
-            <a>
+            </i><span ng-if="$ctr.showStateText" class="label-value-text">{{labelValueTexts[stateIndex]}}</span>
+            </a>
     </div>
     <div ng-if="expanded">
 
         <a ng-click="toggleLabel()" class="main-button {{states[stateIndex]}}">
             <span class="label-text">{{$ctrl.text}}</span>
-            <a>
+        </a>
 
 
-        <a ng-click="toggleLabel(forStateIndex)" class="main-button {{states[forStateIndex]}}" ng-repeat="forStateIndex in stateIndexes">
+        <a ng-click="toggleLabel(forStateIndex); $event.stopPropagation()" class="main-button {{states[forStateIndex]}}" ng-repeat="forStateIndex in stateIndexes">
             <i class="fa"
                aria-hidden="true">
                 <b class="fa" aria-hidden="true" ng-class="{'grey': forStateIndex !== stateIndex}"></b>
             </i><span class="label-value-text">{{labelValueTexts[forStateIndex]}}</span>
-            <a>
+            </a>
     </div>
 
 </div>

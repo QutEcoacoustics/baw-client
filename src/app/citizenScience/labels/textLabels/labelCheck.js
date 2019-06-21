@@ -83,6 +83,7 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
             onToggleSelected: "=",
             state: "<",
             text:"<",
-            expanded: "<"
+            expanded: "<",
+            showStateText: "<"
         }
     });
