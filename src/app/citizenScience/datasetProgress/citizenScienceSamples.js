@@ -8,7 +8,8 @@ csSamples.factory("CsSamples", [
     "CitizenScienceCommon",
     "DatasetItem",
     "ProgressEvent",
-    function CsSamples(CitizenScienceCommon, DatasetItem, ProgressEvent) {
+    "AudioRecording",
+    function CsSamples(CitizenScienceCommon, DatasetItem, ProgressEvent, AudioRecording) {
 
         var self = this;
 
@@ -112,9 +113,37 @@ csSamples.factory("CsSamples", [
                     self.setCurrentItem();
                 }
 
+                self.addAudioRecordingFields(x.data.data);
+
             });
 
         };
+
+
+
+        /**
+         * Adds AudioRecording object to each dataset item, which lets us know the site id and UTC start time of the item
+         * @param datasetItems
+         */
+        self.addAudioRecordingFields = function (datasetItems) {
+
+            var recordingIds = datasetItems.map(x => x.audioRecordingId);
+            // unique values
+            recordingIds = [...new Set(recordingIds)];
+
+            AudioRecording.getRecordingsForLibrary(recordingIds).then(x => {
+
+                var audioRecordings = x.data.data;
+
+                datasetItems.forEach(datasetItem => {
+                    var audioRecording = audioRecordings.find(ar => ar.id === datasetItem.audioRecordingId);
+                    datasetItem.audioRecording = audioRecording;
+                });
+
+            });
+
+        };
+
 
         self.publicFunctions = {
 
