@@ -181,7 +181,7 @@ angular.module("bawApp.directives.ngAudio", [
                         target.isPlaying = !element.paused;
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
 
-                        console.log("element.readyState", element.readyState);
+                        console.debug("element.readyState", element.readyState);
 
                        // IMPORTANT - setting the position while playing is done by RAF.
                         // Do not set it here or else jittery playback will occur when any event is raised from the element.

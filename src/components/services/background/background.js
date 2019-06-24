@@ -1,10 +1,108 @@
 angular.module("bawApp.components.background", [])
-    .service("backgroundImage", function () {
+    .service("backgroundImage", ["conf.paths", function (paths) {
         var currentBackground = "";
-        return {
-            currentBackground: currentBackground
+
+        var self = this;
+
+
+        self.images = [];
+        // [filename, site_id, dateTime]
+        self.images[0] = ["1.jpg", 402, "2010-10-14 00:00:00"];
+        self.images[1] = ["2.jpg", 312, "2010-08-01 12:00:00"];
+        self.images[2] = ["3.jpg", 399, "2010-10-30 15:00:00"];
+        self.images[3] = ["4.jpg", 402, "2010-10-14 00:03:00"];
+
+
+        self.temp = new Set();
+
+        // expand the full path
+        self.images = self.images.map(img => {
+            img[0] = paths.site.assets.backgrounds.citizenScience + img[0];
+            return img;
+        });
+
+
+        /**
+         * Temporary function that sets the current background based one or more parameters
+         * Determines the best background image for the given arguments by checking a hardcoded json
+         * This will be replaced with an api call in the future
+         * @param site
+         * @param audioRecordingId
+         * @param hour
+         */
+        self.setBackgroundImageForItem = function (audioRecording, offsetSeconds) {
+
+            //console.log("---------");
+            //console.log(audioRecording.siteId, audioRecording.recordedDate, offsetSeconds);
+            var segmentDate = new Date(audioRecording.recordedDate.getTime() + offsetSeconds * 1000);
+            //self.temp.add(`siteID: ${audioRecording.siteId}, date: ${segmentDate}`);
+            //console.log(self.temp);
+            //console.log("---------");
+
+
+            // order images by sitematch then time difference (rounded to 3 hours), then date difference
+            // not perfect - but this is only temporary
+            self.images.sort(function(a,b) {
+
+                // sort by site match
+                var siteMatchA = (a[1] === audioRecording.siteId);
+                var siteMatchB = (b[1] === audioRecording.siteId);
+
+                if (siteMatchA && !siteMatchB) {
+                    return -1;
+                } else if (siteMatchB && !siteMatchA) {
+                    return 1;
+                }
+
+                // sort by time of day difference
+                var dateA = new Date(a[2]);
+                var dateB = new Date(b[2]);
+                var segmentHours = segmentDate.getHours();
+
+                var timeDifferenceA =  Math.abs(Math.round(((dateA.getHours() - segmentHours) / 3)));
+                var timeDifferenceB =  Math.abs(Math.round(((dateB.getHours() - segmentHours) / 3)));
+
+                if (timeDifferenceA < timeDifferenceB) {
+                    return -1;
+                } else if (timeDifferenceB > timeDifferenceA) {
+                    return 1;
+                }
+
+                segmentDate.getHours();
+
+
+                var dateDifferenceA = Math.abs(dateA.getTime() - segmentDate.getTime());
+                var dateDifferenceB = Math.abs(dateB.getTime() - segmentDate.getTime());
+
+
+                if (dateDifferenceA < dateDifferenceB) {
+                    return -1;
+                } else if (dateDifferenceB > dateDifferenceA) {
+                    return 1;
+                }
+
+                return 0;
+
+            });
+
+            var bestImage = self.images[0][0];
+
+            console.log(bestImage, bestImage, segmentDate, audioRecording.Site);
+
+            self.currentBackground = bestImage;
+
         };
-    })
+
+
+
+
+
+
+        return {
+            currentBackground: currentBackground,
+            setBackgroundImageForItem: self.setBackgroundImageForItem
+        };
+    }])
     .component("background", {
         template: `<div ng-repeat='background in backgrounds' ng-if="background.state !== 'finished'" class='background {{background.state}}' style='background-image:url({{background.url}});'></div>`,
         controller: ["$scope", "backgroundImage", "$timeout", function ($scope, backgroundImage, $timeout) {

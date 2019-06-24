@@ -126,12 +126,20 @@ class BristlebirdController {
             },
             function (item, oldVal) {
                 if (item) {
-                    self.showAudio(item.audioRecordingId, item.startTimeSeconds, item.endTimeSeconds);
-                    // for now, we cycle through backgrounds arbitrarily, based on the id of the sample
-                    // todo: store background images as part of the dataset or cs project
-                    var backgroundPath = self.backgroundPaths[parseInt(item.id) % (self.backgroundPaths.length - 1)];
-                    backgroundImage.currentBackground = backgroundPath;
-                    $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample(item.id));
+
+                    if (item.id !== oldVal.id) {
+                        self.showAudio(item.audioRecordingId, item.startTimeSeconds, item.endTimeSeconds);
+                        // for now, we cycle through backgrounds arbitrarily, based on the id of the sample
+                        // todo: store background images as part of the dataset or cs project
+                        var backgroundPath = self.backgroundPaths[parseInt(item.id) % (self.backgroundPaths.length - 1)];
+                        backgroundImage.currentBackground = backgroundPath;
+                        $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample(item.id));
+
+                    }
+
+                    if (item.hasOwnProperty("audioRecording")) {
+                        backgroundImage.setBackgroundImageForItem(item.audioRecording, item.startTimeSeconds);
+                    }
 
                 }
             }, true);
