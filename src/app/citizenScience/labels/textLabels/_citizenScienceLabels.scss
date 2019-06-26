@@ -26,15 +26,12 @@
       color: #FFFFFF;
       text-decoration: none;
 
-      &.main-button {
-
-        &:hover {
-
-          opacity: 0.9;
-
+      &:hover {
+        .label-check-shell {
+          background-color: rgba(60,60,60,0.8);
         }
-
       }
+
 
       &.example-toggle {
         text-decoration: none;
@@ -46,6 +43,86 @@
       }
 
     }
+
+    .expanded-label-container {
+
+      display: flex;
+
+      a {
+        .label-check-shell {
+          border-radius: 0.75em;
+        }
+      }
+
+    }
+
+    a {
+
+      vertical-align: middle;
+
+      .label-value-text {
+
+      }
+
+      .label-check-shell {
+
+        border: 2px solid #ffffff;
+        border-radius: 0.25em;
+        display: inline-block;
+        width: 1.5em;
+        height: 1.5em;
+        margin-left: 0.3em;
+        margin-right: 0.3em;
+        vertical-align: middle;
+        background: rgba(0,0,0,0.5);
+
+      }
+
+      &.yes {
+        b {
+          color: #8cc967;
+          &:before {
+            content: "\f00c";
+          }
+        }
+      }
+      &.maybe {
+        b {
+          color: #ffbc3e;
+          &:before {
+            content: "\f128";
+          }
+        }
+      }
+      &.no {
+        b {
+          color: #d00900;
+          &:before {
+            content: "\f00d";
+          }
+        }
+      }
+
+      b {
+        font-size: 1.3em;
+        &.grey {
+          color: #666666;
+          opacity: 0.5;
+        }
+      }
+
+    }
+
+
+
+
+
+
+
+
+
+
+/*
 
      a {
 
@@ -73,7 +150,7 @@
              color: #ffbc3e;
              &:before {
                content: "\f128";
-               padding-left:0.15em;
+               padding-left:0.18em;
              }
            }
          }
@@ -84,7 +161,7 @@
              color: #d00900;
              &:before {
                content: "\f00d";
-               padding-left:0.05em;
+               padding-left:0.06em;
              }
            }
          }
@@ -98,6 +175,9 @@
            position:absolute;
            top:0.15em;
            left:0px;
+         }
+         &.radio:before {
+           content: "\f10c";
          }
          b {
            position: absolute;
@@ -122,7 +202,12 @@
       top: -0.25em;
     }
 
+*/
+
+
   }
+
+
 
 }
 

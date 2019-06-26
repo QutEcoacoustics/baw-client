@@ -32,6 +32,7 @@ angular.module("bawApp.components.background", [])
 
             var segmentDate = new Date(audioRecording.recordedDate.getTime() + offsetSeconds * 1000);
 
+
             // order images by
             // - whether the site matches
             // - time of day difference (rounded to 3 hours)

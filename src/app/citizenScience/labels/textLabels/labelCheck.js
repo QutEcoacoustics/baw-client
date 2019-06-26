@@ -26,6 +26,7 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                  */
                 $scope.toggleLabel = function (stateIndex) {
 
+                    console.log(self.state);
 
                     if (typeof stateIndex !== "number") {
                         // no new stateIndex supplied so cycle through the states, excluding zero
@@ -39,8 +40,6 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                             // state is unchanged
                             return;
                     }
-
-                    console.log(self.state);
 
                     // the state is preserved by storing the stateIndex
                     $scope.stateIndex = stateIndex;

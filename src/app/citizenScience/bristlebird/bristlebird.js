@@ -116,6 +116,10 @@ class BristlebirdController {
         });
 
 
+        $scope.studyTitle = {"bristlebird": "Eastern Bristlebird Search", "koala-verification": "Koala Verification"}[$scope.csProject];
+
+
+
         //SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
 
         /**
