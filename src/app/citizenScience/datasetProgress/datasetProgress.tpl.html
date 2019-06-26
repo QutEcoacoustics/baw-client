@@ -9,7 +9,7 @@
                 {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
             </button>
             <a ng-if="isRoutedSample"
-               href="/citsci/bristlebird/listen/"
+               href="{{listenLink}}"
                ng-click="nextItem()"
                class="btn btn-default"
                ng-disabled="nextDisabled()"

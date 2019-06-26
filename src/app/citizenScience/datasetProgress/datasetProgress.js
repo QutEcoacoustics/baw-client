@@ -14,6 +14,8 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
 
                 var self = this;
 
+                // routed dataset item id will link back to the unrouted listen page
+                $scope.listenLink = `/citsci/${$routeParams.studyName}/listen/`;
 
                 // need to wait for the study's dataset_id before initialising
                 $scope.$watch(function () { return self.datasetId; }, function (newVal, oldVal){

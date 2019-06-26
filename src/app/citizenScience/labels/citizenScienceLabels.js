@@ -1,6 +1,5 @@
 var csLabels = angular.module("bawApp.citizenScience.csLabels", [
     "bawApp.citizenScience.common",
-    "bawApp.components.citizenScienceYesnoLabels",
     "bawApp.components.citizenScienceThumbLabels",
     "bawApp.components.citizenScienceTextLabels",
     "bawApp.citizenScience.sampleLabels"

@@ -1,22 +1,4 @@
-class BristlebirdAboutController {
-    constructor($scope,
-                $location,
-                backgroundImage,
-                paths) {
-
-        $scope.citizenScientistName = "";
-
-        $scope.getStarted = function () {
-            localStorage.setItem("citizenScientistName", $scope.citizenScientistName);
-            $location.path("/citsci/bristlebird/listen");
-        };
-
-        backgroundImage.currentBackground = paths.site.assets.backgrounds.citizenScience + "1.jpg";
-    }
-}
-
-
-class BristlebirdController {
+class CitizenScienceListenController {
     constructor($scope,
                 ngAudioEvents,
                 $location,
@@ -93,8 +75,8 @@ class BristlebirdController {
 
         this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
 
-        //TODO: replace hardcoded value with routed study id
 
+        // get the study information by name, then load the appropriate question data
         StudyService.studyByName($routeParams.studyName).then(x => {
             var studies = x.data.data;
             if (studies.length === 0) {
@@ -175,7 +157,7 @@ class BristlebirdController {
 }
 
 angular
-    .module("bawApp.citizenScience.bristlebird", [
+    .module("bawApp.citizenScience.listen", [
         "bawApp.components.progress",
         "bawApp.citizenScience.common",
         "bawApp.citizenScience.sampleLabels",
@@ -184,7 +166,7 @@ angular
         "bawApp.components.background"
     ])
     .controller(
-        "BristlebirdController",
+        "CitizenScienceListenController",
         [
             "$scope",
             "ngAudioEvents",
@@ -197,14 +179,6 @@ angular
             "Question",
             "$routeParams",
             "Study",
-            BristlebirdController
-        ])
-    .controller(
-        "BristlebirdAboutController",
-        [
-            "$scope",
-            "$location",
-            "backgroundImage",
-            "conf.paths",
-            BristlebirdAboutController
+            CitizenScienceListenController
         ]);
+

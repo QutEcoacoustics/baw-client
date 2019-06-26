@@ -196,6 +196,7 @@ module.exports = function (environment) {
                 "libraryItem": "/library/{recordingId}/audio_events/{audioEventId}",
                 "visualize": "/visualize",
                 "citizenScience": {
+                    "aboutStudy":"/citsci/{studyName}",
                     "listenId":"/citsci/{studyName}/listen/{sampleNum}",
                     "listen":"/citsci/{studyName}/listen",
                     "responses": "/citsci/{studyName}/responses"

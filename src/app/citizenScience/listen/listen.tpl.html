@@ -1,4 +1,4 @@
-<div class="citizen-science bristlebird">
+<div class="citizen-science">
 
     <h2>{{studyTitle}}
         <onboarding config="onboarding"></onboarding>
@@ -7,9 +7,7 @@
     <div class="cs-main-container">
 
         <div class="main wrapper clearfix">
-
-
-
+            
             <div class="citsci-debug">
                 <p>Currently viewing: Sample {{ currentSample }}</p>
                 <p>Audio id: {{ samples[currentSample].recordingId }}</p>
@@ -29,8 +27,6 @@
                             ng-audio-sources="media.available"
                             on-played="onPlayed()"
                             class="hiddenAudioElement"></audio>
-
-                    <!--<baw-audio audio-element-model="audioElementModel" media="media" update-scope="this"></baw-audio>-->
 
                 </div>
             </div>
