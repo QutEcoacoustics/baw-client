@@ -10,8 +10,14 @@ class CitizenScienceAboutController {
 
         $scope.study = $routeParams.studyName;
 
-        // todo: random background image or background image slideshow (but from dataset ... how?)
-        //backgroundImage.currentBackground = paths.site.assets.backgrounds.citizenScience;
+        var backgroundFiles = {
+            "bristlebird": "2.jpg",
+            "koala-verification": "3.jpg"
+        };
+        var backgroundFile = backgroundFiles.hasOwnProperty($routeParams.studyName) ? backgroundFiles[$routeParams.studyName] : "1.jpg";
+
+
+        backgroundImage.currentBackground = paths.site.assets.backgrounds.citizenScience + backgroundFile;
     }
 }
 

@@ -9,7 +9,8 @@ class CitizenScienceListenController {
                 paths,
                 Question,
                 $routeParams,
-                StudyService
+                StudyService,
+                onboardingService
     ) {
 
         var self = this;
@@ -31,42 +32,31 @@ class CitizenScienceListenController {
         // to be populated after getting samples from dataset
         $scope.media = null;
 
-        $scope.onboarding = {};
-
-        $scope.onboarding.steps = [
+        onboardingService.addSteps([
             {
                 element: ".citizen-science .spectrogram-wrapper",
-                intro: "This shows a picture of the audio as a spectrogram."
+                intro: "This shows a picture of the audio as a spectrogram.",
+                order: 0
             },
             {
+                element: "previous-play-next",
+                intro: "Start or stop the audio here.",
+                order: 0
+            },
+
+            {
                 element: "dataset-progress button",
-                intro: "This shows how many clips you have listened do, and lets you navigate between clips"
+                intro: "When you have finished applying labels, use this button to go to the next clip",
+                order: 10
+
             },
             {
                 element: ".autoplay",
-                intro: "Switch this on to automatically progress to the next clip and play it."
-            },
-            {
-                element: ".citizen-science-thumb",
-                intro: "See if you can identify the events that are in these small spectrogram thumbnails in the audio clip above. " +
-                "Tap the thumbnail for a closer look and to listen to the audio."
-            },
-            {
-                element: ".label-check a",
-                intro: "Use the checkbox to indicate if the this kind of even occurs in the audio clip above",
-
+                intro: "Switch this on to automatically progress to the next clip when you reach the end of the current one.",
+                order: 11
             }
-        ];
 
-        $scope.onboarding.callbacks = {
-            onBeforeStart: function () {
-                $scope.$broadcast("show-label-details");
-            },
-            onExit: function () {
-                $scope.$broadcast("hide-label-details");
-            }
-        };
-
+        ]);
 
         $scope.questionData = {};
 
@@ -115,12 +105,7 @@ class CitizenScienceListenController {
 
                     if (item.id !== oldVal.id) {
                         self.showAudio(item.audioRecordingId, item.startTimeSeconds, item.endTimeSeconds);
-                        // for now, we cycle through backgrounds arbitrarily, based on the id of the sample
-                        // todo: store background images as part of the dataset or cs project
-                        var backgroundPath = self.backgroundPaths[parseInt(item.id) % (self.backgroundPaths.length - 1)];
-                        backgroundImage.currentBackground = backgroundPath;
                         $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample(item.id));
-
                     }
 
                     if (item.hasOwnProperty("audioRecording")) {
@@ -147,10 +132,6 @@ class CitizenScienceListenController {
                 $scope.$broadcast("autoNextTrigger");
             }
         });
-
-
-
-        self.backgroundPaths = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"].map(fn => paths.site.assets.backgrounds.citizenScience + fn);
 
     }
 
@@ -179,6 +160,7 @@ angular
             "Question",
             "$routeParams",
             "Study",
+            "onboardingService",
             CitizenScienceListenController
         ]);
 

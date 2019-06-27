@@ -12,12 +12,14 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
             "annotationLibraryCommon",
             "AudioEvent",
             "SampleLabels",
+            "onboardingService",
             function ($scope,
                       $http,
                       CitizenScienceCommon,
                       libraryCommon,
                       AudioEventService,
-                      SampleLabels) {
+                      SampleLabels,
+                      onboardingService) {
 
                 var self = this;
 
@@ -113,6 +115,40 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                                 console.error("Failed to load citizen science example item response.", httpResponse);
                         });
                 };
+
+
+                onboardingService.addSteps([
+                    {
+                        element: ".citizen-science-thumb",
+                        intro: "See if you can identify the events that are in these small spectrogram thumbnails in the audio clip above. " +
+                        "Tap the thumbnail for a closer look and to listen to the audio.",
+                        order: 5
+                    },
+                    {
+                        element: ".label-check a",
+                        intro: "Use the checkbox to indicate if the this kind of event occurs in the audio clip above",
+                        order: 5
+
+                    },
+                    {
+                        element: ".label-examples-annotations .label-check a",
+                        intro: "You can also use this checkbox to select the call",
+                        order: 5
+
+                    }
+
+                ]);
+
+                onboardingService.addCallbacks({
+                    onBeforeStart: function () {
+                        $scope.$broadcast("show-label-details");
+                    },
+                    onExit: function () {
+                        $scope.$broadcast("hide-label-details");
+                    }
+                });
+
+
             }],
         bindings: {
             labels: "=",

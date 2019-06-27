@@ -3,48 +3,131 @@
  */
 
 angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", "angular-intro"])
+    .factory("onboardingService", [
+        function () {
+
+            var self = this;
+
+            self.steps = [];
+            self.callbacks = {};
+
+            /**
+             * Steps can be given an order property, which we sort by.
+             * This allows steps to be added in any order
+             */
+            self.sortSteps = function () {
+
+                self.steps = self.steps.sort((a,b) => {
+                    if (!a.hasOwnProperty("order") || !b.hasOwnProperty("order")) {
+                        return 0;
+                    } else if (a.order > b.order) {
+                        return 1;
+                    } else if (b.order > a.order) {
+                        return -1;
+                    }
+                    return 0;
+                });
+
+            };
+
+
+            return {
+
+                addSteps: function (steps) {
+
+                    if (!Array.isArray(steps)) {
+                        steps = [steps];
+                    }
+                    self.steps = self.steps.concat(steps);
+
+                },
+
+
+                getSteps: function () {
+                    self.sortSteps();
+                    return self.steps;
+                },
+
+                /**
+                 * Add callbacks. If a callback with the same key already
+                 * exists it will be replaced
+                 * @param callbacks
+                 */
+                addCallbacks: function (callbacks) {
+                    Object.assign(self.callbacks, callbacks);
+                },
+
+                callbacks: self.callbacks,
+                getCallbacks: function () {return self.callbacks;}
+
+            };
+
+
+
+
+
+
+
+        }])
     .component("onboarding", {
         templateUrl: "onboarding/infoButton.tpl.html",
         bindings: {
-            config: "=",
+            options: "<"
         },
         controller: [
             "$scope",
+            "onboardingService",
             "ngIntroService",
             "$timeout",
-            function ($scope, ngIntroService, $timeout) {
+            function ($scope, onboardingService, ngIntroService, $timeout) {
 
                 var self = this;
 
-                // set all the callbacks
-
-                Object.keys(self.config.callbacks).forEach((cb) => {
-                    if (angular.isFunction(ngIntroService[cb])) {
-                        ngIntroService[cb](self.config.callbacks[cb]);
-                    } else {
-                        console.log("no function", cb);
-                    }
-
-                });
-
                 $scope.launchTour = function launchTour () {
 
-                  console.log("launchtour");
+                    self.init();
 
                     // it does not seem possible to modify the elements in the steps list
                     // after the intro has started. If an intro step include an element that is hidden when
                     // the intro starts, then that step will not display correctly. Dom manipulation must be finished
-                    // before the introJS initialises (which is before any introJs callback.
-                    if (angular.isFunction(self.config.callbacks.onBeforeStart)) {
-                        self.config.callbacks.onBeforeStart.call();
-                        $timeout(() => {ngIntroService.start();});
+                    // before the introJS initialises (which is before any introJs callback).
+                    if (angular.isFunction(onboardingService.callbacks.onBeforeStart)) {
+
+                        // use timeouts to ensure that digest cycles are complete before starting
+                        $timeout(() => {
+                            onboardingService.callbacks.onBeforeStart.call();
+                            $timeout(() => {ngIntroService.start();});
+                        });
+
                     } else {
                         ngIntroService.start();
                     }
 
                 };
 
-                this.introOptionsDefaults = {
+                self.init = function () {
+
+                    // set all the callbacks
+                    Object.keys(onboardingService.callbacks).forEach((cb) => {
+                        if (angular.isFunction(ngIntroService[cb])) {
+                            ngIntroService[cb](onboardingService.callbacks[cb]);
+                        } else {
+                            console.log("no function", cb);
+                        }
+
+                    });
+
+                    if (self.options === undefined) {
+                        self.options = {};
+                    }
+
+                    var options = Object.assign({}, self.introOptionsDefaults, self.options);
+                    options.steps = onboardingService.getSteps();
+                    ngIntroService.setOptions(options);
+
+                };
+
+                self.introOptionsDefaults = {
                     steps: [],
                     showStepNumbers: false,
                     exitOnOverlayClick: true,
@@ -55,9 +138,7 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                     doneLabel: "Thanks"
                 };
 
-                var options = Object.assign({}, this.introOptionsDefaults, this.options);
-                options.steps = self.config.steps;
-                ngIntroService.setOptions(options);
+
 
             }]
     });
