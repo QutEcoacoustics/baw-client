@@ -1,11 +1,11 @@
 $thumb-height: 100;
 
-$triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="20px" version="1.1"><defs/><g><path d="M 0 20 L 20 0 L 40 20 Z" fill="#000000" pointer-events="none"/></g></svg>';
+$triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="20px" version="1.1"><defs/><g><path d="M 0 20 L 20 0 L 40 20 Z" pointer-events="none"/></g></svg>';
+
 
 .thumb-labels-container {
   text-align: center;
   margin-top: 10px;
-  background: rgba(0, 0, 0, 0.3);
   position: relative;
 
   /* flexbox layout of thumbs */
@@ -78,7 +78,7 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
       box-shadow: 5px 5px 10px 10px rgba(0, 0, 0, 0.3);
       border-radius: 5px;
       background: rgba(0, 0, 0, 0.9);
-      padding: 5px;
+      padding: 5px 10px 15px 10px;
       top: ($thumb-height + 10) + px;
 
       .citizen-science-thumb-example {

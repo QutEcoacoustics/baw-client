@@ -2,7 +2,8 @@ var csLabels = angular.module("bawApp.citizenScience.csLabels", [
     "bawApp.citizenScience.common",
     "bawApp.components.citizenScienceThumbLabels",
     "bawApp.components.citizenScienceTextLabels",
-    "bawApp.citizenScience.sampleLabels"
+    "bawApp.citizenScience.sampleLabels",
+    "bawApp.components.citizenScienceUserInput"
 ]);
 
 
@@ -13,10 +14,13 @@ csLabels.component("citizenScienceLabels", {
             "SampleLabels",
             function ($scope, SampleLabels) {
 
-                var self = this;
 
-                console.log(self);
+                $scope.question = SampleLabels.question;
 
+                /**
+                 * When the labels are updated (question data retrieved from the server)
+                 * set up the labels and userInput UI
+                 */
                 $scope.$watch(SampleLabels.getLabels, function (newVal, oldVal) {
 
                     if (typeof(newVal) === "object") {
@@ -31,13 +35,20 @@ csLabels.component("citizenScienceLabels", {
                             $scope.labelType = "text";
                         }
 
+
+                        // // assume that when labels change fields also changes.
+                        // $scope.fields = SampleLabels.getFields();
+
                         $scope.labels = newVal;
                     }
 
                 }, true);
 
+
+
             }],
         bindings: {
         }
     });
+
 

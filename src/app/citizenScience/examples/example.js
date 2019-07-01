@@ -10,8 +10,6 @@ angular.module("bawApp.components.citizenScienceExample", ["bawApp.citizenScienc
             "baw.models.AudioEvent",
             function ($scope, $http, CitizenScienceCommon, libraryCommon, AudioEventService, AudioEvent) {
 
-                console.log("hello example");
-
                 $scope.myName = "example";
 
                 var self = this;
@@ -45,7 +43,6 @@ angular.module("bawApp.components.citizenScienceExample", ["bawApp.citizenScienc
                                 autoPlay: true,
                                 position: 0
                             };
-
 
                         },
                         function annotationShowError(httpResponse) {

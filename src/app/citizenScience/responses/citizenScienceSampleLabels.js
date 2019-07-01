@@ -13,11 +13,23 @@ sampleLabels.factory("SampleLabels", [
         var self = this;
 
         // the data for questionResponses. Each question will have a unique key
-        self.data = {};
-        self.hasResponse = false;
-        self.allowEmpty = true;
-        self.allowMulti = true;
-        self.labels = false;
+        // self.data = {};
+        //self.hasResponse = false;
+
+
+        self.question = {
+            allowEmpty: true,
+            allowMulti: true,
+            labels: [],
+            fields: []
+        };
+
+        self.data = {
+            labels: {},
+            fields: {},
+            hasResponse: false
+        };
+
 
 
         /**
@@ -31,34 +43,44 @@ sampleLabels.factory("SampleLabels", [
                 self.data.studyId = studyId;
             }
             if (question !== false) {
-                self.data.questionId = question.id;
-                self.labels =  question.questionData.labels;
 
+                // TODO: update to handle multiple questions
+
+                self.data.questionId = question.id;
+
+                self.question.labels =  question.questionData.labels;
+
+                // set defaults
                 if (question.questionData.hasOwnProperty("allowEmpty")) {
-                    self.allowEmpty = question.questionData.allowEmpty;
+                    self.question.allowEmpty = question.questionData.allowEmpty;
                 }
 
                 if (question.questionData.hasOwnProperty("allowMulti")) {
-                    self.allowMulti = question.questionData.allowMulti;
+                    self.question.allowMulti = question.questionData.allowMulti;
                 }
                 if (question.questionData.labels.length === 1) {
                     // for binary yes/no there is only one label, therefore no multi select
-                    self.allowMulti = false;
+                    self.question.allowMulti = false;
                 }
 
                 // if label ids are not supplied, add them in.
-                if (!self.labels.every(l => l.hasOwnProperty("id"))) {
+                if (!self.question.labels.every(l => l.hasOwnProperty("id"))) {
 
                     // if only some but not all label ids are supplied, error
-                    if (self.labels.some(l => l.hasOwnProperty("id"))) {
+                    if (self.question.labels.some(l => l.hasOwnProperty("id"))) {
                         console.error("Invalid question data: Some but not all labels have ids");
                     }
 
-                    self.labels = self.labels.map((l,i) => {
+                    self.question.labels = self.question.labels.map((l,i) => {
                         l.id = i+1;
                         return(l);
                     });
 
+                }
+
+                if (question.questionData.hasOwnProperty("fields")) {
+                    // this holds field definitions, including field type
+                    self.question.fields = question.questionData.fields;
                 }
 
             }
@@ -68,49 +90,21 @@ sampleLabels.factory("SampleLabels", [
         };
 
 
-        /**
-         * adds or removes a label id from the list of true labels ids. This is now deprecated and
-         * here only for reference, since we now allow 'yes' and 'maybe' for a label.
-         * @param labelId int; may be omitted if it is a binary (only one label) task.
-         * @param value int [0,1]
-         */
-        self.setValueOld = function (value, labelId) {
-
-            if (labelId === undefined && self.labels.length === 1) {
-                labelId = 1;
-            }
-
-            if (labelId !== undefined) {
-                self.hasResponse = true;
-                if (value) {
-                    if (!self.allowMulti) {
-                        self.data.labels.clear();
-                    }
-                    self.data.labels.add(labelId);
-                } else {
-                    self.data.labels.delete(labelId);
-                }
-            } else {
-                console.warn("Label id not defined");
-            }
-
-        };
-
 
         /**
-         * updates the
+         * updates the labels object to set the value for the given key
          * @param value String
          * @param labelId Int
          */
         self.setValue = function (value, labelId) {
 
-            if (labelId === undefined && self.labels.length === 1) {
+            if (labelId === undefined && self.question.labels.length === 1) {
                 labelId = 1;
             }
 
             if (labelId !== undefined) {
-                self.hasResponse = true;
-                if (value === "yes" && !self.allowMulti) {
+                self.data.hasResponse = true;
+                if (value === "yes" && !self.question.allowMulti) {
                     self.data.labels = {};
                 }
 
@@ -123,20 +117,10 @@ sampleLabels.factory("SampleLabels", [
 
         };
 
-
-        /**
-         * Looks up the data to see if there is a boolean value stored for a given labelId
-         * and if so, returns it.
-         * @param labelId
-         * @returns {boolean}
-         */
-        self.getValueOld = function (labelId) {
-
-            if (labelId === undefined && self.labels.length === 1) {
-                labelId = 1;
-            }
-            return self.data.labels.has(labelId);
-        };
+        // todo: check if we need this
+        // self.setFieldValues = function (fields) {
+        //     self.data.fields = fields;
+        // };
 
         /**
          * Looks up the data to see if there is a value stored for a given labelId
@@ -146,7 +130,7 @@ sampleLabels.factory("SampleLabels", [
          */
         self.getValue = function (labelId) {
 
-            if (labelId === undefined && self.labels.length === 1) {
+            if (labelId === undefined && self.question.labels.length === 1) {
                 labelId = 1;
             }
 
@@ -164,6 +148,7 @@ sampleLabels.factory("SampleLabels", [
             init : self.init,
             getValue : self.getValue,
             setValue : self.setValue,
+            setFieldValues: self.setFieldValues,
             setValueBinary : self.setValueBinary,
 
             /**
@@ -171,7 +156,7 @@ sampleLabels.factory("SampleLabels", [
              * @param notes string optional; message about the state when the response was submitted, e.g. autoplay on
              * @param userNotes string optional; message that the user entered
              */
-            sendResponse : function (notes, userNotes) {
+            sendResponse : function (notes) {
 
 
                 if (self.data.datasetItemId) {
@@ -184,9 +169,9 @@ sampleLabels.factory("SampleLabels", [
                     if (notes) {
                         userResponseData.notes = notes;
                     }
-                    if (userNotes) {
-                        userResponseData.userNotes = userNotes;
-                    }
+
+                    Object.assign(userResponseData, self.data.fields);
+
                     QuestionResponse.createQuestionResponse(self.data.questionId, self.data.datasetItemId, self.data.studyId, userResponseData);
                 }
 
@@ -200,9 +185,11 @@ sampleLabels.factory("SampleLabels", [
 
                 self.data.datasetItemId = newDatasetItemId;
                 self.data.labels = {};
+                self.data.fields = {};
+                self.question.fields.forEach(f => self.data.fields[f.name] = "");
                 // hasResponse will be stay true if a value has been added and then removed
                 // until this init function is called.
-                self.hasResponse = false;
+                self.data.hasResponse = false;
 
             },
 
@@ -210,12 +197,12 @@ sampleLabels.factory("SampleLabels", [
              * returns an object that holds all the labels that have been applied to
              * the given sample and their values. (if a label has been removed then it will be stored
              * as false. If it has never been applied, it will not be present).
-             * @param sampleId
-             * @returns {*}
+             * @returns {*} object
              */
+            // todo: do we need this?
             getLabelsForSample : function () {
 
-                return [...self.data.labels];
+                return self.data.labels;
             },
 
             /**
@@ -223,15 +210,19 @@ sampleLabels.factory("SampleLabels", [
              * @param sampleId
              */
             hasResponse : function () {
-                return self.hasResponse;
+                return self.data.hasResponse;
             },
 
+            // todo: do we need this?
             allowEmpty : function () {
-                return self.allowEmpty;
+                return self.question.allowEmpty;
             },
 
-            getLabels: function () { return self.labels; }
+            // todo: do we need this?
+            getLabels: function () { return self.question.labels; },
 
+            question: self.question,
+            data: self.data
         };
 
         return self.functions;

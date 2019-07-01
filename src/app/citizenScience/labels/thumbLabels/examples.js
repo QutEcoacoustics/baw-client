@@ -23,7 +23,6 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
                     var l = self.label.examples.length;
                     // add changeBy and wrap if the result is larger than length
                     $scope.currentExample = (($scope.currentExample + changeBy % l) + l) % l;
-                    console.log("changed cur example for label " + self.label + " to " + $scope.currentExample);
                 };
 
                 /**
@@ -63,7 +62,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
                             return;
                         }
                         var offset = el.offsetParent.getBoundingClientRect().left;
-                        el.style.width = $window.innerWidth - 50 + "px";
+                        el.style.width = $window.innerWidth - 45 + "px";
                         el.style.left = (15 - offset) + "px";
                     }
 

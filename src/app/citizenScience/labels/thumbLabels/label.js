@@ -17,18 +17,18 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
 
                 var self = this;
 
+                /**
+                 * Gets the state of this label from the SampleLabels service
+                 * @return {string}
+                 */
                 $scope.currentState = function() {
                     return SampleLabels.getValue(self.label.id);
                 };
 
-
-                //$scope.state = "empty";
-
-                // $scope.$watch("state", function (newVal, oldVal) {
-                //     console.log(newVal);
-                //     SampleLabels.setValue($scope.state, self.label.id);
-                // });
-
+                /**
+                 * Gets whether the details (example etc) are being shown for this label
+                 * @return {boolean}
+                 */
                 $scope.isShowingDetails = function () {
                     return self.currentDetailsLabelId.value === self.label.id;
                 };
@@ -48,13 +48,17 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
 
                 /**
                  * callback when this label state changes
-                 * This is used to get reverse binding into transcluded components.
+                 * This is a bit convoluted but the alternative is to nest the state
+                 * in an object and update by reference
+                 * and watch the object to update the SampleLabels service.
                  * @param isSelected Boolean
                  */
                 self.onToggleSelected = function (state) {
                     SampleLabels.setValue(state, self.label.id);
                     $scope.state = state;
                 };
+
+
 
             }],
         bindings: {

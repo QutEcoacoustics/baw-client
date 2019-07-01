@@ -4,12 +4,6 @@ class ResponsesController {
                 SampleLabels,
                 Question) {
 
-        var self = this;
-
-        // todo: display table of responses.
-
-        console.log(self);
-
 
     }
 }

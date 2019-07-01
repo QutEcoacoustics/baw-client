@@ -13,7 +13,9 @@ angular.module("bawApp.components.citizenScienceTextLabels",
                 onboardingService.addSteps([
                     {
                         element: "label-check:first-of-type div",
-                        intro: `Make your selection about whether ${this.labels[0].name} is in the recording`,
+                       // TODO: fix this
+                       // intro: `Make your selection about whether ${this.labels[0].name} is in the recording`,
+                        intro: `Make your selection about whether this thing is in the recording`,
                         order: 5
                     }
 

@@ -126,8 +126,6 @@ class CitizenScienceListenController {
         //$scope.nextLink = null;
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
 
-            console.log(event);
-
             if (event.targetScope.audioElementModel === $scope.audioElementModel && $scope.audioElementModel.autoPlay) {
                 $scope.$broadcast("autoNextTrigger");
             }

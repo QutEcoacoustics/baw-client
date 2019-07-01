@@ -49,22 +49,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         self.mediaModel = null;
 
-        /**
-         * Checks if a tag or array of tags is the same
-         * @param tags1 mixed string or array of strings
-         * @param tags2 mixed string or array of strings
-         */
-        self.compareTags = function (tags1, tags2) {
-            if (Array.isArray(tags1)) {
-                tags1 = tags1.sort().join("");
-            }
-            if (Array.isArray(tags2)) {
-                tags2 = tags2.sort().join("");
-            }
-            return tags1 === tags2;
-        };
-
-
 
         self.functions = {
 
@@ -86,17 +70,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                     labelObject[label] = label;
                 });
                 return labelObject;
-            },
-
-            /**
-             * Encode the array of labels as json
-             * @TODO: rename this to tags. Each label can have multiple tags.
-             * so this will be 2d array, outer array is labels and each label is an array of tags.
-             * @param labels array
-             * @returns String
-             */
-            labelsAsString: function (labels) {
-                return JSON.stringify(labels);
             },
 
 
@@ -128,7 +101,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
                         }
                     );
 
-                    // do not block, do not wait for Media requests to finish
                     return;
 
                 };

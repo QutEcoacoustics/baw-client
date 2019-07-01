@@ -95,7 +95,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                             return x;
 
                         }, function (error) {
-                            console.log("get audio events by ids failed", error);
+                            console.warn("get audio events by ids failed", error);
                         })
                         .then(function (response) {
 

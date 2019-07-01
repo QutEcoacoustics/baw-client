@@ -11,7 +11,7 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                  * There are 4 possible states for the label, yes, no, maybe and empty.
                  * Empty a bit like no. With no, it's been explicitly set as no,
                  * whereas with empty it is the default state, not yet explicitly set. Once the state is changed from
-                 * empty it can never be empty again.
+                 * empty it can never be empty again, except when the bound $ctrl.state changes (e.g. on new segment).
                  * There are two view variations for this: expanded or not
                  * With expanded, the label will have 'yes', 'no' and 'maybe' checkboxes separately
                  * With not expanded, there is one checkbox that cycles between yes, maybe and no
@@ -25,8 +25,6 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                  * If state is not supplied, it will cycle through the possible states.
                  */
                 $scope.toggleLabel = function (stateIndex) {
-
-                    console.log(self.state);
 
                     if (typeof stateIndex !== "number") {
                         // no new stateIndex supplied so cycle through the states, excluding zero
@@ -59,6 +57,7 @@ angular.module("bawApp.components.citizenScienceLabelCheck", ["bawApp.citizenSci
                 $scope.stateIndexes = [1,2,3];
 
 
+                // watch the state so that we can empty it when
                 $scope.$watch(function () {
                     return self.state;
                     }, function (newVal, oldVal) {

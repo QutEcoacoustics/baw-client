@@ -17,9 +17,7 @@ angular.module("bawApp.components.citizenScienceTextLabels.label",
 
                 $scope.state = "empty";
 
-
                 $scope.$watch("state", function (newVal, oldVal) {
-                    console.log(newVal);
                     SampleLabels.setValue($scope.state, self.label.id);
                 });
 
