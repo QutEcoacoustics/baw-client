@@ -9,13 +9,15 @@
 angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"])
     .component("datasetProgress", {
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
-        controller: ["$scope", "$routeParams", "CsSamples", "SampleLabels",
-            function ($scope, $routeParams, CsSamples, SampleLabels) {
+        controller: ["$scope", "$routeParams", "CsSamples", "SampleLabels", "$url", "conf.paths",
+            function ($scope, $routeParams, CsSamples, SampleLabels, $url, paths) {
 
                 var self = this;
 
                 // routed dataset item id will link back to the unrouted listen page
-                $scope.listenLink = `/citsci/${$routeParams.studyName}/listen/`;
+                $scope.listenLink = $url.formatUri(paths.site.ngRoutes.citizenScience.listen,
+                    {studyName: $routeParams.studyName});
+
 
                 // need to wait for the study's dataset_id before initialising
                 $scope.$watch(function () { return self.datasetId; }, function (newVal, oldVal){
@@ -23,15 +25,21 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                         if ($routeParams.sampleNum) {
                             CsSamples.selectById($routeParams.sampleNum);
                             $scope.nextItem = function () {
-                                SampleLabels.sendResponse("using_routed");
-                                return true;
+                                if (!$scope.nextDisabled(false)) {
+                                    SampleLabels.sendResponse("using_routed");
+                                    return true;
+                                }
+
                             };
                             $scope.isRoutedSample = true;
                         } else {
                             CsSamples.init(self.datasetId);
                             $scope.nextItem = function () {
-                                SampleLabels.sendResponse();
-                                CsSamples.nextItem();
+                                // TODO: handle end of dataset
+                                if (!$scope.nextDisabled(true)) {
+                                    SampleLabels.sendResponse();
+                                    CsSamples.nextItem();
+                                }
                             };
                             $scope.isRoutedSample = false;
                         }
@@ -47,14 +55,16 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                     CsSamples.nextItem();
                 });
 
+
                 /**
                  *
                  * @return boolean
                  */
-                $scope.nextDisabled = function () {
+                $scope.nextDisabled = function (requireNextItemAvailable = false) {
 
                     // default to allow empty if not specified
-                    var enabled = (SampleLabels.hasResponse() || SampleLabels.allowEmpty()) && CsSamples.nextItemAvailable();
+                    var enabled = SampleLabels.hasResponse() || SampleLabels.allowEmpty();
+                    enabled = enabled && (!requireNextItemAvailable || CsSamples.nextItemAvailable());
                     return !enabled;
 
                 };
@@ -65,7 +75,13 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                     } else {
 
                         if (self.allowEmpty || self.allowEmpty === undefined) {
-                            return "Nothing here, next sample";
+
+                            if (CsSamples.nextItemAvailable()) {
+                                return "Nothing here, next sample";
+                            } else {
+                                return "Nothing here";
+                            }
+
                         } else {
                             return "Enter a response";
                         }

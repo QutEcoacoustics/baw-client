@@ -5,17 +5,11 @@ var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels",
  *  Keeps track of the labels applied to the current sample.
  */
 sampleLabels.factory("SampleLabels", [
-    "CitizenScienceCommon",
     "$http",
     "QuestionResponse",
-    function SampleLabels(CitizenScienceCommon, $http, QuestionResponse) {
+    function SampleLabels($http, QuestionResponse) {
 
         var self = this;
-
-        // the data for questionResponses. Each question will have a unique key
-        // self.data = {};
-        //self.hasResponse = false;
-
 
         self.question = {
             allowEmpty: true,
@@ -117,10 +111,6 @@ sampleLabels.factory("SampleLabels", [
 
         };
 
-        // todo: check if we need this
-        // self.setFieldValues = function (fields) {
-        //     self.data.fields = fields;
-        // };
 
         /**
          * Looks up the data to see if there is a value stored for a given labelId
@@ -148,15 +138,13 @@ sampleLabels.factory("SampleLabels", [
             init : self.init,
             getValue : self.getValue,
             setValue : self.setValue,
-            setFieldValues: self.setFieldValues,
-            setValueBinary : self.setValueBinary,
 
             /**
              * sends the response to the server using the questionResponse service
              * @param notes string optional; message about the state when the response was submitted, e.g. autoplay on
              * @param userNotes string optional; message that the user entered
              */
-            sendResponse : function (notes) {
+            sendResponse : function (notes = false) {
 
 
                 if (self.data.datasetItemId) {
@@ -194,18 +182,6 @@ sampleLabels.factory("SampleLabels", [
             },
 
             /**
-             * returns an object that holds all the labels that have been applied to
-             * the given sample and their values. (if a label has been removed then it will be stored
-             * as false. If it has never been applied, it will not be present).
-             * @returns {*} object
-             */
-            // todo: do we need this?
-            getLabelsForSample : function () {
-
-                return self.data.labels;
-            },
-
-            /**
              * Returns whether any responses have been recorded for the current dataset item and question
              * @param sampleId
              */
@@ -213,13 +189,10 @@ sampleLabels.factory("SampleLabels", [
                 return self.data.hasResponse;
             },
 
-            // todo: do we need this?
+
             allowEmpty : function () {
                 return self.question.allowEmpty;
             },
-
-            // todo: do we need this?
-            getLabels: function () { return self.question.labels; },
 
             question: self.question,
             data: self.data

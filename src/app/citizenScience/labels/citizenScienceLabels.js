@@ -21,7 +21,7 @@ csLabels.component("citizenScienceLabels", {
                  * When the labels are updated (question data retrieved from the server)
                  * set up the labels and userInput UI
                  */
-                $scope.$watch(SampleLabels.getLabels, function (newVal, oldVal) {
+                $scope.$watch("question.labels", function (newVal, oldVal) {
 
                     if (typeof(newVal) === "object") {
                         if (newVal === 1) {

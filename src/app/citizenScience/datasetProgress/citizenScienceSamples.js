@@ -5,14 +5,19 @@ var csSamples = angular.module("bawApp.citizenScience.csSamples", ["bawApp.citiz
  * Manages the queue of dataset items that will be shown to citizen science users
  */
 csSamples.factory("CsSamples", [
-    "CitizenScienceCommon",
     "DatasetItem",
     "ProgressEvent",
     "AudioRecording",
-    function CsSamples(CitizenScienceCommon, DatasetItem, ProgressEvent, AudioRecording) {
+    function CsSamples(DatasetItem, ProgressEvent, AudioRecording) {
 
         var self = this;
 
+        /**
+         * CurrentIndex hold the current page number (0-indexed) and item is current item within the current page (0-indexed)
+         * Pages is an array of arrays of dataset items.
+         * currentIndex.page refers to the array index in the outer array
+         * currentIndex.item refers to the array index in the inner array
+         */
         self.resetlist = function () {
             self.currentIndex = { page: -1, item: -1};
             self.pages = [];
@@ -26,6 +31,7 @@ csSamples.factory("CsSamples", [
          */
         self.currentPageLength = function () {
             if (self.currentIndex.page < 0) {
+                // first page has not been loaded yet - currentPage is still set to initialization value
                 return 0;
             } else if (self.pages.length < self.currentIndex.page + 1) {
                 // current page doesn't exit yet
@@ -60,21 +66,27 @@ csSamples.factory("CsSamples", [
 
         /**
          * Returns the page number and item number of the next item
-         * or if there is no next item, returns false
+         * or if there is no next item, returns false.
+         * This is basically incrementing the currentIndex.page, but with handling when
+         * we get to the end of the page (end of one of the inner arrays of self.pages)
          */
         self.nextItemIndexes = function () {
 
+            // there is no current item, so we don't want to go to the next.
             if (!self.currentItem) {
                 return false;
             }
+
+            // we are at the end of the last item of the last page, so there is no next item index
             if (self.currentIndex.item === self.currentPageLength() - 1 && self.currentIndex.page === self.pages.length - 1) {
                 return false;
             }
 
+            // increment assuming that there is another item on this page
             var nextItemIndex = self.currentIndex.item + 1;
             var nextPageIndex = self.currentIndex.page;
 
-            // go to next page if necessary
+            // check if we passed the end of the page and go to next page if necessary
             if(self.currentPageLength() < nextItemIndex + 1) {
                 nextPageIndex = nextPageIndex+ 1;
                 nextItemIndex = 0;
@@ -94,6 +106,8 @@ csSamples.factory("CsSamples", [
         self.requestPageOfItems = function (thenSelectNewItem = false) {
             var nextPageNum;
             if (self.pages.length > 0) {
+                // the pagenumber to send with the request, based on incrementing the page
+                // number of the last page we currently have.
                  nextPageNum = self.pages[self.pages.length - 1].meta.paging.page + 1;
                 if (self.pages[self.pages.length - 1].meta.paging.maxPage < nextPageNum) {
                     // we have reached the last page already
@@ -104,21 +118,23 @@ csSamples.factory("CsSamples", [
             }
 
             DatasetItem.datasetItems(self.datasetId, nextPageNum).then(x => {
-                // todo: handle when result comes back as length 0
-                console.log("page of items loaded", x);
-                self.pages[nextPageNum - 1] = x.data;
-                if (thenSelectNewItem) {
-                    self.currentIndex.page = nextPageNum - 1;
-                    self.currentIndex.item = 0;
-                    self.setCurrentItem();
-                }
 
-                self.addAudioRecordingFields(x.data.data);
+                if (x.data.data.length > 0) {
+                    self.pages[nextPageNum - 1] = x.data;
+                    if (thenSelectNewItem) {
+                        self.currentIndex.page = nextPageNum - 1;
+                        self.currentIndex.item = 0;
+                        self.setCurrentItem();
+                    }
+
+                    self.addAudioRecordingFields(x.data.data);
+                } else {
+                    console.warn("Empty page of dataset items returned");
+                }
 
             });
 
         };
-
 
 
         /**
@@ -148,8 +164,9 @@ csSamples.factory("CsSamples", [
         self.publicFunctions = {
 
             /**
-             * make a request for a specific dataset item. When the response comes,
-             * make that item the current item, empty the list, then request a page to append
+             * Make a request for a specific dataset item. When the response comes,
+             * make that item the current item, empty the list, then request a page to append.
+             * Note: the specified item is not added to the pages/items lists. It only exists in currentItem.
              * @param datasetItemId
              * @return Promise that returns the dataset item
              */
@@ -158,6 +175,7 @@ csSamples.factory("CsSamples", [
                     // todo: need something to stop this being called twice before response comes
                     self.resetlist();
                     self.currentItem = x.data.data[0];
+                    self.addAudioRecordingFields([self.currentItem]);
                     self.requestPageOfItems(false);
                     return x.data.data[0];
                 });
@@ -186,7 +204,7 @@ csSamples.factory("CsSamples", [
 
                 // note: indexes are 0-indexed, paging is 1-indexed
                 var debug_message = {currentIndex: self.currentIndex, currentPageMeta: self.pages[self.pages.length - 1].meta.paging};
-                console.log("moved to next page: ", debug_message);
+                console.log("moved to next page of dataset items: ", debug_message);
 
             },
 

@@ -38,7 +38,11 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                     if (!Array.isArray(steps)) {
                         steps = [steps];
                     }
-                    self.steps = self.steps.concat(steps);
+
+                    // filter out steps whose 'element' string is already present in an existing step.
+                    var newSteps = steps.filter(x => self.steps.findIndex((s) => s.element === x.element) === -1);
+
+                    self.steps = self.steps.concat(newSteps);
 
                 },
 
@@ -57,8 +61,7 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                     Object.assign(self.callbacks, callbacks);
                 },
 
-                callbacks: self.callbacks,
-                getCallbacks: function () {return self.callbacks;}
+                callbacks: self.callbacks
 
             };
 

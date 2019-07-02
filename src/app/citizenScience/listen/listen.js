@@ -1,12 +1,10 @@
 class CitizenScienceListenController {
     constructor($scope,
                 ngAudioEvents,
-                $location,
                 CitizenScienceCommon,
                 CsSamples,
                 SampleLabels,
                 backgroundImage,
-                paths,
                 Question,
                 $routeParams,
                 StudyService,
@@ -45,7 +43,7 @@ class CitizenScienceListenController {
             },
 
             {
-                element: "dataset-progress button",
+                element: "dataset-progress .btn",
                 intro: "When you have finished applying labels, use this button to go to the next clip",
                 order: 10
 
@@ -105,7 +103,6 @@ class CitizenScienceListenController {
 
                     if (item.id !== oldVal.id) {
                         self.showAudio(item.audioRecordingId, item.startTimeSeconds, item.endTimeSeconds);
-                        $scope.$broadcast("update-selected-labels", SampleLabels.getLabelsForSample(item.id));
                     }
 
                     if (item.hasOwnProperty("audioRecording")) {
@@ -118,12 +115,7 @@ class CitizenScienceListenController {
         /**
          * auto play feature
          * when the playback arrives at the end of the audio, it will proceed to the next segment.
-         * The url for the next segment will be returned from the nextLink function, which
-         * is initialised to null, then reverse bound bound from the data progress component
-
-         *TODO: make this work with non-url progress
          */
-        //$scope.nextLink = null;
         $scope.$on(ngAudioEvents.ended, function navigate(event) {
 
             if (event.targetScope.audioElementModel === $scope.audioElementModel && $scope.audioElementModel.autoPlay) {
@@ -149,12 +141,10 @@ angular
         [
             "$scope",
             "ngAudioEvents",
-            "$location",
             "CitizenScienceCommon",
             "CsSamples",
             "SampleLabels",
             "backgroundImage",
-            "conf.paths",
             "Question",
             "$routeParams",
             "Study",

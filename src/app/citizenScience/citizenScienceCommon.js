@@ -1,5 +1,5 @@
 /**
- * functionality shared by citizen science projects
+ * Misc functionality shared by citizen science controllers.
  */
 
 var citizenScienceCommon = angular.module("bawApp.citizenScience.common", []);
@@ -54,22 +54,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
             getAudioModel: function () {
                 return self.audioElementModel;
-            },
-
-            /**
-             * Converts an array of strings to an object where each key is the same as the val
-             * Used so that a list of labels returned from the dataset can be converted to the same
-             * format as the hardcoded labels (where the key might be different from the val)
-             * @TODO: remove this as labels now use a different format
-             * @param arr Array
-             * @returns {{}}
-             */
-            labelArrayToObject: function (arr) {
-                var labelObject = {};
-                arr.forEach(function (label) {
-                    labelObject[label] = label;
-                });
-                return labelObject;
             },
 
 

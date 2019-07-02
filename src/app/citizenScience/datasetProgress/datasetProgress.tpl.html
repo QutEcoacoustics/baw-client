@@ -2,7 +2,7 @@
         <div class="btn-group citSci-next">
             <button ng-if="!isRoutedSample"
                     class="btn btn-default"
-                    ng-disabled="nextDisabled()"
+                    ng-disabled="nextDisabled(true)"
                     ng-click="nextItem()"
                     ng-disabled="isDisabled()"
                     title="Next Clip">
@@ -12,7 +12,7 @@
                href="{{listenLink}}"
                ng-click="nextItem()"
                class="btn btn-default"
-               ng-disabled="nextDisabled()"
+               ng-disabled="nextDisabled(false)"
                title="Next Clip">
                 {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
             </a>

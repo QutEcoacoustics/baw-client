@@ -6,21 +6,24 @@ angular.module("bawApp.components.citizenScienceTextLabels",
     .component("citizenScienceTextLabels", {
         templateUrl: "citizenScience/labels/textLabels/labels.tpl.html",
         controller: [
+            "$scope",
             "onboardingService",
-            function (onboardingService) {
+            function ($scope, onboardingService) {
 
+                var self = this;
 
-                onboardingService.addSteps([
-                    {
-                        element: "label-check:first-of-type div",
-                       // TODO: fix this
-                       // intro: `Make your selection about whether ${this.labels[0].name} is in the recording`,
-                        intro: `Make your selection about whether this thing is in the recording`,
-                        order: 5
+                $scope.$watch(() => self.labels, (newVal) => {
+                    if (self.labels.length > 0) {
+                        onboardingService.addSteps([
+                            {
+                                element: "label-check:first-of-type div",
+                                intro: `Make your selection about whether ${this.labels[0].name} is in the recording`,
+                                order: 5
+                            }
+
+                        ]);
                     }
-
-                ]);
-
+                });
 
             }],
         bindings: {

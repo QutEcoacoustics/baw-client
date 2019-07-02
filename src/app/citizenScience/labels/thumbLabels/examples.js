@@ -8,12 +8,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
         transclude: true,
         controller: [
             "$scope",
-            "$http",
-            "CitizenScienceCommon",
-            "annotationLibraryCommon",
-            "AudioEvent",
-            "baw.models.AudioEvent",
-            function ($scope, $http, CitizenScienceCommon, libraryCommon, AudioEventService, AudioEvent) {
+            function ($scope) {
 
                 var self = this;
 

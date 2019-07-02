@@ -1,7 +1,14 @@
 
 <div class="label-user-input" ng-repeat="field in questionDefinition.fields">
 
-    <textarea placeholder="{{field.name}}" id="userInput{{$index + 1}}" ng-model="questionData.fields[field.name]"></textarea>
+    <textarea ng-if="field.type === 'textarea'"
+              placeholder="{{field.name}}"
+              ng-model="questionData.fields[field.name]"></textarea>
+
+    <input ng-if="field.type === 'input'"
+           placeholder="{{field.name}}"
+           ng-model="questionData.fields[field.name]">
+
 
 </div>
 

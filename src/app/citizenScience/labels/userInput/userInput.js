@@ -11,33 +11,29 @@ angular.module("bawApp.components.citizenScienceUserInput",
         controller: [
             "$scope",
             "SampleLabels",
-            function ($scope, SampleLabels) {
+            "onboardingService",
+            function ($scope, SampleLabels, onboardingService) {
 
                 $scope.questionData = SampleLabels.data;
                 $scope.questionDefinition = SampleLabels.question;
 
-                // $scope.$watch(() => { return SampleLabels.getFields(); }, (newVal, oldVal) => {
-                //     if (angular.isArray(newVal)) {
-                //
-                //         $scope.fieldDefinitions = newVal;
-                //
-                //         newVal.forEach(f => {
-                //             $scope.fields[f.name] = "";
-                //         });
-                //
-                //         // i want this to be assign by reference...but I don't think it is
-                //         SampleLabels.data.fields = $scope.fields;
-                //     }
-                // }, true);
 
+                $scope.$watch(() => SampleLabels.question.fields.length, (newVal) => {
 
-                // $scope.$watch("fields", function (newVal, oldVal) {
-                //     SampleLabels.setFieldValues($scope.fields);
-                // }, true);
+                    if (newVal > 0) {
+                        var stepsToAdd = SampleLabels.question.fields.map((field, i) => {
+                            return {
+                                element: `.label-user-input:nth-of-type(${i + 1})`,
+                                intro: `Input ${field.name} for this audio clip`,
+                                order: 6
+                            };
+                        });
 
+                        onboardingService.addSteps(stepsToAdd);
 
+                    }
 
-
+                }, true);
 
             }],
         bindings: {
