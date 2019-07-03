@@ -8,18 +8,19 @@
 
         <div class="main wrapper clearfix">
 
-            <div class="citsci-debug">
-                <p>Currently viewing: Sample {{ currentSample }}</p>
-                <p>Audio id: {{ samples[currentSample].recordingId }}</p>
-                <p>Start Offset: {{ samples[currentSample].startOffset }}</p>
-            </div>
-
             <div class="audio-outer">
                 <div class="audio-inner">
                     <div class="spectrogram-wrapper">
                         <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
                         <div position-line media="media" audio-data="audioElementModel" image-id="'spectrogram'"></div>
                     </div>
+
+                    <div class="sample-info"  ng-if="settings.showSite || settings.showDateTime">
+                        <span ng-if="settings.showSite">{{sampleInfo.site}}</span>
+                        <span ng-if="settings.showDateTime">{{sampleInfo.date}}</span>
+                        <span ng-if="settings.showDateTime">{{sampleInfo.time}}</span>
+                    </div>
+
                     <audio
                             id="citsci-sample"
                             ng-audio

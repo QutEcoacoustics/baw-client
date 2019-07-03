@@ -60,7 +60,7 @@ class CitizenScienceListenController {
 
         // the model passed to ngAudio
         $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
-        $scope.sampleContext = {
+        $scope.sampleInfo = {
             site: null,
             date: null,
             time: null
@@ -91,8 +91,17 @@ class CitizenScienceListenController {
         $scope.studyTitle = {"bristlebird": "Eastern Bristlebird Search", "koala-verification": "Koala Verification"}[$scope.csProject];
 
 
+        $scope.settings = {
+            "bristlebird": {
+                showSite: false,
+                showDateTime: false,
+            },
+            "koala-verification": {
+                showSite: true,
+                showDateTime: true,
+            }
+        }[$scope.csProject];
 
-        //SampleLabels.init($scope.csProject, $scope.samples, $scope.labels);
 
         /**
          * When the currentItem changes, change the current audio file / spectrogram to match it
@@ -101,7 +110,8 @@ class CitizenScienceListenController {
 
                 // returns the current item if the media is loaded, otherwise returns false.
                 var currentItem = CsSamples.currentItem();
-                if (currentItem.hasOwnProperty("media")) {
+                // 'start' is the last thing to be attached to the datasetItems
+                if (currentItem.hasOwnProperty("start")) {
                     return currentItem;
                 }
 
@@ -112,8 +122,16 @@ class CitizenScienceListenController {
                     $scope.media = item.media;
                     if (item.hasOwnProperty("audioRecording")) {
                         backgroundImage.setBackgroundImageForItem(item.audioRecording, item.startTimeSeconds);
-
                     }
+
+                    $scope.sampleInfoSite = item.audioRecording.site.name;
+                    $scope.sampleInfo = {
+                        // todo: replace with site name
+                        site: item.audioRecording.site.name,
+                        date: item.start.toLocaleDateString(),
+                        time: item.start.toLocaleTimeString()
+                    };
+
                 }
             });
 

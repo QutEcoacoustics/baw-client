@@ -59,8 +59,20 @@
     .audio-inner {
       display: inline-block;
       max-width: 100%;
-      box-shadow: 0px 0px 0px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 0px 10px rgba(0, 0, 0, 0.6);
       background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .sample-info {
+      color: #FFFFFF;
+      opacity: 0.7;
+      font-size: 0.8em;
+      padding-bottom: 3px;
+
+      span {
+        margin: 1em;
+      }
+
     }
   }
 
@@ -71,8 +83,8 @@
     margin-right: auto;
     position: relative;
 
-    display: inline-block;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    display: block;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.7);
     max-width: 100%;
 
     .spectrogram {
