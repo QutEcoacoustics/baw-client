@@ -8,7 +8,8 @@ csSamples.factory("CsSamples", [
     "DatasetItem",
     "ProgressEvent",
     "AudioRecording",
-    function CsSamples(DatasetItem, ProgressEvent, AudioRecording) {
+    "annotationLibraryCommon",
+    function CsSamples(DatasetItem, ProgressEvent, AudioRecording, libraryCommon) {
 
         var self = this;
 
@@ -127,34 +128,32 @@ csSamples.factory("CsSamples", [
                         self.setCurrentItem();
                     }
 
-                    self.addAudioRecordingFields(x.data.data);
+                    var associationData = {
+                        annotations: x.data.data,
+                        annotationIds: x.data.data.map((dsi) => dsi.id),
+                        recordingIds: x.data.data.map((dsi) => dsi.audioRecordingId)
+
+                    };
+
+                    // this adds associated records to the data
+                    return libraryCommon.getSiteMediaAndProject(associationData).then((y) => {
+
+                        // todo: generalise the annotationLibraryCommon naming to be general
+                        // currently we are piggybacking on annotationLibrary logic, which does
+                        // almost exactly what we need but for AudioEvents instead of DatasetItems
+                        y.annotations.forEach((datasetItem) => {
+
+                            datasetItem.start = new Date(datasetItem.audioRecording.recordedDate.getTime() + datasetItem.startTimeSeconds * 1000);
+                            datasetItem.end = new Date(datasetItem.audioRecording.recordedDate.getTime() + datasetItem.endTimeSeconds * 1000);
+
+                        });
+
+                    });
+
+
                 } else {
                     console.warn("Empty page of dataset items returned");
                 }
-
-            });
-
-        };
-
-
-        /**
-         * Adds AudioRecording object to each dataset item, which lets us know the site id and UTC start time of the item
-         * @param datasetItems
-         */
-        self.addAudioRecordingFields = function (datasetItems) {
-
-            var recordingIds = datasetItems.map(x => x.audioRecordingId);
-            // unique values
-            recordingIds = [...new Set(recordingIds)];
-
-            AudioRecording.getRecordingsForLibrary(recordingIds).then(x => {
-
-                var audioRecordings = x.data.data;
-
-                datasetItems.forEach(datasetItem => {
-                    var audioRecording = audioRecordings.find(ar => ar.id === datasetItem.audioRecordingId);
-                    datasetItem.audioRecording = audioRecording;
-                });
 
             });
 

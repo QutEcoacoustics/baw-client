@@ -28,26 +28,26 @@ angular
                 return $url.formatUri(paths.site.ngRoutes.library, paramObj);
             }
 
-            // function getMedia(annotation) {
-            //     // modify annotation by reference
-            //     // async
-            //     Media.get(
-            //         getMediaParameters(annotation),
-            //         mediaGetSuccess.bind(null, annotation),
-            //         mediaGetFailure
-            //     );
-            //
-            //     // do not block, do not wait for Media requests to finish
-            //     return;
-            // }
-
-            function getMedia(annotation) {
-                // modify annotation by reference
+            /**
+             * For a given child model that has the properties startOffset, endOffset and AudioRecording,
+             * fetch the Media json and add as a property. Child models are e.g. AudioEvent or DatasetItem.
+             * @param childModel object
+             * @return {*|Function}
+             */
+            function getMedia(childModel) {
+                // modify annotation/datasetItem by reference
                 // async
+                var mediaParameters;
+                if (childModel.constructor.name === "DatasetItem") {
+                    mediaParameters = getDatasetItemMediaParameters(childModel);
+                } else {
+                    mediaParameters = getAnnotationMediaParameters(childModel);
+                }
+
 
                 var x = Media.get(
-                    getMediaParameters(annotation),
-                    mediaGetSuccess.bind(null, annotation),
+                    mediaParameters,
+                    mediaGetSuccess.bind(null, childModel),
                     mediaGetFailure
                 );
 
@@ -55,7 +55,7 @@ angular
 
             }
 
-            function getMediaParameters(audioEvent) {
+            function getAnnotationMediaParameters(audioEvent) {
                 const recordingStart = 0.0,
                     padding = constants.annotationLibrary.paddingSeconds;
 
@@ -86,6 +86,21 @@ angular
                     format: "json"
                 };
             }
+
+            function getDatasetItemMediaParameters(datasetItem) {
+
+                var startOffset = datasetItem.startTimeSeconds;
+                var endOffset = datasetItem.endTimeSeconds;
+
+                return {
+                    recordingId: datasetItem.audioRecordingId,
+                    startOffset,
+                    endOffset,
+                    format: "json"
+                };
+            }
+
+
 
             function mediaGetSuccess(audioEvent, mediaValue, responseHeaders) {
                 audioEvent.media = new MediaModel(mediaValue.data);

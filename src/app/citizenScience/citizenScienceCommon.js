@@ -13,10 +13,7 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
     "baw.models.Media",
     function CitizenScienceCommon($rootScope,
                                   UserProfile,
-                                  UserProfileEvents,
-                                  $http,
-                                  Media,
-                                  MediaModel) {
+                                  UserProfileEvents) {
 
         var self = this;
 
@@ -55,43 +52,6 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             getAudioModel: function () {
                 return self.audioElementModel;
             },
-
-
-            /**
-             * Returns a function that sets the media member of the scope to the
-             * specified recording segment. The watcher will then actually load it to the dom
-             * @param recordingId string
-             * @param startOffset float
-             * @param duration float
-             */
-            bindShowAudio: function ($scope) {
-
-                var showAudio = function (recordingId, startOffset, endOffset) {
-
-                    var mediaParams = {
-                        recordingId: recordingId,
-                        startOffset: startOffset,
-                        endOffset: endOffset,
-                        format: "json"
-                    };
-
-                    Media.get(
-                        mediaParams,
-                        function (mediaValue) {
-                            $scope.media = new MediaModel(mediaValue.data);
-                        },
-                        function () {
-                            console.warn("failed to get media");
-                        }
-                    );
-
-                    return;
-
-                };
-
-                return showAudio;
-
-            }
 
         };
 

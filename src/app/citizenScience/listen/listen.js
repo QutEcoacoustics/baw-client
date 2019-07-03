@@ -11,7 +11,7 @@ class CitizenScienceListenController {
                 onboardingService
     ) {
 
-        var self = this;
+        //var self = this;
 
         /**
          * The name of the css project as it appears in the dataset definition
@@ -60,9 +60,11 @@ class CitizenScienceListenController {
 
         // the model passed to ngAudio
         $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
-
-        this.showAudio = CitizenScienceCommon.bindShowAudio($scope);
-
+        $scope.sampleContext = {
+            site: null,
+            date: null,
+            time: null
+        };
 
         // get the study information by name, then load the appropriate question data
         StudyService.studyByName($routeParams.studyName).then(x => {
@@ -96,21 +98,24 @@ class CitizenScienceListenController {
          * When the currentItem changes, change the current audio file / spectrogram to match it
          */
         $scope.$watch(function () {
-            return CsSamples.currentItem();
+
+                // returns the current item if the media is loaded, otherwise returns false.
+                var currentItem = CsSamples.currentItem();
+                if (currentItem.hasOwnProperty("media")) {
+                    return currentItem;
+                }
+
+                return false;
             },
             function (item, oldVal) {
                 if (item) {
-
-                    if (item.id !== oldVal.id) {
-                        self.showAudio(item.audioRecordingId, item.startTimeSeconds, item.endTimeSeconds);
-                    }
-
+                    $scope.media = item.media;
                     if (item.hasOwnProperty("audioRecording")) {
                         backgroundImage.setBackgroundImageForItem(item.audioRecording, item.startTimeSeconds);
-                    }
 
+                    }
                 }
-            }, true);
+            });
 
         /**
          * auto play feature
