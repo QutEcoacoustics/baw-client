@@ -32,15 +32,15 @@ angular
 
                 };
 
-                resource.questionResponses = function getQuestionResponses(studyId, pageNum) {
-                    var url = $url.formatUri(paths.api.routes.questionResponses.listAbsolute, {studyId: studyId, page: pageNum});
+                resource.questionResponses = function getQuestionResponses(params) {
+                    var url = $url.formatUri(paths.api.routes.questionResponse.listAbsolute, params);
                     return $http.get(url).then(x => {
                         return QuestionResponseModel.makeFromApi(x);
                     });
                 };
 
                 resource.questionResponse = function getQuestionResponse(questionResponseId) {
-                    var url = $url.formatUri(paths.api.routes.questionResponses.showAbsolute, {questionResponseId: questionResponseId});
+                    var url = $url.formatUri(paths.api.routes.questionResponse.showAbsolute, {questionResponseId: questionResponseId});
                     return $http.get(url).then(x => QuestionResponseModel.makeFromApi(x));
                 };
 

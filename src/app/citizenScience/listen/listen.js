@@ -19,6 +19,9 @@ class CitizenScienceListenController {
          */
         $scope.csProject = $routeParams.studyName;
 
+        CitizenScienceCommon.studyData.studyName = $scope.csProject;
+
+
         /**
          * The current sample object, including sample id
          * @type {number}
@@ -77,6 +80,7 @@ class CitizenScienceListenController {
             }
 
             $scope.study = studies[0];
+            CitizenScienceCommon.studyData.study = $scope.study;
 
             Question.questions($scope.study.id).then(x => {
                 console.log("questions loaded", x);

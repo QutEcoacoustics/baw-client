@@ -120,6 +120,9 @@ csSamples.factory("CsSamples", [
 
             DatasetItem.datasetItems(self.datasetId, nextPageNum).then(x => {
 
+                // this should always be the same
+                self.totalItems = x.data.meta.paging.total;
+
                 if (x.data.data.length > 0) {
                     self.pages[nextPageNum - 1] = x.data;
                     if (thenSelectNewItem) {
@@ -218,6 +221,10 @@ csSamples.factory("CsSamples", [
 
             onPlayed: function () {
                 ProgressEvent.createProgressEvent(self.currentItem.id, "played");
+            },
+
+            totalItems: function () {
+                return self.totalItems;
             }
 
         };

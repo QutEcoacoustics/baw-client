@@ -1,22 +1,43 @@
+<div class="dataset-progress-wrapper">
+    <div class="btn-group citSci-next">
+        <button ng-if="!isRoutedSample"
+                class="btn btn-default"
+                ng-disabled="nextDisabled(true)"
+                ng-click="nextItem()"
+                ng-disabled="isDisabled()"
+                title="Next Clip">
+            {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
+        </button>
+        <a ng-if="isRoutedSample"
+           href="{{listenLink}}"
+           ng-click="nextItem()"
+           class="btn btn-default"
+           ng-disabled="nextDisabled(false)"
+           title="Next Clip">
+            {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
+        </a>
+    </div>
 
-        <div class="btn-group citSci-next">
-            <button ng-if="!isRoutedSample"
-                    class="btn btn-default"
-                    ng-disabled="nextDisabled(true)"
-                    ng-click="nextItem()"
-                    ng-disabled="isDisabled()"
-                    title="Next Clip">
-                {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
-            </button>
-            <a ng-if="isRoutedSample"
-               href="{{listenLink}}"
-               ng-click="nextItem()"
-               class="btn btn-default"
-               ng-disabled="nextDisabled(false)"
-               title="Next Clip">
-                {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
-            </a>
+
+    <div class="dataset-progress" ng-if="progress.percent > 0">
+
+            <span class="progress-summary">
+                {{progress.responseCount}} / {{progress.itemCount}} ({{progress.percent}} %)
+            </span>
+
+        <div class="progress-graphic">
+            <div ng-repeat="break in progress.breaks track by $index" style="opacity:{{(break * 0.8) + 0.2}};"></div>
+
         </div>
+
+
+
+
+    </div>
+
+
+</div>
+
 
 
 

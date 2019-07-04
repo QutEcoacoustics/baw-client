@@ -17,6 +17,11 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
 
         var self = this;
 
+        self.studyData = {
+            study: null,
+            studyName: null
+        };
+
         /**
          * Default values for audio model, to be updated when UserProfile is loaded
          * @type {Object}
@@ -44,17 +49,16 @@ citizenScienceCommon.factory("CitizenScienceCommon", [
             self.profileLoaded(null, UserProfile);
         }
 
-        self.mediaModel = null;
-
-
-        self.functions = {
+        return {
 
             getAudioModel: function () {
                 return self.audioElementModel;
             },
 
+            studyData: self.studyData
+
         };
 
-        return self.functions;
+
 
     }]);
