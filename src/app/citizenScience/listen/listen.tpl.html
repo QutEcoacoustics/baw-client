@@ -15,10 +15,16 @@
                         <div position-line media="media" audio-data="audioElementModel" image-id="'spectrogram'"></div>
                     </div>
 
-                    <div class="sample-info"  ng-if="settings.showSite || settings.showDateTime">
-                        <span ng-if="settings.showSite">{{sampleInfo.site}}</span>
-                        <span ng-if="settings.showDateTime">{{sampleInfo.date}}</span>
-                        <span ng-if="settings.showDateTime">{{sampleInfo.time}}</span>
+                    <div class="sample-info"  ng-if="settings.showSite || settings.showDateTime || settings.showProgress">
+                        <span>
+                            <span ng-if="settings.showDateTime">{{sampleInfo.date}} &nbsp; {{sampleInfo.time}}</span>
+                            <span>
+                                <span ng-if="settings.showDateTime">{{sampleInfo.site}}</span>
+                            </span>
+
+                        </span>
+
+                        <dataset-progress-indicator ng-if="settings.showProgress"></dataset-progress-indicator>
                     </div>
 
                     <audio

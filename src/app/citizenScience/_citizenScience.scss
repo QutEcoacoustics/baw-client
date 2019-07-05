@@ -68,9 +68,19 @@
       opacity: 0.7;
       font-size: 0.8em;
       padding-bottom: 3px;
+      padding-top: 2px;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+
+      div {
+        font-size: 1em;
+        line-height: 1em;
+      }
 
       span {
-        margin: 1em;
+        margin: 2px 1em 2px 0.5em;
       }
 
     }

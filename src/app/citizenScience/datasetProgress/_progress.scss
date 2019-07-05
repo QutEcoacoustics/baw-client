@@ -1,7 +1,7 @@
 
 .dataset-progress-wrapper {
 
-  display: flex;
+  display: inline-block;
 
   .citSci-next {
 
@@ -14,46 +14,50 @@
     }
 
   }
-
-  .dataset-progress {
-
-    display: flex;
-
-    background-color: #000000;
-
-    .progress-summary {
-      margin-left: 15px;
-      background: #000000;
-      color: #aaa;
-
-    }
+}
 
 
+dataset-progress-indicator {
+  flex-grow: 0.8;
+  width: 30%;
+  max-width: 180px;
+  min-width: 70px;
+}
 
-    .progress-graphic {
-      margin-left: 15px;
-      background: #000000;
-      padding: 1px 1px 2px 2px;
-      display: block;
-      width: 23px;
-      height: 23px;
-      border-radius: 3px;
-      div {
-        display: block;
-        height: 1px;
-        width: 1px;
-        background: #00ca56;
-        margin:2px 2px 1px 1px;
-        float: left;
-        border-radius: 1px;
+.dataset-progress-bar {
+
+  margin-right: 20px;
+
+  &.progress {
+    height: auto;
+    margin-bottom: 0px;
+    margin-top: 2px;
+    top: -1px;
+    position: relative;
+    vertical-align: text-bottom;
+
+    .progress-bar {
+      padding-top:1px;
+      padding-bottom:1px;
+
+      span {
+        color: #FFFFFF;
       }
+
     }
+
+    span {
+      color: #000000;
+    }
+
   }
 
-
-
-
 }
+
+
+
+
+
 
 
 

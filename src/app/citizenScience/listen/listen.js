@@ -84,6 +84,16 @@ class CitizenScienceListenController {
 
             Question.questions($scope.study.id).then(x => {
                 console.log("questions loaded", x);
+
+                // // TEMP FOR TESTING lots of labels
+                // var temp = x.data.data[0].questionData;
+                // temp.labels = temp.labels.concat(temp.labels).concat(temp.labels).concat(temp.labels).map((x,i) => {
+                //     x.id = i+1;
+                //     return x;
+                // });;
+                //
+                // x.data.data[0].questionData = temp;
+
                 //TODO: update to allow multiple questions
                 $scope.questionData = x.data.data[0].questionData;
 
@@ -99,10 +109,12 @@ class CitizenScienceListenController {
             "bristlebird": {
                 showSite: false,
                 showDateTime: false,
+                showProgress: false,
             },
             "koala-verification": {
                 showSite: true,
                 showDateTime: true,
+                showProgress: true
             }
         }[$scope.csProject];
 
@@ -157,6 +169,7 @@ class CitizenScienceListenController {
 angular
     .module("bawApp.citizenScience.listen", [
         "bawApp.components.progress",
+        "bawApp.components.progressIndicator",
         "bawApp.citizenScience.common",
         "bawApp.citizenScience.sampleLabels",
         "bawApp.citizenScience.csLabels",

@@ -83,6 +83,11 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
 
       .citizen-science-thumb-example {
 
+        /* ensure it is behind the check label */
+        z-index: -1;
+        position: relative;
+        overflow: hidden;
+
         margin-top: 10px;
         display: flex;
         justify-content: space-evenly;
@@ -116,6 +121,16 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
   }
 
   .label-examples-annotations {
+    
+    z-index: 1;
+    position: relative;
+
+    /* fix the height so wrapping does not push things */
+    .label-check {
+      height: 40px;
+      background: #000;
+    }
+
 
     h3 {
       text-align: center;
