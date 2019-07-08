@@ -33,6 +33,42 @@ angular.module("bawApp.components.citizenScienceThumbLabels.label",
                     return self.currentDetailsLabelId.value === self.label.id;
                 };
 
+
+                /**
+                 * Returns the label text that will be shown on top of the thumbnail on hover.
+                 * Truncates the label if it is too long to fit in roughly 3 lines.
+                 */
+                self.thumbLabelText = function () {
+
+                    var commonParameters = self.label.examples[0].annotation.media.commonParameters;
+
+                    // very rough linear relationship between duration and how many characters fit in 3 lines.
+                    // depends on word length. Determined by trial and error.
+                    var maxChars = 7.1 * (commonParameters.endOffset - commonParameters.startOffset);
+
+                    var labelText = self.label.name;
+
+                    if (maxChars < labelText.length - 3) {
+                        labelText = labelText.substring(0, maxChars - 3);
+                        labelText = labelText + "...";
+                    }
+
+                    return labelText;
+
+                };
+
+
+                $scope.$watch(function () {
+                    return (self.label.examples[0].hasOwnProperty("annotation"));
+                }, function (newVal) {
+                    if (newVal) {
+                        $scope.thumbLabelText = self.thumbLabelText();
+                    }
+                });
+
+
+                $scope.thumbLabelText = self.label.name;
+
                 /**
                  * toggles whether the details pane is showing for the current label
                  */
