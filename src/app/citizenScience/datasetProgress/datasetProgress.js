@@ -46,7 +46,9 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                 });
 
                 $scope.$watch(() => CsSamples.currentItem(), (newVal, oldVal) => {
-                    SampleLabels.reset(newVal.id);
+                    if (newVal) {
+                        SampleLabels.reset(newVal.id);
+                    }
                 });
 
                 $scope.$on("autoNextTrigger", function (x) {
@@ -78,7 +80,7 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                         return "Submit response";
                     } else {
 
-                        if (self.allowEmpty || self.allowEmpty === undefined) {
+                        if (SampleLabels.allowEmpty() || SampleLabels.allowEmpty() === undefined) {
 
                             if (CsSamples.nextItemAvailable()) {
                                 return "Nothing here, next sample";

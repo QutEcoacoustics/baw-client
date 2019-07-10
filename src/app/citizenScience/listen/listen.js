@@ -127,7 +127,7 @@ class CitizenScienceListenController {
                 // returns the current item if the media is loaded, otherwise returns false.
                 var currentItem = CsSamples.currentItem();
                 // 'start' is the last thing to be attached to the datasetItems
-                if (currentItem.hasOwnProperty("start")) {
+                if (currentItem && currentItem.hasOwnProperty("start")) {
                     return currentItem;
                 }
 
@@ -145,7 +145,8 @@ class CitizenScienceListenController {
                         // todo: replace with site name
                         site: item.audioRecording.site.name,
                         date: item.start.toLocaleDateString(),
-                        time: item.start.toLocaleTimeString()
+                        time: item.start.toLocaleTimeString(),
+                        dataset_item_id: item.id
                     };
 
                 }

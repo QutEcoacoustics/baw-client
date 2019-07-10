@@ -7,7 +7,8 @@ var sampleLabels = angular.module("bawApp.citizenScience.sampleLabels",
 sampleLabels.factory("SampleLabels", [
     "$http",
     "QuestionResponse",
-    function SampleLabels($http, QuestionResponse) {
+    "ProgressEvent",
+    function SampleLabels($http, QuestionResponse, ProgressEvent) {
 
         var self = this;
 
@@ -55,6 +56,9 @@ sampleLabels.factory("SampleLabels", [
                 if (question.questionData.labels.length === 1) {
                     // for binary yes/no there is only one label, therefore no multi select
                     self.question.allowMulti = false;
+
+                    // default for a single label question is not allow empty.
+                    self.question.allowEmpty = false;
                 }
 
                 // if label ids are not supplied, add them in.
@@ -132,6 +136,8 @@ sampleLabels.factory("SampleLabels", [
 
         };
 
+        self.onSendResponseCallbacks = {};
+
 
         self.functions = {
 
@@ -160,7 +166,22 @@ sampleLabels.factory("SampleLabels", [
 
                     Object.assign(userResponseData, self.data.fields);
 
-                    QuestionResponse.createQuestionResponse(self.data.questionId, self.data.datasetItemId, self.data.studyId, userResponseData);
+                    // dataset items are returned ordered by least viewed.
+                    // we send a viewed progress event only on submitting the response, so that it acts as a 'responded'
+                    // progress event.
+                    // TODO: update this when the api capabilities are improved.
+                    ProgressEvent.createProgressEvent(self.data.datasetItemId, "viewed");
+
+                    QuestionResponse.createQuestionResponse(self.data.questionId, self.data.datasetItemId, self.data.studyId, userResponseData).then(x => {
+                        // iterate throught he object that is holding all the callbacks to do when a response is sent and call them.
+                        for (var callback in self.onSendResponseCallbacks) {
+                            if (self.onSendResponseCallbacks.hasOwnProperty(callback)) {
+                                if (angular.isFunction(self.onSendResponseCallbacks[callback])) {
+                                    self.onSendResponseCallbacks[callback]();
+                                }
+                            }
+                        }
+                    });
                 }
 
             },
@@ -192,6 +213,10 @@ sampleLabels.factory("SampleLabels", [
 
             allowEmpty : function () {
                 return self.question.allowEmpty;
+            },
+
+            setOnSendResponseCallback: function (name, callback) {
+                self.onSendResponseCallbacks[name] = callback;
             },
 
             question: self.question,

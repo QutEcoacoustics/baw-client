@@ -6,11 +6,11 @@
  */
 
 
-angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.csSamples"])
+angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.csSamples", "bawApp.citizenScience.sampleLabels"])
     .component("datasetProgressIndicator", {
         templateUrl: "citizenScience/datasetProgress/datasetProgressIndicator.tpl.html",
-        controller: ["$scope", "CsSamples", "QuestionResponse", "CitizenScienceCommon",
-            function ($scope, CsSamples, QuestionResponse, CitizenScienceCommon) {
+        controller: ["$scope", "CsSamples", "SampleLabels", "QuestionResponse", "CitizenScienceCommon",
+            function ($scope, CsSamples, SampleLabels, QuestionResponse, CitizenScienceCommon) {
 
                 var self = this;
 
@@ -23,10 +23,13 @@ angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.cs
                 };
 
                 $scope.$watch(() => CsSamples.currentItem(), (newVal, oldVal) => {
-                    self.updateProgress();
+                    // if we are moving from one item to another (not loading the first item)
+                    if (newVal) {
+                        self.updateProgress();
+                    }
                 });
 
-                self.refreshIn = 0;
+                self.refreshIn = -1;
 
                 /**
                  * called each time we go to a new segment
@@ -35,23 +38,30 @@ angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.cs
                  */
                 self.updateProgress = function () {
 
-                    if (self.refreshIn === 0) {
+                    if (self.refreshIn === -1) {
                         self.refreshProgress();
                         self.refreshIn = 5;
+                    } if (self.refreshIn === 0) {
+                        SampleLabels.setOnSendResponseCallback("refreshProgress", self.refreshProgress);
+                        self.refreshIn = 5;
+                        $scope.progress.responseCount += 1;
+                    } else {
+                        SampleLabels.setOnSendResponseCallback("refreshProgress", null);
+                        $scope.progress.responseCount += 1;
                     }
-                    $scope.progress.responseCount += 1;
+
                     self.updateProgressPercent();
                     self.refreshIn -= 1;
 
                 };
 
 
-                /**
-                 * Update progress when the study changes. It will not be loaded when this controller is initialised
-                 */
-                $scope.$watch(() => CitizenScienceCommon.studyData.study, (newVal, oldVal) => {
-                    self.refreshProgress();
-                });
+                // /**
+                //  * Update progress when the study changes. It will not be loaded when this controller is initialised
+                //  */
+                // $scope.$watch(() => CitizenScienceCommon.studyData.study, (newVal, oldVal) => {
+                //     self.refreshProgress();
+                // });
 
                 /**
                  * Watch the total items, because it will not be ready when the controller first loads
@@ -106,7 +116,7 @@ angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.cs
                     $scope.progress.percent = percent;
                     console.log("$scope.progress.percent", percent);
                     $scope.progress.percentCapped = Math.min(percent, 100);
-                    $scope.progress.message =  `${$scope.progress.responseCount} / ${$scope.progress.itemCount}`;
+                    $scope.progress.message =  `${$scope.progress.responseCount + 1} / ${$scope.progress.itemCount}`;
                 };
 
 

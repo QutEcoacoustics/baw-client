@@ -33,7 +33,8 @@ angular
                  */
                 self.getWidth = function () {
 
-                    if (self.containerWidth < 1) {
+                    // a very small width suggests the element is not loaded so it might change.
+                    if (self.containerWidth < 100) {
                         self.updateContainerWidth();
                     }
                     // don't return zero to avoid division by zero
