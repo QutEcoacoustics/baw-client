@@ -63,10 +63,8 @@ class CitizenScienceListenController {
 
         // the model passed to ngAudio
         $scope.audioElementModel = CitizenScienceCommon.getAudioModel();
-        $scope.sampleInfo = {
-            site: null,
-            date: null,
-            time: null
+        $scope.sample = {
+            item: null
         };
 
         // get the study information by name, then load the appropriate question data
@@ -140,14 +138,9 @@ class CitizenScienceListenController {
                         backgroundImage.setBackgroundImageForItem(item.audioRecording, item.startTimeSeconds);
                     }
 
-                    $scope.sampleInfoSite = item.audioRecording.site.name;
-                    $scope.sampleInfo = {
-                        // todo: replace with site name
-                        site: item.audioRecording.site.name,
-                        date: item.start.toLocaleDateString(),
-                        time: item.start.toLocaleTimeString(),
-                        dataset_item_id: item.id
-                    };
+                    $scope.sample.item = item;
+
+
 
                 }
             });
@@ -175,7 +168,8 @@ angular
         "bawApp.citizenScience.sampleLabels",
         "bawApp.citizenScience.csLabels",
         "bawApp.components.onboarding",
-        "bawApp.components.background"
+        "bawApp.components.background",
+        "bawApp.citizenScience.itemInfo"
     ])
     .controller(
         "CitizenScienceListenController",

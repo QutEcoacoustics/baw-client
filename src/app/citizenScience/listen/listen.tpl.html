@@ -15,16 +15,9 @@
                         <div position-line media="media" audio-data="audioElementModel" image-id="'spectrogram'"></div>
                     </div>
 
-                    <div class="sample-info"  ng-if="settings.showSite || settings.showDateTime || settings.showProgress">
-                        <span>
-                            <span ng-if="settings.showDateTime">{{sampleInfo.date}} &nbsp; {{sampleInfo.time}}</span>
-                            <span>
-                                <span ng-if="settings.showDateTime">{{sampleInfo.site}}</span>
-                            </span>
-                            <span class="debug"> {{sampleInfo.dataset_item_id}}</span>
 
-                        </span>
-
+                    <div class="sample-info" ng-if="settings.showSite || settings.showDateTime || settings.showProgress">
+                        <item-info ng-if="settings.showSite || settings.showDateTime" sample="sample"></item-info>
                         <dataset-progress-indicator ng-if="settings.showProgress"></dataset-progress-indicator>
                     </div>
 

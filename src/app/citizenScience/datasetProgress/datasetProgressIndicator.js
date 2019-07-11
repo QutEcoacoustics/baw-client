@@ -6,11 +6,11 @@
  */
 
 
-angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.csSamples", "bawApp.citizenScience.sampleLabels"])
+angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.csSamples", "bawApp.citizenScience.sampleLabels", "bawApp.components.onboarding"])
     .component("datasetProgressIndicator", {
         templateUrl: "citizenScience/datasetProgress/datasetProgressIndicator.tpl.html",
-        controller: ["$scope", "CsSamples", "SampleLabels", "QuestionResponse", "CitizenScienceCommon",
-            function ($scope, CsSamples, SampleLabels, QuestionResponse, CitizenScienceCommon) {
+        controller: ["$scope", "CsSamples", "SampleLabels", "QuestionResponse", "CitizenScienceCommon", "onboardingService",
+            function ($scope, CsSamples, SampleLabels, QuestionResponse, CitizenScienceCommon, onboardingService) {
 
                 var self = this;
 
@@ -56,12 +56,11 @@ angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.cs
                 };
 
 
-                // /**
-                //  * Update progress when the study changes. It will not be loaded when this controller is initialised
-                //  */
-                // $scope.$watch(() => CitizenScienceCommon.studyData.study, (newVal, oldVal) => {
-                //     self.refreshProgress();
-                // });
+                onboardingService.addSteps({
+                    element: ".progress",
+                    intro: "How many items have been completed out of the total amount. ",
+                    order: 3
+                });
 
                 /**
                  * Watch the total items, because it will not be ready when the controller first loads
