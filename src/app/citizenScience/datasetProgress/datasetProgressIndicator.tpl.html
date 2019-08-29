@@ -1,0 +1,16 @@
+    <div class="progress dataset-progress-bar" ng-if="progress.percent > -1">
+        <div class="progress-bar w-75" role="progressbar"
+             style="width: {{progress.percentCapped}}%"
+             aria-valuenow="{{progress.percent}}"
+             aria-valuemin="0"
+             aria-valuemax="100"><span ng-if="progress.percent > 50">{{progress.message}}</span>&nbsp;</div><span ng-if="progress.percent <= 50">{{progress.message}}</span>
+    </div>
+
+
+
+
+
+
+
+
+

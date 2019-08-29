@@ -1,69 +1,102 @@
-angular.module("bawApp.components.progress", ["bawApp.citizenScience.csApiMock"])
+/**
+ * Component that
+ *  - contains the button to move to the next sample,
+ *  - loads the correct sample if specified in the url
+ *  - updates the selected labels to match what is stored for the selected sample
+ */
+
+angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"])
     .component("datasetProgress", {
         templateUrl: "citizenScience/datasetProgress/datasetProgress.tpl.html",
-        controller: ["$scope", "$routeParams", "$url", "conf.paths", "CsApi", "SampleLabels",
-            function ($scope, $routeParams, $url, paths, CsApi, SampleLabels) {
+        controller: ["$scope", "$routeParams", "CsSamples", "SampleLabels", "$url", "conf.paths",
+            function ($scope, $routeParams, CsSamples, SampleLabels, $url, paths) {
 
-            var self = this;
-            $scope.selectItem = function (itemId) {
-                console.log("selecting item", itemId);
-                CsApi.getSample(itemId).then(function (apiResponse) {
-                    self.currentSample = apiResponse;
-                    SampleLabels.registerCurrentSampleId(self.currentSample.id);
-                    $scope.totalSamplesViewed = SampleLabels.getNumSamplesViewed();
-                    console.log("setting selected to ", itemId);
+                var self = this;
+
+                // routed dataset item id will link back to the unrouted listen page
+                $scope.listenLink = $url.formatUri(paths.site.ngRoutes.citizenScience.listen,
+                    {studyName: $routeParams.studyName});
+
+
+                // need to wait for the study's dataset_id before initialising
+                $scope.$watch(function () { return self.datasetId; }, function (newVal, oldVal){
+                    if (newVal > 0) {
+                        if ($routeParams.sampleNum) {
+                            CsSamples.selectById($routeParams.sampleNum);
+                            $scope.nextItem = function () {
+                                if (!$scope.nextDisabled(false)) {
+                                    SampleLabels.sendResponse("using_routed");
+                                    return true;
+                                }
+
+                            };
+                            $scope.isRoutedSample = true;
+                        } else {
+                            CsSamples.init(self.datasetId);
+                            $scope.nextItem = function () {
+                                // TODO: handle end of dataset
+                                if (!$scope.nextDisabled(true)) {
+                                    SampleLabels.sendResponse();
+                                    CsSamples.nextItem();
+                                }
+                            };
+                            $scope.isRoutedSample = false;
+                        }
+                    }
                 });
-            };
 
-            $scope.selectItem($routeParams.sampleNum);
+                $scope.$watch(() => CsSamples.currentItem(), (newVal, oldVal) => {
+                    if (newVal) {
+                        SampleLabels.reset(newVal.id);
+                    }
+                });
 
-            /**
-             * Load the new sample whenever the route params change.
-             */
-            $scope.$watch(
-                function () {
-                  return $routeParams.sampleNum;
-                }, function (newVal, oldVal) {
-                console.log("route params changed from ", oldVal, "to", newVal);
+                $scope.$on("autoNextTrigger", function (x) {
+                    SampleLabels.sendResponse("autoplay");
+                    CsSamples.nextItem();
+                });
 
-                // call the api to get the sample based on the route params
-                $scope.selectItem($routeParams.sampleNum);
 
-            });
+                /**
+                 * whether to disable the next button, both greying out and preventing actions
+                 * @return boolean
+                 */
+                $scope.nextDisabled = function (requireNextItemAvailable = false) {
 
-            //TODO: this gets called constantly while the audio is playing
-            /**
-             * returns a link for routing based on the id for the next and
-             * previous samples. That id is returned in the request for metadata of
-             * the current sample (contained in the route).
-             * @returns string
-             */
-            $scope.previousLink = function () {
-                if (self.currentSample.previousSampleId) {
-                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.currentSample.previousSampleId});
-                } else {
-                    return "";
-                }
-            };
-            $scope.nextLink = function () {
-                if (self.currentSample.nextSampleId) {
-                    return $url.formatUri(paths.site.ngRoutes.citizenScience.listen, {sampleNum:self.currentSample.nextSampleId});
-                } else {
-                    return "";
-                }
-            };
+                    // default to allow empty if not specified
+                    var enabled = SampleLabels.hasResponse() || SampleLabels.allowEmpty();
+                    enabled = enabled && (!requireNextItemAvailable || CsSamples.nextItemAvailable());
+                    return !enabled;
 
-            // reverse binding of this functions to make
-            // them accessible to the parent controller for autoplay
-            self.nextLink = $scope.nextLink;
+                };
 
-            self.progressNav = true;
+                /**
+                 * Return the text that should display on the button. Might change depending on
+                 * if they have selected a label or if there is another sample after the current.
+                 * @return {*}
+                 */
+                $scope.nextText = function () {
+                    if (SampleLabels.hasResponse()) {
+                        return "Submit response";
+                    } else {
 
-        }],
+                        if (SampleLabels.allowEmpty() || SampleLabels.allowEmpty() === undefined) {
+
+                            if (CsSamples.nextItemAvailable()) {
+                                return "Nothing here, next sample";
+                            } else {
+                                return "Nothing here";
+                            }
+
+                        } else {
+                            return "Enter a response";
+                        }
+
+                    }
+                };
+
+            }],
         bindings: {
-            audioElementModel: "=",
-            currentSample: "=",
-            numViewed: "=numViewed",
-            nextLink: "="
+            datasetId: "="
         }
     });

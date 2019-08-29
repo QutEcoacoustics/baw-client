@@ -1,0 +1,34 @@
+<div class="citizen-science-thumb-label" ng-class="{active : isShowingDetails()}">
+
+    <div class="citizen-science-thumb" ng-click="toggleShowDetails()">
+
+        <label-check class="minicheck"
+                on-toggle-selected="$ctrl.onToggleSelected"
+                state="currentState()"
+                text=""
+        ></label-check>
+
+
+        <img ng-src="{{$ctrl.label.examples[0].annotation.media.available.image.png.url}}" alt="{{$ctrl.label.name}}">
+
+
+        <span class="thumbtext">{{thumbLabelText}}</span>
+
+    </div>
+
+    <citizen-science-label-examples
+            center-in-window
+            label="$ctrl.label"
+            ng-if="isShowingDetails()"
+    >
+
+        <label-check
+                on-toggle-selected="$ctrl.onToggleSelected"
+                state="currentState()"
+                text="$ctrl.label.name"
+                showStateText="true"
+        ></label-check>
+
+    </citizen-science-label-examples>
+
+</div>

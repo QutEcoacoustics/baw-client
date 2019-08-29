@@ -1,7 +1,12 @@
 //noinspection CssInvalidHtmlTagReference
 volume-slider {
 
-  width: 200px;
+
+  &.mini-volume .volume-container {
+      max-width: 100px;
+  }
+
+
   position: relative;
 
   #volumeControl-mute {
@@ -29,14 +34,18 @@ volume-slider {
 
   }
 
-  #volumeControl-slider {
+  .btn-group {
+
+
+
+  .volumeControl-slider {
 
     -webkit-appearance: none;
     position:relative;
     display: inline-block;
     vertical-align: middle;
     width: calc(100% - 45px);
-    margin-left: 45px;
+    left: 46px;
     border-left: none;
 
 
@@ -119,6 +128,7 @@ volume-slider {
     }
   }
 
+  }
 
 }
 

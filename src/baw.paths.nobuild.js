@@ -72,7 +72,31 @@ module.exports = function (environment) {
                 "savedSearches": {
                     "list": "/saved_searches",
                     "show": "/saved_searches/{savedSearchId}"
-                }
+                },
+                "datasetItem": {
+                    "list": "/datasets/{datasetId}/items",
+                    "show": "/datasets/{datasetId}/items/{datasetItemId}",
+                    "todo": "/datasets/{datasetId}/dataset_items/next_for_me"
+                },
+                "progressEvent": {
+                    "list": "/progress_events",
+                    "show": "/progress_events/{progressEventId}",
+                    "createByDatasetItemAttributes": "datasets/{datasetId}/progress_events/audio_recordings/{audioRecordingId}/start/{startTimeSeconds}/end/{endTimeSeconds}"
+                },
+                "question": {
+                    "list": "/studies/{studyId}/questions",
+                    "show": "/questions/{questionId}"
+                },
+                "questionResponse": {
+                    "list": "/studies/{studyId}/responses",
+                    "show": "/responses/{responseId}",
+                    "create": "/responses"
+                },
+                "study": {
+                    "list": "/studies",
+                    "show": "/studies/{studyId}",
+                    "filter": "/studies/filter"
+                },
             },
             "links": {
                 "projects": "/projects",
@@ -172,7 +196,10 @@ module.exports = function (environment) {
                 "libraryItem": "/library/{recordingId}/audio_events/{audioEventId}",
                 "visualize": "/visualize",
                 "citizenScience": {
-                    "listen":"/citsci/bristlebird/listen/{sampleNum}"
+                    "aboutStudy":"/citsci/{studyName}",
+                    "listenId":"/citsci/{studyName}/listen/{sampleNum}",
+                    "listen":"/citsci/{studyName}/listen",
+                    "responses": "/citsci/{studyName}/responses"
                 },
                 "demo": {
                     "d3": "/demo/d3",

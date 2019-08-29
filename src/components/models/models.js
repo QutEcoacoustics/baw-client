@@ -23,7 +23,12 @@ angular.module(
         //"bawApp.models.birdWalkService",
         //"bawApp.models.breadcrumbs",
         "bawApp.models.userProfile",
-        //"bawApp.models.authenticator"
+        //"bawApp.models.authenticator",
+        "bawApp.models.datasetItem",
+        "bawApp.models.progressEvent",
+        "bawApp.models.question",
+        "bawApp.models.questionResponse",
+        "bawApp.models.study"
 
     ]);
 

@@ -280,36 +280,48 @@ angular.module("baw",
                     fullWidth: true,
                     reloadOnSearch: false
                 }).
-            when("/citsci", {
-                templateUrl: "citizenScience/citizenScience.tpl.html",
-                controller: "CitizenScienceController",
-                title: "Citizen Science Page",
-                fullWidth: true
-            }).
-            when("/citsci/bristlebird", {
-                templateUrl: "citizenScience/bristlebird/about.tpl.html",
-                controller: "BristlebirdAboutController",
-                title: "Bristlebird Citizen Science",
-                fullWidth: true
-            }).
-            when(convertRouteParams(paths.site.ngRoutes.citizenScience.listen), {
-                templateUrl: "citizenScience/bristlebird/listen.tpl.html",
-                controller: "BristlebirdController",
-                title: "Bristlebird Citizen Science",
-                fullWidth: true
-            }).
-            when("/citsci/ipswich", {
-                templateUrl: "citizenScience/ipswich/about.tpl.html",
-                controller: "IpswichAboutController",
-                title: "Ipswich School Citizen Science",
-                fullWidth: true
-            }).
-            when("/citsci/ipswich/listen", {
-                templateUrl: "citizenScience/ipswich/listen.tpl.html",
-                controller: "IpswichController",
-                title: "Ipswich School Citizen Science",
-                fullWidth: true
-            }).
+                when("/citsci", {
+                    templateUrl: "citizenScience/citizenScience.tpl.html",
+                    controller: "CitizenScienceController",
+                    title: "Citizen Science Page",
+                    fullWidth: true
+                }).
+                when(convertRouteParams(paths.site.ngRoutes.citizenScience.aboutStudy), {
+                    templateUrl: function (params) {
+                        var templates = {
+                            "bristlebird": "citizenScience/studies/bristlebird/about.tpl.html",
+                            "koala-verification": "citizenScience/studies/koala/about.tpl.html",
+                            "default": "citizenScience/studies/default/about.tpl.html"
+                        };
+
+                        return(templates[templates.hasOwnProperty(params.studyName) ? params.studyName : "default"]);
+
+                    },
+                    controller: "CitizenScienceAboutController",
+                    title: "Citizen Science",
+                    fullWidth: true
+                }).
+                when(convertRouteParams(paths.site.ngRoutes.citizenScience.listen), {
+                    templateUrl: "citizenScience/listen/listen.tpl.html",
+                    controller: "CitizenScienceListenController",
+                    title: "Citizen Science - Listen",
+                    fullWidth: true,
+                    reloadOnUrl: false
+                }).
+                when(convertRouteParams(paths.site.ngRoutes.citizenScience.listenId), {
+                    templateUrl: "citizenScience/listen/listen.tpl.html",
+                    controller: "CitizenScienceListenController",
+                    title: "Citizen Science - Listen",
+                    fullWidth: true,
+                    reloadOnUrl: false
+                }).
+                when(convertRouteParams(paths.site.ngRoutes.citizenScience.responses), {
+                    templateUrl: "citizenScience/responses/responses.tpl.html",
+                    controller: "ResponsesController",
+                    title: "Citizen Science Responses",
+                    fullWidth: true,
+                    reloadOnUrl: false
+                }).
                 when("/", {
                     templateUrl: paths.site.files.home,
                     controller: "HomeCtrl",

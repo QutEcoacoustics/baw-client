@@ -1,5 +1,5 @@
 
-<div class="btn-group">
+<div class="btn-group volume-container">
     <button id="volumeControl-mute"
             class="btn btn-default"
             ng-click="toggleMute()"
@@ -8,8 +8,7 @@
         <span></span>
     </button>
 
-    <input id="volumeControl-slider"
-           class="form-control btn btn-default"
+    <input class="volumeControl-slider form-control btn btn-default"
            type="range" ng-model="$ctrl.audioElementModel.volume"
            max="1" min="0" step="0.01"
            ng-disabled="$ctrl.audioElementModel.muted"

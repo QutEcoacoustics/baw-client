@@ -90,6 +90,9 @@ angular
                     scope.$apply(function () {
                         updateUnitConverters();
                     });
+
+                    scope.model.media.trackProgress("viewed");
+
                 }, false);
             }
 

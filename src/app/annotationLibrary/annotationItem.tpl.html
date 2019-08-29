@@ -21,8 +21,9 @@
     <previous-play-next audio-element-model="$ctrl.audioElement"></previous-play-next>
     <volume-slider
             class="form-group form-group-without-feedback progressCell"
+            ng-class="{'mini-volume': miniVolume}"
             audio-element-model="$ctrl.audioElement"></volume-slider>
-    <download media="$ctrl.annotation.media"></download>
+    <download ng-if="showDownload" media="$ctrl.annotation.media"></download>
 
 
 </div>

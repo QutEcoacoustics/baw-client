@@ -7,7 +7,8 @@ angular
         "conf.paths",
         "Authenticator",
         "$url",
-        function (ApiBase, paths, Authenticator, url) {
+        "ProgressEvent",
+        function (ApiBase, paths, Authenticator, url, ProgressEvent) {
 
             class Media extends ApiBase {
                 constructor(resource) {
@@ -30,6 +31,8 @@ angular
                     }
 
                     this.formatPaths();
+                    // record which progress event activities have been sent for this media item
+                    this.progressEvents = {};
                 }
 
                 /**
@@ -66,6 +69,20 @@ angular
 
                     var jsonFullUrl = paths.api.root + mediaItem.available.text.json.url;
                     mediaItem.available.text.json.url = url.formatUriServer(jsonFullUrl, {userToken: Authenticator.authToken});
+                }
+
+                /**
+                 * Saves a progress event and a dataset item to the default dataset
+                 */
+                trackProgress (activity) {
+                    if (this.progressEvents[activity] == null) {
+                        ProgressEvent.createByDatasetItemAttributes("default", this.recording.id, this.startOffset, this.endOffset, activity)
+                            .then(x => { console.log("__one", x);})
+                            .catch(error => {
+                                console.warn("error tracking progress for media item" + error);
+                            });
+                        this.progressEvents[activity] = true;
+                    }
                 }
 
             }

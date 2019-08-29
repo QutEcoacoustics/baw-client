@@ -1,3 +1,31 @@
+.dark-background {
+  color: white;
+  background: rgba(0,0,0,0.9);
+
+  form {
+    color: #0a0a0a;
+  }
+
+
+}
+
+.about-content {
+  padding: 20px;
+
+  img {
+    width: 200px;
+    float: left;
+    margin: 0px 20px 10px 0px;
+    border: 1px solid #ffffff;
+
+  }
+
+  .get-started {
+    display: block;
+  }
+
+}
+
 
 .citizen-science {
 
@@ -31,8 +59,30 @@
     .audio-inner {
       display: inline-block;
       max-width: 100%;
-      box-shadow: 0px 0px 0px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 0px 10px rgba(0, 0, 0, 0.6);
       background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .sample-info {
+      color: #FFFFFF;
+      opacity: 0.7;
+      font-size: 0.8em;
+      padding-bottom: 3px;
+      padding-top: 2px;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+
+      div {
+        font-size: 1em;
+        line-height: 1em;
+      }
+
+      span {
+        margin: 2px 1em 2px 0.5em;
+      }
+
     }
   }
 
@@ -44,7 +94,7 @@
     position: relative;
 
     display: inline-block;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.7);
     max-width: 100%;
 
     .spectrogram {

@@ -56,6 +56,12 @@ angular.module("bawApp.directives.ngAudio", [
                 });
             });
 
+
+            scope.$watch(attributes.ngAudioSources, function (newval, oldval) {
+                console.log("audio sources have changed", newval);
+                element.load();
+            });
+
             /*
              * FORWARD BINDING
              *
@@ -82,6 +88,7 @@ angular.module("bawApp.directives.ngAudio", [
                 target.play = play;
                 target.pause = pause;
             });
+
 
             // volume
             scope.$watch(function () {
@@ -174,7 +181,7 @@ angular.module("bawApp.directives.ngAudio", [
                         target.isPlaying = !element.paused;
                         target.canPlay = element.readyState >= readyStates.haveFutureData;
 
-                        console.log("element.readyState", element.readyState);
+                        console.debug("element.readyState", element.readyState);
 
                        // IMPORTANT - setting the position while playing is done by RAF.
                         // Do not set it here or else jittery playback will occur when any event is raised from the element.
@@ -192,6 +199,11 @@ angular.module("bawApp.directives.ngAudio", [
                             target.muted = element.muted;
                             scope.$emit(ngAudioEvents.muteChanged, element.muted);
                         }
+
+
+
+
+
                     }
                     else {
                         scope.currentState = event && event.type || "unknown";
@@ -241,9 +253,21 @@ angular.module("bawApp.directives.ngAudio", [
                 // this event would update progress
                 // however it does not update often enough and is not smooth
                 // thus we use request animation frame instead
-                "timeupdate": undefined,
+                "timeupdate": null,
                 "volumechange": updateState,
                 "waiting": updateState};
+
+            if (attributes.onPlayed) {
+                // if there is an on-played attribute, evaluate it
+                // once after a given number of timeupdates
+                var timeupdateCount = 0;
+                events.timeupdate = function (event) {
+                    timeupdateCount += 1;
+                    if (timeupdateCount === 10) {
+                        scope.$eval(attributes.onPlayed);
+                    }
+                };
+            }
 
             angular.forEach(events, function (value, key) {
                 if (value) {

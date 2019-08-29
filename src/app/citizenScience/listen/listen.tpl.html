@@ -1,0 +1,53 @@
+<div class="citizen-science">
+
+    <h2>{{studyTitle}}
+        <onboarding></onboarding>
+    </h2>
+
+    <div class="cs-main-container">
+
+        <div class="main wrapper clearfix">
+
+            <div class="audio-outer">
+                <div class="audio-inner">
+                    <div class="spectrogram-wrapper">
+                        <img id="spectrogram" class="spectrogram" ng-src="{{media.available.image.png.url}}">
+                        <div position-line media="media" audio-data="audioElementModel" image-id="'spectrogram'"></div>
+                    </div>
+
+
+                    <div class="sample-info" ng-if="settings.showSite || settings.showDateTime || settings.showProgress">
+                        <item-info ng-if="settings.showSite || settings.showDateTime" sample="sample"></item-info>
+                        <dataset-progress-indicator ng-if="settings.showProgress"></dataset-progress-indicator>
+                    </div>
+
+                    <audio
+                            id="citsci-sample"
+                            ng-audio
+                            ng-audio-model="audioElementModel"
+                            ng-audio-sources="media.available"
+                            on-played="onPlayed()"
+                            class="hiddenAudioElement"></audio>
+
+                </div>
+            </div>
+
+
+            <nav class="cs-progress">
+
+                <previous-play-next audio-element-model="audioElementModel"></previous-play-next>
+
+                <autoplay-button audio-element-model="audioElementModel"></autoplay-button>
+
+                <volume-slider class="form-group form-group-without-feedback progressCell" audio-element-model="audioElementModel"></volume-slider>
+
+                <dataset-progress dataset-id="study.datasetId"></dataset-progress>
+
+            </nav>
+
+            <citizen-science-labels question-data="questionData"></citizen-science-labels>
+
+        </div> <!-- #main -->
+    </div> <!-- #main-container -->
+
+</div>
