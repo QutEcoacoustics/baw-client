@@ -3,11 +3,18 @@
 
 
   #text-label-wrapper {
-    width: 400px;
+    max-width: 500px;
     margin: 0px auto 0px auto;
     text-align: center;
     border-radius: 8px;
     padding: 0px 20px 20px 20px;
+
+    .label-text {
+      width: 180px;
+      display: inline-block;
+    }
+
+
   }
 
   .label-check {
