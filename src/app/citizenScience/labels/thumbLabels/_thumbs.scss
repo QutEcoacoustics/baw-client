@@ -128,8 +128,23 @@ $triangle: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.o
           background-size: cover;
           background-position: center center;
           box-shadow: 0px 0px 1px 10px rgba(0, 0, 0, 0.5) inset;
-          max-width: 60%;
+          max-width: 400px;
           min-width: 30%;
+
+          .img-attribution {
+            background: rgba(0,0,0,0.5);
+            opacity: 0.7;
+            color: #aaaaaa;
+            position: absolute;
+            bottom: 1px;
+            text-align: center;
+            vertical-align: bottom;
+            display: block;
+            a {
+              color: #aaaaaa;
+            }
+          }
+
         }
 
         @media (max-width: 520px) {

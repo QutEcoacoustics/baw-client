@@ -58,8 +58,10 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                     // transform labels structure into a single array of annotationsIds
                     var labels = self.labels;
-                    var annotationIds = [].concat.apply([], labels.map(l => l.examples)).map(e => e.annotationId);
-
+                    // using concat to allow for labels having multiple annotations
+                    // examples can have annotation ids or spectrogram image filenames (for static image examples)
+                    var annotationIds = [].concat.apply([], labels.map(l => l.examples)).map(e => e.hasOwnProperty("annotationId") ? e.annotationId : null);
+                    annotationIds = annotationIds.filter(id => id);
                     if (annotationIds.length === 0) {
                         return;
                     }
@@ -102,6 +104,33 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                                self.labels.forEach(function (l) {
                                    l.examples.forEach(function (e) {
                                        if (e.annotationId === annotation.id) {
+
+                                           // for the thumb, we don't want it too narrow, so check the duration
+                                           var endOffset = annotation.media.available.image.png.url.match(/end_offset=([0-9.]+)/);
+                                           var startOffset = annotation.media.available.image.png.url.match(/start_offset=([0-9.]+)/);
+                                           if (endOffset !== null && startOffset !== null) {
+                                               endOffset = parseFloat(endOffset[1]);
+                                               startOffset = parseFloat(startOffset[1]);
+                                           }
+
+                                           var minWidthPx = 100;
+                                           var curWidthPx = ((endOffset - startOffset) * 1000 * annotation.media.available.image.png.ppms);
+
+                                           if (curWidthPx < minWidthPx) {
+
+                                               var diffPx = minWidthPx - curWidthPx;
+                                               var diffS = diffPx / (annotation.media.available.image.png.ppms * 1000);
+
+                                               var newStartOffset = (startOffset + (diffS / 2)).toString();
+                                               var newEndOffset = (endOffset + (diffS / 2)).toString();
+
+                                               console.log(annotation.media.available.image.png.url.replace(/end_offset=[0-9.]+/, "end_offset="+newEndOffset));
+                                               console.log(annotation.media.available.image.png.url.replace(/start_offset=[0-9.]+/, "end_offset="+newStartOffset));
+
+
+                                           }
+
+                                           e.thumbsrc = annotation.media.available.image.png.url;
                                            e.annotation = annotation;
                                        }
                                    });

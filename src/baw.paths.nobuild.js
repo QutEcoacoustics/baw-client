@@ -225,7 +225,7 @@ module.exports = function (environment) {
                     "defaultImage": "assets/img/user_spanhalf.png"
                 },
                 "backgrounds": {
-                    "citizenScience": "/build/assets/img/citizen-science/backgrounds/"
+                    "citizenScience": "/public/citizen_science/backgrounds/"
                 }
             }
         }
