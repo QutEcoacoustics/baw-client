@@ -1,7 +1,7 @@
 baw-client
 ============
 
-The AngularJS client for the bioacoustic workbench
+The AngularJS client for the acoustic workbench
 
 [![Build Status](https://travis-ci.org/QutBioacoustics/baw-client.png)](https://travis-ci.org/QutBioacoustics/baw-client) [![Dependency Status](https://gemnasium.com/QutBioacoustics/baw-client.png)](https://gemnasium.com/QutBioacoustics/baw-client) [![Code Quality](https://d3s6mut3hikguw.cloudfront.net/github/QutBioacoustics/baw-client.png)](https://codeclimate.com/github/QutBioacoustics/baw-client) [![Code Coverage](http://img.shields.io/codeclimate/coverage/github/QutBioacoustics/baw-client.svg)](https://codeclimate.com/github/QutBioacoustics/baw-client)
 ---
@@ -11,7 +11,7 @@ The AngularJS client for the bioacoustic workbench
 
 Before you get started make sure you have at least version 4 or above of node.js. We also require `npm` version 3 or above.
 
-To install project dependecies run:
+To install project dependencies run:
 
     $ npm install
     
