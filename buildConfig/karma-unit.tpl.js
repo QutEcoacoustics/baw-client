@@ -97,7 +97,9 @@ module.exports = function (config) {
      * open and the tests will automatically occur there during the build. This has
      * the aesthetic advantage of not launching a browser every time you save.
      */
-    configObject.browsers = [ browserToUse ];
+    // in docker container, don't launch browser, but map the ports so we can launch the browser manually in the host.
+
+    configObject.browsers = [  ];
 
     config.colors = true;
 

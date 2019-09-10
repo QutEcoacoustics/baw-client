@@ -13,7 +13,6 @@ RUN apk --update add git less openssh && \
     chown node:node /home/node/workbench-client
 
 
-
 USER node
 
 WORKDIR /home/node/workbench-client
@@ -23,5 +22,32 @@ RUN npm i npm@latest -g && \
     npm install --no-optional && \
     npm cache clean --force
 
+
+# temp while developing, to tweak things without npm installing every time
+# ENV NODE_ENV=development
+# RUN npm install
+
 COPY . .
 
+EXPOSE 9018 9100 8080
+
+## Installs latest Chromium package, in case we want the karma browser to run in the container
+#RUN echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \
+#    && echo @edge http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
+#    && apk add --no-cache \
+#    chromium@edge \
+#    harfbuzz@edge \
+#    nss@edge \
+#    freetype@edge \
+#    ttf-freefont@edge \
+#    && rm -rf /var/cache/* \
+#    && mkdir /var/cache/apk
+#
+## make node chrome's user, so it can run chrome
+#RUN mkdir -p /usr/src/app \
+#    && chown -R node:node /usr/src/app
+#
+#ENV CHROME_BIN=/usr/bin/chromium-browser \
+#    CHROME_PATH=/usr/lib/chromium/
+#
+### end chrome stuff
