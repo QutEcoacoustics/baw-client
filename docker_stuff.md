@@ -3,6 +3,7 @@
 ## build the image
 
 `TAG=bc`
+
 `docker build . -t $TAG`
 
 ## run the container
