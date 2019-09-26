@@ -95,13 +95,13 @@ module.exports = function (grunt) {
         grunt.log.ok("Staging build selected");
         userConfig.build_configs.current = userConfig.build_configs.environments.staging;
         userConfig.build_configs.current.key = "staging";
-        userConfig.usePhantomJs = true;
+        userConfig.usePhantomJs = false;
     }
     if (production) {
         grunt.log.ok("Production build selected");
         userConfig.build_configs.current = userConfig.build_configs.environments.production;
         userConfig.build_configs.current.key = "production";
-        userConfig.usePhantomJs = true;
+        userConfig.usePhantomJs = false;
     }
 
     grunt.log.writeln("Test runner should use " + (userConfig.usePhantomJs ? "PhantomJS" : "Chrome"));
