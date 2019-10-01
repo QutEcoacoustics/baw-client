@@ -30,10 +30,11 @@ ENV CHROME_PATH=/usr/lib/chromium/
 
 USER node
 
-COPY package.json package-lock.json* ./
+COPY --chown=node:node package.json package-lock.json* ./
 
+# I had to add node-sass here otherwise 
 RUN npm i npm@latest -g && \
-    npm install -g bower && \
+    npm install -g bower node-sass && \
     npm install --no-optional && \
     npm cache clean --force
 
@@ -41,7 +42,7 @@ RUN npm i npm@latest -g && \
 # these may come in handy while developing
 RUN npm install -g grunt-cli && npm install -g karma-cli
 
-COPY . .
+COPY --chown=node:node . .
 
-EXPOSE 9018 9100 8080
+EXPOSE 9018 9100 8080 35729
 
