@@ -8,7 +8,8 @@ module.exports = function (config) {
 
     var configObject = {};
 
-    //logLevel: config.LOG_DEBUG,
+    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    configObject.logLevel = config.LOG_INFO;
 
     /**
      * From where to look for files, starting with the location of this file.
@@ -97,9 +98,18 @@ module.exports = function (config) {
      * open and the tests will automatically occur there during the build. This has
      * the aesthetic advantage of not launching a browser every time you save.
      */
-    configObject.browsers = [ browserToUse ];
+    // in docker container, don't launch browser, but map the ports so we can launch the browser manually in the host.
 
-    config.colors = true;
+    configObject.browsers = [ 'chromium_browser' ];
+
+    configObject.customLaunchers = {
+        chromium_browser: {
+            base: 'ChromeHeadless',
+            flags: ['--no-sandbox','--headless', '--disable-gpu', "--disable-software-rasterizer", "--disable-dev-shm-usage"]
+        }
+    };
+
+    //config.colors = true;
 
     config.set(configObject);
 };

@@ -1,0 +1,16 @@
+version: '3'
+services:
+  baw-client:
+    build: .
+    command: npm start
+    ports:
+    # webserver port
+    - "8080:8080"
+    # karma testing port - not strictly necessary unless debugging
+    - "9018:9018"
+    # not sure
+    - "9100:9100"
+    # livereload port
+    - "35729:35729"
+    volumes:
+    - .:/home/node/workbench-client
