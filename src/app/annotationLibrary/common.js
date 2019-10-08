@@ -16,9 +16,10 @@ angular
         "Project",
         "UserProfile",
         "$q",
+        "baw.models.datasetItem",
         function ($url, paths,
                   constants, unitConverter, modelAssociations,
-                  Media, MediaModel, Tag, AudioRecording, Site, Project, UserService, $q) {
+                  Media, MediaModel, Tag, AudioRecording, Site, Project, UserService, $q, DatasetItem) {
 
             var annotationToProjectLinker = modelAssociations.generateLinker("AudioEvent", "Project");
             var annotationToTagLinker = modelAssociations.generateLinker("AudioEvent", "Tag");
@@ -38,7 +39,7 @@ angular
                 // modify annotation/datasetItem by reference
                 // async
                 var mediaParameters;
-                if (childModel.constructor.name === "DatasetItem") {
+                if (childModel instanceof DatasetItem) {
                     mediaParameters = getDatasetItemMediaParameters(childModel);
                 } else {
                     mediaParameters = getAnnotationMediaParameters(childModel);
