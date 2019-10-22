@@ -9,7 +9,7 @@
     <div class="citizen-science-thumb-example">
         <div class="img"
              ng-if="$ctrl.label.examples[currentExample].image"
-             style="background-image: url(/public/citizen_science/labels/images/{{$ctrl.label.examples[currentExample].image.file}})"
+             style="background-image: url({{imagesBase}}{{$ctrl.label.examples[currentExample].image.file}})"
              >&nbsp;
             <span class="img-attribution" ng-if="$ctrl.label.examples[currentExample].image.credit">
                 <a href="{{$ctrl.label.examples[currentExample].image.credit.source}}">Photo by {{$ctrl.label.examples[currentExample].image.credit.author}}</a>

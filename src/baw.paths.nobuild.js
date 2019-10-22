@@ -224,8 +224,12 @@ module.exports = function (environment) {
                 "users": {
                     "defaultImage": "assets/img/user_spanhalf.png"
                 },
-                "backgrounds": {
-                    "citizenScience": "/public/citizen_science/backgrounds/"
+                "citizenScience": {
+                    "backgrounds": {
+                        "files": "/system/citizen_science/backgrounds/",
+                        "lookup": "/system/citizen_science/samples/images.json"
+                    },
+                    "labelImages": "/system/citizen_science/labels/images/"
                 }
             }
         }

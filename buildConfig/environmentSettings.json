@@ -1,8 +1,8 @@
 {
   "environments" : {
     "development": {
-      "apiRoot": "https://staging.ecosounds.org",
-      "siteRoot": "http://localhost:8080",
+      "apiRoot": "https://www.ecosounds.org",
+      "siteRoot": "http://development.ecosounds.org:8080",
       "siteDir": "/build/",
       "ga": {
         "trackingId": ""

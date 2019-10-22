@@ -19,7 +19,7 @@ describe("The background service", function () {
             $rootScope = _$rootScope_;
             $timeout = _$timeout_;
 
-            $httpBackend.when("GET", "/public/citizen_science/samples/images.json").respond(200, {
+            $httpBackend.when("GET", "/system/citizen_science/samples/images.json").respond(200, {
                 data: [
                     {"filename": "1.jpg", "siteId": 402, "date": "2010-10-14 00:00:00"},
                     {"filename": "2.jpg", "siteId": 312, "date": "2010-08-01 12:00:00"},

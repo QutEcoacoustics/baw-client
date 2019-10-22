@@ -10,10 +10,10 @@ angular.module("bawApp.components.background", [])
          * array of images, with their site and datetime.
          * This is a temporary solution. In the future this will be incorporated into the server
          */
-        $http.get("/public/citizen_science/samples/images.json").then(response => {
+        $http.get(paths.site.assets.citizenScience.backgrounds.lookup).then(response => {
             // expand the full path
             self.images = response.data.map(img => {
-                img.filename = paths.site.assets.backgrounds.citizenScience + img.filename;
+                img.filename = paths.site.assets.citizenScience.backgrounds.files + img.filename;
                 return img;
             });
         });

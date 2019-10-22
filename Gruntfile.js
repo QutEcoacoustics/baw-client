@@ -732,7 +732,7 @@ module.exports = function (grunt) {
                                 // does not match any url startng with /build, /src, /vendor or /public
                                 // if matched, the root (index.html) is sent back instead.
                                 // from there, angular deals with the route information
-                                "!(^(\\/build|\\/src|\\/vendor|\\/public)) /" + buildDirectory + "/ [L]"
+                                "!(^(\\/build|\\/src|\\/vendor|\\/public|\\/system)) /" + buildDirectory + "/ [L]"
 
                             ]),
 

@@ -8,11 +8,14 @@ angular.module("bawApp.components.citizenScienceThumbLabels.examples",
         transclude: true,
         controller: [
             "$scope",
-            function ($scope) {
+            "conf.paths",
+            function ($scope, paths) {
 
                 var self = this;
 
                 $scope.currentExample = -1;
+
+                $scope.imagesBase = paths.site.assets.citizenScience.labelImages;
 
                 $scope.changeCurrentExample = function (labelNum, changeBy) {
                     var l = self.label.examples.length;
