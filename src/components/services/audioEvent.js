@@ -80,18 +80,32 @@ angular
                     return $http.post(url, qb.toJSON());
                 };
 
-                const filterUrl = paths.api.routes.audioEvent.filterAbsolute;
-                resource.getAudioEventsByIds = function (audioEventIds) {
+
+                /**
+                 * return the filterUrl, allowing for cross-site access of audioEvents in other deployments
+                 * @param domain if provided will construct the url with the relative url and the provided domain
+                 */
+                function filterUrl (domain = null) {
+                    if (domain) {
+                        return domain.replace(/\/$/,"") + paths.api.routes.audioEvent.filter;
+                    } else {
+                        return paths.api.routes.audioEvent.filterAbsolute;
+                    }
+                }
+
+
+                resource.getAudioEventsByIds = function (audioEventIds, domain = null) {
+
                     var query = QueryBuilder.create(function (q) {
                         return q.in("id", audioEventIds);
                     });
 
                     return $http
-                        .post(filterUrl, query.toJSON())
+                        .post(filterUrl(domain), query.toJSON())
                         .then(x => AudioEventModel.makeFromApi(x));
                 };
 
-                resource.getAudioEventsWithinRange = function (audioRecordingId, offsets) {
+                resource.getAudioEventsWithinRange = function (audioRecordingId, offsets, domain = null) {
                     var query = QueryBuilder.create(function (q) {
                         return q.and(
                             q.eq("audioRecordingId", audioRecordingId),
@@ -100,7 +114,7 @@ angular
                         );
                     });
 
-                    return $http.post(filterUrl, query.toJSON())
+                    return $http.post(filterUrl(domain), query.toJSON())
                         .then(resultPager.loadAll)
                         .then(x => AudioEventModel.makeFromApi(x));
                 };

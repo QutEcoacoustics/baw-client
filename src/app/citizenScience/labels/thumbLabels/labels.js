@@ -61,15 +61,27 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                     // using concat to allow for labels having multiple annotations
                     // examples can have annotation ids or spectrogram image filenames (for static image examples)
                     var annotationIds = [].concat.apply([], labels.map(l => l.examples)).map(e => e.hasOwnProperty("annotationId") ? e.annotationId : null);
+
+                    var annotationDomains = [].concat.apply([], labels.map(l => l.examples)).map(e => e.hasOwnProperty("annotationDomain") ? e.annotationDomain : null);
+
+
                     annotationIds = annotationIds.filter(id => id);
                     if (annotationIds.length === 0) {
                         return;
                     }
 
+                    // currently all annotations must come from the same domain.
+                    var annotationDomain = annotationDomains[0];
+                    if (!annotationDomains.every(v => v === annotationDomain)) {
+                        console.warn("Example annotations can not come from multiple domains");
+                        return;
+                    }
+
+
                     var annotations = [];
 
                     AudioEventService
-                        .getAudioEventsByIds(annotationIds)
+                        .getAudioEventsByIds(annotationIds, annotationDomain)
                         .then(function (response) {
 
                             annotations = response.data.data || [];
