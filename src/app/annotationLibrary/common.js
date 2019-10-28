@@ -33,26 +33,20 @@ angular
              * For a given child model that has the properties startOffset, endOffset and AudioRecording,
              * fetch the Media json and add as a property. Child models are e.g. AudioEvent or DatasetItem.
              * @param childModel object
+             * @param host string optional. If provided, the media will be requested form this host.
              * @return {*|Function}
              */
-            function getMedia(childModel) {
+            function getMedia(childModel, host = null) {
                 // modify annotation/datasetItem by reference
                 // async
                 var mediaParameters;
                 if (childModel instanceof DatasetItem) {
-                    mediaParameters = getDatasetItemMediaParameters(childModel);
+                    mediaParameters = getDatasetItemMediaParameters(childModel, host);
                 } else {
-                    mediaParameters = getAnnotationMediaParameters(childModel);
+                    mediaParameters = getAnnotationMediaParameters(childModel, host);
                 }
 
-
-                var x = Media.get(
-                    mediaParameters,
-                    mediaGetSuccess.bind(null, childModel),
-                    mediaGetFailure
-                );
-
-                return x.$promise;
+                return Media.getFromHost(mediaParameters, host).then(mediaGetSuccess.bind(null, childModel), mediaGetFailure);
 
             }
 
@@ -104,7 +98,18 @@ angular
 
 
             function mediaGetSuccess(audioEvent, mediaValue, responseHeaders) {
-                audioEvent.media = new MediaModel(mediaValue.data);
+
+                var host = audioEvent.meta.source.origin;
+
+                // depending on whether this is the result of a resource.get or $http.get, media value will structured differently
+                if (mediaValue.hasOwnProperty("headers")) {
+                    responseHeaders = mediaValue.headers;
+                    mediaValue = mediaValue.data;
+                }
+
+                var data = mediaValue.data;
+
+                audioEvent.media = new MediaModel(data, host);
 
                 // create properties that depend on Media
 
@@ -214,19 +219,20 @@ angular
                             });
                         });
                 },
-                getSiteMediaAndProject: function getSiteMediaAndProject({annotations, annotationIds, recordingIds}) {
+                getSiteMediaAndProject: function getSiteMediaAndProject({annotations, annotationIds, recordingIds}, host = null) {
                     var arsp = {
                         audioRecordings: [],
                         sites: [],
                         projects: []
                     };
 
+
                     if (annotations.length === 0) {
                         return arsp;
                     }
 
                     return AudioRecording
-                        .getRecordingsForLibrary(recordingIds)
+                        .getRecordingsForLibrary(recordingIds, host)
                         .then(arResult => {
                             arsp.audioRecordings = arResult.data.data;
                             return arsp;
@@ -237,7 +243,7 @@ angular
                             }
 
                             return Site
-                                .getSitesByIds(arspData.audioRecordings.map(x => x.siteId))
+                                .getSitesByIds(arspData.audioRecordings.map(x => x.siteId), host)
                                 .then(sResult => {
                                     arspData.sites = sResult.data.data;
                                     return arspData;
@@ -251,7 +257,7 @@ angular
                             return Project
                                 .getProjectsBySiteIds(arspData.sites.reduce((previous, x) => {
                                     return previous.concat(x.projectIds);
-                                }, []))
+                                }, []), host)
                                 .then(pResult => {
                                     arspData.projects = pResult.data.data;
                                     return arspData;
@@ -277,7 +283,7 @@ angular
                                 AudioRecording: audioRecordings
                             });
 
-                            mediaPromises.push(getMedia(annotation));
+                            mediaPromises.push(getMedia(annotation, host));
                         });
 
                         arspData.annotations = annotations;

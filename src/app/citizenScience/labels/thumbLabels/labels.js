@@ -62,7 +62,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                     // examples can have annotation ids or spectrogram image filenames (for static image examples)
                     var annotationIds = [].concat.apply([], labels.map(l => l.examples)).map(e => e.hasOwnProperty("annotationId") ? e.annotationId : null);
 
-                    var annotationDomains = [].concat.apply([], labels.map(l => l.examples)).map(e => e.hasOwnProperty("annotationDomain") ? e.annotationDomain : null);
+                    var annotationHosts = [].concat.apply([], labels.map(l => l.examples)).map(e => e.hasOwnProperty("annotationHost") ? e.annotationHost : null);
 
 
                     annotationIds = annotationIds.filter(id => id);
@@ -70,10 +70,10 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                         return;
                     }
 
-                    // currently all annotations must come from the same domain.
-                    var annotationDomain = annotationDomains[0];
-                    if (!annotationDomains.every(v => v === annotationDomain)) {
-                        console.warn("Example annotations can not come from multiple domains");
+                    // currently all annotations must come from the same host.
+                    var annotationHost = annotationHosts[0];
+                    if (!annotationHosts.every(v => v === annotationHost)) {
+                        console.warn("citizenScienceThumbLabels: Example annotations can not come from multiple hosts");
                         return;
                     }
 
@@ -81,7 +81,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                     var annotations = [];
 
                     AudioEventService
-                        .getAudioEventsByIds(annotationIds, annotationDomain)
+                        .getAudioEventsByIds(annotationIds, annotationHost)
                         .then(function (response) {
 
                             annotations = response.data.data || [];
@@ -103,7 +103,7 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
                                 recordingIds
                             };
 
-                            var x = libraryCommon.getSiteMediaAndProject(data);
+                            var x = libraryCommon.getSiteMediaAndProject(data, annotationHost);
                             return x;
 
                         }, function (error) {

@@ -227,6 +227,8 @@ angular
                         }
                         meta.capabilities = new Capabilities(meta.capabilities);
 
+                        meta.source = new URL(canonicalResponse.config.url);
+
                         // give each object a reference to meta
                         items.forEach((a) => a[metaKey] = meta);
 

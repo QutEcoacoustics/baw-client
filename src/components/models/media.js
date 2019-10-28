@@ -11,8 +11,10 @@ angular
         function (ApiBase, paths, Authenticator, url, ProgressEvent) {
 
             class Media extends ApiBase {
-                constructor(resource) {
+                constructor(resource, host = null) {
                     super(resource);
+
+                    this.host = host || paths.api.root;
 
                     // convert the datetime
                     this.recording.recordedDate = new Date(this.recording.recordedDate);
@@ -49,7 +51,8 @@ angular
 
                     var imageKey = imgKeys[0];
                     var imageFormat = mediaItem.available.image[imageKey];
-                    var fullUrl = paths.api.root + imageFormat.url;
+                    var root = this.host;
+                    var fullUrl = root + imageFormat.url;
                     mediaItem.available.image[imageKey].url = url.formatUriServer(fullUrl, {userToken: Authenticator.authToken});
 
                     mediaItem.spectrogram = imageFormat;
@@ -58,7 +61,7 @@ angular
                     mediaItem.available.audioOrder = [];
                     angular.forEach(mediaItem.available.audio, function (value, key) {
                         // just update the url so it is an absolute uri
-                        var fullUrl = paths.api.root + value.url;
+                        var fullUrl = root + value.url;
 
                         // also add auth token
                         this[key].url = url.formatUriServer(fullUrl, {userToken: Authenticator.authToken});
@@ -67,7 +70,7 @@ angular
 
                     }, mediaItem.available.audio);
 
-                    var jsonFullUrl = paths.api.root + mediaItem.available.text.json.url;
+                    var jsonFullUrl = root + mediaItem.available.text.json.url;
                     mediaItem.available.text.json.url = url.formatUriServer(jsonFullUrl, {userToken: Authenticator.authToken});
                 }
 

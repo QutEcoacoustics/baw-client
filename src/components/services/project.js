@@ -54,8 +54,9 @@ angular
 
                 };
 
-                resource.getProjectsBySiteIds = function (siteIds) {
-                    var gpbsiUrl = paths.api.routes.project.filterAbsolute;
+                resource.getProjectsBySiteIds = function (siteIds, host = null) {
+
+                    var gpbsiUrl = bawResource.crossDomainUrlAbsolute("project", "filter", host);
 
 
                     var query = QueryBuilder.create(function (q) {

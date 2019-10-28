@@ -49,13 +49,13 @@ angular
                         .then(x => AudioRecordingCore.makeFromApi(x));
                 };
 
-                resource.getRecordingsForLibrary = function (audioRecordingIds) {
+                resource.getRecordingsForLibrary = function (audioRecordingIds, host = null) {
                     var query = QueryBuilder.create(q => q
                         .in("id", audioRecordingIds)
                         .project({include: ["id", "siteId", "durationSeconds", "recordedDate"]}));
 
                     return $http
-                        .post(filterUrl, query.toJSONString())
+                        .post(bawResource.crossDomainUrlAbsolute("audioRecording", "filter", host), query.toJSONString())
                         .then(x => AudioRecordingModel.makeFromApi(x));
                 };
                 return resource;

@@ -81,7 +81,6 @@ angular
             function librarySuccess(response, responseHeaders) {
                 console.debug("annotationLibrary::librarySuccess");
 
-                var data = response.data.data || [];
                 var paging = response.data.meta.paging;
                 $scope.status = "loaded";
                 $scope.paging = getPagingSettings(paging.page, paging.items, paging.total);
@@ -92,8 +91,9 @@ angular
                 var annotationIds = new Set(),
                     recordingIds = new Set();
 
-                data.forEach(function (resource, index) {
-                    var audioEvent = new AudioEvent(resource);
+                var audioEvents = AudioEvent.makeFromApi(response);
+
+                audioEvents.data.data.forEach(function (audioEvent, index) {
 
                     annotationIds.add(audioEvent.id);
                     recordingIds.add(audioEvent.audioRecordingId);

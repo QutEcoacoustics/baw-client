@@ -19,7 +19,7 @@ angular
                     .then( x => SiteModel.makeFromApi(x));
             };
 
-            resource.getSitesByProjectIds = function (projectIds) {
+            resource.getSitesByProjectIds = function (projectIds, host = null) {
                 var projectIdsUnique = _.uniq(projectIds);
                 var query = QueryBuilder.create(function (q) {
                     return q.in("projects.id", projectIdsUnique)
@@ -27,7 +27,7 @@ angular
                         .sort({orderBy: "name"});
                 });
                 return $http
-                    .post(url, query.toJSONString())
+                    .post(bawResource.crossDomainUrlAbsolute("site", "filter", host), query.toJSONString())
                     .then( x => SiteModel.makeFromApi(x));
             };
 

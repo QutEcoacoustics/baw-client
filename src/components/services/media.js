@@ -3,8 +3,8 @@ angular
     .factory(
     "Media",
     [
-        "$resource", "bawResource", "conf.paths",
-        function ($resource, bawResource, paths) {
+        "$resource", "bawResource", "conf.paths", "$http", "$url",
+        function ($resource, bawResource, paths, $http, $url) {
 
             // create resource for rest requests to media api
             var mediaResource = $resource(bawResource.uriConvert(paths.api.routes.media.showAbsolute),
@@ -12,6 +12,13 @@ angular
                                               recordingId: "@recordingId",
                                               format: "@format"
                                           });
+
+            mediaResource.getFromHost = function (mediaParameters, host) {
+
+                var mediaUrl = bawResource.crossDomainUrlAbsolute("media", "show", host);
+                return $http.get($url.formatUriServer(mediaUrl, mediaParameters));
+
+            };
 
             // this is a read only service, remove unnecessary methods
             // keep GET

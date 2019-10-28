@@ -3,8 +3,8 @@ angular
     .factory(
     "bawResource",
     [
-        "$resource",
-        function ($resource) {
+        "$resource", "conf.paths",
+        function ($resource, paths) {
 
             /**
              *
@@ -15,6 +15,24 @@ angular
                 // find all place holders in this form: '{identifier}'
                 // replace with placeholder in this form: ':identifier'
                 return uri.replace(/(\{([^{}]*)\})/g, ":$2");
+            }
+
+
+            /**
+             * return the filterUrl, allowing for cross-site access of audioEvents in other deployments
+             * @param service string a key in paths.api.routes e.g. 'audioEvent'
+             * @param endpoint string a key in paths.api.routes[service]
+             * @param domain if provided will prepend to the relative url, otherwise will use absolute
+             * Note:
+             */
+            function crossDomainUrlAbsolute(service, endpoint, host = null) {
+
+                if (host) {
+                    return host.replace(/\/$/,"") + paths.api.routes[service][endpoint];
+                } else {
+                    return paths.api.routes[service][endpoint + "Absolute"];
+                }
+
             }
 
             /**
@@ -39,6 +57,7 @@ angular
             };
 
             bawResource.uriConvert = uriConvert;
+            bawResource.crossDomainUrlAbsolute = crossDomainUrlAbsolute;
             return bawResource;
         }
     ]
