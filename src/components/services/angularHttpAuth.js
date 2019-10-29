@@ -90,10 +90,19 @@ angular
 
             return {
                 request: function request(config) {
+
                     // if an auth token is present
                     if (config.headers[authHeader]) {
-                        // don't do anything
+
+                        var requestUrl = new URL(config.url, paths.api.root);
+                        // if we are requesting to a different host, don't send the authHeader
+                        if (requestUrl.origin !== paths.api.root) {
+                            delete config.headers.Authorization;
+                        }
+
+                        // don't do anything else
                         return config;
+
                     }
 
                     // if not API call (i.e. JSON) ///config.headers["Accept"] === "application/json" &&
@@ -117,6 +126,12 @@ angular
                     }
 
                     return deferred.promise;
+                },
+                requestError: function(rejection) {
+                    // do something on error
+                    console.warn("rejection");
+
+                    return $q.reject(rejection);
                 },
                 responseError: function error(response) {
                     if (response.status === 401) {
