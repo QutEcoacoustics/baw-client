@@ -88,6 +88,22 @@ angular
         function (authService, $rootScope, $q, paths) {
             const authHeader = "Authorization";
 
+            // Okay: here is my hacked attempt to allow public access to the client site in an afternoon!
+            // We'll make the wild assumption that GETs that fail authentication are fine and only redirect
+            // if another verb is used. The exception here is `.../filter` which is just a sneaky GET
+            // disguised as a POST.
+            function requireAuthentication(url, method) {
+                if (method === "GET") {
+                    return false;
+                }
+                else if (method === "POST" && url.includes("/filter")) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+
             return {
                 request: function request(config) {
 
@@ -115,6 +131,12 @@ angular
                         return config;
                     }
 
+                    // if this request doesn't need to be authenticated, then do not buffer it in the 
+                    // pending authentication buffer.
+                    if (!requireAuthentication(config.url, config.method)) {
+                        return config;
+                    }
+
                     // otherwise, an auth token is not available
                     // queue the request up
                     console.warn("authHttpInterceptor:request: deferring request, auth token not available", config.url);
@@ -134,7 +156,9 @@ angular
                     return $q.reject(rejection);
                 },
                 responseError: function error(response) {
-                    if (response.status === 401) {
+                    // push the failed response to the buffer to try again
+                    // but do not do it if we want to skip authentication
+                    if (response.status === 401 && requireAuthentication(response.config.url, response.config.method)) {
                         var deferred = $q.defer();
                         authService.pushResponseToBuffer(response.config, deferred);
 

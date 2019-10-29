@@ -47,7 +47,7 @@ angular
                 }
 
                 if (data.authToken === undefined) {
-                    throw "The authorisation token can not be undefined at this point";
+                    throw "The authorization token can not be undefined at this point";
                 }
 
                 that.authenticated = true;
@@ -128,11 +128,9 @@ angular
 
             function checkLoginFailure(data, status, headers, config) {
                 console.error(
-                    "Ping login service failure - this should not happen",
+                    "bawApp.services.authenticator.checkLoginFailure:: Ping login service failure. The user may not be logged in yet?",
                     data,
-                    status,
-                    headers,
-                    config
+                    status
                 );
             }
         }])

@@ -46,18 +46,6 @@ angular.module("angular-auth", ["http-auth-interceptor"])
                     obj[constants.rails.loginRedirectQsp] = $location.absUrl();
                     url = $url.formatUri(url, obj);
                     $window.location = url;
-                    /*
-                    // TODO: add extra checks to stop multiple animations
-
-                    var isOpen = isLoginBoxOpen();
-
-                    if(!isOpen){
-                        console.warn("showing login window");
-                        login.slideDown('slow', function () {
-
-                            main.hide();
-                        });
-                    }*/
                 });
 
                 scope.$on("event:auth-loginConfirmed", function () {

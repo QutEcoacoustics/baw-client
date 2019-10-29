@@ -28,6 +28,11 @@ angular.module("bawApp.recordings.recentRecordings", [])
             }
 
             function sitesFormat(response) {
+                if (!response) {
+                    console.warn("bawApp.recordings.recentRecordings.sitesFormat:: empty response for get sites, skipping site format");
+                    return;
+                }
+
                 var sites = response.data.data.reduce(function(state, current) {
                     state[current.id] = current;
                     return state;

@@ -23,11 +23,11 @@ angular
                     // ensure preferences are always updated
                     this.preferences = Object.assign({}, constants.defaultProfile.preferences, this.preferences);
 
-                    this.imageUrls = this.imageUrls.reduce((s, c) => {
-                        c.url = paths.api.root + c.url;
-                        s[c.size] = c;
-                        return s;
-                    }, {});
+                    this.imageUrls = this.imageUrls ? this.imageUrls.reduce((state, current) => {
+                        current.url = paths.api.root + current.url;
+                        state[current.size] = current;
+                        return state;
+                    }, {}) : [];
                 }
 
                 get url() {
