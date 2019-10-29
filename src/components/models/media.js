@@ -53,7 +53,8 @@ angular
                     var imageFormat = mediaItem.available.image[imageKey];
                     var root = this.host;
                     var fullUrl = root + imageFormat.url;
-                    mediaItem.available.image[imageKey].url = url.formatUriServer(fullUrl, {userToken: Authenticator.authToken});
+                    var params = this.host === paths.api.root ? {userToken: Authenticator.authToken} : {};
+                    mediaItem.available.image[imageKey].url = url.formatUriServer(fullUrl, params);
 
                     mediaItem.spectrogram = imageFormat;
 
