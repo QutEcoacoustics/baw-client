@@ -149,12 +149,6 @@ angular
 
                     return deferred.promise;
                 },
-                requestError: function(rejection) {
-                    // do something on error
-                    console.warn("rejection");
-
-                    return $q.reject(rejection);
-                },
                 responseError: function error(response) {
                     // push the failed response to the buffer to try again
                     // but do not do it if we want to skip authentication
