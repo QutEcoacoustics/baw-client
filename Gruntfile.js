@@ -699,7 +699,7 @@ module.exports = function (grunt) {
                         "./"
                     ],
                     debug: false,
-                    livereload: true,
+                    livereload: false,
                     middleware: function (connect, options) {
                         var buildDirectory = grunt.config("build_dir");
                         grunt.log.writeln("Base webserver directory: " + options.base);
@@ -787,7 +787,7 @@ module.exports = function (grunt) {
              * plugin should auto-detect.
              */
             options: {
-                livereload: true,
+                livereload: false,
                 livereloadOnError: false,
                 //spawn: true
             },
