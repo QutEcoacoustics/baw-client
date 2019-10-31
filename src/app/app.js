@@ -287,16 +287,7 @@ angular.module("baw",
                     fullWidth: true
                 }).
                 when(convertRouteParams(paths.site.ngRoutes.citizenScience.aboutStudy), {
-                    templateUrl: function (params) {
-                        var templates = {
-                            "bristlebird": "citizenScience/studies/bristlebird/about.tpl.html",
-                            "koala-verification": "citizenScience/studies/koala/about.tpl.html",
-                            "default": "citizenScience/studies/default/about.tpl.html"
-                        };
-
-                        return(templates[templates.hasOwnProperty(params.studyName) ? params.studyName : "default"]);
-
-                    },
+                    templateUrl: "citizenScience/studies/default/about.tpl.html",
                     controller: "CitizenScienceAboutController",
                     title: "Citizen Science",
                     fullWidth: true
