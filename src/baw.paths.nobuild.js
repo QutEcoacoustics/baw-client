@@ -229,7 +229,8 @@ module.exports = function (environment) {
                         "files": "/system/citizen_science/backgrounds/",
                         "lookup": "/system/citizen_science/samples/images.json"
                     },
-                    "labelImages": "/system/citizen_science/labels/images/"
+                    "labelImages": "/system/citizen_science/labels/images/",
+                    "landing": "/system/citizen_science/landing/"
                 }
             }
         }

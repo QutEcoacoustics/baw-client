@@ -1,14 +1,13 @@
 <div class="citizen-science">
 
      <div class="cs-main-container">
-        <div class="main wrapper clearfix dark-background about-content">
+        <div class="main wrapper clearfix dark-background about-content-container">
 
-            <h2>Dataset labelling for {{study}}</h2>
+            <a href="{{listenLink}}" class="btn btn-default get-started">Get Started! <i class="fa fa-arrow-circle-right"></i></a>
 
-            <p>Indicate whether the audio clips contain any of the given labels.</p>
+            <ng-bind-html class="about-content" ng-bind-html="content"></ng-bind-html>
 
-            <a href="{{listenLink}}" class="btn btn-default get-started">Get Started!</a>
-
+            <a href="{{listenLink}}" class="btn btn-default get-started">Get Started! <i class="fa fa-arrow-circle-right"></i></a>
 
         </div> <!-- #main -->
     </div> <!-- #main-container -->

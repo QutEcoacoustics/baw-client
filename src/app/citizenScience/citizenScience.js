@@ -3,21 +3,33 @@ class CitizenScienceAboutController {
                 $url,
                 paths,
                 backgroundImage,
-                $routeParams) {
+                $routeParams,
+                $http,
+                $sce) {
 
         $scope.listenLink =  $url.formatUri(paths.site.ngRoutes.citizenScience.listen,
             {studyName: $routeParams.studyName});
 
         $scope.study = $routeParams.studyName;
 
-        var backgroundFiles = {
-            "bristlebird": "2.jpg",
-            "koala-verification": "3.jpg"
-        };
-        var backgroundFile = backgroundFiles.hasOwnProperty($routeParams.studyName) ? backgroundFiles[$routeParams.studyName] : "1.jpg";
+        $http.get(paths.site.assets.citizenScience.landing + "backgrounds.json").then(response => {
+            var backgroundFiles = response.data;
+            var backgroundFile = backgroundFiles.hasOwnProperty($routeParams.studyName) ? backgroundFiles[$routeParams.studyName] : "1.jpg";
+            backgroundImage.currentBackground = paths.site.assets.citizenScience.backgrounds.files + backgroundFile;
+        });
 
+        $http.get(paths.site.assets.citizenScience.landing + $scope.study + ".html").then(response => {
+            $scope.content = $sce.trustAsHtml(response.data);
+        }, response => {
 
-        backgroundImage.currentBackground = paths.site.assets.backgrounds.citizenScience + backgroundFile;
+            // convert e.g. my-study to My Study
+            var heading = $scope.study.replace(/-/, " ")
+                .split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+
+            $scope.content = `<h2>${heading}</h2>` +
+                "<p>Indicate whether the audio clips contain any of the given labels.</p>";
+        });
+
     }
 }
 
@@ -42,5 +54,7 @@ angular
             "conf.paths",
             "backgroundImage",
             "$routeParams",
+            "$http",
+            "$sce",
             CitizenScienceAboutController
         ]);
