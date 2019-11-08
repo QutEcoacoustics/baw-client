@@ -31,6 +31,11 @@ angular
              * Calls to this function are throttled.
              */
             exports.updatePreferences = function throttleWrapper() {
+                if (!$rootScope.$loggedIn) {
+                    console.warn("updatePreferences: save preferences to server cancelled because no user is logged in");
+                    return;
+                }
+
                 console.debug("updatePreferences: throttled");
                 throttleCount++;
 

@@ -3,6 +3,7 @@ angular
     .factory(
         "ProgressEvent",
         [
+            "$rootScope",
             "$resource",
             "$http",
             "bawResource",
@@ -10,7 +11,7 @@ angular
             "conf.paths",
             "baw.models.progressEvent",
             "baw.models.datasetItem.defaultDatasetId",
-            function ($resource, $http, bawResource, $url, paths, ProgressEventModel, defaultDatasetId) {
+            function ($rootScope, $resource, $http, bawResource, $url, paths, ProgressEventModel, defaultDatasetId) {
 
                 var resource = bawResource(
                     paths.api.routes.progressEvent.listAbsolute,
@@ -18,6 +19,10 @@ angular
                     {});
 
                 resource.createProgressEvent = function createProgressEvent(datasetItemId, activity) {
+                    if (!$rootScope.$loggedIn) {
+                        console.warn("createProgressEvent: creating progress event on server cancelled because no user is logged in");
+                        return;
+                    }
 
                     var progressEvent = new ProgressEventModel();
                     progressEvent.activityKey = activity;
@@ -32,6 +37,10 @@ angular
                 };
 
                 resource.createByDatasetItemAttributes = function createByDatasetItemAttributes(datasetId, audioRecordingId, startTimeSeconds, endTimeSeconds, activity) {
+                    if (!$rootScope.$loggedIn) {
+                        console.warn("createByDatasetItemAttributes: creating progress event on server cancelled because no user is logged in");
+                        return;
+                    }
 
                     var routeParams = {
                         datasetId: datasetId,

@@ -6,7 +6,7 @@
 
 
         <h1 id="chunkInfo" class="row">
-            <span class="col-md-6">
+            <span class="col-md-12">
                 <span ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'">
                     <!--{{ $first && "" || ", "}}-->
                     <span ng-switch-when="false">
@@ -187,65 +187,6 @@
             </div>
 
 
-        </div>
-
-
-
-        <div class="debug-ui">
-            <h3>Annotations</h3>
-            <table class="details-table">
-                <thead>
-                <tr>
-                    <th>Selected</th>
-                    <th>Saved</th>
-                    <th>Jump to</th>
-                    <th>Annotation ID</th>
-                    <th>Audio Recording</th>
-                    <th>Created At</th>
-                    <th>Created By</th>
-                    <th>Deleted At</th>
-                    <th>Deleted By</th>
-                    <th>Updated At</th>
-                    <th>Updated By</th>
-                    <th>Tags</th>
-                    <th>Time Range</th>
-                    <th>Frequency Range</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="ae in model.audioEvents">
-                    <td>
-                        <!--<input type="radio" ng-checked="ae.selected" ng-model="ae.selected"   name="selectionRadioGroup"  >-->
-                        <input type="radio" baw-checked="ae.selected" name="selectionRadioGroup">
-                        {{ae.selected && '✓' || '✗'}}
-                    </td>
-                    <td>
-                        {{ae.isDirty && '✗' || '✓'}}
-                    </td>
-                    <td>
-                        <!-- TODO -->
-                    </td>
-                    <td colspan="{{ae.id && 1 || 2}}">
-                        {{ae.id}}
-                                <span ng-hide="ae.id">
-                                    <em>new annotation</em>
-                                </span>
-                    </td>
-                    <td ng-show="ae.id"><a ng-href="/recordings/{{ae.audioRecording.uuid}}"
-                                           class="short-guid">{{ae.audioRecording.uuid}}</a></td>
-                    <td>{{ae.createdAt}}</td>
-                    <td>{{ae.creatorId}}</td>
-                    <td>{{ae.deletedAt}}</td>
-                    <td>{{ae.deleterId}}</td>
-                    <td>{{ae.updatedAt}}</td>
-                    <td>{{ae.updaterId}}</td>
-                    <td><span ng-repeat="t in ae.audioEventTags">{{t.tagId | tagName}}{{!$last && ',' || ''}}</span>
-                    </td>
-                    <td>{{ae.startTimeSeconds | number:3}} - {{ae.endTimeSeconds | number:3}}</td>
-                    <td>{{ae.lowFrequencyHertz | number:3}} - {{ae.highFrequencyHertz | number:3}}</td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>

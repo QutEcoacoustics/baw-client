@@ -93,7 +93,7 @@ angular
             // if another verb is used. The exception here is `.../filter` which is just a sneaky GET
             // disguised as a POST.
             function requireAuthentication(url, method) {
-                if (method === "GET") {
+                if (method === "GET" || method === "HEAD") {
                     return false;
                 }
                 else if (method === "POST" && url.includes("/filter")) {
