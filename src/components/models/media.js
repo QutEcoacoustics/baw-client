@@ -65,14 +65,14 @@ angular
                         var fullUrl = root + value.url;
 
                         // also add auth token
-                        this[key].url = url.formatUriServer(fullUrl, {userToken: Authenticator.authToken});
+                        this[key].url = url.formatUriServer(fullUrl, params);
 
                         mediaItem.available.audioOrder.push(key);
 
                     }, mediaItem.available.audio);
 
                     var jsonFullUrl = root + mediaItem.available.text.json.url;
-                    mediaItem.available.text.json.url = url.formatUriServer(jsonFullUrl, {userToken: Authenticator.authToken});
+                    mediaItem.available.text.json.url = url.formatUriServer(jsonFullUrl, params);
                 }
 
                 /**
