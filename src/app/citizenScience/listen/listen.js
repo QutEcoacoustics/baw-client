@@ -8,10 +8,10 @@ class CitizenScienceListenController {
                 Question,
                 $routeParams,
                 StudyService,
-                onboardingService
+                onboardingService,
+                UserProfile,
+                $rootScope
     ) {
-
-        //var self = this;
 
         /**
          * The name of the css project as it appears in the dataset definition
@@ -21,6 +21,11 @@ class CitizenScienceListenController {
 
         CitizenScienceCommon.studyData.studyName = $scope.csProject;
 
+        UserProfile.get.then(() => {
+            if (!UserProfile.profile.id) {
+                $rootScope.$broadcast("event:auth-loginRequired");
+            }
+        });
 
         /**
          * The current sample object, including sample id
@@ -184,6 +189,8 @@ angular
             "$routeParams",
             "Study",
             "onboardingService",
+            "UserProfile",
+            "$rootScope",
             CitizenScienceListenController
         ]);
 

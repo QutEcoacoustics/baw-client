@@ -3,11 +3,11 @@
      <div class="cs-main-container">
         <div class="main wrapper clearfix dark-background about-content-container">
 
-            <a href="{{listenLink}}" class="btn btn-default get-started">Get Started! <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{{listenLink.url}}" class="btn btn-default get-started">{{listenLink.text}}<i class="fa fa-arrow-circle-right"></i></a>
 
             <ng-bind-html class="about-content" ng-bind-html="content"></ng-bind-html>
 
-            <a href="{{listenLink}}" class="btn btn-default get-started">Get Started! <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{{listenLink.url}}" class="btn btn-default get-started">{{listenLink.text}}<i class="fa fa-arrow-circle-right"></i></a>
 
         </div> <!-- #main -->
     </div> <!-- #main-container -->

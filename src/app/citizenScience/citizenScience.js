@@ -5,10 +5,27 @@ class CitizenScienceAboutController {
                 backgroundImage,
                 $routeParams,
                 $http,
-                $sce) {
+                $sce,
+                UserProfile,
+                constants) {
 
-        $scope.listenLink =  $url.formatUri(paths.site.ngRoutes.citizenScience.listen,
-            {studyName: $routeParams.studyName});
+        $scope.listenLink =  {
+            url: $url.formatUri(paths.site.ngRoutes.citizenScience.listen,
+                {studyName: $routeParams.studyName}),
+            text: "Get Started!"
+        };
+
+        // If the user is not logged in, the get started button goes to the login page with a redirect to the listen page
+        UserProfile.get.then(() => {
+            let profile = UserProfile.profile;
+            if (!profile.id) {
+                let loginLink =  paths.api.links.loginActualAbsolute;
+                let obj ={};
+                obj[constants.rails.loginRedirectQsp] = $scope.listenLink.url;
+                $scope.listenLink.url = $url.formatUri(loginLink, obj);
+                $scope.listenLink.text = "Log in to get started!";
+            }
+        });
 
         $scope.study = $routeParams.studyName;
 
@@ -21,7 +38,7 @@ class CitizenScienceAboutController {
         $http.get(paths.site.assets.citizenScience.landing + $scope.study + ".html").then(response => {
             $scope.content = $sce.trustAsHtml(response.data);
         }, response => {
-
+            // Default if no custom html is loaded.
             // convert e.g. my-study to My Study
             var heading = $scope.study.replace(/-/, " ")
                 .split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
@@ -56,5 +73,7 @@ angular
             "$routeParams",
             "$http",
             "$sce",
+            "UserProfile",
+            "conf.constants",
             CitizenScienceAboutController
         ]);
