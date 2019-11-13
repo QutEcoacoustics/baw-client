@@ -24,6 +24,7 @@ class CitizenScienceAboutController {
                 obj[constants.rails.loginRedirectQsp] = $scope.listenLink.url;
                 $scope.listenLink.url = $url.formatUri(loginLink, obj);
                 $scope.listenLink.text = "Log in to get started!";
+                $scope.listenLink.target = "_self";
             }
         });
 
