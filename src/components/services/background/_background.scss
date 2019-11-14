@@ -11,8 +11,6 @@
   background: center top no-repeat;
   background-size: cover;
 
-
-
   &.preloading {
     transition: none;
     -moz-transition: none;
@@ -25,6 +23,13 @@
     transition: opacity .9s ease-in-out;
     -moz-transition: opacity .9s ease-in-out;
     -webkit-transition: opacity .9s ease-in-out;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transition: opacity .5s ease-in-out;
+    -moz-transition: opacity .5s ease-in-out;
+    -webkit-transition: opacity .5s ease-in-out;
   }
 
 

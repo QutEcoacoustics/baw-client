@@ -102,45 +102,68 @@ angular.module("bawApp.components.background", [])
             /**
              * Watches for changes to the backgroundImage service. When a change is detected it
              * adds to the backgrounds array on scope. The array holds the url and the 'state'. State can be
-             * preloading, fadeIn, done and finished.
+             * preloading, fadeIn, done, fadeOut.
              * preloading: image is preloading. Set the opacity to 0
              * fadeIn: image has been preloaded, fade it in.
              * done: image is finished fading in. Anything behind it can be removed.
-             * finished: is behind an image with state done. Remove it from dom.
+             * fadeOut: used only when there is no background image. image should fade out and then the array is cleared
+             * The order of the images in the array is the order on the page from behind to in front.
              * The backgrounds array is bound to scope in a repeat. New images can be added quicker than they can fade in without problem
              * because it just adds them over the top of the existing fading-in images.
+             * The fading is done in css
              * @param newUrl
              * @param oldUrl
              */
 
             self.setBackground = function () {
 
+                // If the new background is empty, fade any current background out then remove any 'fadeOut' backgrounds
                 if (typeof backgroundImage.currentBackground !== "string" || backgroundImage.currentBackground.length === 0) {
-                    return;
-                }
+                    // remove the background
+                    $scope.backgrounds.forEach(bg => bg.state = "fadeOut");
+                    $timeout(function () {
+                        // after the fadeOut time, remove any items that are of type fadeOut
+                        // the code below acts like a filter-in-place function
+                        let j = 0;
+                        $scope.backgrounds.forEach((e, i) => {
+                            if (e.state !== "fadeOut") {
+                                if (i!==j) {
+                                    $scope.backgrounds[j] = e;
+                                }
+                                j++;
+                            }
+                        });
+                        $scope.backgrounds.length = j;
+                    }, 1000);
 
-                $scope.backgrounds.push({
-                    url: backgroundImage.currentBackground,
-                    state: "preloading"
-                });
-
-                var currentBackgroundNum = $scope.backgrounds.length - 1;
-
-                var preload = new Image();
-                preload.src = backgroundImage.currentBackground;
-
-                if (preload.complete) {
-                    self.backgroundLoaded(currentBackgroundNum);
                 } else {
-                    preload.addEventListener("load", function (e) {
+                    // If the new background is not empty, add the new background to the top and fade it in, then
+                    // clean up any old background when its done fading in.
+
+                    $scope.backgrounds.push({
+                        url: backgroundImage.currentBackground,
+                        state: "preloading"
+                    });
+
+                    var currentBackgroundNum = $scope.backgrounds.length - 1;
+
+                    var preload = new Image();
+                    preload.src = backgroundImage.currentBackground;
+
+                    if (preload.complete) {
                         self.backgroundLoaded(currentBackgroundNum);
-                        // remove the preloaded image element to prevent memory leak
-                        this.remove();
-                    });
-                    preload.addEventListener("error", function () {
-                        console.warn("Error loading background image", this);
-                        this.remove();
-                    });
+                    } else {
+                        preload.addEventListener("load", function (e) {
+                            self.backgroundLoaded(currentBackgroundNum);
+                            // remove the preloaded image element to prevent memory leak
+                            this.remove();
+                        });
+                        preload.addEventListener("error", function () {
+                            console.warn("Error loading background image", this);
+                            this.remove();
+                        });
+                    }
+
                 }
 
             };
@@ -149,37 +172,23 @@ angular.module("bawApp.components.background", [])
              * updates the state of the newly created background so that the dom element fades in
              */
             self.backgroundLoaded = function (backgroundNum) {
+                let background = $scope.backgrounds[backgroundNum];
                 // short timeout to ensure new background is loaded before start to fade in
                 $timeout(function () {
-                    $scope.backgrounds[backgroundNum].state = "fadeIn";
+                    background.state = "fadeIn";
                 }, 50);
-
-                // timout to change do done after finished fading in.
+                // timout to change to "done" after fade in and remove any backgrounds below it.
                 // Fade-in is done with css, and it seems easier to use timeout than using an event for the transition complete.
-                // Need to make sure the timeout duration is longer than the transition duration
+                // The timeout duration must be longer than the transition duration
                 $timeout(function () {
-                    // because this is a timeout, it won't the state change won't be picked up by the bound template
-                    // but it doesn't matter. This is just for checking what can be removed.
-                    $scope.backgrounds[backgroundNum].state = "done";
-                    self.cleanup();
-                }, 1000);
-            };
-
-
-            /**
-             * Removes all backgrounds from the list that are before (lower index) any with state 'done'
-             */
-            self.cleanup = function () {
-
-                var discard = false;
-                for (var i = $scope.backgrounds.length - 1; i >= 0; i--) {
-
-                    if (discard) {
-                        $scope.backgrounds[i].state = "finished";
-                    } else if ($scope.backgrounds[i].state === "done") {
-                        discard = true;
+                    // because this is a timeout, it won't immediately have an effect on the dom, but the fade-ins have
+                    // completed so it's ok.
+                    if (background.state !== "fadeOut") {
+                        background.state = "done";
+                        const discardBelow = $scope.backgrounds.indexOf(background);
+                        $scope.backgrounds.splice(0, discardBelow);
                     }
-                }
+                }, 1000);
             };
 
             $scope.$watch(function () {
@@ -187,6 +196,24 @@ angular.module("bawApp.components.background", [])
             }, function (newVal, oldVal) {
                 self.setBackground();
             });
+
+
+            /**
+             * When the route changes, check if the new route should have a background. If not, remove the current background
+             */
+            $scope.$on("$routeChangeStart", function(event, next) {
+                if (!next.$$route.hasOwnProperty("hasBackground") || !next.$$route.hasBackground) {
+                    backgroundImage.currentBackground = "";
+                }
+            });
+
+            /**
+             * Debugging function to print the list of states in one line of text
+             */
+            self.printStates = function (context = "") {
+                console.log(">>>> ",context, "(", $scope.backgrounds.length, ") [", $scope.backgrounds.map(bg => bg.state).join(", "), "]");
+            };
+
 
         }]
     });

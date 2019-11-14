@@ -280,31 +280,28 @@ angular.module("baw",
                     fullWidth: true,
                     reloadOnSearch: false
                 }).
-                when("/citsci", {
-                    templateUrl: "citizenScience/citizenScience.tpl.html",
-                    controller: "CitizenScienceController",
-                    title: "Citizen Science Page",
-                    fullWidth: true
-                }).
                 when(convertRouteParams(paths.site.ngRoutes.citizenScience.aboutStudy), {
                     templateUrl: "citizenScience/studies/default/about.tpl.html",
                     controller: "CitizenScienceAboutController",
                     title: "Citizen Science",
-                    fullWidth: true
+                    fullWidth: true,
+                    hasBackground: true
                 }).
                 when(convertRouteParams(paths.site.ngRoutes.citizenScience.listen), {
                     templateUrl: "citizenScience/listen/listen.tpl.html",
                     controller: "CitizenScienceListenController",
                     title: "Citizen Science - Listen",
                     fullWidth: true,
-                    reloadOnUrl: false
+                    reloadOnUrl: false,
+                    hasBackground: true
                 }).
                 when(convertRouteParams(paths.site.ngRoutes.citizenScience.listenId), {
                     templateUrl: "citizenScience/listen/listen.tpl.html",
                     controller: "CitizenScienceListenController",
                     title: "Citizen Science - Listen",
                     fullWidth: true,
-                    reloadOnUrl: false
+                    reloadOnUrl: false,
+                    hasBackground: true
                 }).
                 when(convertRouteParams(paths.site.ngRoutes.citizenScience.responses), {
                     templateUrl: "citizenScience/responses/responses.tpl.html",
