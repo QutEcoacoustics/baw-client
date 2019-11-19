@@ -17,6 +17,7 @@ angular.module("bawApp.components.citizenScienceUserInput",
                 $scope.questionData = SampleLabels.data;
                 $scope.questionDefinition = SampleLabels.question;
 
+                onboardingService.waitFor("questions");
 
                 $scope.$watch(() => SampleLabels.question.fields.length, (newVal) => {
 

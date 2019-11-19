@@ -21,7 +21,7 @@ angular.module("bawApp.components.citizenScienceTextLabels",
                                 order: 5
                             }
 
-                        ]);
+                        ], "questions");
                     }
                 });
 
