@@ -3,13 +3,15 @@ angular.module("bawApp.spectrogram", [])
         return {
             restrict: "A",
             link: function ($scope, element, attributes) {
-                element.bind("load", function() {
-                    $rootScope.$broadcast("spectrogram-loaded", $scope);
 
+                element[0].addEventListener("load", event => {
+                    $rootScope.$broadcast("spectrogram-loaded", $scope);
                 });
-                element.bind("error", function(){
+
+                element[0].addEventListener("error", event => {
                     console.log("spectrogram could not be loaded");
                 });
+
             }
         };
     }]);

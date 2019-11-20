@@ -150,12 +150,12 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                  */
                 addCallbacks: function (callbacks, add = true) {
                     if (add) {
-                        Object.keys(callbacks).forEach(cb => {
+                        Object.keys(callbacks).forEach(callback => {
                             // if there is already a callback function, nest the old and new in a new function.
-                            if (add && self.callbacks.hasOwnProperty(cb)) {
-                                self.callbacks[cb].push(callbacks[cb]);
+                            if (add && self.callbacks.hasOwnProperty(callback)) {
+                                self.callbacks[callback].push(callbacks[callback]);
                             } else {
-                                self.callbacks[cb] = [callbacks[cb]];
+                                self.callbacks[callback] = [callbacks[callback]];
                             }
                         });
                     }
@@ -210,7 +210,13 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
 
                 var self = this;
 
-                $scope.status = "loading";
+                const statuses = {
+                    loading: "loading",
+                    ready: "ready",
+                    open: "open"
+                };
+
+                $scope.status = statuses.loading;
 
                 $scope.launchTour = function launchTour () {
 
@@ -224,8 +230,8 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
 
                         // use timeouts to ensure that digest cycles are complete before starting
                         $timeout(() => {
-                            for (let i = 0; i < onboardingService.callbacks.onBeforeStart.length; i++) {
-                                onboardingService.callbacks.onBeforeStart[i].call();
+                            for (const onBeforeStartFunction of onboardingService.callbacks.onBeforeStart) {
+                                onBeforeStartFunction.call();
                             }
                             $timeout(() => {
                                 ngIntroService.start();
@@ -249,16 +255,10 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                     return onboardingService.isReady();
                     }, function (isReady) {
                         if (isReady) {
-                            $scope.status = "ready";
+                            $scope.status = statuses.ready;
                             if (!onboardingService.hasViewedAll()) {
                                 ngIntroService.hideHints();
                                 $scope.launchTour();
-                                // $timeout.cancel(self.autoplayTimeout);
-                                // ngIntroService.hideHints();
-                                // self.autoplayTimeout = $timeout(function () {
-                                //     ngIntroService.hideHints();
-                                //     $scope.launchTour();
-                                // }, 500);
                             }
                         }
                 });
@@ -282,25 +282,23 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
 
                 self.onClose = function () {
                     $timeout(function () {
-                        $scope.status = "ready";
+                        $scope.status = statuses.ready;
                     }, 1000);
                 };
 
                 self.init = function () {
 
-                    $scope.status = "open";
+                    $scope.status = statuses.open;
 
                     // set all the callbacks
-                    Object.keys(onboardingService.callbacks).forEach((cb) => {
+                    Object.keys(onboardingService.callbacks).forEach(callback => {
                         // each value is an array of functions, so we wrap them in a function and call each one.
-                        if (angular.isFunction(ngIntroService[cb])) {
-                            ngIntroService[cb](function (arg) {
-                                for (let i = 0; i < onboardingService.callbacks[cb].length; i++) {
-                                    onboardingService.callbacks[cb][i](arg);
+                        if (angular.isFunction(ngIntroService[callback])) {
+                            ngIntroService[callback](function (arg) {
+                                for (let i = 0; i < onboardingService.callbacks[callback].length; i++) {
+                                    onboardingService.callbacks[callback][i](arg);
                                 }
                             });
-                        } else {
-                            console.log("no function", cb);
                         }
 
                     });
