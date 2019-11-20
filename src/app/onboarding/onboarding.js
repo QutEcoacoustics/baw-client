@@ -18,22 +18,7 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
 
             var self = this;
 
-            self.steps = [];
-            self.callbacks = {};
 
-            /**
-             * To ensure the autoPlay starts only when all the elements are ready, when steps are added they can provide
-             * a key which is added to the needed set. When certain elements have finished loading (typically after http
-             * success) it can add to the ready set. Onboarding will be considered ready when needed is a subset of ready.
-             * @type {{needed: Set, received: Set}}
-             */
-            self.readyKeys = {
-                needed: new Set(),
-                ready: new Set()
-            };
-
-            self.isReady = false;
-            self.readyTimeout = null;
 
             /**
              * Steps can be given an order property, which we sort by.
@@ -95,7 +80,8 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
 
             /**
              * Registers a key that must be received in the 'ready' function for onboarding to be considered ready
-             * @param readyKey optional. If omitted and there are no needed keys, isReady will be set to true after a short timeout
+             * @param readyKey optional. If omitted and there are no needed keys, isReady will be set to true after a short timeout.
+             *
              */
             self.waitFor = function (readyKey) {
                 if (readyKey) {
@@ -114,6 +100,39 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                 self.isReady = Array.from(self.readyKeys.needed).every(key => self.readyKeys.ready.has(key));
             };
 
+
+            self.callbacks = {};
+
+            /**
+             * Clears out the steps, callbacks, readyKeys
+             */
+            self.init = function () {
+
+                /**
+                 * Holds the steps that will be passed to intro.js
+                 */
+                self.steps = [];
+
+                // callbacks is exposed directly, so we can't assign a new empty object
+                Object.keys(self.callbacks).forEach(function(key) { delete self.callbacks[key]; });
+
+                /**
+                 * To ensure the autoPlay starts only when all the elements are ready, when steps are added they can provide
+                 * a key which is added to the needed set. When certain elements have finished loading (typically after http
+                 * success) it can add to the ready set. Onboarding will be considered ready when needed is a subset of ready.
+                 * @type {{needed: Set, received: Set}}
+                 */
+                self.readyKeys = {
+                    needed: new Set(),
+                    ready: new Set()
+                };
+
+                // will switch to true when the needed keys have been added and match the ready keys
+                self.isReady = false;
+                self.readyTimeout = null;
+
+            };
+
             return {
 
                 /**
@@ -123,8 +142,6 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                  */
                 addSteps: function (steps, readyKey = null) {
 
-                    console.log("adding steps: ", steps.length);
-
                     if (!Array.isArray(steps)) {
                         steps = [steps];
                     }
@@ -133,10 +150,11 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                     var newSteps = steps.filter(x => self.steps.findIndex((s) => s.element === x.element) === -1);
                     self.steps = self.steps.concat(newSteps);
                     self.sortSteps();
-
                     self.waitFor(readyKey);
 
                 },
+
+                init: self.init,
 
                 getSteps: function () {
                     return self.steps;
@@ -159,9 +177,6 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                             }
                         });
                     }
-
-                    console.log(self.callbacks);
-
                 },
 
                 callbacks: self.callbacks,
@@ -185,11 +200,6 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
 
                 isReady: function () {
                     return self.isReady;
-                },
-
-                started: function () {
-                    console.log("STARTED!!!!!");
-
                 }
 
             };
@@ -235,7 +245,6 @@ angular.module("bawApp.components.onboarding", ["bawApp.citizenScience.common", 
                             }
                             $timeout(() => {
                                 ngIntroService.start();
-                                onboardingService.started();
                             });
                         });
 

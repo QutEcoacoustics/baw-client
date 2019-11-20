@@ -38,6 +38,8 @@ class CitizenScienceListenController {
         // to be populated after getting samples from dataset
         $scope.media = null;
 
+        onboardingService.init();
+
         onboardingService.addSteps([
             {
                 element: ".citizen-science .spectrogram-wrapper",
