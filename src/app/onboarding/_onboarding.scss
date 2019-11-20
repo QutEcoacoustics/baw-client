@@ -2,6 +2,16 @@
   cursor: pointer;
   opacity: 0.8;
 
+  &.loading {
+    opacity: 0.2;
+    text-shadow: 0px 0px 10px #fff;
+  }
+
+  &.ready {
+    transition: opacity 2s;
+    animation: 0.3s linear 1s wobble;
+  }
+
   &:before {
     /* questionmark: f059
        information: f05a */
@@ -12,6 +22,7 @@
 
   &:hover {
     opacity: 1;
+    transition: opacity 0.2s;
   }
 
 }
@@ -20,5 +31,13 @@ h1, h2, h3 {
   .info-launch {
     float: right;
   }
+}
+
+@keyframes wobble {
+  20% { -webkit-transform: rotate(-30deg) scale(1.1); transform:rotate(-30deg) scale(1.1); }
+  40% { -webkit-transform: rotate(25deg) scale(1.2); transform:rotate(25deg) scale(1.2); }
+  60% { -webkit-transform: rotate(-20deg) scale(1.2); transform:rotate(-20deg) scale(1.2); }
+  80% { -webkit-transform: rotate(15deg) scale(1.1); transform:rotate(15deg) scale(1.1); }
+  100% { -webkit-transform: rotate(0deg) scale(1); transform:rotate(0deg) scale(1); }
 }
 

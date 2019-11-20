@@ -176,13 +176,16 @@ angular.module("bawApp.components.citizenScienceThumbLabels",
 
                     }
 
-                ]);
+                ], "questions");
 
                 onboardingService.addCallbacks({
                     onBeforeStart: function () {
                         $scope.$broadcast("show-label-details");
                     },
                     onExit: function () {
+                        $scope.$broadcast("hide-label-details");
+                    },
+                    onComplete: function () {
                         $scope.$broadcast("hide-label-details");
                     }
                 });

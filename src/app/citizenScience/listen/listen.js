@@ -54,7 +54,6 @@ class CitizenScienceListenController {
                 element: "dataset-progress .btn",
                 intro: "When you have finished applying labels, use this button to go to the next clip",
                 order: 10
-
             },
             {
                 element: ".autoplay",
@@ -62,7 +61,11 @@ class CitizenScienceListenController {
                 order: 11
             }
 
-        ]);
+        ], "spectrogram");
+
+        $scope.$on("spectrogram-loaded", function (scope) {
+            onboardingService.ready("spectrogram");
+        });
 
         $scope.questionData = {};
 
@@ -84,7 +87,6 @@ class CitizenScienceListenController {
 
             $scope.study = studies[0];
             CitizenScienceCommon.studyData.study = $scope.study;
-
             Question.questions($scope.study.id).then(x => {
                 console.log("questions loaded", x);
 
@@ -97,6 +99,8 @@ class CitizenScienceListenController {
                 //
                 // x.data.data[0].questionData = temp;
 
+                onboardingService.ready("questions");
+
                 //TODO: update to allow multiple questions
                 $scope.questionData = x.data.data[0].questionData;
 
@@ -104,9 +108,7 @@ class CitizenScienceListenController {
             });
         });
 
-
         $scope.studyTitle = {"bristlebird": "Eastern Bristlebird Search", "koala-verification": "Koala Verification"}[$scope.csProject];
-
 
         $scope.settings = {
             "bristlebird": {
@@ -120,7 +122,6 @@ class CitizenScienceListenController {
                 showProgress: true
             }
         }[$scope.csProject];
-
 
         /**
          * When the currentItem changes, change the current audio file / spectrogram to match it
@@ -144,8 +145,6 @@ class CitizenScienceListenController {
                     }
 
                     $scope.sample.item = item;
-
-
 
                 }
             });
@@ -174,7 +173,8 @@ angular
         "bawApp.citizenScience.csLabels",
         "bawApp.components.onboarding",
         "bawApp.components.background",
-        "bawApp.citizenScience.itemInfo"
+        "bawApp.citizenScience.itemInfo",
+        "bawApp.spectrogram"
     ])
     .controller(
         "CitizenScienceListenController",

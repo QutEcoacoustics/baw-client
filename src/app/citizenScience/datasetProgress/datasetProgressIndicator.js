@@ -60,7 +60,7 @@ angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.cs
                     element: ".progress",
                     intro: "How many items have been completed out of the total amount. ",
                     order: 3
-                });
+                }, "questionResponses");
 
                 /**
                  * Watch the total items, because it will not be ready when the controller first loads
@@ -93,6 +93,7 @@ angular.module("bawApp.components.progressIndicator", ["bawApp.citizenScience.cs
                             $scope.progress.responseCount = totalResponses;
                             self.updateProgressPercent();
                             self.refreshIn = 5;
+                            onboardingService.ready("questionResponses");
 
                         });
 
