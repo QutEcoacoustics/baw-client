@@ -32,7 +32,7 @@ module.exports = function (environment) {
                 "autoPlay": false,
                 "visualize": {
                     "hideImages": false,
-                    "hideFixed": false
+                    "hideFixed": true
                 }
             },
             "userName": "Unknown user"
