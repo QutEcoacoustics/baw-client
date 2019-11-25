@@ -29,7 +29,7 @@ module.exports = function (environment) {
             "preferences": {
                 "volume": 1.0,
                 "muted": false,
-                "autoPlay": false,
+                "autoPlay": true,
                 "visualize": {
                     "hideImages": false,
                     "hideFixed": true
