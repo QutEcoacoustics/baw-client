@@ -110,20 +110,40 @@ class CitizenScienceListenController {
             });
         });
 
-        $scope.studyTitle = {"bristlebird": "Eastern Bristlebird Search", "koala-verification": "Koala Verification"}[$scope.csProject];
+        var title_map = {"bristlebird": "Eastern Bristlebird Search", "koala-verification": "Koala Verification"};
+        if (title_map.hasOwnProperty($scope.csProject)) {
+            $scope.studyTitle = title_map[$scope.csProject];
+        } else {
+            // replace hyphen with space and capitalize words
+            $scope.studyTitle = $scope.csProject.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+        }
 
-        $scope.settings = {
-            "bristlebird": {
+        var study_settings_presets = {
+            "default": {
                 showSite: false,
                 showDateTime: false,
                 showProgress: false,
             },
-            "koala-verification": {
+            "verification": {
                 showSite: true,
                 showDateTime: true,
                 showProgress: true
             }
-        }[$scope.csProject];
+        };
+
+        // find the first settings preset that has the key in the study name
+        // (i.e. use the verification settings if the word 'verification' appears in the study name)
+        var settings_key;
+        if (study_settings_presets.hasOwnProperty($scope.csProject)) {
+            settings_key = $scope.csProject;
+        } else {
+            settings_key = Object.keys(study_settings_presets).find(key => {
+                return $scope.csProject.includes(key);
+            });
+            settings_key = settings_key ? settings_key : "default";
+        }
+
+        $scope.settings = study_settings_presets[settings_key];
 
         /**
          * When the currentItem changes, change the current audio file / spectrogram to match it
