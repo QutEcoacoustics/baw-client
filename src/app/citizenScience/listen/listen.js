@@ -110,15 +110,15 @@ class CitizenScienceListenController {
             });
         });
 
-        var title_map = {"bristlebird": "Eastern Bristlebird Search", "koala-verification": "Koala Verification"};
-        if (title_map.hasOwnProperty($scope.csProject)) {
-            $scope.studyTitle = title_map[$scope.csProject];
+        var titleMap = {"bristlebird": "Eastern Bristlebird Search", "koala-verification": "Koala Verification"};
+        if (titleMap.hasOwnProperty($scope.csProject)) {
+            $scope.studyTitle = titleMap[$scope.csProject];
         } else {
             // replace hyphen with space and capitalize words
             $scope.studyTitle = $scope.csProject.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
         }
 
-        var study_settings_presets = {
+        var studySettingsPresets = {
             "default": {
                 showSite: false,
                 showDateTime: false,
@@ -133,17 +133,17 @@ class CitizenScienceListenController {
 
         // find the first settings preset that has the key in the study name
         // (i.e. use the verification settings if the word 'verification' appears in the study name)
-        var settings_key;
-        if (study_settings_presets.hasOwnProperty($scope.csProject)) {
-            settings_key = $scope.csProject;
+        var settingsKey;
+        if (studySettingsPresets.hasOwnProperty($scope.csProject)) {
+            settingsKey = $scope.csProject;
         } else {
-            settings_key = Object.keys(study_settings_presets).find(key => {
+            settingsKey = Object.keys(studySettingsPresets).find(key => {
                 return $scope.csProject.includes(key);
             });
-            settings_key = settings_key ? settings_key : "default";
+            settingsKey = settingsKey ? settingsKey : "default";
         }
 
-        $scope.settings = study_settings_presets[settings_key];
+        $scope.settings = studySettingsPresets[settingsKey];
 
         /**
          * When the currentItem changes, change the current audio file / spectrogram to match it
