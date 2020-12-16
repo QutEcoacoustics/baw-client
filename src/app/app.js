@@ -335,7 +335,7 @@ angular.module("baw",
                 // location config
                 // https://github.com/angular/angular.js/issues/8934#issuecomment-56568466
                 // Now removing base tag and deprecating support for IE9
-                $locationProvider.html5Mode({enabled: true, requireBase: false});
+                // $locationProvider.html5Mode({enabled: true, requireBase: false});
 
                 // http default configuration
                 $httpProvider.defaults.withCredentials = true;
