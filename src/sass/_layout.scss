@@ -1,17 +1,5 @@
 @import '_base';
 
-html {
-  height:100%;
-  position: relative;
-}
-
-// http://getbootstrap.com/components/#navbar-fixed-top
-body {
-  height:100%;
-
-}
-
-
 @if $DEBUG {
   .debug-ui {
     width: auto;
@@ -22,9 +10,6 @@ body {
     display: none;
   }
 }
-
-
-
 
 /* General Classes
 -----------------------------------------------------------------------------*/
