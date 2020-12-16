@@ -27,110 +27,24 @@
 
 <background></background>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" ng-init="isCollapsed = true"
-                    ng-click="isCollapsed = !isCollapsed">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand ng-cloak"
-               baw-href="api.links.home" >
-                {{:: brand.name }}
-                <!-- TODO: logo goes here -->
-                <!--<img alt="Brand" src="">-->
-            </a>
-        </div>
-
-        <div class="collapse navbar-collapse" collapse="isCollapsed">
-            <ul class="nav navbar-nav">
-                <li ng-class="{ active: activePath('/projects') }">
-                    <a baw-href="api.links.projects">
-                        Projects</a>
-                </li>
-                <li ng-class="{ active: activePath('/listen') }">
-                    <a baw-href="site.ngRoutes.recentRecordings">Listen</a>
-                </li>
-                <li ng-class="{ active: activePath('/library') }">
-                    <a baw-href="site.ngRoutes.library">Library</a>
-                </li>
-                <li class="dropdown"
-                    uib-dropdown>
-                    <a class="ng-cloak"
-                       href=""
-                       uib-dropdown-toggle>
-                        {{:: researchPages.header_title }} <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="item in ::researchPages.items">
-                            <a ng-href="{{::item.url}}"
-                               target="_self">{{::item.innerText}}</a>
-                        </li>
-
-                    </ul>
-                </li>
-                <li>
-                    <a baw-href="api.links.contactUs">
-                        Contact Us</a>
-                </li>
-            </ul>
-            <login-widget></login-widget>
-        </div>
-
-    </div>
-</nav>
-
 <div growl>
 </div>
 
-<div ng-class="{ 'container-fluid': fullWidth, 'container': !fullWidth }">
+<div class="container-fluid">
 
     <div class="row">
-        <left-nav-bar class="leftMenu col-md-2 col-sm-12" ng-if="!fullWidth"></left-nav-bar>
-
-        <right-nav-bar class="rightMenu col-md-2 col-sm-12 col-md-push-8" ng-if="!fullWidth"></right-nav-bar>
-
         <!-- each view must specify the controller they use -->
-        <div id="content-wrapper"
-             class="col-sm-12"
-             ng-class="{ 'col-md-12': fullWidth, 'col-md-8': !fullWidth, 'col-md-pull-2': !fullWidth }"
-             ng-view autoscroll>
+        <div
+            id="content-wrapper"
+            class="col-sm-12"
+            ng-view autoscroll>
         </div>
-
-
-
     </div>
     <div class=".row">
         &nbsp;<!-- padding -->
     </div>
 </div>
 
-<footer class="clearfix">
-    <div class="container">
-        <div class="row-fluid">
-            <ul class="nav nav-pills col-md-8 col-md-offset-2">
-                <li>
-                    <p class="nav-text">&copy; QUT <%= year %>
-                    </p>
-                </li>
-                <li>
-                    <p class="nav-text">
-                        <%= build_configs.current.key %>
-                        v<%= version %>
-                    </p>
-                </li>
-                <li><a baw-href="api.links.websiteStatus">Statistics</a></li>
-                <li><a baw-href="api.links.disclaimers">Disclaimers</a></li>
-                <li><a baw-href="api.links.credits">Credits</a></li>
-                <li><a baw-href="api.links.ethicsStatement">Ethics</a></li>
-                <li><a baw-href="api.links.contactUs">Contact Us</a></li>
-            </ul>
-        </div>
-    </div>
-</footer>
 <!-- Google analytics -->
 <script type="application/javascript">
     (function (i, s, o, g, r, a, m) {

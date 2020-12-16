@@ -11,29 +11,6 @@ body {
 
 }
 
-.container, .container-fluid {
-  min-height: calc(100% - 61px);
-}
-@media (max-width: 662px) {
-  .container, .container-fluid {
-    min-height: calc(100% - 101px);
-  }
-}
-
-
-//taken from: https://github.com/QutBioacoustics/baw-server/blob/develop/app/assets/stylesheets/common.scss#L86
-footer {
-  text-align: center;
-  padding: $padding-large-vertical $padding-large-horizontal;
-  border-top: 1px solid $legend-border-color;
-  background-color: $panel-footer-bg;
-  width: 100%;
-  // the nav layout was achieved using grid classes
-  .nav {
-  }
-}
-
-
 
 @if $DEBUG {
   .debug-ui {
