@@ -202,8 +202,12 @@ angular.module("bawApp.components.background", [])
              * When the route changes, check if the new route should have a background. If not, remove the current background
              */
             $scope.$on("$routeChangeStart", function(event, next) {
-                if (!next.$$route.hasOwnProperty("hasBackground") || !next.$$route.hasBackground) {
+                if (!next.$$route || !next.$$route.hasOwnProperty("hasBackground") || !next.$$route.hasBackground) {
                     backgroundImage.currentBackground = "";
+
+                    if (!next.$$route) {
+                        console.warn("AngularJS router not detected");
+                    }
                 }
             });
 
