@@ -7,10 +7,10 @@
     <ul class="item-list" when-scrolled="loadNext()">
         <li ng-repeat="site in sites">
             <div class="item-text">
-                <h3><a ng-href="/sites/{{site.id}}">{{site.name}}</a></h3>
+                <h3><a target="_parent" ng-href="/sites/{{site.id}}">{{site.name}}</a></h3>
                 <p><span data-ng-bind="site.latitude"></span>, <span data-ng-bind="site.longitude"></span></p>
                 <p>{{site.notes}}</p>
-                <small><a ng-href="/sites/{{site.id}}/edit">edit</a></small>
+                <small><a target="_parent" ng-href="/sites/{{site.id}}/edit">edit</a></small>
                 <small>Number of projects: {{site.projects.length}}</small>
                 <small>Number of recordings: {{site.audioRecordings.length}}</small>
             </div>

@@ -29,12 +29,12 @@
                     <span class="projectSiteList">
                         <!--{{ $first && "" || ", "}}-->
 
-                        <a ng-href="{{::p.url}}" target="_self">{{p.name}}</a>
+                        <a target="_parent" ng-href="{{::p.url}}">{{p.name}}</a>
                            &nbsp;&#47;&nbsp;
                         <span ng-repeat="s in ::p.sites | orderBy: 'name' | modelAvailable track by s.id"
                               class="legend-entry">
                             <span class="legendItem" ng-class="getLegendClass(s)"></span>
-                            <a ng-href="{{::s.urlWithProject(p)}}" target="_self">{{s.name}}</a>
+                            <a target="_parent" ng-href="{{::s.urlWithProject(p)}}">{{s.name}}</a>
                             {{ $last && " " || ", "}}
                         </span>
 

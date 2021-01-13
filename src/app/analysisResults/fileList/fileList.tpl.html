@@ -4,9 +4,10 @@
         uib-tooltip="Zip file is not ready to download... we're working on it."
            tooltip-enable="!fileList.analysisResult.hasZip"
            -->
-        <a ng-href="{{:: fileList.analysisResult.hasZip && fileList.analysisResult.zipUrl || null}}"
-           ng-class="{disabled: !fileList.analysisResult.hasZip}"
-           capability-enabled="false" >
+        <a target="_parent"
+            ng-href="{{:: fileList.analysisResult.hasZip && fileList.analysisResult.zipUrl || null}}"
+            ng-class="{disabled: !fileList.analysisResult.hasZip}"
+            capability-enabled="false" >
             <i class="fa fa-file-archive-o"></i>
             Download this folder
         </a>
@@ -83,7 +84,7 @@
             <tr ng-repeat="file in fileList.analysisResult.children">
                 <td ng-if="::file.isDirectory">
                     <span class="{{:: file.icon }}"></span>
-                    <a ng-href="{{:: file.viewUrl }}">
+                    <a target="_parent" ng-href="{{:: file.viewUrl }}">
                         {{:: file.name }}
                     </a>
                 </td>
@@ -95,8 +96,7 @@
                     {{:: file.friendlySize }}
                 </td>
                 <td>
-                    <a ng-href="{{:: file.url }}"
-                       ng-if="::file.isFile">
+                    <a target="_parent" ng-href="{{:: file.url }}" ng-if="::file.isFile">
                         download
                     </a>
                 </td>

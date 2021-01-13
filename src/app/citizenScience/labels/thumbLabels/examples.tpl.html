@@ -12,8 +12,8 @@
              style="background-image: url({{imagesBase}}{{$ctrl.label.examples[currentExample].image.file}})"
              >&nbsp;
             <span class="img-attribution" ng-if="$ctrl.label.examples[currentExample].image.credit">
-                <a href="{{$ctrl.label.examples[currentExample].image.credit.source}}">Photo by {{$ctrl.label.examples[currentExample].image.credit.author}}</a>
-                <a href="{{$ctrl.label.examples[currentExample].image.credit.license_link}}">{{$ctrl.label.examples[currentExample].image.credit.license}}</a>
+                <a target="_parent" href="{{$ctrl.label.examples[currentExample].image.credit.source}}">Photo by {{$ctrl.label.examples[currentExample].image.credit.author}}</a>
+                <a target="_parent" href="{{$ctrl.label.examples[currentExample].image.credit.license_link}}">{{$ctrl.label.examples[currentExample].image.credit.license}}</a>
             </span>
         </div>
 

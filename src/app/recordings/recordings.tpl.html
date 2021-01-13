@@ -3,11 +3,11 @@
 
     <p>These are the available audio recordings.</p>
 
-    <a href="/">Home</a>
+    <a target="_parent" href="/">Home</a>
 
     <ul>
         <li data-ng-repeat="recording in recordings">
-            <h3><a data-ng-href="/recordings/{{recording.id}}">{{recording.id}} ({{recording.uuid}})</a></h3>
+            <h3><a target="_parent" data-ng-href="/recordings/{{recording.id}}">{{recording.id}} ({{recording.uuid}})</a></h3>
             <p>{{recording.duration_seconds}} seconds '{{recording.media_type}}', {{recording.notes.fake}}</p>
         </li>
 

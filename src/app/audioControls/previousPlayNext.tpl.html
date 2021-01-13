@@ -1,5 +1,6 @@
 <div class="btn-group">
-    <a class="btn btn-default"
+    <a target="_parent"
+       class="btn btn-default"
        ng-href="{{$ctrl.previousLink()}}"
        ng-if="showPrevious"
        ng-disabled="previousDisabled()"
@@ -12,7 +13,8 @@
                         <span ng-class="{'glyphicon-pause': audioElementModel.isPlaying}"
                               class="glyphicon glyphicon-play"></span>
     </button>
-    <a class="btn btn-default"
+    <a target="_parent"
+       class="btn btn-default"
        ng-href="{{$ctrl.nextLink()}}"
        ng-if="showNext"
        ng-disabled="nextDisabled()"

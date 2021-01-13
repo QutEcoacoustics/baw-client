@@ -5,14 +5,14 @@
     <p ng-show="isCreating">Creating a new project.</p>
     <p ng-show="isEditing">Editing project.</p>
 
-    <a href="/projects">Projects</a>
+    <a target="_parent" href="/projects">Projects</a>
 
     <div ng-show="isShowing">
         <h3 title="{{project.urn}}">{{project.name}}</h3>
         <p ng-bind="project.description" ></p>
 
         <p>
-            <a ng-href="{{downloadAnnotationLink}}" target="_blank" >Download</a> all annotations from this project.
+            <a target="_parent" ng-href="{{downloadAnnotationLink}}" target="_blank" >Download</a> all annotations from this project.
         </p>
 
         <pre>{{project.notes}}</pre>
@@ -20,7 +20,7 @@
         <h4>Sites</h4>
         <ul>
             <li ng-repeat="site in project.sites">
-                <a ng-href="/sites/{{site.id}}">{{site.name}}</a>
+                <a target="_parent" ng-href="/sites/{{site.id}}">{{site.name}}</a>
             </li>
         </ul>
 
@@ -105,12 +105,12 @@
                 <div ng-show="isEditing">
                     <button ng-click="update(project)">Save</button>
                     <button ng-click="reset()">Reset</button>
-                    <button ><a ng-href="{{links.details}}">Cancel</a></button>
+                    <button ><a target="_parent" ng-href="{{links.details}}">Cancel</a></button>
                     <button ng-click="delete()" >Delete</button>
                 </div>
                 <div ng-show="isCreating">
                     <button ng-click="create(project)">Save</button>
-                    <button ><a ng-href="{{links.list}}">Cancel</a></button>
+                    <button ><a target="_parent" ng-href="{{links.list}}">Cancel</a></button>
                 </div>
         </form>
     </div>

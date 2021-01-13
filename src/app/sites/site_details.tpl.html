@@ -3,17 +3,17 @@
 
     <p>{{editing | boolToWords:'Editing site.':'The details for a site.'}}</p>
 
-    <a href="/sites">Sites</a>
+    <a target="_parent" href="/sites">Sites</a>
 
     <p>
-        <a ng-hide="editing" ng-href="{{links.edit}}">edit</a>
+        <a target="_parent" ng-hide="editing" ng-href="{{links.edit}}">edit</a>
     </p>
 
     <div ng-hide="editing">
         <h3>{{site.name}}</h3>
 
         <p>
-            Projects: <span ng-repeat="p in site.projects"> <a ng-href="/projects/{{p.id}}">{{p.name}}</a>{{!$last | boolToWords:', '}}</span>
+            Projects: <span ng-repeat="p in site.projects"> <a target="_parent" ng-href="/projects/{{p.id}}">{{p.name}}</a>{{!$last | boolToWords:', '}}</span>
         </p>
 
         <p>
@@ -31,7 +31,7 @@
 
         <ul>
         <li ng-repeat="ar in audioRecordings" >
-         <a ng-href="/listen/{{ar.uuid}}">{{ar.recordedDate}},&nbsp;{{ar.durationSeconds}}</a>
+         <a target="_parent" ng-href="/listen/{{ar.uuid}}">{{ar.recordedDate}},&nbsp;{{ar.durationSeconds}}</a>
         </li>
     </ul>
 
@@ -65,7 +65,7 @@
             <br><br>
             <button ng-click="update(site)">Save</button>
             <button ng-click="reset()">Reset</button>
-            <button><a ng-href="{{links.details}}">Cancel</a></button>
+            <button><a target="_parent" ng-href="{{links.details}}">Cancel</a></button>
             <button ng-click="delete()">Delete</button>
         </form>
     </div>

@@ -145,7 +145,7 @@ angular
                 
                 get resultsUrl() {
                     return $url.formatUri(
-                        paths.site.links.analysisJobs.analysisResults,
+                        paths.site.links.analysisJobs.analysisResultsAbsolute,
                         {analysisJobId: this.id}
                     );
                 }

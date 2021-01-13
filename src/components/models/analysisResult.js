@@ -142,7 +142,7 @@ angular
                     // modify the path to strip the first few segments
                     var pathFragment = this.viewPath;
 
-                    let url = paths.site.links.analysisJobs.analysisResultsWithPath;
+                    let url = paths.site.links.analysisJobs.analysisResultsWithPathAbsolute;
                     let result = $url.formatUri(
                         url,
                         {analysisJobId, path:  pathFragment}

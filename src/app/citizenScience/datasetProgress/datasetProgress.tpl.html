@@ -8,7 +8,8 @@
                 title="Next Clip">
             {{nextText()}} <span class="glyphicon glyphicon-arrow-right"></span>
         </button>
-        <a ng-if="isRoutedSample"
+        <a target="_parent"
+           ng-if="isRoutedSample"
            href="{{listenLink}}"
            ng-click="nextItem()"
            class="btn btn-default"

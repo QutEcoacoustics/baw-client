@@ -1,38 +1,38 @@
 <ul class="nav navbar-nav navbar-right">
     <li class="" ng-show="loggedIn && profile.isAdmin">
-        <a href=""
+        <a target="_parent"
+           href=""
            ng-href="{{adminLink}}"
-           class="loginWidgetLink"
-           target="_self">
+           class="loginWidgetLink">
             <span class="fa fa-cog"></span>
         </a>
     </li>
     <li class="">
-        <a ng-show="loggedIn"
-            href=""
+        <a target="_parent"
+           ng-show="loggedIn"
+           href=""
            ng-href="{{profile.url}}"
-           class="loginWidgetLink"
-           target="_self">
+           class="loginWidgetLink">
             <span class="">{{profile.userName}}</span>
             <img ng-src="{{profile.imageUrls.tiny.url || defaultUserImage}}"
                  class="loginWidgetImage">
         </a>
-        <a ng-hide="loggedIn"
-           target="_self"
+        <a target="_parent"
+           ng-hide="loggedIn"
            ng-href="{{::registerLink}}">
             Register
         </a>
     </li>
     <li>
-        <a ng-show="loggedIn"
+        <a target="_parent"
+           ng-show="loggedIn"
            href=""
-           ng-href="{{::logoutLink}}"
-           target="_self">
+           ng-href="{{::logoutLink}}">
             Log out
         </a>
-        <a ng-hide="loggedIn"
-           ng-href="{{::loginLink}}"
-           target="_self">
+        <a target="_parent"
+           ng-hide="loggedIn"
+           ng-href="{{::loginLink}}">
             Log in
         </a>
     </li>

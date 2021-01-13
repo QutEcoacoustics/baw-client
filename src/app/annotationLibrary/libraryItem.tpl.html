@@ -14,7 +14,8 @@
                 </div>
                 <div class="panel-body">
                     <div class="list-group">
-                        <a ng-if="annotation.taggings.length > 0"
+                        <a target="_parent"
+                           ng-if="annotation.taggings.length > 0"
                            class="list-group-item"
                            ng-repeat="tagging in annotation.taggings"
                            ng-href="{{tagging.tag.similarPartial}}"
@@ -31,26 +32,27 @@
                             <small class="text-muted">no tags</small>
                         </span>
 
-                        <a ng-show="annotation.isReference"
+                        <a target="_parent" 
+                           ng-show="annotation.isReference"
                            ng-href="{{annotation.urls.isReference}}"
-
                            class="list-group-item"
                            title="This is reference annotation - one that was nominated as an example of exceptional quality.">
                             <span class="glyphicon glyphicon-book"></span>&nbsp;
                             Reference Annotation
                         </a>
-                        <a ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Start date.">
+                        <a target="_parent" ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Start date.">
                             <span class="glyphicon glyphicon-record"></span>&nbsp;
                             Created {{annotation.startDate | date: 'medium'}}
                         </a>
-                        <a ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Duration.">
+                        <a target="_parent" ng-href="{{annotation.urls.listen}}" class="list-group-item" title="Duration.">
                             <span class="glyphicon glyphicon-time"></span>&nbsp;
                             {{annotation.durationRounded}} seconds duration
                         </a>
 
                         <div ng-repeat-start="project in annotation.audioRecording.site.projects || [null]"
                         ></div>
-                        <a class="list-group-item"
+                        <a target="_parent" 
+                           class="list-group-item"
                            ng-href="{{project.url}}" target="_self"
                            title="Project name.">
                             <span class="glyphicon glyphicon-home"></span>&nbsp;
@@ -60,8 +62,10 @@
                             </span>
                             <small ng-if="!project.name" class="text-muted">project details unavailable</small>
                         </a>
-                        <a ng-href="{{annotation.audioRecording.site.url[$index]}}"
-                           target="_self" class="list-group-item site-name" title="Site name."
+                        <a target="_parent"
+                           ng-href="{{annotation.audioRecording.site.url[$index]}}"
+                           class="list-group-item site-name"
+                           title="Site name."
                         >
                             <span ng-class="{'text-muted': !project.id}">
                                 <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
@@ -77,11 +81,11 @@
 
                         <div ng-repeat-end=""></div>
 
-                        <a ng-href="{{annotation.urls.audioRecording}}" class="list-group-item" title="Site name.">
+                        <a target="_parent" ng-href="{{annotation.urls.audioRecording}}" class="list-group-item" title="Site name.">
                             <span class="glyphicon glyphicon-music"></span>&nbsp;
                             Audio recording: {{annotation.audioRecordingId}}
                         </a>
-                        <a ng-href="{{annotation.urls.user}}" target="_self" class="list-group-item" title="User.">
+                        <a target="_parent" ng-href="{{annotation.urls.user}}" class="list-group-item" title="User.">
 
                             <span class="glyphicon glyphicon-user"></span>&nbsp;
                             {{annotation.creator.userName}}
@@ -147,7 +151,7 @@
 
                             <div class="media-body">
                                 <div class="pull-right">
-                                    <a href="{{$parent.createCommentLinkUrl(comment.id)}}">link</a>
+                                    <a target="_parent" href="{{$parent.createCommentLinkUrl(comment.id)}}">link</a>
 
                                     <ng-switch class="btn-group btn-group-xs"
                                                role="group" on="comment.creatorId == profile.id">

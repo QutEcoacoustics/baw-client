@@ -1,14 +1,14 @@
 <ng-transclude ng-show="$ctrl.show"></ng-transclude>
 <div class="media" ng-show="$ctrl.show" ng-class="{skinny: $ctrl.skinny !== undefined}">
     <div class="media-left media-middle">
-        <a ng-href="{{ $ctrl.userProfile.url }}">
+        <a target="_parent" ng-href="{{ $ctrl.userProfile.url }}">
             <img alt="{{ $ctrl.userProfile.userName }}"
                  class="media-object"
                  ng-src="{{ $ctrl.userProfile.imageUrls.tiny.url || $ctrl.defaultUserImage }}">
         </a>
     </div>
     <div class="media-body media-body-auto-width">
-        <a ng-href="{{ $ctrl.userProfile.url }}">
+        <a target="_parent" ng-href="{{ $ctrl.userProfile.url }}">
             {{ $ctrl.userProfile.userName }}
         </a>
         <br>

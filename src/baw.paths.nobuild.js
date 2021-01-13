@@ -326,6 +326,7 @@ module.exports = function (environment) {
     recursivePath(paths.api.links, paths.site.root);
     recursivePath(paths.site.files, paths.site.root);
     recursivePath(paths.site.ngRoutes, paths.api.root);
+    recursivePath(paths.site.links, paths.site.root);
     recursivePath(paths.site.assets, joinPathFragments(environment.siteRoot, environment.siteDir));
 
     return paths;

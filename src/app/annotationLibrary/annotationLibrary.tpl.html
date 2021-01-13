@@ -199,7 +199,7 @@
                     <span class="info-entry"
                           ng-switch="item.taggings.length > 0">
                         <span class="glyphicon glyphicon-tags"></span>
-                        <a ng-switch-when="true" ng-href="{{item.urls.tagSearch}}">
+                        <a target="_parent" ng-switch-when="true" ng-href="{{item.urls.tagSearch}}">
                             {{item.priorityTag.text}}
                         </a>
                         <small ng-switch-when="false" class="text-muted">no tags</small>
@@ -208,19 +208,19 @@
                     <span class="info-entry" ng-switch="!!item.audioRecording.site.url">
                     <span class="glyphicon glyphicon-map-marker"></span>
                     <small ng-switch-when="false" class="text-muted">site name not available</small>
-                    <a ng-switch-when="true" ng-href="{{item.audioRecording.site.url[0]}}" target="_self">
+                    <a target="_parent" ng-switch-when="true" ng-href="{{item.audioRecording.site.url[0]}}">
                         {{item.audioRecording.site.name}}
                     </a>
                 </span>
                     <span class="info-entry">
                     <span class="glyphicon glyphicon-record"></span>
-                    <a ng-href="{{item.urls.listen}}">
+                    <a target="_parent" ng-href="{{item.urls.listen}}">
                         {{item.startDate | date: dateFormat}}
                     </a>
                 </span>
                     <span class="info-entry">
                     <span class="glyphicon glyphicon-info-sign"></span>
-                    <a ng-href="{{item.urls.singleItem}}" style="cursor: pointer;">
+                    <a target="_parent" ng-href="{{item.urls.singleItem}}" style="cursor: pointer;">
                         More info
                     </a>
                 </span>

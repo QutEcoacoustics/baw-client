@@ -8,9 +8,9 @@
     <ul class="item-list">
         <li ng-repeat="project in projects">
             <div class="item-text">
-                <h3><a ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
+                <h3><a target="_parent" ng-href="/projects/{{project.id}}" title="urn: {{project.urn}}">{{project.name}}</a></h3>
                 <p ng-bind="project.description" ></p>
-                <small><a ng-href="/projects/{{project.id}}/edit">edit</a></small>
+                <small><a target="_parent" ng-href="/projects/{{project.id}}/edit">edit</a></small>
                 <small>Number of sites: {{project.sites.length}}</small>
             </div>
             <div class="item-image">
