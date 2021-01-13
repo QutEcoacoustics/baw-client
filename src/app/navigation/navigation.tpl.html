@@ -2,7 +2,7 @@
     <li ng-repeat="breadcrumb in $ctrl.crumbs"
         ng-class="{ active: $last }">
         <a ng-if="!$last"
-           target="{{ breadcrumb.target || '' }}"
+           target="{{ breadcrumb.target || '_parent' }}"
            ng-href="{{ breadcrumb.path }}">
             {{ breadcrumb.title }}
         </a>

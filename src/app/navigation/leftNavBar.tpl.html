@@ -12,7 +12,7 @@
                tooltip-placement="right"
                tooltip-class="tooltip-wide"
                ng-href="{{ link.href }}"
-               target="{{ link.target}}"
+               target="{{ link.target || '_parent'}}"
                uib-tooltip="{{ link.title }}">
                 <i class="fa fa-fw" ng-class="'fa-' + link.icon"></i>
                 {{ link.title }}
