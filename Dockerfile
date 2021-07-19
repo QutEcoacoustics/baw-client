@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:12-alpine
 
 ARG NODE_ENV=development
 ENV NODE_ENV=$NODE_ENV \
@@ -16,13 +16,13 @@ WORKDIR /home/node/workbench-client
 
 # install chromium
 RUN apk add --no-cache \
-      chromium \
-      nss \
-      freetype \
-      freetype-dev \
-      harfbuzz \
-      ca-certificates \
-      ttf-freefont
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
 
 # karma needs these so it can find the browser
 ENV CHROME_BIN=/usr/bin/chromium-browser
