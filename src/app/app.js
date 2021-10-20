@@ -126,6 +126,35 @@ angular.module("baw",
     .config(
         ["$provide", "$routeProvider", "$locationProvider", "$httpProvider", "conf.paths", "conf.constants", "$sceDelegateProvider", "growlProvider", "localStorageServiceProvider", "cfpLoadingBarProvider", "$urlProvider", "casingTransformers",
             function ($provide, $routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, cfpLoadingBarProvider, $urlProvider, casingTransformers) {
+                /**
+                 * Browsers calculate heights of document differently. Take the
+                 * largest measurement to combat this
+                 * https://stackoverflow.com/questions/1145850/how-to-get-height-of-entire-document-with-javascript
+                 * @returns Height
+                 */
+                function getHeight() {
+                    const body = document.body;
+                    const html = document.documentElement;
+                    return Math.max(
+                        body.scrollHeight,
+                        body.offsetHeight,
+                        html.offsetHeight
+                        // These values cause weird behavior
+                        // html.clientHeight,
+                        // html.scrollHeight,
+                    );
+                }
+
+                /*
+                 * Detect change in height of browser, and post message to
+                 * parent page (workbench-client) with the new value
+                 */
+                const resizeObserver = new ResizeObserver(() => { // jshint ignore:line
+                    window.parent.postMessage(JSON.stringify({height: getHeight()}), constants.parentRoot);
+                });
+                resizeObserver.observe(document.documentElement);
+                resizeObserver.observe(document.body);
+                
                 // adjust security whitelist for resource urls
                 var currentWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
                 currentWhitelist.push(paths.api.root + "/**");
