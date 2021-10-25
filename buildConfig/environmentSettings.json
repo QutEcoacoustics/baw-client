@@ -14,6 +14,8 @@
       "apiRoot": "http://staging.EXAMPLE.org",
       "siteRoot": "http://staging.EXAMPLE.org/system/listen_to",
       "siteDir": "/system/listen_to/",
+      "parentRoot": "http://staging.EXAMPLE.org",
+      "parentDir": "/",
       "ga": {
         "trackingId": "<<PLACEHOLDER>>"
       }
@@ -22,6 +24,8 @@
       "apiRoot": "http://production.EXAMPLE.org",
       "siteRoot": "http://production.EXAMPLE.org/system/listen_to",
       "siteDir": "/system/listen_to/",
+      "parentRoot": "http://production.EXAMPLE.org",
+      "parentDir": "/",
       "ga": {
         "trackingId": "<<PLACEHOLDER>>"
       }

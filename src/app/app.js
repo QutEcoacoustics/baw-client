@@ -124,8 +124,8 @@ angular.module("baw",
     ])
 
     .config(
-        ["$provide", "$routeProvider", "$locationProvider", "$httpProvider", "conf.paths", "conf.constants", "$sceDelegateProvider", "growlProvider", "localStorageServiceProvider", "cfpLoadingBarProvider", "$urlProvider", "casingTransformers",
-            function ($provide, $routeProvider, $locationProvider, $httpProvider, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, cfpLoadingBarProvider, $urlProvider, casingTransformers) {
+        ["$provide", "$routeProvider", "$locationProvider", "$httpProvider", "conf.environment", "conf.paths", "conf.constants", "$sceDelegateProvider", "growlProvider", "localStorageServiceProvider", "cfpLoadingBarProvider", "$urlProvider", "casingTransformers",
+            function ($provide, $routeProvider, $locationProvider, $httpProvider, environment, paths, constants, $sceDelegateProvider, growlProvider, localStorageServiceProvider, cfpLoadingBarProvider, $urlProvider, casingTransformers) {
                 /**
                  * Browsers calculate heights of document differently. Take the
                  * largest measurement to combat this
@@ -150,7 +150,7 @@ angular.module("baw",
                  * parent page (workbench-client) with the new value
                  */
                 const resizeObserver = new ResizeObserver(() => { // jshint ignore:line
-                    window.parent.postMessage(JSON.stringify({height: getHeight()}), constants.parentRoot);
+                    window.parent.postMessage(JSON.stringify({height: getHeight()}), environment.parentRoot);
                 });
                 resizeObserver.observe(document.documentElement);
                 resizeObserver.observe(document.body);
