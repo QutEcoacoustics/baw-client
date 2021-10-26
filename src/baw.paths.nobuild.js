@@ -121,6 +121,10 @@ module.exports = function (environment) {
                 "bugReport": "/bug_report"
             }
         },
+        "parent": {
+            "root": environment.parentRoot,
+            "dir": environment.parentDir
+        },
         "site": {
             "root": environment.siteRoot,
             // The following intentionally are not prefixed with a '/'
@@ -323,10 +327,10 @@ module.exports = function (environment) {
     }
 
     recursivePath(paths.api.routes, paths.api.root);
-    recursivePath(paths.api.links, paths.site.root);
+    recursivePath(paths.api.links, joinPathFragments(paths.parent.root, paths.parent.dir));
     recursivePath(paths.site.files, paths.site.root);
     recursivePath(paths.site.ngRoutes, paths.api.root);
-    recursivePath(paths.site.links, paths.site.root);
+    recursivePath(paths.site.links, joinPathFragments(paths.parent.root, paths.parent.dir));
     recursivePath(paths.site.assets, joinPathFragments(environment.siteRoot, environment.siteDir));
 
     return paths;
