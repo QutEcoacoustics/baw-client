@@ -326,11 +326,13 @@ module.exports = function (environment) {
         }
     }
 
+    const parentPath = joinPathFragments(paths.parent.root, paths.parent.dir)
+
     recursivePath(paths.api.routes, paths.api.root);
-    recursivePath(paths.api.links, joinPathFragments(paths.parent.root, paths.parent.dir));
+    recursivePath(paths.api.links, parentPath);
     recursivePath(paths.site.files, paths.site.root);
-    recursivePath(paths.site.ngRoutes, paths.api.root);
-    recursivePath(paths.site.links, joinPathFragments(paths.parent.root, paths.parent.dir));
+    recursivePath(paths.site.ngRoutes, parentPath);
+    recursivePath(paths.site.links, parentPath);
     recursivePath(paths.site.assets, joinPathFragments(environment.siteRoot, environment.siteDir));
 
     return paths;

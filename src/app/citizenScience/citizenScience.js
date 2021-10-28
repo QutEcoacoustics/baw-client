@@ -10,7 +10,7 @@ class CitizenScienceAboutController {
                 constants) {
 
         $scope.listenLink =  {
-            url: $url.formatUri(paths.site.ngRoutes.citizenScience.listen,
+            url: $url.formatUri(paths.site.ngRoutes.citizenScience.listenAbsolute,
                 {studyName: $routeParams.studyName}),
             text: "Get Started!"
         };

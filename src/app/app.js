@@ -167,7 +167,7 @@ angular.module("baw",
                 // secondary navs
                 const analysisJobsNav = {
                     title: "Audio Analysis",
-                    href: paths.site.ngRoutes.analysisJobs.list,
+                    href: paths.site.ngRoutes.analysisJobs.listAbsolute,
                     icon: "server"
                 };
                 const analysisJobNav = {

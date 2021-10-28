@@ -152,13 +152,13 @@ angular
 
                 get viewUrl() {
                     return $url.formatUri(
-                        paths.site.ngRoutes.analysisJobs.details,
+                        paths.site.ngRoutes.analysisJobs.detailsAbsolute,
                         {analysisJobId: this.id}
                     );
                 }
 
                 static get viewListUrl() {
-                    return $url.formatUri(paths.site.ngRoutes.analysisJobs.list);
+                    return $url.formatUri(paths.site.ngRoutes.analysisJobs.listAbsolute);
                 }
 
                 friendlyProgressString(key) {

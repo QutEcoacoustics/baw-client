@@ -194,7 +194,7 @@ angular
                              start: startOffsetSeconds
                              });*/
                             return $url.formatUriFast(
-                                paths.site.ngRoutes.listenWithStartFast,
+                                paths.site.ngRoutes.listenWithStartFastAbsolute,
                                 id,
                                 startOffsetSeconds
                             );

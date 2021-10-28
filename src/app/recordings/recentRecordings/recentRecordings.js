@@ -20,7 +20,7 @@ angular.module("bawApp.recordings.recentRecordings", [])
                         .duration(Number(value.durationSeconds), "seconds")
                         .humanizeDuration({round: 3});
                     value.uploadedHumanized = moment(value.createdAt).fromNow();
-                    value.listenLink = paths.site.ngRoutes.listen.format({recordingId: value.id});
+                    value.listenLink = paths.site.ngRoutes.listenAbsolute.format({recordingId: value.id});
                     siteIds.push(value.siteId);
                 });
 

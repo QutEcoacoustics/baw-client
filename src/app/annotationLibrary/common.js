@@ -26,7 +26,7 @@ angular
             const toMap = modelAssociations.arrayToMap;
 
             function createFilterUrl(paramObj) {
-                return $url.formatUri(paths.site.ngRoutes.library, paramObj);
+                return $url.formatUri(paths.site.ngRoutes.libraryAbsolute, paramObj);
             }
 
             /**
@@ -318,14 +318,14 @@ angular
                     });
 
                     audioEvent.urls.singleItem = $url.formatUri(
-                        paths.site.ngRoutes.libraryItem,
+                        paths.site.ngRoutes.libraryItemAbsolute,
                         {
                             recordingId: audioEvent.audioRecordingId,
                             audioEventId: audioEvent.id
                         });
 
                     audioEvent.urls.listen = $url.formatUri(
-                        paths.site.ngRoutes.listen,
+                        paths.site.ngRoutes.listenAbsolute,
                         {
                             recordingId: audioEvent.audioRecordingId,
                             start: audioEvent.calcOffsetStart,
@@ -333,7 +333,7 @@ angular
                         });
 
                     audioEvent.urls.listenWithoutPadding = $url.formatUri(
-                        paths.site.ngRoutes.listen,
+                        paths.site.ngRoutes.listenAbsolute,
                         {
                             recordingId: audioEvent.audioRecordingId,
                             start: audioEvent.startTimeSeconds,

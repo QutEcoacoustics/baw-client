@@ -19,7 +19,7 @@ angular
 
                         this.analysisJobs = null;
 
-                        this.newAnalysisJobRoute = paths.site.ngRoutes.analysisJobs.new;
+                        this.newAnalysisJobRoute = paths.site.ngRoutes.analysisJobs.newAbsolute;
 
 
                         AnalysisJobService

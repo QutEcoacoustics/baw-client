@@ -52,14 +52,14 @@ angular
                 },
                 {
                     title: "Audio Analysis",
-                    href: paths.site.ngRoutes.analysisJobs.list,
+                    href: paths.site.ngRoutes.analysisJobs.listAbsolute,
                     tooltip: "View audio analysis jobs",
                     icon: "server",
                     ribbon: "beta"
                 },
                 {
                     title: "Library",
-                    href: paths.site.ngRoutes.library,
+                    href: paths.site.ngRoutes.libraryAbsolute,
                     tooltip: "Annotation library",
                     icon: "book"
                 },

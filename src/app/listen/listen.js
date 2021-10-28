@@ -238,7 +238,7 @@ angular
                                 });
                             });
 
-                            data.visualizeLink = $url.formatUri(paths.site.ngRoutes.visualize, {siteId: data.id},
+                            data.visualizeLink = $url.formatUri(paths.site.ngRoutes.visualizeAbsolute, {siteId: data.id},
                                 x => x);
 
                             $scope.model.site = data;
@@ -262,8 +262,8 @@ angular
                             // get project
                             Project.get({projectId: id}, {}, function getProjectSuccess(value) {
                                 var data = value.data;
-                                data.link = paths.api.routes.project.showAbsolute.format({"projectId": data.id});
-                                data.visualizeLink = $url.formatUri(paths.site.ngRoutes.visualize, {projectId: data.id},
+                                data.projectLink = paths.api.links.projectsAbsolute.format({"projectId": data.id});
+                                data.visualizeLink = $url.formatUri(paths.site.ngRoutes.visualizeAbsolute, {projectId: data.id},
                                     x => x);
 
                                 $scope.model.projects[index] = data;
@@ -476,7 +476,7 @@ angular
                                 }
 
                                 uriPrev = $url.formatUri(
-                                    paths.site.ngRoutes.listen,
+                                    paths.site.ngRoutes.listenAbsolute,
                                     baseLink);
                             }
 
@@ -492,7 +492,7 @@ angular
                             nextStart = baseLink.start;
                             nextEnd = baseLink.end;
                             var uriNext = $url.formatUri(
-                                paths.site.ngRoutes.listen,
+                                paths.site.ngRoutes.listenAbsolute,
                                 baseLink
                             );
 
@@ -531,7 +531,7 @@ angular
                         }
 
                         var url = $url.formatUri(
-                            paths.site.ngRoutes.listen,
+                            paths.site.ngRoutes.listenAbsolute,
                             params
                         );
 

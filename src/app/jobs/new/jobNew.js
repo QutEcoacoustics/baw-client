@@ -8,7 +8,7 @@ class JobNewController {
 
         let controller = this;
 
-        this.jobListPath = paths.site.ngRoutes.analysisJobs.list;
+        this.jobListPath = paths.site.ngRoutes.analysisJobs.listAbsolute;
 
         privates.newSavedSearch = false;
         privates.$scope = $scope;

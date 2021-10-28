@@ -14,7 +14,7 @@ angular.module("bawApp.components.progress", ["bawApp.citizenScience.csSamples"]
                 var self = this;
 
                 // routed dataset item id will link back to the unrouted listen page
-                $scope.listenLink = $url.formatUri(paths.site.ngRoutes.citizenScience.listen,
+                $scope.listenLink = $url.formatUri(paths.site.ngRoutes.citizenScience.listenAbsolute,
                     {studyName: $routeParams.studyName});
 
 

@@ -35,7 +35,7 @@ angular
                         const savedSearchLinker = modelAssociations.generateLinker("AnalysisJob", "SavedSearch");
                         const scriptLinker = modelAssociations.generateLinker("AnalysisJob", "Script");
 
-                        this.showResultsRoute = paths.site.ngRoutes.analysisJobs.results;
+                        this.showResultsRoute = paths.site.ngRoutes.analysisJobs.resultsAbsolute;
 
                         AnalysisJobService
                             .get(Number($routeParams.analysisJobId))
