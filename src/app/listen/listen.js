@@ -242,6 +242,7 @@ angular
                                 x => x);
 
                             $scope.model.site = data;
+                            data.siteLink = $url.formatUri(paths.api.links.siteAbsolute, {projectId: data.projectIds[0], siteId: data.id});
                             result.site = data;
                             siteDeferred.resolve(result);
                         }, function getSiteError() {
@@ -262,7 +263,7 @@ angular
                             // get project
                             Project.get({projectId: id}, {}, function getProjectSuccess(value) {
                                 var data = value.data;
-                                data.projectLink = paths.api.links.projectsAbsolute.format({"projectId": data.id});
+                                data.projectLink = paths.api.links.projectAbsolute.format({"projectId": data.id});
                                 data.visualizeLink = $url.formatUri(paths.site.ngRoutes.visualizeAbsolute, {projectId: data.id},
                                     x => x);
 

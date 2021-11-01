@@ -10,14 +10,14 @@
                 <span ng-repeat="p in model.projects" ng-switch="p.permissions == 'access denied'">
                     <!--{{ $first && "" || ", "}}-->
                     <span ng-switch-when="false">
-                        <a target="_parent" ng-href="{{p.link}}">{{p.name}}</a>
+                        <a target="_parent" ng-href="{{p.projectLink}}">{{p.name}}</a>
                         <!--<a ng-switch-when="true" class="noPermissions hint--warning hint--bottom hint--rounded"-->
                         <!--data-hint="You have no read access to this project, no information retrieved" ng-href="{{p.link}}">{{p.id}}</a>-->
                         <a target="_parent" href ng-href="{{p.visualizeLink}}" title="Visualize">
                             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                         </a>
                         &nbsp;&#47;&nbsp;
-                        <a target="_parent" ng-href="{{ model.site.links[$index]}}">{{model.site.name}}</a>
+                        <a target="_parent" ng-href="{{ model.site.siteLink }}">{{model.site.name}}</a>
                         &nbsp;
                         <a target="_parent" href ng-href="{{model.site.visualizeLink}}" title="Visualize">
                             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
