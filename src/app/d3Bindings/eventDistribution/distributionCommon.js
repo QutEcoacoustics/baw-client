@@ -191,7 +191,7 @@ angular
                                 "distributionCommon::Click: Navigating to ",
                                 url,
                                 new Date(clickDate));
-                            $location.url(url);
+                            window.top.location.href = url;
                             $rootScope.$apply();
                         }
                         else {

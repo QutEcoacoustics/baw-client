@@ -119,7 +119,7 @@ angular
             $scope.createFilterUrl = libraryCommon.createFilterUrl;
 
             $scope.setFilter = function setFilter() {
-                $location.url($scope.createFilterUrl($scope.filterSettings));
+                window.top.location.href = $scope.createFilterUrl($scope.filterSettings);
             };
 
             $scope.clearFilter = function clearFilter() {

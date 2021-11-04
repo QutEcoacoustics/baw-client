@@ -536,7 +536,7 @@ angular
                             params
                         );
 
-                        $location.url(url);
+                        window.top.location.href = url;
                     };
 
                     $scope.clearSelected = function () {

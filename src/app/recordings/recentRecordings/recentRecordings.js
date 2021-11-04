@@ -58,7 +58,7 @@ angular.module("bawApp.recordings.recentRecordings", [])
                     return;
                 }
 
-                $location.url(link);
+                window.top.location.href = link;
             };
         }
     ]
