@@ -822,6 +822,7 @@ angular
                             //.attr(debugAttrs)
                             .select("image")
                             .attr({
+                                "target": "_parent",
                                 "xlink:href": imageCheck,
                                 width: imageAttrs.width
                             });
@@ -848,6 +849,7 @@ angular
                         // but always add the image element
                         newTileElements.append("image")
                             .attr(imageAttrs)
+                            .attr("target", "_parent")
                             .attr("xlink:href", imageCheck)
                             .on("error", common.imageLoadError, true)
                             .on("load", common.imageLoadSuccess, true)

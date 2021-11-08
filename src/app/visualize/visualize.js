@@ -193,10 +193,12 @@ angular
                              recordingId: id,
                              start: startOffsetSeconds
                              });*/
-                            return $url.formatUriFast(
-                                paths.site.ngRoutes.listenWithStartFastAbsolute,
-                                id,
-                                startOffsetSeconds
+                            return $url.formatUri(
+                                paths.site.ngRoutes.listenAbsolute,
+                                {
+                                    recordingId: id,
+                                    start: startOffsetSeconds
+                                }
                             );
                         },
                         extentUpdated(newExtent, category) {

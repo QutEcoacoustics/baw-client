@@ -103,6 +103,7 @@ angular
                         }
 
                         this._text.text(this._options.text);
+                        this._anchor.attr("target", "_parent");
                         this._anchor.attr("xlink:href", url);
                         this._anchor.classed("disabled", !url);
 

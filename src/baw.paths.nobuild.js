@@ -195,7 +195,7 @@ module.exports = function (environment) {
             "ngRoutes": {
                 "recentRecordings": "/listen",
                 "listen": "/listen/{recordingId}",
-                "listenWithStartFast": ["/listen/", "?start="],
+                "listenWithStartFast": ["/listen/{recordingId}", "?start="],
                 "library": "/library",
                 "libraryItem": "/library/{recordingId}/audio_events/{audioEventId}",
                 "visualize": "/visualize",
