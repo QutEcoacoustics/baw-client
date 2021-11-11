@@ -44,6 +44,14 @@
                     Audio (MP3)
                 </a>
             </li>
+            <li>
+                <a target="_blank"
+                    class="dropdown-anchor"
+                    ng-href="{{originalAudioUrl}}"
+                    title="Download the original audio file">
+                    Original
+                </a>
+            </li>
             <li role="separator" class="divider" ng-if="$ctrl.otherLinks"></li>
             <li>
                 <a ng-repeat="(key,link) in $ctrl.otherLinks"

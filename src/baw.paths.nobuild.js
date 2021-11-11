@@ -18,7 +18,8 @@ module.exports = function (environment) {
                     "listShort": "/audio_recordings/{recordingId}",
                     "show": "/audio_recordings/{recordingId}",
                     "list": "/audio_recordings/",
-                    "filter": "/audio_recordings/filter"
+                    "filter": "/audio_recordings/filter",
+                    "original": "/audio_recordings/{recordingId}/original"
                 },
                 "audioEvent": {
                     "list": "/audio_recordings/{recordingId}/audio_events",

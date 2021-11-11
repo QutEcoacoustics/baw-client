@@ -3,8 +3,14 @@ angular.module("bawApp.audioControls.download", [])
         templateUrl: "audioControls/download.tpl.html",
         controller: [
             "$scope",
-            function ($scope) {
-        }],
+            "$routeParams",
+            "conf.paths",
+            function ($scope, $routeParams, paths) {
+                $scope.originalAudioUrl = paths.api.routes.audioRecording.originalAbsolute.format({
+                    "recordingId": $routeParams.recordingId
+                });
+            }
+        ],
         transclude: true,
         bindings: {
             media: "=",

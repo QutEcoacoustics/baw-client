@@ -89,7 +89,7 @@ class FileListController {
             return null;
         }
 
-        return this._$url.formatUri(this._$location.absUrl().split('?')[0], {page});
+        return this._$url.formatUri(this._$location.absUrl().split("?")[0], {page});
     }
 }
 
