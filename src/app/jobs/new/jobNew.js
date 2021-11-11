@@ -139,7 +139,7 @@ class JobNewController {
             .then((response) => {
                 var analysisJob = response.data.data[0];
                 console.log("Submit success, navigating to details...", analysisJob);
-                this[jobNewControllerSymbol].$location.path(analysisJob.viewUrl);
+                window.top.location.href = analysisJob.viewUrl;
             })
             .catch((response) => {
                 // TODO: generalize this
