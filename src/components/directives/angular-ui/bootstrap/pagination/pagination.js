@@ -8,7 +8,7 @@ angular.module(
             const
                 targetTemplate = "uib/template/pagination/pagination.html",
                 pageRegex = /(href).*(?:ng-click="selectPage\(([^,]+), \$event\)")/gm,
-                replaceString = `ng-href="{{ pagination.href($2) }}" href`;
+                replaceString = `ng-href="{{ pagination.href($2) }}" target="_parent" href`;
 
             var oldTemplate = $templateCache.get(targetTemplate);
 
@@ -37,6 +37,7 @@ angular.module(
                 }
 
                 let f = $parse(attrs.paginationHref)(parentScope);
+
                 paginationCtrl.href = function (...args) {
                     return f.apply(parent, args);
                 };
