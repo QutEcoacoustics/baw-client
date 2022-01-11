@@ -11,7 +11,7 @@
     "angular-resource": "~1.5.x",
     "angular-route": "~1.5.x",
     "angular-sanitize": "~1.5.x",
-    "angular-tags": "git://github.com/boneskull/angular-tags.git#master",
+    "angular-tags": "https://github.com/boneskull/angular-tags.git#master",
     "angular-ui-utils": "latest",
     "bowser": "1.0.x",
     "d3": "~3.5.x",
@@ -31,7 +31,7 @@
     "filesize": "^3.2.1",
     "angular-ui-ace": "bower",
 
-    "c3": "git://github.com/masayuki0812/c3.git#98769492d07b6103bfc30a0254ccb1e1ec1cca50",
+    "c3": "https://github.com/masayuki0812/c3.git#98769492d07b6103bfc30a0254ccb1e1ec1cca50",
     "angular-intro.js": "~3.1.2"
   },
   "dependencies": {},
