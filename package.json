@@ -43,7 +43,7 @@
     "grunt-sass": "^2.0.0",
     "jasmine-core": "^2.4.1",
     "jshint-stylish": "^2.1.0",
-    "karma": "^4.3.0",
+    "karma": "^6.3.14",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^0.5",
     "karma-firefox-launcher": "~0.1.3",
