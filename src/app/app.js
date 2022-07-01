@@ -533,53 +533,6 @@ angular.module("baw",
                  return ($scope.$parent.fullWidth ? 'container-liquid' : 'container');
                  };*/
 
-                // do browser check
-                // only do it once - we best not be too annoying
-                var supported = constants.browserSupport;
-                var isSupportedBrowser = false;
-                var version = parseFloat(bowser.version);
-                angular.forEach(supported.optimum, function (value, key) {
-                    if (isSupportedBrowser || (bowser[key] && version >= value)) {
-                        isSupportedBrowser = true;
-                    }
-                });
-                if (!isSupportedBrowser) {
-                    if (!localStorageService.isSupported || !localStorageService.get(supported.localStorageKey)) {
-                        $timeout(function () {
-
-
-                            var supportedBrowser = false;
-                            angular.forEach(supported.supported, function (value, key) {
-                                if (bowser[key]) {
-                                    if (version >= value) {
-                                        growl.info(supported.baseMessage.format({
-                                            name: bowser.name,
-                                            version: bowser.version,
-                                            reason: "not well tested"
-                                        }));
-                                        supportedBrowser = true;
-                                    }
-                                    else {
-                                        supportedBrowser = false;
-                                    }
-
-                                }
-                            });
-
-                            if (!supportedBrowser) {
-                                growl.warning(supported.baseMessage.format({
-                                    name: bowser.name,
-                                    version: bowser.version,
-                                    reason: "not supported"
-                                }));
-                            }
-
-                        });
-                        localStorageService.set(supported.localStorageKey, true);
-                    }
-                }
-
-
                 $scope.testGrowl = function () {
                     growl.success("I'm a success message!");
                 };

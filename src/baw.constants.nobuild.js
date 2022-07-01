@@ -40,22 +40,6 @@ module.exports = function (environment) {
         "annotationLibrary": {
             "paddingSeconds": 1.0
         },
-        "browserSupport": {
-            "optimum": {
-                "chrome": 36
-            },
-            "supported": {
-                "msie": 10,
-                "firefox": 36,
-                "chrome": 30,
-                "safari": 5.1,
-                "opera": 23,
-                "ios": 5.1,
-                "android": 4.0
-            },
-            "baseMessage": "Your current internet browser ({name}, version {version}) is {reason}. <br/> Consider updating or try using <a target='_blank' href='https://www.google.com.au/intl/en_au/chrome/browser/' >Google Chrome</a>.",
-            "localStorageKey": "browserSupport.checked"
-        },
         "queryBuilder": {
             "defaultPage": 0,
             "defaultPageItems": 10,
