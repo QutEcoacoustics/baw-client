@@ -22,7 +22,7 @@
     "connect-modrewrite": "0.8.x",
     "dev-ip": "^1.0.1",
     "grunt": "~0.4.1",
-    "grunt-babel": "6.x",
+    "grunt-babel": "8.x",
     "grunt-beep": "^0.3.2",
     "grunt-bump": "^0.7",
     "grunt-changelog": "^0.3",
